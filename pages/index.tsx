@@ -12,7 +12,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 const Home: NextPage = () => {
   const router = useRouter()
   const { data, error } = useSwr(
-    router.query.id ? `/api/session/${router.query.id}` : null,
+    router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
     fetcher
   )
   const { t } = useTranslation()
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>{t('start_pathway_session_title')}</h1>
-        {router.query.id ? (
+        {router.query.sessionId ? (
           <>
             <pre>Session: {JSON.stringify(data)}</pre>
             <pre>Error: {JSON.stringify(error)}</pre>
