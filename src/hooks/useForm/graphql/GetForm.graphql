@@ -1,0 +1,10 @@
+#import 'Form'
+query GetForm (
+  $id: String!
+) {
+  form(id: $id) {
+    form {
+      ...Form
+    }
+  }
+}
