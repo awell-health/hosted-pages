@@ -15,13 +15,20 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   children,
 }) => {
-  const [accessToken, setAccessToken] = useLocalStorage('accessToken', '')
+  const [accessToken, setAccessToken, removeAccessToken] = useLocalStorage(
+    'accessToken',
+    ''
+  )
   const router = useRouter()
 
   const { data, error } = useSwr(
     router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
     fetcher
   )
+
+  useEffect(() => {
+    setAccessToken(data?.token)
+  })
 
   const authenticationContext = {
     isAuthenticated: accessToken !== '',

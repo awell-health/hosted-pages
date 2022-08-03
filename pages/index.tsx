@@ -11,10 +11,6 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const Home: NextPage = () => {
   const router = useRouter()
-  const { data, error } = useSwr(
-    router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
-    fetcher
-  )
   const { t } = useTranslation()
   return (
     <div className={styles.container}>
@@ -24,14 +20,6 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>{t('start_pathway_session_title')}</h1>
-        {router.query.sessionId ? (
-          <>
-            <pre>Session: {JSON.stringify(data)}</pre>
-            <pre>Error: {JSON.stringify(error)}</pre>
-          </>
-        ) : (
-          <a href="?id=12345">Start</a>
-        )}
       </main>
     </div>
   )
