@@ -6,21 +6,25 @@ import styles from '../styles/Home.module.css'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import useSwr from 'swr'
+import { useHostedSession } from '../src/hooks/useHostedSession'
+import { Activities } from '../src/components/Activities'
+import '@awell_health/ui-library/dist/index.css'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const Home: NextPage = () => {
   const router = useRouter()
   const { t } = useTranslation()
+  const { loading, session } = useHostedSession()
+
+  if (loading || !session) {
+    // TODO add proper spinner or sth
+    return <p>LOADING....</p>
+  }
+
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Awell hosted pages</title>
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>{t('start_pathway_session_title')}</h1>
-      </main>
+      <Activities pathwayId={session.pathway_id} />
     </div>
   )
 }

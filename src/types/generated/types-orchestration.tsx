@@ -1556,6 +1556,11 @@ export type GetFormResponseQuery = { __typename?: 'Query', formResponse: { __typ
 
 export type QuestionFragment = { __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null };
 
+export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string } } };
+
 export type ActivityFragment = { __typename?: 'Activity', id: string, stream_id: string, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null };
 
 export type OnActivityCompletedSubscriptionVariables = Exact<{
@@ -1762,6 +1767,45 @@ export function useGetFormResponseLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetFormResponseQueryHookResult = ReturnType<typeof useGetFormResponseQuery>;
 export type GetFormResponseLazyQueryHookResult = ReturnType<typeof useGetFormResponseLazyQuery>;
 export type GetFormResponseQueryResult = Apollo.QueryResult<GetFormResponseQuery, GetFormResponseQueryVariables>;
+export const GetHostedSessionDocument = gql`
+    query GetHostedSession {
+  hostedSession {
+    session {
+      pathway_id
+      status
+      success_url
+      cancel_url
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetHostedSessionQuery__
+ *
+ * To run a query within a React component, call `useGetHostedSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHostedSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHostedSessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetHostedSessionQuery(baseOptions?: Apollo.QueryHookOptions<GetHostedSessionQuery, GetHostedSessionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetHostedSessionQuery, GetHostedSessionQueryVariables>(GetHostedSessionDocument, options);
+      }
+export function useGetHostedSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHostedSessionQuery, GetHostedSessionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetHostedSessionQuery, GetHostedSessionQueryVariables>(GetHostedSessionDocument, options);
+        }
+export type GetHostedSessionQueryHookResult = ReturnType<typeof useGetHostedSessionQuery>;
+export type GetHostedSessionLazyQueryHookResult = ReturnType<typeof useGetHostedSessionLazyQuery>;
+export type GetHostedSessionQueryResult = Apollo.QueryResult<GetHostedSessionQuery, GetHostedSessionQueryVariables>;
 export const OnActivityCompletedDocument = gql`
     subscription OnActivityCompleted($pathway_id: String!) {
   activityCompleted(pathway_id: $pathway_id) {

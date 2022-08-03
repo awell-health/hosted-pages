@@ -42,7 +42,6 @@ export const usePathwayActivities = ({
    */
   // useOnActivityUpdatedSubscription({ variables })
   // useOnActivityCompletedSubscription({ variables })
-  console.log('error', error)
   // }
 
   const activities = data?.pathwayActivities.activities ?? []

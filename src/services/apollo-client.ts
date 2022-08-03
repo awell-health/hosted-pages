@@ -29,6 +29,7 @@ export const createClient = ({
 
   const authenticationLink = new ApolloLink((operation, forward) => {
     const accessToken = localStorage.getItem('accessToken')
+
     operation.setContext({
       headers: {
         authorization: accessToken ? `Bearer ${accessToken}` : '',

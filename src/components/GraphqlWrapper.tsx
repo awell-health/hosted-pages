@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { ApolloProvider } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
 import { createClient } from '../services/apollo-client'

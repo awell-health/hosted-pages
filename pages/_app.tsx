@@ -13,13 +13,13 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AuthenticationProvider>
-      <GraphqlWrapper>
-        <AuthGuard>
+      <AuthGuard>
+        <GraphqlWrapper>
           <NoSSRComponent>
             <Component {...pageProps} />
           </NoSSRComponent>
-        </AuthGuard>
-      </GraphqlWrapper>
+        </GraphqlWrapper>
+      </AuthGuard>
     </AuthenticationProvider>
   )
 }
