@@ -21,14 +21,6 @@ const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
 export const GraphqlWrapper: FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  console.log(
-    'process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API',
-    process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API
-  )
-  console.log(
-    'process.env.URL_ORCHESTRATION_API',
-    process.env.URL_ORCHESTRATION_API
-  )
   const client = createClient({
     httpUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API as string,
     onNetworkError: onError,
