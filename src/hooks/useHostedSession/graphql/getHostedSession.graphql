@@ -1,0 +1,10 @@
+query GetHostedSession {
+    hostedSession {
+        session {
+            pathway_id
+            status
+            success_url
+            cancel_url
+        }
+    }
+}

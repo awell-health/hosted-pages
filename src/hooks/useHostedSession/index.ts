@@ -1,0 +1,1 @@
+export { useHostedSession } from './useHostedSession'

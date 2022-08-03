@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { usePathwayActivities } from '../../hooks/usePathwayActivities'
 import { ActivityDetails } from './ActivityDetails'
 
-const Activities: FC<{ pathwayId: string }> = ({ pathwayId }) => {
+export const Activities: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   const { activities } = usePathwayActivities({ pathwayId })
 
   // TODO secure showing no more that one activity at the time
@@ -16,5 +16,3 @@ const Activities: FC<{ pathwayId: string }> = ({ pathwayId }) => {
     </div>
   )
 }
-
-export default Activities

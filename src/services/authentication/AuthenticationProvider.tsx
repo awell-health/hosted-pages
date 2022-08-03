@@ -27,8 +27,10 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   )
 
   useEffect(() => {
-    setAccessToken(data?.token)
-  })
+    if (data?.token) {
+      setAccessToken(data?.token)
+    }
+  }, [data?.token])
 
   const authenticationContext = {
     isAuthenticated: accessToken !== '',
