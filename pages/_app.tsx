@@ -5,18 +5,22 @@ import { GraphqlWrapper } from '../src/components/GraphqlWrapper'
 import { AuthGuard } from '../src/components/AuthGuard'
 import { AuthenticationProvider } from '../src/services/authentication'
 import { NoSSRComponent } from '../src/components/NoSSR'
+import { useRouter } from 'next/router'
+import useSwr from 'swr'
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <NoSSRComponent>
-      <AuthenticationProvider>
-        <GraphqlWrapper>
-          <AuthGuard>
+    <AuthenticationProvider>
+      <GraphqlWrapper>
+        <AuthGuard>
+          <NoSSRComponent>
             <Component {...pageProps} />
-          </AuthGuard>
-        </GraphqlWrapper>
-      </AuthenticationProvider>
-    </NoSSRComponent>
+          </NoSSRComponent>
+        </AuthGuard>
+      </GraphqlWrapper>
+    </AuthenticationProvider>
   )
 }
 

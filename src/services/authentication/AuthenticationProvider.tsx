@@ -3,40 +3,28 @@ import { parse } from 'query-string'
 import { AuthenticationContext } from './AuthenticationContext'
 import { urlHasAuthState } from './urlHasAuthState'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { useRouter } from 'next/router'
+import useSwr from 'swr'
 
 interface AuthenticationProviderProps {
   children?: React.ReactNode
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
 export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   children,
 }) => {
-  const [isLoading, setLoading] = useState(false)
-  const [error, setError] = useState<string | undefined>(undefined)
   const [accessToken, setAccessToken] = useLocalStorage('accessToken', '')
+  const router = useRouter()
 
-  useEffect(() => {
-    console.log(urlHasAuthState(), 'hasUrlstate')
-    if (urlHasAuthState()) {
-      setLoading(true)
-      const { search } = window.location
-      const { sessionId } = parse(search)
-      console.log(sessionId)
-      if (sessionId) {
-        setAccessToken(sessionId as string)
-        setLoading(false)
-      } else {
-        setError('Missing sessionId')
-        setLoading(false)
-      }
-    } else {
-      setError('Missing sessionId')
-    }
-  }, [window.location])
+  const { data, error } = useSwr(
+    router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
+    fetcher
+  )
 
   const authenticationContext = {
     isAuthenticated: accessToken !== '',
-    isLoading,
     accessToken,
     error,
   }
