@@ -1,0 +1,58 @@
+fragment Activity on Activity {
+  id
+  stream_id
+  subject {
+    id
+    type
+    name
+  }
+  action
+  date
+  object {
+    id
+    type
+    name
+  }
+  indirect_object {
+    id
+    type
+    name
+  }
+  status
+  resolution
+  reference_id
+  track {
+    id
+    title
+  }
+  container_name
+  label {
+    id
+    text
+    color
+  }
+  sub_activities {
+    id
+    date
+    action
+    error
+    subject {
+      id
+      type
+      name
+    }
+    object {
+      id
+      type
+      name
+    }
+  }
+  isUserActivity
+  context {
+    instance_id
+    pathway_id
+    track_id
+    step_id
+    action_id
+  }
+}

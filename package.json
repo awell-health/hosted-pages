@@ -8,18 +8,30 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
-    "pre-commit": "yarn tsc --noEmit && next lint"
+    "pre-commit": "yarn tsc --noEmit && next lint",
+    "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.5.1",
+    "@awell_health/ui-library": "0.0.10",
+    "@apollo/client": "^3.6.9",
+    "graphql": "^16.5.0",
     "next": "12.2.3",
+    "jsonwebtoken": "^8.5.1",
     "next-i18next": "^11.3.0",
+    "query-string": "^7.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "swr": "^1.3.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.8",
+    "@graphql-codegen/add": "^2.0.2",
+    "@graphql-codegen/cli": "^2.11.3",
+    "@graphql-codegen/fragment-matcher": "^2.0.1",
+    "@graphql-codegen/introspection": "^2.2.0",
+    "@graphql-codegen/typescript": "^2.7.2",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.2",
     "@types/node": "18.6.1",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
