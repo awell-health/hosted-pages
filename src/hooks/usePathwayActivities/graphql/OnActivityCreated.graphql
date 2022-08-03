@@ -1,0 +1,6 @@
+# import 'Activity'
+subscription OnActivityCreated($pathway_id: String!) {
+  activityCreated(pathway_id: $pathway_id) {
+    ...Activity
+  }
+}
