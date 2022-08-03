@@ -15,9 +15,14 @@ export default function handler(
 
   const token = jwt.sign(
     {
-      sub: sessionId,
+      session_id: sessionId,
+      username: process.env.HOSTED_PAGES_CONSUMER_NAME,
     },
-    process.env.HOSTED_PAGES_AUTH_SECRET as string
+    process.env.HOSTED_PAGES_AUTH_SECRET as string,
+    {
+      issuer: process.env.HOSTED_PAGES_AUTH_KEY,
+      subject: sessionId as string,
+    }
   )
 
   res.status(200).json({ token, status: 'active' })

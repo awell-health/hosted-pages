@@ -26,7 +26,15 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>{t('start_pathway_session_title')}</h1>
         {router.query.sessionId ? (
           <>
-            <pre>Session: {JSON.stringify(data)}</pre>
+            <pre
+              style={{
+                maxWidth: 500,
+                whiteSpace: 'break-spaces',
+                wordWrap: 'break-word',
+              }}
+            >
+              Session: {JSON.stringify(data)}
+            </pre>
             <pre>Error: {JSON.stringify(error)}</pre>
           </>
         ) : (
