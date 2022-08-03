@@ -3,7 +3,7 @@ import { useState } from 'react'
 export const useLocalStorage = (
   key: string,
   initialValue: string
-): [string, (value: string) => void] => {
+): [string, (value: string) => void, (value: string) => void] => {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState(() => {
@@ -38,5 +38,13 @@ export const useLocalStorage = (
       console.log(error)
     }
   }
-  return [storedValue, setValue]
+
+  const removeItem = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+    window.localStorage.removeItem(key)
+  }
+
+  return [storedValue, setValue, removeItem]
 }

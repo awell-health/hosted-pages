@@ -11,19 +11,6 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const Home: NextPage = () => {
   const router = useRouter()
-  const { data, error } = useSwr(
-    router.query.sessionId && localStorage.getItem('accessToken')
-      ? `/api/session/${router.query.sessionId}`
-      : null,
-    fetcher
-  )
-
-  if (!error && data.token) {
-    localStorage.setItem('accessToken', data.token)
-  } else {
-    localStorage.removeItem('accessToken')
-  }
-
   const { t } = useTranslation()
   return (
     <div className={styles.container}>
@@ -33,22 +20,6 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>{t('start_pathway_session_title')}</h1>
-        {router.query.sessionId ? (
-          <>
-            <pre
-              style={{
-                maxWidth: 500,
-                whiteSpace: 'break-spaces',
-                wordWrap: 'break-word',
-              }}
-            >
-              Session: {JSON.stringify(data)}
-            </pre>
-            <pre>Error: {JSON.stringify(error)}</pre>
-          </>
-        ) : (
-          <a href="?id=12345">Start</a>
-        )}
       </main>
     </div>
   )
