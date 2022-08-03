@@ -12,9 +12,18 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 const Home: NextPage = () => {
   const router = useRouter()
   const { data, error } = useSwr(
-    router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
+    router.query.sessionId && localStorage.getItem('accessToken')
+      ? `/api/session/${router.query.sessionId}`
+      : null,
     fetcher
   )
+
+  if (!error && data.token) {
+    localStorage.setItem('accessToken', data.token)
+  } else {
+    localStorage.removeItem('accessToken')
+  }
+
   const { t } = useTranslation()
   return (
     <div className={styles.container}>
