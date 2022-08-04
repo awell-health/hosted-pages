@@ -10,16 +10,22 @@ import { useHostedSession } from '../src/hooks/useHostedSession'
 import { Activities } from '../src/components/Activities'
 import '@awell_health/ui-library/dist/index.css'
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
 const Home: NextPage = () => {
   const router = useRouter()
   const { t } = useTranslation()
   const { loading, session } = useHostedSession()
 
-  if (loading || !session) {
+  if (!router.query.sessionId) {
+    return <p>{t('error_invalid_url')}</p>
+  }
+
+  if (loading) {
     // TODO add proper spinner or sth
     return <p>LOADING....</p>
+  }
+
+  if (!session) {
+    return <p>{t('error_invalid_session_id')}</p>
   }
 
   return (

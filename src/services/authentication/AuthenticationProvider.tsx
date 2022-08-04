@@ -30,7 +30,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     if (data?.token) {
       setAccessToken(data?.token)
     }
-  }, [data?.token])
+  }, [data?.token, setAccessToken])
 
   const authenticationContext = {
     isAuthenticated: accessToken !== '',
