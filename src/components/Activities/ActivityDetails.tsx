@@ -5,12 +5,12 @@ import {
 } from '../../types/generated/types-orchestration'
 import { useTranslation } from 'next-i18next'
 import { Form } from '../Form'
+import { Message } from '../Message'
+import { Checklist } from '../Checklist'
 
 interface ActivityContentProps {
   activity: Activity
 }
-
-// TODO add query for message and checklist details
 
 export const ActivityDetails: FC<ActivityContentProps> = ({ activity }) => {
   const { t } = useTranslation()
@@ -18,9 +18,9 @@ export const ActivityDetails: FC<ActivityContentProps> = ({ activity }) => {
     case ActivityObjectType.Form:
       return <Form activity={activity} />
     case ActivityObjectType.Message:
-      return <div>TO BE DONE</div>
+      return <Message activity={activity} />
     case ActivityObjectType.Checklist:
-      return <div>TO BE DONE</div>
+      return <Checklist activity={activity} />
     default:
       return <div style={{ textAlign: 'center' }}>{t('no_details')}</div>
   }

@@ -1,0 +1,7 @@
+mutation MarkMessageAsRead($input: MarkMessageAsReadInput!) {
+  markMessageAsRead(input: $input) {
+    activity {
+      ...Activity
+    }
+  }
+}

@@ -1,0 +1,8 @@
+query GetChecklist($id: String!) {
+  checklist(id: $id) {
+    checklist {      
+      title
+      items
+    }
+  }
+}

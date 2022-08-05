@@ -1,0 +1,7 @@
+mutation SubmitChecklist($input: SubmitChecklistInput!) {
+  submitChecklist(input: $input) {
+    activity {
+      ...Activity
+    }
+  }
+}
