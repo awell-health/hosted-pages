@@ -1,0 +1,14 @@
+.loading_page {
+  width: 100%;
+  display: flex;
+  margin-top: 150px;
+  justify-content: center;
+}
+
+.loading_page_content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 250px;
+}
