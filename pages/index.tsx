@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useHostedSession } from '../src/hooks/useHostedSession'
-import { Activities, LoadingPage } from '../src/components'
+import { Activities, LoadingPage, ErrorPage } from '../src/components'
 import '@awell_health/ui-library/dist/index.css'
 import { Navbar } from '@awell_health/ui-library'
 import awell_logo from '../src/assets/logo.svg'
@@ -13,15 +13,19 @@ const Home: NextPage = () => {
   const router = useRouter()
 
   if (!router.query.sessionId) {
-    return <p>{t('error_invalid_url')}</p>
+    return <ErrorPage title={t('error_invalid_url')} />
   }
 
   return (
     <>
       <Navbar logo={awell_logo} />
       {loading && <LoadingPage title={t('session_loading')} />}
-      {error && <p>Session not available: {error}</p>}
-      {session && <Activities pathwayId={session.pathway_id} />}
+      {error && <ErrorPage title={error} />}
+      {session && (
+        <div>
+          <Activities pathwayId={session.pathway_id} />
+        </div>
+      )}
     </>
   )
 }
