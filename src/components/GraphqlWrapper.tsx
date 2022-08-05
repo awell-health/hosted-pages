@@ -23,6 +23,7 @@ export const GraphqlWrapper: FC<{ children?: React.ReactNode }> = ({
 }) => {
   const client = createClient({
     httpUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API as string,
+    wsUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API_WS as string,
     onNetworkError: onError,
     cacheConfig: {
       possibleTypes: fragmentTypes.possibleTypes,
