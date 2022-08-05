@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
-import { createClient } from '../services/apollo-client'
+import { createClient } from '../services/graphql/apollo-client'
 import React, { FC } from 'react'
 import fragmentTypes from '../types/generated/fragment-types'
 

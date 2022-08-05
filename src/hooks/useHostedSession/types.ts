@@ -1,6 +1,14 @@
-import type { GetHostedSessionQuery } from '../../types/generated/types-orchestration'
+import type { GetHostedSessionQuery as GetHostedSessionQueryType } from '../../types/generated/types-orchestration'
 export type { GetFormResponseQuery } from './../../types/generated/types-orchestration'
 
-export { useGetHostedSessionQuery } from './../../types/generated/types-orchestration'
+export {
+  useGetHostedSessionQuery,
+  useOnHostedSessionCompletedSubscription,
+  useOnHostedSessionExpiredSubscription,
+  GetHostedSessionDocument,
+} from './../../types/generated/types-orchestration'
 
-export type HostedSession = GetHostedSessionQuery['hostedSession']['session']
+export type GetHostedSessionQuery = GetHostedSessionQueryType
+
+export type HostedSession =
+  GetHostedSessionQueryType['hostedSession']['session']

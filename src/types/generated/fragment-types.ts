@@ -29,6 +29,7 @@
       "RetryWebhookCallPayload",
       "ScheduledStepsPayload",
       "SearchPatientsPayload",
+      "StartHostedActivitySessionPayload",
       "StartHostedPathwaySessionPayload",
       "StopTrackPayload",
       "UpdatePatientLanguagePayload",

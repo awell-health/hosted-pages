@@ -1,0 +1,10 @@
+fragment HostedSession on HostedSession {
+    pathway_id
+    status
+    success_url
+    cancel_url
+    stakeholder {
+        id
+        type
+    }
+}

@@ -1,0 +1,6 @@
+# import 'HostedSession'
+subscription OnHostedSessionCompleted {
+  sessionCompleted {
+     ...HostedSession
+  }
+}
