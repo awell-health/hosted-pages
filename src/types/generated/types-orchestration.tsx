@@ -1537,6 +1537,13 @@ export type WebhookCallsPayload = Payload & {
   webhook_calls: Array<WebhookCall>;
 };
 
+export type EvaluateFormRulesMutationVariables = Exact<{
+  input: EvaluateFormRulesInput;
+}>;
+
+
+export type EvaluateFormRulesMutation = { __typename?: 'Mutation', evaluateFormRules: { __typename?: 'EvaluateFormRulesPayload', results: Array<{ __typename?: 'QuestionRuleResult', question_id: string, rule_id: string, satisfied: boolean }> } };
+
 export type FormFragment = { __typename?: 'Form', id: string, title: string, questions: Array<{ __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> };
 
 export type GetFormQueryVariables = Exact<{
@@ -1590,6 +1597,13 @@ export type PathwayActivitiesQueryVariables = Exact<{
 
 
 export type PathwayActivitiesQuery = { __typename?: 'Query', pathwayActivities: { __typename?: 'ActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, stream_id: string, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null }> } };
+
+export type SubmitFormResponseMutationVariables = Exact<{
+  input: SubmitFormResponseInput;
+}>;
+
+
+export type SubmitFormResponseMutation = { __typename?: 'Mutation', submitFormResponse: { __typename?: 'SubmitFormResponsePayload', activity: { __typename?: 'Activity', id: string, stream_id: string, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } } };
 
 export const QuestionFragmentDoc = gql`
     fragment Question on Question {
@@ -1688,6 +1702,43 @@ export const ActivityFragmentDoc = gql`
   }
 }
     `;
+export const EvaluateFormRulesDocument = gql`
+    mutation EvaluateFormRules($input: EvaluateFormRulesInput!) {
+  evaluateFormRules(input: $input) {
+    results {
+      question_id
+      rule_id
+      satisfied
+    }
+  }
+}
+    `;
+export type EvaluateFormRulesMutationFn = Apollo.MutationFunction<EvaluateFormRulesMutation, EvaluateFormRulesMutationVariables>;
+
+/**
+ * __useEvaluateFormRulesMutation__
+ *
+ * To run a mutation, you first call `useEvaluateFormRulesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEvaluateFormRulesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [evaluateFormRulesMutation, { data, loading, error }] = useEvaluateFormRulesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEvaluateFormRulesMutation(baseOptions?: Apollo.MutationHookOptions<EvaluateFormRulesMutation, EvaluateFormRulesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EvaluateFormRulesMutation, EvaluateFormRulesMutationVariables>(EvaluateFormRulesDocument, options);
+      }
+export type EvaluateFormRulesMutationHookResult = ReturnType<typeof useEvaluateFormRulesMutation>;
+export type EvaluateFormRulesMutationResult = Apollo.MutationResult<EvaluateFormRulesMutation>;
+export type EvaluateFormRulesMutationOptions = Apollo.BaseMutationOptions<EvaluateFormRulesMutation, EvaluateFormRulesMutationVariables>;
 export const GetFormDocument = gql`
     query GetForm($id: String!) {
   form(id: $id) {
@@ -1934,3 +1985,38 @@ export function usePathwayActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type PathwayActivitiesQueryHookResult = ReturnType<typeof usePathwayActivitiesQuery>;
 export type PathwayActivitiesLazyQueryHookResult = ReturnType<typeof usePathwayActivitiesLazyQuery>;
 export type PathwayActivitiesQueryResult = Apollo.QueryResult<PathwayActivitiesQuery, PathwayActivitiesQueryVariables>;
+export const SubmitFormResponseDocument = gql`
+    mutation SubmitFormResponse($input: SubmitFormResponseInput!) {
+  submitFormResponse(input: $input) {
+    activity {
+      ...Activity
+    }
+  }
+}
+    ${ActivityFragmentDoc}`;
+export type SubmitFormResponseMutationFn = Apollo.MutationFunction<SubmitFormResponseMutation, SubmitFormResponseMutationVariables>;
+
+/**
+ * __useSubmitFormResponseMutation__
+ *
+ * To run a mutation, you first call `useSubmitFormResponseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitFormResponseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitFormResponseMutation, { data, loading, error }] = useSubmitFormResponseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitFormResponseMutation(baseOptions?: Apollo.MutationHookOptions<SubmitFormResponseMutation, SubmitFormResponseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubmitFormResponseMutation, SubmitFormResponseMutationVariables>(SubmitFormResponseDocument, options);
+      }
+export type SubmitFormResponseMutationHookResult = ReturnType<typeof useSubmitFormResponseMutation>;
+export type SubmitFormResponseMutationResult = Apollo.MutationResult<SubmitFormResponseMutation>;
+export type SubmitFormResponseMutationOptions = Apollo.BaseMutationOptions<SubmitFormResponseMutation, SubmitFormResponseMutationVariables>;

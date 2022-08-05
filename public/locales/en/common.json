@@ -1,5 +1,6 @@
 {
   "start_pathway_session_title": "Start pathway session",
   "error_invalid_url": "Invalid URL: URL must contain `sessionId` parameter",
-  "error_invalid_session_id": "Authorization Failed: Session ID is not valid"
+  "error_invalid_session_id": "Authorization Failed: Session ID is not valid",
+  "session_loading": "Loading..."
 }

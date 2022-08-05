@@ -5,12 +5,17 @@ import type { Form, Activity } from './types'
 interface UseFormHook {
   loading: boolean
   form?: Form
+  error?: string
 }
 
 export const useForm = (activity: Activity): UseFormHook => {
   const { t } = useTranslation()
 
-  const { data: formData, loading: formLoading } = useGetFormQuery({
+  const {
+    data: formData,
+    loading: formLoading,
+    error,
+  } = useGetFormQuery({
     variables: {
       id: activity.object.id,
     },
@@ -27,6 +32,9 @@ export const useForm = (activity: Activity): UseFormHook => {
 
   if (formLoading) {
     return { loading: true }
+  }
+  if (error) {
+    return { loading: false, error: error.message }
   }
 
   return {

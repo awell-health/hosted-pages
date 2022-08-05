@@ -7,12 +7,12 @@ export const Activities: FC<{ pathwayId: string }> = ({ pathwayId }) => {
 
   // TODO secure showing no more that one activity at the time
   return (
-    <div>
+    <>
       {activities
         .filter((activity) => activity.isUserActivity)
         .map((activity) => (
           <ActivityDetails activity={activity} key={activity.id} />
         ))}
-    </div>
+    </>
   )
 }

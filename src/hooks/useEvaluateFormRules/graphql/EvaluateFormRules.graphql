@@ -1,0 +1,9 @@
+mutation EvaluateFormRules($input:  EvaluateFormRulesInput!) {
+    evaluateFormRules(input: $input) {
+        results {
+            question_id
+            rule_id
+            satisfied
+        }
+    }
+}

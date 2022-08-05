@@ -4,7 +4,7 @@ import {
   ActivityObjectType,
 } from '../../types/generated/types-orchestration'
 import { useTranslation } from 'next-i18next'
-import { Form } from '../Form/Form'
+import { Form } from '../Form'
 
 interface ActivityContentProps {
   activity: Activity
