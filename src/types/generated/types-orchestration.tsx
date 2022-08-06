@@ -1576,6 +1576,13 @@ export type WebhookCallsPayload = Payload & {
   webhook_calls: Array<WebhookCall>;
 };
 
+export type GetChecklistQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetChecklistQuery = { __typename?: 'Query', checklist: { __typename?: 'ChecklistPayload', checklist?: { __typename?: 'Checklist', title: string, items: Array<string> } | null } };
+
 export type EvaluateFormRulesMutationVariables = Exact<{
   input: EvaluateFormRulesInput;
 }>;
@@ -1602,11 +1609,6 @@ export type GetFormResponseQuery = { __typename?: 'Query', formResponse: { __typ
 
 export type QuestionFragment = { __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null };
 
-export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } } } };
-
 export type HostedSessionFragment = { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } };
 
 export type OnHostedSessionCompletedSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -1618,6 +1620,25 @@ export type OnHostedSessionExpiredSubscriptionVariables = Exact<{ [key: string]:
 
 
 export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', sessionExpired: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } } };
+
+export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } } } };
+
+export type GetMessageQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetMessageQuery = { __typename?: 'Query', message: { __typename?: 'MessagePayload', message?: { __typename?: 'Message', id: string, body: string, subject: string, format: MessageFormat, attachments?: Array<{ __typename?: 'MessageAttachment', id: string, name: string, type: MessageAttachmentType, url: string }> | null } | null } };
+
+export type MarkMessageAsReadMutationVariables = Exact<{
+  input: MarkMessageAsReadInput;
+}>;
+
+
+export type MarkMessageAsReadMutation = { __typename?: 'Mutation', markMessageAsRead: { __typename?: 'MarkMessageAsReadPayload', activity: { __typename?: 'Activity', id: string, stream_id: string, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } } };
 
 export type ActivityFragment = { __typename?: 'Activity', id: string, stream_id: string, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null };
 
@@ -1648,6 +1669,13 @@ export type PathwayActivitiesQueryVariables = Exact<{
 
 
 export type PathwayActivitiesQuery = { __typename?: 'Query', pathwayActivities: { __typename?: 'ActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, stream_id: string, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null }> } };
+
+export type SubmitChecklistMutationVariables = Exact<{
+  input: SubmitChecklistInput;
+}>;
+
+
+export type SubmitChecklistMutation = { __typename?: 'Mutation', submitChecklist: { __typename?: 'SubmitChecklistPayload', activity: { __typename?: 'Activity', id: string, stream_id: string, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } } };
 
 export type SubmitFormResponseMutationVariables = Exact<{
   input: SubmitFormResponseInput;
@@ -1765,6 +1793,44 @@ export const ActivityFragmentDoc = gql`
   }
 }
     `;
+export const GetChecklistDocument = gql`
+    query GetChecklist($id: String!) {
+  checklist(id: $id) {
+    checklist {
+      title
+      items
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetChecklistQuery__
+ *
+ * To run a query within a React component, call `useGetChecklistQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChecklistQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChecklistQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetChecklistQuery(baseOptions: Apollo.QueryHookOptions<GetChecklistQuery, GetChecklistQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetChecklistQuery, GetChecklistQueryVariables>(GetChecklistDocument, options);
+      }
+export function useGetChecklistLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetChecklistQuery, GetChecklistQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetChecklistQuery, GetChecklistQueryVariables>(GetChecklistDocument, options);
+        }
+export type GetChecklistQueryHookResult = ReturnType<typeof useGetChecklistQuery>;
+export type GetChecklistLazyQueryHookResult = ReturnType<typeof useGetChecklistLazyQuery>;
+export type GetChecklistQueryResult = Apollo.QueryResult<GetChecklistQuery, GetChecklistQueryVariables>;
 export const EvaluateFormRulesDocument = gql`
     mutation EvaluateFormRules($input: EvaluateFormRulesInput!) {
   evaluateFormRules(input: $input) {
@@ -1881,42 +1947,6 @@ export function useGetFormResponseLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetFormResponseQueryHookResult = ReturnType<typeof useGetFormResponseQuery>;
 export type GetFormResponseLazyQueryHookResult = ReturnType<typeof useGetFormResponseLazyQuery>;
 export type GetFormResponseQueryResult = Apollo.QueryResult<GetFormResponseQuery, GetFormResponseQueryVariables>;
-export const GetHostedSessionDocument = gql`
-    query GetHostedSession {
-  hostedSession {
-    session {
-      ...HostedSession
-    }
-  }
-}
-    ${HostedSessionFragmentDoc}`;
-
-/**
- * __useGetHostedSessionQuery__
- *
- * To run a query within a React component, call `useGetHostedSessionQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetHostedSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetHostedSessionQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetHostedSessionQuery(baseOptions?: Apollo.QueryHookOptions<GetHostedSessionQuery, GetHostedSessionQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetHostedSessionQuery, GetHostedSessionQueryVariables>(GetHostedSessionDocument, options);
-      }
-export function useGetHostedSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHostedSessionQuery, GetHostedSessionQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetHostedSessionQuery, GetHostedSessionQueryVariables>(GetHostedSessionDocument, options);
-        }
-export type GetHostedSessionQueryHookResult = ReturnType<typeof useGetHostedSessionQuery>;
-export type GetHostedSessionLazyQueryHookResult = ReturnType<typeof useGetHostedSessionLazyQuery>;
-export type GetHostedSessionQueryResult = Apollo.QueryResult<GetHostedSessionQuery, GetHostedSessionQueryVariables>;
 export const OnHostedSessionCompletedDocument = gql`
     subscription OnHostedSessionCompleted {
   sessionCompleted {
@@ -1975,6 +2005,123 @@ export function useOnHostedSessionExpiredSubscription(baseOptions?: Apollo.Subsc
       }
 export type OnHostedSessionExpiredSubscriptionHookResult = ReturnType<typeof useOnHostedSessionExpiredSubscription>;
 export type OnHostedSessionExpiredSubscriptionResult = Apollo.SubscriptionResult<OnHostedSessionExpiredSubscription>;
+export const GetHostedSessionDocument = gql`
+    query GetHostedSession {
+  hostedSession {
+    session {
+      ...HostedSession
+    }
+  }
+}
+    ${HostedSessionFragmentDoc}`;
+
+/**
+ * __useGetHostedSessionQuery__
+ *
+ * To run a query within a React component, call `useGetHostedSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHostedSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHostedSessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetHostedSessionQuery(baseOptions?: Apollo.QueryHookOptions<GetHostedSessionQuery, GetHostedSessionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetHostedSessionQuery, GetHostedSessionQueryVariables>(GetHostedSessionDocument, options);
+      }
+export function useGetHostedSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHostedSessionQuery, GetHostedSessionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetHostedSessionQuery, GetHostedSessionQueryVariables>(GetHostedSessionDocument, options);
+        }
+export type GetHostedSessionQueryHookResult = ReturnType<typeof useGetHostedSessionQuery>;
+export type GetHostedSessionLazyQueryHookResult = ReturnType<typeof useGetHostedSessionLazyQuery>;
+export type GetHostedSessionQueryResult = Apollo.QueryResult<GetHostedSessionQuery, GetHostedSessionQueryVariables>;
+export const GetMessageDocument = gql`
+    query GetMessage($id: String!) {
+  message(id: $id) {
+    message {
+      id
+      body
+      subject
+      format
+      attachments {
+        id
+        name
+        type
+        url
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMessageQuery__
+ *
+ * To run a query within a React component, call `useGetMessageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetMessageQuery(baseOptions: Apollo.QueryHookOptions<GetMessageQuery, GetMessageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMessageQuery, GetMessageQueryVariables>(GetMessageDocument, options);
+      }
+export function useGetMessageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMessageQuery, GetMessageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMessageQuery, GetMessageQueryVariables>(GetMessageDocument, options);
+        }
+export type GetMessageQueryHookResult = ReturnType<typeof useGetMessageQuery>;
+export type GetMessageLazyQueryHookResult = ReturnType<typeof useGetMessageLazyQuery>;
+export type GetMessageQueryResult = Apollo.QueryResult<GetMessageQuery, GetMessageQueryVariables>;
+export const MarkMessageAsReadDocument = gql`
+    mutation MarkMessageAsRead($input: MarkMessageAsReadInput!) {
+  markMessageAsRead(input: $input) {
+    activity {
+      ...Activity
+    }
+  }
+}
+    ${ActivityFragmentDoc}`;
+export type MarkMessageAsReadMutationFn = Apollo.MutationFunction<MarkMessageAsReadMutation, MarkMessageAsReadMutationVariables>;
+
+/**
+ * __useMarkMessageAsReadMutation__
+ *
+ * To run a mutation, you first call `useMarkMessageAsReadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMarkMessageAsReadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [markMessageAsReadMutation, { data, loading, error }] = useMarkMessageAsReadMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMarkMessageAsReadMutation(baseOptions?: Apollo.MutationHookOptions<MarkMessageAsReadMutation, MarkMessageAsReadMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MarkMessageAsReadMutation, MarkMessageAsReadMutationVariables>(MarkMessageAsReadDocument, options);
+      }
+export type MarkMessageAsReadMutationHookResult = ReturnType<typeof useMarkMessageAsReadMutation>;
+export type MarkMessageAsReadMutationResult = Apollo.MutationResult<MarkMessageAsReadMutation>;
+export type MarkMessageAsReadMutationOptions = Apollo.BaseMutationOptions<MarkMessageAsReadMutation, MarkMessageAsReadMutationVariables>;
 export const OnActivityCompletedDocument = gql`
     subscription OnActivityCompleted($pathway_id: String!) {
   activityCompleted(pathway_id: $pathway_id) {
@@ -2103,6 +2250,41 @@ export function usePathwayActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type PathwayActivitiesQueryHookResult = ReturnType<typeof usePathwayActivitiesQuery>;
 export type PathwayActivitiesLazyQueryHookResult = ReturnType<typeof usePathwayActivitiesLazyQuery>;
 export type PathwayActivitiesQueryResult = Apollo.QueryResult<PathwayActivitiesQuery, PathwayActivitiesQueryVariables>;
+export const SubmitChecklistDocument = gql`
+    mutation SubmitChecklist($input: SubmitChecklistInput!) {
+  submitChecklist(input: $input) {
+    activity {
+      ...Activity
+    }
+  }
+}
+    ${ActivityFragmentDoc}`;
+export type SubmitChecklistMutationFn = Apollo.MutationFunction<SubmitChecklistMutation, SubmitChecklistMutationVariables>;
+
+/**
+ * __useSubmitChecklistMutation__
+ *
+ * To run a mutation, you first call `useSubmitChecklistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitChecklistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitChecklistMutation, { data, loading, error }] = useSubmitChecklistMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitChecklistMutation(baseOptions?: Apollo.MutationHookOptions<SubmitChecklistMutation, SubmitChecklistMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubmitChecklistMutation, SubmitChecklistMutationVariables>(SubmitChecklistDocument, options);
+      }
+export type SubmitChecklistMutationHookResult = ReturnType<typeof useSubmitChecklistMutation>;
+export type SubmitChecklistMutationResult = Apollo.MutationResult<SubmitChecklistMutation>;
+export type SubmitChecklistMutationOptions = Apollo.BaseMutationOptions<SubmitChecklistMutation, SubmitChecklistMutationVariables>;
 export const SubmitFormResponseDocument = gql`
     mutation SubmitFormResponse($input: SubmitFormResponseInput!) {
   submitFormResponse(input: $input) {

@@ -1,0 +1,16 @@
+query GetMessage($id: String!) {
+  message(id: $id) {
+    message {
+      id
+      body
+      subject
+      format
+      attachments {
+        id
+        name
+        type
+        url
+      }
+    }
+  }
+}

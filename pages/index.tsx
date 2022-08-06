@@ -37,11 +37,7 @@ const Home: NextPage = () => {
       <Navbar logo={awell_logo} />
       {loading && <LoadingPage title={t('session_loading')} />}
       {error && <ErrorPage title={error} />}
-      {session && (
-        <div>
-          <Activities pathwayId={session.pathway_id} />
-        </div>
-      )}
+      {session && <Activities pathwayId={session.pathway_id} />}
     </>
   )
 }
