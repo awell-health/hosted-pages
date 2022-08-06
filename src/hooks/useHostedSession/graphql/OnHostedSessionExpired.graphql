@@ -1,0 +1,6 @@
+# import 'HostedSession'
+subscription OnHostedSessionExpired {
+  sessionExpired {
+     ...HostedSession
+  }
+}

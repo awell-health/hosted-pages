@@ -37,6 +37,7 @@ const defaultOptions = {} as const;
       "RetryWebhookCallPayload",
       "ScheduledStepsPayload",
       "SearchPatientsPayload",
+      "StartHostedActivitySessionPayload",
       "StartHostedPathwaySessionPayload",
       "StopTrackPayload",
       "UpdatePatientLanguagePayload",
@@ -520,6 +521,7 @@ export type HostedSession = {
   cancel_url: Scalars['String'];
   id: Scalars['ID'];
   pathway_id: Scalars['String'];
+  stakeholder: HostedSessionStakeholder;
   status: HostedSessionStatus;
   success_url: Scalars['String'];
 };
@@ -530,6 +532,22 @@ export type HostedSessionPayload = Payload & {
   session: HostedSession;
   success: Scalars['Boolean'];
 };
+
+export type HostedSessionStakeholder = {
+  __typename?: 'HostedSessionStakeholder';
+  id: Scalars['ID'];
+  type: HostedSessionStakeholderType;
+};
+
+export type HostedSessionStakeholderInput = {
+  id: Scalars['ID'];
+  type: HostedSessionStakeholderType;
+};
+
+export enum HostedSessionStakeholderType {
+  Patient = 'PATIENT',
+  Stakeholder = 'STAKEHOLDER'
+}
 
 export enum HostedSessionStatus {
   Active = 'ACTIVE',
@@ -599,6 +617,7 @@ export type Mutation = {
   retryPushToEmr: EmptyPayload;
   retryWebhookCall: RetryWebhookCallPayload;
   saveBaselineInfo: EmptyPayload;
+  startHostedActivitySession: StartHostedActivitySessionPayload;
   startHostedPathwaySession: StartHostedPathwaySessionPayload;
   startPathway: StartPathwayPayload;
   stopPathway: EmptyPayload;
@@ -668,6 +687,11 @@ export type MutationRetryWebhookCallArgs = {
 
 export type MutationSaveBaselineInfoArgs = {
   input: SaveBaselineInfoInput;
+};
+
+
+export type MutationStartHostedActivitySessionArgs = {
+  input: StartHostedActivitySessionInput;
 };
 
 
@@ -1201,6 +1225,21 @@ export type SortingParams = {
   field: Scalars['String'];
 };
 
+export type StartHostedActivitySessionInput = {
+  cancel_url: Scalars['String'];
+  pathway_id: Scalars['String'];
+  stakeholder?: InputMaybe<HostedSessionStakeholderInput>;
+  success_url: Scalars['String'];
+};
+
+export type StartHostedActivitySessionPayload = Payload & {
+  __typename?: 'StartHostedActivitySessionPayload';
+  code: Scalars['String'];
+  session_id: Scalars['String'];
+  session_url: Scalars['String'];
+  success: Scalars['Boolean'];
+};
+
 export type StartHostedPathwaySessionInput = {
   cancel_url: Scalars['String'];
   data_points?: InputMaybe<Array<DataPointInput>>;
@@ -1570,10 +1609,22 @@ export type GetFormResponseQuery = { __typename?: 'Query', formResponse: { __typ
 
 export type QuestionFragment = { __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null };
 
+export type HostedSessionFragment = { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } };
+
+export type OnHostedSessionCompletedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnHostedSessionCompletedSubscription = { __typename?: 'Subscription', sessionCompleted: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } } };
+
+export type OnHostedSessionExpiredSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', sessionExpired: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } } };
+
 export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string } } };
+export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType } } } };
 
 export type GetMessageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1670,6 +1721,18 @@ export const FormFragmentDoc = gql`
   }
 }
     ${QuestionFragmentDoc}`;
+export const HostedSessionFragmentDoc = gql`
+    fragment HostedSession on HostedSession {
+  pathway_id
+  status
+  success_url
+  cancel_url
+  stakeholder {
+    id
+    type
+  }
+}
+    `;
 export const ActivityFragmentDoc = gql`
     fragment Activity on Activity {
   id
@@ -1884,18 +1947,73 @@ export function useGetFormResponseLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetFormResponseQueryHookResult = ReturnType<typeof useGetFormResponseQuery>;
 export type GetFormResponseLazyQueryHookResult = ReturnType<typeof useGetFormResponseLazyQuery>;
 export type GetFormResponseQueryResult = Apollo.QueryResult<GetFormResponseQuery, GetFormResponseQueryVariables>;
+export const OnHostedSessionCompletedDocument = gql`
+    subscription OnHostedSessionCompleted {
+  sessionCompleted {
+    ...HostedSession
+  }
+}
+    ${HostedSessionFragmentDoc}`;
+
+/**
+ * __useOnHostedSessionCompletedSubscription__
+ *
+ * To run a query within a React component, call `useOnHostedSessionCompletedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnHostedSessionCompletedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnHostedSessionCompletedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnHostedSessionCompletedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<OnHostedSessionCompletedSubscription, OnHostedSessionCompletedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<OnHostedSessionCompletedSubscription, OnHostedSessionCompletedSubscriptionVariables>(OnHostedSessionCompletedDocument, options);
+      }
+export type OnHostedSessionCompletedSubscriptionHookResult = ReturnType<typeof useOnHostedSessionCompletedSubscription>;
+export type OnHostedSessionCompletedSubscriptionResult = Apollo.SubscriptionResult<OnHostedSessionCompletedSubscription>;
+export const OnHostedSessionExpiredDocument = gql`
+    subscription OnHostedSessionExpired {
+  sessionExpired {
+    ...HostedSession
+  }
+}
+    ${HostedSessionFragmentDoc}`;
+
+/**
+ * __useOnHostedSessionExpiredSubscription__
+ *
+ * To run a query within a React component, call `useOnHostedSessionExpiredSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnHostedSessionExpiredSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnHostedSessionExpiredSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnHostedSessionExpiredSubscription(baseOptions?: Apollo.SubscriptionHookOptions<OnHostedSessionExpiredSubscription, OnHostedSessionExpiredSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<OnHostedSessionExpiredSubscription, OnHostedSessionExpiredSubscriptionVariables>(OnHostedSessionExpiredDocument, options);
+      }
+export type OnHostedSessionExpiredSubscriptionHookResult = ReturnType<typeof useOnHostedSessionExpiredSubscription>;
+export type OnHostedSessionExpiredSubscriptionResult = Apollo.SubscriptionResult<OnHostedSessionExpiredSubscription>;
 export const GetHostedSessionDocument = gql`
     query GetHostedSession {
   hostedSession {
     session {
-      pathway_id
-      status
-      success_url
-      cancel_url
+      ...HostedSession
     }
   }
 }
-    `;
+    ${HostedSessionFragmentDoc}`;
 
 /**
  * __useGetHostedSessionQuery__
