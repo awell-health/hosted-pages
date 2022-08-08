@@ -3,6 +3,7 @@
   "error_invalid_url": "Invalid URL: URL must contain `sessionId` parameter",
   "error_invalid_session_id": "Authorization Failed: Session ID is not valid",
   "session_loading": "Loading session...",
+  "session_loading_error": "Something when wrong while loading session. Session could already be expired",
   "activity_not_supported": "Loaded activity type is not supported",
   "form_loading": "Loading form...",
   "form_previous_question_label": "Prev",

@@ -10,10 +10,12 @@ import awell_logo from '../src/assets/logo.svg'
 import { useEffect } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { isNil } from 'lodash'
+import { useLocalStorage } from '../src/hooks/useLocalStorage'
 
 const Home: NextPage = () => {
   const { t } = useTranslation()
   const { loading, session, error } = useHostedSession()
+  const { removeItem: removeAccessToken } = useLocalStorage('accessToken', '')
   const router = useRouter()
 
   useEffect(() => {
@@ -22,10 +24,15 @@ const Home: NextPage = () => {
     }
     switch (session?.status) {
       case HostedSessionStatus.Completed:
-        window.location.href = session.success_url
+        removeAccessToken()
+        router.push(session.success_url)
+        return
       case HostedSessionStatus.Expired:
-        window.location.href = session.cancel_url
+        removeAccessToken()
+        router.push(session.cancel_url)
+        return
       default:
+        return
     }
   }, [session])
 
@@ -37,7 +44,7 @@ const Home: NextPage = () => {
     <>
       <Navbar logo={awell_logo} />
       {loading && <LoadingPage title={t('session_loading')} />}
-      {error && <ErrorPage title={error} />}
+      {error && <ErrorPage title={t('session_loading_error')} />}
       {session && <Activities pathwayId={session.pathway_id} />}
     </>
   )

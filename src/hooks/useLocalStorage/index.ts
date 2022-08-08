@@ -1,9 +1,14 @@
 import { useState } from 'react'
 
+interface useLocalStorageHook {
+  setValue: (value: string) => void
+  storedValue: string
+  removeItem: () => void
+}
 export const useLocalStorage = (
   key: string,
   initialValue: string
-): [string, (value: string) => void, () => void] => {
+): useLocalStorageHook => {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState(() => {
@@ -46,5 +51,5 @@ export const useLocalStorage = (
     window.localStorage.removeItem(key)
   }
 
-  return [storedValue, setValue, removeItem]
+  return { storedValue, setValue, removeItem }
 }
