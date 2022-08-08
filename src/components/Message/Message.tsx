@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
-import { Message as MessageViewer } from '@awell_health/ui-library'
+import React from 'react'
+import { Message as MessageViewer, Button } from '@awell_health/ui-library'
+import { useTranslation } from 'next-i18next'
 import { useMessage, Activity } from '../../hooks/useMessage'
 import { LoadingPage } from '../LoadingPage'
 import { ErrorPage } from '../ErrorPage'
-import { useTranslation } from 'next-i18next'
+import classes from './message.module.css'
 
 interface MessageProps {
   activity: Activity
@@ -15,12 +16,6 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
     activity,
   })
 
-  useEffect(() => {
-    if (!loading && !error) {
-      onRead()
-    }
-  }, [loading, error])
-
   if (loading) {
     return <LoadingPage title={t('message_loading')} />
   }
@@ -31,8 +26,17 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
 
   return (
     <MessageViewer
-      content={message?.body || ''} // FIXME
+      content={message?.body || ''}
       subject={message?.subject || ''}
-    />
+    >
+      <div className={classes.message_button_wrapper}>
+        <Button
+          id={`${activity.object.id}-mark-as-read`}
+          onClick={() => onRead()}
+        >
+          {t('done')}
+        </Button>
+      </div>
+    </MessageViewer>
   )
 }

@@ -13,5 +13,8 @@
   "submit": "Submit",
   "checklist_loading_error": "Ups! Something went wrong while loading checklist: {{ error }}",
   "message_loading": "Loading message...",
-  "message_loading_error": "Ups! Something went wrong while loading message: {{ error }}"
+  "message_loading_error": "Ups! Something went wrong while loading message: {{ error }}",
+  "done": "Done",
+  "activity_loading": "Loading activity...",
+  "activity_loading_error": "Ups! Something went wrong while loading activities: {{ error }}"
 }

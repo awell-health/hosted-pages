@@ -1,18 +1,16 @@
 import { FC } from 'react'
-import { usePathwayActivities } from '../../hooks/usePathwayActivities'
+import { Activity } from '../../hooks/usePathwayActivities'
 import { ActivityDetails } from './ActivityDetails'
+import { useCurrentActivity } from '../../hooks/activityNavigation'
 
-export const Activities: FC<{ pathwayId: string }> = ({ pathwayId }) => {
-  const { activities } = usePathwayActivities({ pathwayId })
-
-  // TODO secure showing no more that one activity at the time
+export const Activities: FC<{ activities: Array<Activity> }> = ({
+  activities,
+}) => {
+  const { currentActivity } = useCurrentActivity()
   return (
-    <>
-      {activities
-        .filter((activity) => activity.isUserActivity)
-        .map((activity) => (
-          <ActivityDetails activity={activity} key={activity.id} />
-        ))}
-    </>
+    <ActivityDetails
+      activity={activities[currentActivity]}
+      key={activities[currentActivity].id}
+    />
   )
 }

@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next'
 import type { Activity, Message } from './types'
 import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
+import { useCurrentActivity } from '../activityNavigation'
 
 interface UseMessageActivityHook {
   loading: boolean
@@ -18,7 +18,7 @@ export const useMessage = ({
     id: activity_id,
     object: { id: message_id },
   } = activity
-  const { t } = useTranslation()
+  const { handleNavigateToNextActivity } = useCurrentActivity()
 
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
 
@@ -35,6 +35,7 @@ export const useMessage = ({
           },
         },
       })
+      handleNavigateToNextActivity()
     } catch (err) {
       console.error(err)
     }

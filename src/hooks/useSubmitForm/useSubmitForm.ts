@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import type { Activity, AnswerInput } from './types'
 import { GetFormResponseDocument, useSubmitFormResponseMutation } from './types'
+import { useCurrentActivity } from '../activityNavigation'
 
 interface UseFormActivityHook {
   disabled: boolean
@@ -14,7 +14,8 @@ export const useSubmitForm = ({
   activity: Activity
 }): UseFormActivityHook => {
   const { id: activity_id, stream_id: pathway_id } = activity
-  const { t } = useTranslation()
+  const { handleNavigateToNextActivity } = useCurrentActivity()
+
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -39,7 +40,8 @@ export const useSubmitForm = ({
         ],
         awaitRefetchQueries: true,
       })
-      // TODO redirect to success
+
+      handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
       // TODO ???
