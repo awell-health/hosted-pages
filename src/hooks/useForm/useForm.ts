@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { useGetFormQuery, ActivityStatus } from './types'
 import type { Form, Activity } from './types'
 
@@ -9,19 +8,13 @@ interface UseFormHook {
 }
 
 export const useForm = (activity: Activity): UseFormHook => {
-  const { t } = useTranslation()
-
   const {
     data: formData,
-    loading: formLoading,
+    loading,
     error,
   } = useGetFormQuery({
     variables: {
       id: activity.object.id,
-    },
-    onError: (error) => {
-      console.error('ERROR', error)
-      throw error
     },
     onCompleted: () => {
       if (activity.status === ActivityStatus.Done) {
@@ -30,7 +23,7 @@ export const useForm = (activity: Activity): UseFormHook => {
     },
   })
 
-  if (formLoading) {
+  if (loading) {
     return { loading: true }
   }
   if (error) {

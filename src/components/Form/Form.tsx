@@ -1,6 +1,6 @@
 import { WizardForm } from '@awell_health/ui-library'
 import React, { FC } from 'react'
-import { useForm } from '../../hooks/useForm'
+import { useForm, Form as FormType } from '../../hooks/useForm'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import {
   Activity,
@@ -9,19 +9,24 @@ import {
 } from '../../types/generated/types-orchestration'
 import { LoadingPage } from '../LoadingPage'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
+import { useTranslation } from 'next-i18next'
+import { ErrorPage } from '../ErrorPage'
 
 interface FormProps {
   activity: Activity
 }
 
 export const Form: FC<FormProps> = ({ activity }) => {
-  const { loading, form } = useForm(activity)
+  const { loading, form, error } = useForm(activity)
+  const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit, disabled } = useSubmitForm({ activity })
 
   if (loading) {
-    // TODO use i18n
-    return <LoadingPage title="Loading form data" />
+    return <LoadingPage title={t('form_loading')} />
+  }
+  if (error) {
+    return <ErrorPage title={t('form_loading_error', { error })} />
   }
 
   const handleEvaluateFormRules = async (
@@ -34,11 +39,16 @@ export const Form: FC<FormProps> = ({ activity }) => {
     await onSubmit(response)
   }
 
+  //FIXME type - need to be fixed in ui-lib
   return (
     <WizardForm
       form={form as any}
-      buttonLabels={{ prev: 'prev', next: 'next', submit: 'submit' }}
-      errorLabels={{ required: 'this is required' }}
+      buttonLabels={{
+        prev: t('form_previous_question_label'),
+        next: t('form_next_question_label'),
+        submit: t('submit'),
+      }}
+      errorLabels={{ required: t('form_question_required_error') }}
       onSubmit={handleSubmit}
       evaluateDisplayConditions={handleEvaluateFormRules}
     />

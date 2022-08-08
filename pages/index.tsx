@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useHostedSession } from '../src/hooks/useHostedSession'
@@ -43,3 +44,11 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
