@@ -2,9 +2,7 @@
 import { useApolloClient } from '@apollo/client'
 import { isNil } from 'lodash'
 import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import { updateQuery } from '../../services/graphql'
-// import { updateQuery } from '@awell/libs-web/graphql'
 import {
   Activity,
   usePathwayActivitiesQuery,
@@ -19,6 +17,7 @@ import {
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
+  error?: string
 }
 
 export const usePathwayActivities = ({
@@ -26,7 +25,6 @@ export const usePathwayActivities = ({
 }: {
   pathwayId: string
 }): UsePathwayActivitiesHook => {
-  const { t } = useTranslation()
   const variables: PathwayActivitiesQueryVariables = {
     pathway_id: pathwayId,
   }
@@ -46,7 +44,9 @@ export const usePathwayActivities = ({
   useOnActivityUpdatedSubscription({ variables })
   useOnActivityCompletedSubscription({ variables })
 
-  const activities = data?.pathwayActivities.activities ?? []
+  const activities = (data?.pathwayActivities.activities ?? []).filter(
+    (activity) => activity.isUserActivity
+  )
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
@@ -67,5 +67,5 @@ export const usePathwayActivities = ({
     }
   }, [onActivityCreated, onActivityCreated.data, variables])
 
-  return { activities, loading }
+  return { activities, loading, error: error?.message }
 }

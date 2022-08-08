@@ -3,7 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useHostedSession } from '../src/hooks/useHostedSession'
-import { Activities, LoadingPage, ErrorPage } from '../src/components'
+import { ActivityContainer, LoadingPage, ErrorPage } from '../src/components'
 import '@awell_health/ui-library/dist/index.css'
 import { Navbar } from '@awell_health/ui-library'
 import awell_logo from '../src/assets/logo.svg'
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
       <Navbar logo={awell_logo} />
       {loading && <LoadingPage title={t('session_loading')} />}
       {error && <ErrorPage title={t('session_loading_error')} />}
-      {session && <Activities pathwayId={session.pathway_id} />}
+      {session && <ActivityContainer pathwayId={session.pathway_id} />}
     </>
   )
 }

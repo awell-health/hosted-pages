@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
+import { useCurrentActivity } from '../activityNavigation'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -13,7 +14,7 @@ export const useSubmitChecklist = ({
   activity: Activity
 }): UseChecklistHook => {
   const { id: activity_id } = activity
-
+  const { handleNavigateToNextActivity } = useCurrentActivity()
   const [submitChecklist] = useSubmitChecklistMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -27,6 +28,7 @@ export const useSubmitChecklist = ({
           },
         },
       })
+      handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
       console.error(error)
