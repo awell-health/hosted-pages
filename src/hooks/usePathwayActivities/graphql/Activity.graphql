@@ -1,6 +1,7 @@
 fragment Activity on Activity {
   id
   stream_id
+  session_id
   subject {
     id
     type

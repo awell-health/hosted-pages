@@ -4,7 +4,8 @@ fragment HostedSession on HostedSession {
     success_url
     cancel_url
     stakeholder {
-        id
-        type
+      id
+      type
+      name
     }
 }
