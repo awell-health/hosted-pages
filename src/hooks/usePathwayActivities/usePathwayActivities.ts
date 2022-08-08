@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useApolloClient } from '@apollo/client'
+import { isNil } from 'lodash'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { updateQuery } from '../../services/graphql'
 // import { updateQuery } from '@awell/libs-web/graphql'
 import {
   Activity,
@@ -32,7 +35,7 @@ export const usePathwayActivities = ({
     variables,
   })
 
-  // const onActivityCreated = useOnActivityCreatedSubscription({ variables })
+  const onActivityCreated = useOnActivityCreatedSubscription({ variables })
 
   /**
    * Why use these subscriptions if we don't do anything with the data ?
@@ -40,30 +43,29 @@ export const usePathwayActivities = ({
    * returned via these subscriptions will automatically be updated in the cache,
    * which means the `activities` array will also be automatically updated.
    */
-  // useOnActivityUpdatedSubscription({ variables })
-  // useOnActivityCompletedSubscription({ variables })
-  // }
+  useOnActivityUpdatedSubscription({ variables })
+  useOnActivityCompletedSubscription({ variables })
 
   const activities = data?.pathwayActivities.activities ?? []
 
-  // useEffect(() => {
-  //   if (!onActivityCreated.data) {
-  //     const {
-  //       data: { activityCreated },
-  //     } = onActivityCreated
-  //     const updatedActivities = [activityCreated, ...activities]
-  //     const updatedQuery = updateQuery<PathwayActivitiesQuery, Array<Activity>>(
-  //       data,
-  //       ['pathwayActivities', 'activities'],
-  //       updatedActivities,
-  //     )
-  //     client.writeQuery({
-  //       query: PathwayActivitiesDocument,
-  //       variables,
-  //       data: updatedQuery,
-  //     })
-  //   }
-  // }, [onActivityCreated.data])
+  useEffect(() => {
+    if (!isNil(onActivityCreated.data)) {
+      const {
+        data: { activityCreated },
+      } = onActivityCreated
+      const updatedActivities = [activityCreated, ...activities]
+      const updatedQuery = updateQuery<PathwayActivitiesQuery, Array<Activity>>(
+        data as PathwayActivitiesQuery,
+        ['pathwayActivities', 'activities'],
+        updatedActivities
+      )
+      client.writeQuery({
+        query: PathwayActivitiesDocument,
+        variables,
+        data: updatedQuery,
+      })
+    }
+  }, [onActivityCreated, onActivityCreated.data, variables])
 
   return { activities, loading }
 }
