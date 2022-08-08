@@ -15,10 +15,8 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   children,
 }) => {
-  const [accessToken, setAccessToken, removeAccessToken] = useLocalStorage(
-    'accessToken',
-    ''
-  )
+  const { storedValue: accessToken, setValue: setAccessToken } =
+    useLocalStorage('accessToken', '')
   const router = useRouter()
 
   const { data, error } = useSwr(

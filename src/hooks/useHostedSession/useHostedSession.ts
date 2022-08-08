@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useTranslation } from 'react-i18next'
+
 import {
   useGetHostedSessionQuery,
   useOnHostedSessionCompletedSubscription,
@@ -20,8 +20,6 @@ interface UseHostedSessionHook {
 }
 
 export const useHostedSession = (): UseHostedSessionHook => {
-  const { t } = useTranslation()
-
   const { data, loading, error } = useGetHostedSessionQuery()
   const client = useApolloClient()
 
