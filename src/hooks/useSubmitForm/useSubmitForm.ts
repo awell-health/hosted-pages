@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import type { Activity, AnswerInput } from './types'
-import { useSubmitFormResponseMutation } from './types'
+import { GetFormResponseDocument, useSubmitFormResponseMutation } from './types'
 
 interface UseFormActivityHook {
   disabled: boolean
@@ -14,7 +14,6 @@ export const useSubmitForm = ({
   activity: Activity
 }): UseFormActivityHook => {
   const { id: activity_id, stream_id: pathway_id } = activity
-
   const { t } = useTranslation()
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,7 +28,15 @@ export const useSubmitForm = ({
             response,
           },
         },
-        refetchQueries: ['GetFormResponse'],
+        refetchQueries: [
+          {
+            query: GetFormResponseDocument,
+            variables: {
+              pathway_id,
+              activity_id,
+            },
+          },
+        ],
         awaitRefetchQueries: true,
       })
       // TODO redirect to success
