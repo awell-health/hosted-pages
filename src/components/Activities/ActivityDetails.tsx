@@ -22,7 +22,9 @@ export const ActivityDetails: FC<ActivityContentProps> = ({ activity }) => {
     case ActivityObjectType.Checklist:
       return <Checklist activity={activity} />
     default:
-      return <div style={{ textAlign: 'center' }}>{t('no_details')}</div>
+      return (
+        <div style={{ textAlign: 'center' }}>{t('activity_not_supported')}</div>
+      )
   }
 }
 

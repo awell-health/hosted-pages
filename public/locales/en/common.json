@@ -2,5 +2,15 @@
   "start_pathway_session_title": "Start pathway session",
   "error_invalid_url": "Invalid URL: URL must contain `sessionId` parameter",
   "error_invalid_session_id": "Authorization Failed: Session ID is not valid",
-  "session_loading": "Loading..."
+  "session_loading": "Loading session...",
+  "activity_not_supported": "Loaded activity type is not supported",
+  "form_loading": "Loading form...",
+  "form_previous_question_label": "Prev",
+  "form_next_question_label": "Next",
+  "form_question_required_error": "Answer for this question is required",
+  "form_loading_error": "Ups! Something went wrong while loading form: {{ error }}",
+  "submit": "Submit",
+  "checklist_loading_error": "Ups! Something went wrong while loading checklist: {{ error }}",
+  "message_loading": "Loading message...",
+  "message_loading_error": "Ups! Something went wrong while loading message: {{ error }}"
 }

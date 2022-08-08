@@ -5,12 +5,14 @@ import { useSubmitChecklist } from '../../hooks/useSubmitChecklist'
 import { LoadingPage } from '../LoadingPage'
 import { ErrorPage } from '../ErrorPage'
 import classes from './checklist.module.css'
+import { useTranslation } from 'next-i18next'
 
 interface ChecklistProps {
   activity: Activity
 }
 
 export const Checklist: FC<ChecklistProps> = ({ activity }) => {
+  const { t } = useTranslation()
   const { loading, items, title, error } = useChecklist({
     activity,
   })
@@ -22,7 +24,7 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
     return <LoadingPage title="Loading activity" />
   }
   if (error) {
-    return <ErrorPage title="Loading activity" />
+    return <ErrorPage title={t('checklist_loading_error', { error })} />
   }
 
   return (
@@ -32,7 +34,7 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
         items={items || []}
         onSubmit={onSubmit}
         disabled={isSubmitting}
-        submitLabel="Submit"
+        submitLabel={t('submit')}
       />
     </article>
   )
