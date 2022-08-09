@@ -81,7 +81,7 @@ export const useSessionActivities = ({
         data: updatedQuery,
       })
     }
-  }, [onActivityCreated, onActivityCreated.data, variables])
+  }, [onActivityCreated.data])
 
   return { activities, loading, error: error?.message }
 }

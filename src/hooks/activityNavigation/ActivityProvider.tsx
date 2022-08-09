@@ -17,6 +17,9 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   const [currentActivity, setCurrentActivity] = useState(0)
 
   const handleSetCurrent = () => {
+    if (activities[currentActivity].status === ActivityStatus.Active) {
+      return
+    }
     const currentActivityId = activities[currentActivity]?.id
 
     const nextActivityIndex = activities.findIndex(
@@ -34,7 +37,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
 
   useEffect(() => {
     handleSetCurrent()
-  }, [])
+  }, [activities])
 
   return (
     <ActivityContext.Provider
