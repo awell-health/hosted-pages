@@ -28,6 +28,7 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
     <MessageViewer
       content={message?.body || ''}
       subject={message?.subject || ''}
+      format="HTML"
     >
       <div className={classes.message_button_wrapper}>
         <Button
