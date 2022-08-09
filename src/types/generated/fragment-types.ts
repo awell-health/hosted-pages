@@ -17,6 +17,7 @@
       "EmptyPayload",
       "EmrReportPayload",
       "FormPayload",
+      "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
       "MessagePayload",
       "PathwayDataPointDefinitionsPayload",

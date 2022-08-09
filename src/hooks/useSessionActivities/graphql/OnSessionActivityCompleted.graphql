@@ -1,0 +1,6 @@
+# import 'SessionActivity'
+subscription OnSessionActivityCompleted($only_stakeholder_activities: Boolean!) {
+  sessionActivityCompleted(only_stakeholder_activities: $only_stakeholder_activities) {
+    ...SessionActivity
+  }
+}
