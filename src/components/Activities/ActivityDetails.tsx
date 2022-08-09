@@ -1,13 +1,11 @@
 import { FC } from 'react'
-import {
-  Activity,
-  ActivityObjectType,
-} from '../../types/generated/types-orchestration'
+import { Activity } from './types'
 import { useTranslation } from 'next-i18next'
 import { Form } from '../Form'
 import { Message } from '../Message'
 import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
+import { ActivityObjectType } from '../../hooks/useSessionActivities'
 
 interface ActivityContentProps {
   activity: Activity

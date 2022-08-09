@@ -1,9 +1,9 @@
-# import 'SessionActivity'
+# import 'Activity'
 query GetHostedSessionActivities($only_stakeholder_activities: Boolean) {
     hostedSessionActivities(only_stakeholder_activities: $only_stakeholder_activities) {
         success
         activities {
-            ...SessionActivity
+            ...Activity
         }
     }
 }

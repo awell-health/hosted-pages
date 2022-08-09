@@ -5,7 +5,6 @@ export {
   useOnSessionActivityUpdatedSubscription,
   useOnSessionActivityCreatedSubscription,
   useGetHostedSessionActivitiesQuery,
-  SessionActivityFragmentDoc,
   ActivityObjectType,
   ActivityStatus,
   ActivityAction,

@@ -1,6 +1,6 @@
-# import 'SessionActivity'
+# import 'Activity'
 subscription OnSessionActivityCreated($only_stakeholder_activities: Boolean!) {
   sessionActivityCreated(only_stakeholder_activities: $only_stakeholder_activities) {
-    ...SessionActivity
+    ...Activity
   }
 }

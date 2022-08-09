@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { ActivityContext } from './ActivityContext'
-import { Activity } from '../../types/generated/types-orchestration'
+import { Activity } from './types'
 
 interface ActivityProviderProps {
   children?: React.ReactNode
