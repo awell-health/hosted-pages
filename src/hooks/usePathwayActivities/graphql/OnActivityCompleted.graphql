@@ -1,6 +1,0 @@
-# import 'Activity'
-subscription OnActivityCompleted($pathway_id: String!) {
-  activityCompleted(pathway_id: $pathway_id) {
-    ...Activity
-  }
-}
