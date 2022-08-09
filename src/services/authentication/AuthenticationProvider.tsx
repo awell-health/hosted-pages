@@ -6,7 +6,8 @@ import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useRouter } from 'next/router'
 import useSwr from 'swr'
 import { LoadingPage } from '../../components'
-
+import { useTranslation } from 'next-i18next'
+import { isNil } from 'lodash'
 interface AuthenticationProviderProps {
   children?: React.ReactNode
 }
@@ -22,6 +23,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   children,
 }) => {
+  const { t } = useTranslation()
   const {
     storedValue: accessToken,
     setValue: setAccessToken,
@@ -54,8 +56,8 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   }
 
   // Wait while token is being generated
-  if (router.query.sessionId && tokenLoading) {
-    return <LoadingPage title={'Authenticating. Please wait.'} />
+  if (!router.isReady || tokenLoading) {
+    return <LoadingPage title={t('authentication_loading')} />
   }
 
   return (

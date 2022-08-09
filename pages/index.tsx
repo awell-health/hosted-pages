@@ -36,7 +36,7 @@ const Home: NextPage = () => {
     }
   }, [session])
 
-  if (!router.query.sessionId) {
+  if (router.isReady && !router.query.sessionId) {
     return <ErrorPage title={t('error_invalid_url')} />
   }
 
