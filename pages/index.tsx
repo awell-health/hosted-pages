@@ -43,10 +43,6 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
-        {/* TODO: create layout component for head */}
-        <title>Hosted Session | {session?.stakeholder.name}</title>
-      </Head>
       <Navbar logo={awell_logo} />
       {loading && <LoadingPage title={t('session_loading')} />}
       {error && <ErrorPage title={t('session_loading_error')} />}
