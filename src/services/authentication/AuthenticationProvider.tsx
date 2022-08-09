@@ -45,8 +45,8 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   useEffect(() => {
     if (data?.token) {
       setAccessToken(data?.token)
-      setTokenLoading(false)
     }
+    setTokenLoading(false)
   }, [data?.token, setAccessToken])
 
   const authenticationContext = {
