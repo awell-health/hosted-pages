@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useApolloClient } from '@apollo/client'
-import { isNil } from 'lodash'
+import { isEmpty, isNil, sortBy } from 'lodash'
 import { useEffect } from 'react'
 import { updateQuery } from '../../services/graphql'
 import {
@@ -11,6 +11,7 @@ import {
   useGetHostedSessionActivitiesQuery,
   GetHostedSessionActivitiesQueryVariables,
   GetHostedSessionActivitiesDocument,
+  ActivityStatus,
   GetHostedSessionActivitiesQuery,
 } from './types'
 
@@ -46,7 +47,19 @@ export const useSessionActivities = ({
   useOnSessionActivityUpdatedSubscription({ variables })
   useOnSessionActivityCompletedSubscription({ variables })
 
-  const activities = data?.hostedSessionActivities.activities ?? []
+  const sortActivitiesByDate = (activities: Activity[]): Activity[] => {
+    if (isNil(activities) || isEmpty(activities)) {
+      return []
+    }
+    return sortBy(activities, (activity) => {
+      return new Date(activity.date)
+    })
+  }
+
+  const activities =
+    sortActivitiesByDate(
+      data?.hostedSessionActivities.activities as Activity[]
+    ) ?? []
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
