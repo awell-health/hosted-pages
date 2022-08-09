@@ -11,7 +11,6 @@ import { useEffect } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { isNil } from 'lodash'
 import { useLocalStorage } from '../src/hooks/useLocalStorage'
-import Head from 'next/head'
 
 const Home: NextPage = () => {
   const { t } = useTranslation()
@@ -36,10 +35,6 @@ const Home: NextPage = () => {
         return
     }
   }, [session])
-
-  if (router.isReady && !router.query.sessionId) {
-    return <ErrorPage title={t('error_invalid_url')} />
-  }
 
   return (
     <>
