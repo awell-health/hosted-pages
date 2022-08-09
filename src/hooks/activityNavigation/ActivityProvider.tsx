@@ -1,4 +1,7 @@
-import React, { FC, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { isNil } from 'lodash'
+import React, { FC, useEffect, useState } from 'react'
+import { ActivityStatus } from '../useForm'
 import { ActivityContext } from './ActivityContext'
 import { Activity } from './types'
 
@@ -14,11 +17,27 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   const [currentActivity, setCurrentActivity] = useState(0)
 
   const handleSetCurrent = () => {
-    if (activities.length - 1 <= currentActivity) {
+    if (activities[currentActivity].status === ActivityStatus.Active) {
       return
     }
-    setCurrentActivity(currentActivity + 1)
+    const currentActivityId = activities[currentActivity]?.id
+
+    const nextActivityIndex = activities.findIndex(
+      (activity) =>
+        activity.status === ActivityStatus.Active &&
+        activity.id !== currentActivityId
+    )
+
+    if (isNil(nextActivityIndex) || nextActivityIndex < 0) {
+      return
+    }
+
+    setCurrentActivity(nextActivityIndex)
   }
+
+  useEffect(() => {
+    handleSetCurrent()
+  }, [activities])
 
   return (
     <ActivityContext.Provider

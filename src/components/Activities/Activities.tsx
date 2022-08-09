@@ -10,7 +10,7 @@ export const Activities: FC<{ activities: Array<Activity> }> = ({
   return (
     <ActivityDetails
       activity={activities[currentActivity]}
-      key={activities[currentActivity].id}
+      key={activities[currentActivity]?.id}
     />
   )
 }
