@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Activity } from '../../hooks/usePathwayActivities'
+import { Activity } from './types'
 import { ActivityDetails } from './ActivityDetails'
 import { useCurrentActivity } from '../../hooks/activityNavigation'
 

@@ -1,9 +1,0 @@
-# import 'Activity'
-query PathwayActivities($pathway_id: String!) {
-  pathwayActivities(pathway_id: $pathway_id) {
-    success
-    activities {
-      ...Activity
-    }
-  }
-}

@@ -25,6 +25,7 @@ const defaultOptions = {} as const;
       "EmptyPayload",
       "EmrReportPayload",
       "FormPayload",
+      "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
       "MessagePayload",
       "PathwayDataPointDefinitionsPayload",
@@ -526,6 +527,13 @@ export type HostedSession = {
   success_url: Scalars['String'];
 };
 
+export type HostedSessionActivitiesPayload = Payload & {
+  __typename?: 'HostedSessionActivitiesPayload';
+  activities: Array<Activity>;
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+};
+
 export type HostedSessionPayload = Payload & {
   __typename?: 'HostedSessionPayload';
   code: Scalars['String'];
@@ -925,6 +933,7 @@ export type Query = {
   form: FormPayload;
   formResponse: FormResponsePayload;
   hostedSession: HostedSessionPayload;
+  hostedSessionActivities: HostedSessionActivitiesPayload;
   message: MessagePayload;
   myActivities: ActivitiesPayload;
   myPathways: PathwaysPayload;
@@ -996,6 +1005,11 @@ export type QueryFormArgs = {
 export type QueryFormResponseArgs = {
   activity_id: Scalars['String'];
   pathway_id: Scalars['String'];
+};
+
+
+export type QueryHostedSessionActivitiesArgs = {
+  only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -1324,6 +1338,9 @@ export type Subscription = {
   elementCreated: Element;
   elementUpdated: Element;
   pathwayUpdated: Pathway;
+  sessionActivityCompleted: Activity;
+  sessionActivityCreated: Activity;
+  sessionActivityUpdated: Activity;
   sessionCompleted: HostedSession;
   sessionExpired: HostedSession;
   webhookCallCreated: WebhookCall;
@@ -1366,6 +1383,21 @@ export type SubscriptionElementUpdatedArgs = {
 
 export type SubscriptionPathwayUpdatedArgs = {
   id: Scalars['ID'];
+};
+
+
+export type SubscriptionSessionActivityCompletedArgs = {
+  only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type SubscriptionSessionActivityCreatedArgs = {
+  only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type SubscriptionSessionActivityUpdatedArgs = {
+  only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -1638,33 +1670,33 @@ export type MarkMessageAsReadMutation = { __typename?: 'Mutation', markMessageAs
 
 export type ActivityFragment = { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null };
 
-export type OnActivityCompletedSubscriptionVariables = Exact<{
-  pathway_id: Scalars['String'];
+export type GetHostedSessionActivitiesQueryVariables = Exact<{
+  only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
-export type OnActivityCompletedSubscription = { __typename?: 'Subscription', activityCompleted: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
+export type GetHostedSessionActivitiesQuery = { __typename?: 'Query', hostedSessionActivities: { __typename?: 'HostedSessionActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null }> } };
 
-export type OnActivityCreatedSubscriptionVariables = Exact<{
-  pathway_id: Scalars['String'];
+export type OnSessionActivityCompletedSubscriptionVariables = Exact<{
+  only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnActivityCreatedSubscription = { __typename?: 'Subscription', activityCreated: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
+export type OnSessionActivityCompletedSubscription = { __typename?: 'Subscription', sessionActivityCompleted: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
 
-export type OnActivityUpdatedSubscriptionVariables = Exact<{
-  pathway_id: Scalars['String'];
+export type OnSessionActivityCreatedSubscriptionVariables = Exact<{
+  only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnActivityUpdatedSubscription = { __typename?: 'Subscription', activityUpdated: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
+export type OnSessionActivityCreatedSubscription = { __typename?: 'Subscription', sessionActivityCreated: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
 
-export type PathwayActivitiesQueryVariables = Exact<{
-  pathway_id: Scalars['String'];
+export type OnSessionActivityUpdatedSubscriptionVariables = Exact<{
+  only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type PathwayActivitiesQuery = { __typename?: 'Query', pathwayActivities: { __typename?: 'ActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null }> } };
+export type OnSessionActivityUpdatedSubscription = { __typename?: 'Subscription', sessionActivityUpdated: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
 
 export type SubmitChecklistMutationVariables = Exact<{
   input: SubmitChecklistInput;
@@ -2120,99 +2152,11 @@ export function useMarkMessageAsReadMutation(baseOptions?: Apollo.MutationHookOp
 export type MarkMessageAsReadMutationHookResult = ReturnType<typeof useMarkMessageAsReadMutation>;
 export type MarkMessageAsReadMutationResult = Apollo.MutationResult<MarkMessageAsReadMutation>;
 export type MarkMessageAsReadMutationOptions = Apollo.BaseMutationOptions<MarkMessageAsReadMutation, MarkMessageAsReadMutationVariables>;
-export const OnActivityCompletedDocument = gql`
-    subscription OnActivityCompleted($pathway_id: String!) {
-  activityCompleted(pathway_id: $pathway_id) {
-    ...Activity
-  }
-}
-    ${ActivityFragmentDoc}`;
-
-/**
- * __useOnActivityCompletedSubscription__
- *
- * To run a query within a React component, call `useOnActivityCompletedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useOnActivityCompletedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOnActivityCompletedSubscription({
- *   variables: {
- *      pathway_id: // value for 'pathway_id'
- *   },
- * });
- */
-export function useOnActivityCompletedSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnActivityCompletedSubscription, OnActivityCompletedSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<OnActivityCompletedSubscription, OnActivityCompletedSubscriptionVariables>(OnActivityCompletedDocument, options);
-      }
-export type OnActivityCompletedSubscriptionHookResult = ReturnType<typeof useOnActivityCompletedSubscription>;
-export type OnActivityCompletedSubscriptionResult = Apollo.SubscriptionResult<OnActivityCompletedSubscription>;
-export const OnActivityCreatedDocument = gql`
-    subscription OnActivityCreated($pathway_id: String!) {
-  activityCreated(pathway_id: $pathway_id) {
-    ...Activity
-  }
-}
-    ${ActivityFragmentDoc}`;
-
-/**
- * __useOnActivityCreatedSubscription__
- *
- * To run a query within a React component, call `useOnActivityCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useOnActivityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOnActivityCreatedSubscription({
- *   variables: {
- *      pathway_id: // value for 'pathway_id'
- *   },
- * });
- */
-export function useOnActivityCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnActivityCreatedSubscription, OnActivityCreatedSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<OnActivityCreatedSubscription, OnActivityCreatedSubscriptionVariables>(OnActivityCreatedDocument, options);
-      }
-export type OnActivityCreatedSubscriptionHookResult = ReturnType<typeof useOnActivityCreatedSubscription>;
-export type OnActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<OnActivityCreatedSubscription>;
-export const OnActivityUpdatedDocument = gql`
-    subscription OnActivityUpdated($pathway_id: String!) {
-  activityUpdated(pathway_id: $pathway_id) {
-    ...Activity
-  }
-}
-    ${ActivityFragmentDoc}`;
-
-/**
- * __useOnActivityUpdatedSubscription__
- *
- * To run a query within a React component, call `useOnActivityUpdatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useOnActivityUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOnActivityUpdatedSubscription({
- *   variables: {
- *      pathway_id: // value for 'pathway_id'
- *   },
- * });
- */
-export function useOnActivityUpdatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnActivityUpdatedSubscription, OnActivityUpdatedSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<OnActivityUpdatedSubscription, OnActivityUpdatedSubscriptionVariables>(OnActivityUpdatedDocument, options);
-      }
-export type OnActivityUpdatedSubscriptionHookResult = ReturnType<typeof useOnActivityUpdatedSubscription>;
-export type OnActivityUpdatedSubscriptionResult = Apollo.SubscriptionResult<OnActivityUpdatedSubscription>;
-export const PathwayActivitiesDocument = gql`
-    query PathwayActivities($pathway_id: String!) {
-  pathwayActivities(pathway_id: $pathway_id) {
+export const GetHostedSessionActivitiesDocument = gql`
+    query GetHostedSessionActivities($only_stakeholder_activities: Boolean) {
+  hostedSessionActivities(
+    only_stakeholder_activities: $only_stakeholder_activities
+  ) {
     success
     activities {
       ...Activity
@@ -2222,32 +2166,128 @@ export const PathwayActivitiesDocument = gql`
     ${ActivityFragmentDoc}`;
 
 /**
- * __usePathwayActivitiesQuery__
+ * __useGetHostedSessionActivitiesQuery__
  *
- * To run a query within a React component, call `usePathwayActivitiesQuery` and pass it any options that fit your needs.
- * When your component renders, `usePathwayActivitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetHostedSessionActivitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHostedSessionActivitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePathwayActivitiesQuery({
+ * const { data, loading, error } = useGetHostedSessionActivitiesQuery({
  *   variables: {
- *      pathway_id: // value for 'pathway_id'
+ *      only_stakeholder_activities: // value for 'only_stakeholder_activities'
  *   },
  * });
  */
-export function usePathwayActivitiesQuery(baseOptions: Apollo.QueryHookOptions<PathwayActivitiesQuery, PathwayActivitiesQueryVariables>) {
+export function useGetHostedSessionActivitiesQuery(baseOptions?: Apollo.QueryHookOptions<GetHostedSessionActivitiesQuery, GetHostedSessionActivitiesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PathwayActivitiesQuery, PathwayActivitiesQueryVariables>(PathwayActivitiesDocument, options);
+        return Apollo.useQuery<GetHostedSessionActivitiesQuery, GetHostedSessionActivitiesQueryVariables>(GetHostedSessionActivitiesDocument, options);
       }
-export function usePathwayActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PathwayActivitiesQuery, PathwayActivitiesQueryVariables>) {
+export function useGetHostedSessionActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHostedSessionActivitiesQuery, GetHostedSessionActivitiesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PathwayActivitiesQuery, PathwayActivitiesQueryVariables>(PathwayActivitiesDocument, options);
+          return Apollo.useLazyQuery<GetHostedSessionActivitiesQuery, GetHostedSessionActivitiesQueryVariables>(GetHostedSessionActivitiesDocument, options);
         }
-export type PathwayActivitiesQueryHookResult = ReturnType<typeof usePathwayActivitiesQuery>;
-export type PathwayActivitiesLazyQueryHookResult = ReturnType<typeof usePathwayActivitiesLazyQuery>;
-export type PathwayActivitiesQueryResult = Apollo.QueryResult<PathwayActivitiesQuery, PathwayActivitiesQueryVariables>;
+export type GetHostedSessionActivitiesQueryHookResult = ReturnType<typeof useGetHostedSessionActivitiesQuery>;
+export type GetHostedSessionActivitiesLazyQueryHookResult = ReturnType<typeof useGetHostedSessionActivitiesLazyQuery>;
+export type GetHostedSessionActivitiesQueryResult = Apollo.QueryResult<GetHostedSessionActivitiesQuery, GetHostedSessionActivitiesQueryVariables>;
+export const OnSessionActivityCompletedDocument = gql`
+    subscription OnSessionActivityCompleted($only_stakeholder_activities: Boolean!) {
+  sessionActivityCompleted(
+    only_stakeholder_activities: $only_stakeholder_activities
+  ) {
+    ...Activity
+  }
+}
+    ${ActivityFragmentDoc}`;
+
+/**
+ * __useOnSessionActivityCompletedSubscription__
+ *
+ * To run a query within a React component, call `useOnSessionActivityCompletedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnSessionActivityCompletedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnSessionActivityCompletedSubscription({
+ *   variables: {
+ *      only_stakeholder_activities: // value for 'only_stakeholder_activities'
+ *   },
+ * });
+ */
+export function useOnSessionActivityCompletedSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnSessionActivityCompletedSubscription, OnSessionActivityCompletedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<OnSessionActivityCompletedSubscription, OnSessionActivityCompletedSubscriptionVariables>(OnSessionActivityCompletedDocument, options);
+      }
+export type OnSessionActivityCompletedSubscriptionHookResult = ReturnType<typeof useOnSessionActivityCompletedSubscription>;
+export type OnSessionActivityCompletedSubscriptionResult = Apollo.SubscriptionResult<OnSessionActivityCompletedSubscription>;
+export const OnSessionActivityCreatedDocument = gql`
+    subscription OnSessionActivityCreated($only_stakeholder_activities: Boolean!) {
+  sessionActivityCreated(
+    only_stakeholder_activities: $only_stakeholder_activities
+  ) {
+    ...Activity
+  }
+}
+    ${ActivityFragmentDoc}`;
+
+/**
+ * __useOnSessionActivityCreatedSubscription__
+ *
+ * To run a query within a React component, call `useOnSessionActivityCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnSessionActivityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnSessionActivityCreatedSubscription({
+ *   variables: {
+ *      only_stakeholder_activities: // value for 'only_stakeholder_activities'
+ *   },
+ * });
+ */
+export function useOnSessionActivityCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnSessionActivityCreatedSubscription, OnSessionActivityCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<OnSessionActivityCreatedSubscription, OnSessionActivityCreatedSubscriptionVariables>(OnSessionActivityCreatedDocument, options);
+      }
+export type OnSessionActivityCreatedSubscriptionHookResult = ReturnType<typeof useOnSessionActivityCreatedSubscription>;
+export type OnSessionActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<OnSessionActivityCreatedSubscription>;
+export const OnSessionActivityUpdatedDocument = gql`
+    subscription OnSessionActivityUpdated($only_stakeholder_activities: Boolean!) {
+  sessionActivityUpdated(
+    only_stakeholder_activities: $only_stakeholder_activities
+  ) {
+    ...Activity
+  }
+}
+    ${ActivityFragmentDoc}`;
+
+/**
+ * __useOnSessionActivityUpdatedSubscription__
+ *
+ * To run a query within a React component, call `useOnSessionActivityUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnSessionActivityUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnSessionActivityUpdatedSubscription({
+ *   variables: {
+ *      only_stakeholder_activities: // value for 'only_stakeholder_activities'
+ *   },
+ * });
+ */
+export function useOnSessionActivityUpdatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnSessionActivityUpdatedSubscription, OnSessionActivityUpdatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<OnSessionActivityUpdatedSubscription, OnSessionActivityUpdatedSubscriptionVariables>(OnSessionActivityUpdatedDocument, options);
+      }
+export type OnSessionActivityUpdatedSubscriptionHookResult = ReturnType<typeof useOnSessionActivityUpdatedSubscription>;
+export type OnSessionActivityUpdatedSubscriptionResult = Apollo.SubscriptionResult<OnSessionActivityUpdatedSubscription>;
 export const SubmitChecklistDocument = gql`
     mutation SubmitChecklist($input: SubmitChecklistInput!) {
   submitChecklist(input: $input) {
