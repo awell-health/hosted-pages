@@ -13,7 +13,6 @@ export {
 
 export type {
   GetHostedSessionActivitiesQueryVariables,
-  PathwayActivitiesQuery,
   GetHostedSessionActivitiesQuery,
 } from '../../types/generated/types-orchestration'
 
