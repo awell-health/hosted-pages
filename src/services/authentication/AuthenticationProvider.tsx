@@ -5,7 +5,7 @@ import { urlHasAuthState } from './urlHasAuthState'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useRouter } from 'next/router'
 import useSwr from 'swr'
-import { LoadingPage } from '../../components'
+import { ErrorPage, LoadingPage } from '../../components'
 import { useTranslation } from 'next-i18next'
 import { isNil } from 'lodash'
 interface AuthenticationProviderProps {
@@ -45,14 +45,18 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   useEffect(() => {
     if (data?.token) {
       setAccessToken(data?.token)
+      setTokenLoading(false)
     }
-    setTokenLoading(false)
   }, [data?.token, setAccessToken])
 
   const authenticationContext = {
     isAuthenticated: accessToken !== '',
     accessToken,
     error,
+  }
+
+  if (router.isReady && !router.query.sessionId) {
+    return <ErrorPage title={t('error_invalid_url')} />
   }
 
   // Wait while token is being generated
