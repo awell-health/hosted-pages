@@ -1,7 +1,4 @@
-import type {
-  GetFormResponseQuery,
-  PathwayActivitiesQuery,
-} from '../../types/generated/types-orchestration'
+import type { GetFormResponseQuery } from '../../types/generated/types-orchestration'
 
 export {
   GetFormResponseDocument,
@@ -9,8 +6,7 @@ export {
 } from './../../types/generated/types-orchestration'
 export type { AnswerInput } from './../../types/generated/types-orchestration'
 
-export type Activity =
-  PathwayActivitiesQuery['pathwayActivities']['activities'][0]
+export type { Activity } from '../../hooks/useSessionActivities'
 
 export type Answer =
   GetFormResponseQuery['formResponse']['response']['answers'][0]

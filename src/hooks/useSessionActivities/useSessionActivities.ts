@@ -12,7 +12,6 @@ import {
   GetHostedSessionActivitiesQueryVariables,
   GetHostedSessionActivitiesDocument,
   GetHostedSessionActivitiesQuery,
-  PathwayActivitiesQuery,
 } from './types'
 
 interface UsePathwayActivitiesHook {
