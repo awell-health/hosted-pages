@@ -5,6 +5,7 @@ import { urlHasAuthState } from './urlHasAuthState'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useRouter } from 'next/router'
 import useSwr from 'swr'
+import { LoadingPage } from '../../components'
 
 interface AuthenticationProviderProps {
   children?: React.ReactNode
@@ -12,12 +13,22 @@ interface AuthenticationProviderProps {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
+/*
+ * Authentication is done in the following steps:
+ * 1. On first load, we remove the accessToken from the localStorage. Why? Because sessions are short-termed and are expected to last for short timespans. So we remove the last token for any conflicts between the consecutive sessions.
+ * 2. Then we create a new token using the NextJS API and save it as 'accessToken' in localStorage. While we create a new accessToken, no other operation is allowed. So loader is shown. 'tokenLoading' state locks the app from further execution.
+ * 3. Once accessToken is generated, only then the children components of the app are rendered.
+ */
 export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   children,
 }) => {
-  const { storedValue: accessToken, setValue: setAccessToken } =
-    useLocalStorage('accessToken', '')
+  const {
+    storedValue: accessToken,
+    setValue: setAccessToken,
+    removeItem: removeAccessToken,
+  } = useLocalStorage('accessToken', '')
   const router = useRouter()
+  const [tokenLoading, setTokenLoading] = useState(true)
 
   const { data, error } = useSwr(
     router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
@@ -25,8 +36,14 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   )
 
   useEffect(() => {
+    // remove access token on first load
+    removeAccessToken()
+  }, [removeAccessToken])
+
+  useEffect(() => {
     if (data?.token) {
       setAccessToken(data?.token)
+      setTokenLoading(false)
     }
   }, [data?.token, setAccessToken])
 
@@ -34,6 +51,11 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     isAuthenticated: accessToken !== '',
     accessToken,
     error,
+  }
+
+  // Wait while token is being generated
+  if (router.query.sessionId && tokenLoading) {
+    return <LoadingPage title={'Authenticating. Please wait.'} />
   }
 
   return (
