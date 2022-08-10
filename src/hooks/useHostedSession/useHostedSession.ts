@@ -6,6 +6,7 @@ import {
   useOnHostedSessionExpiredSubscription,
   GetHostedSessionDocument,
   GetHostedSessionQuery,
+  BrandingSettings,
 } from './types'
 import type { HostedSession } from './types'
 import { useEffect } from 'react'
@@ -16,6 +17,7 @@ import { updateQuery } from '../../services/graphql'
 interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
+  branding?: BrandingSettings
   error?: string
 }
 
@@ -67,5 +69,6 @@ export const useHostedSession = (): UseHostedSessionHook => {
   return {
     loading: false,
     session: data?.hostedSession?.session,
+    branding: data?.hostedSession?.branding as BrandingSettings,
   }
 }

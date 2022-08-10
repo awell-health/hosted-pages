@@ -1,5 +1,8 @@
 import type { GetHostedSessionQuery as GetHostedSessionQueryType } from '../../types/generated/types-orchestration'
-export type { GetFormResponseQuery } from './../../types/generated/types-orchestration'
+export type {
+  GetFormResponseQuery,
+  BrandingSettings,
+} from './../../types/generated/types-orchestration'
 
 export {
   useGetHostedSessionQuery,

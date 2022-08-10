@@ -283,6 +283,13 @@ export type BaselineInfoPayload = Payload & {
   success: Scalars['Boolean'];
 };
 
+export type BrandingSettings = {
+  __typename?: 'BrandingSettings';
+  accent_color?: Maybe<Scalars['String']>;
+  hosted_page_title?: Maybe<Scalars['String']>;
+  logo_url?: Maybe<Scalars['String']>;
+};
+
 export type CalculationResultsPayload = {
   __typename?: 'CalculationResultsPayload';
   result: Array<SingleCalculationResult>;
@@ -536,6 +543,7 @@ export type HostedSessionActivitiesPayload = Payload & {
 
 export type HostedSessionPayload = Payload & {
   __typename?: 'HostedSessionPayload';
+  branding?: Maybe<BrandingSettings>;
   code: Scalars['String'];
   session: HostedSession;
   success: Scalars['Boolean'];
@@ -1652,7 +1660,7 @@ export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', 
 export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } } };
+export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } }, branding?: { __typename?: 'BrandingSettings', logo_url?: string | null, hosted_page_title?: string | null, accent_color?: string | null } | null } };
 
 export type GetMessageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2040,6 +2048,11 @@ export const GetHostedSessionDocument = gql`
   hostedSession {
     session {
       ...HostedSession
+    }
+    branding {
+      logo_url
+      hosted_page_title
+      accent_color
     }
   }
 }

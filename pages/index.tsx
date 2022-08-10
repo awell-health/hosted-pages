@@ -9,13 +9,13 @@ import { Navbar } from '@awell_health/ui-library'
 import awell_logo from '../src/assets/logo.svg'
 import { useEffect } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
-import { isNil } from 'lodash'
+import { defaultTo, isNil } from 'lodash'
 import { useLocalStorage } from '../src/hooks/useLocalStorage'
 import Head from 'next/head'
 
 const Home: NextPage = () => {
   const { t } = useTranslation()
-  const { loading, session, error } = useHostedSession()
+  const { loading, session, branding, error } = useHostedSession()
   const { removeItem: removeAccessToken } = useLocalStorage('accessToken', '')
   const router = useRouter()
 
@@ -40,11 +40,13 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{t('awell_activities')}</title>
+        <title>
+          {defaultTo(branding?.hosted_page_title, t('awell_activities'))}
+        </title>
         <meta property="og:title" content={t('awell_activities')} key="title" />
         <meta name="description" content={t('awell_page_description')} />
       </Head>
-      <Navbar logo={awell_logo} />
+      <Navbar logo={defaultTo(branding?.logo_url, awell_logo)} />
       {loading && <LoadingPage title={t('session_loading')} />}
       {error && <ErrorPage title={t('session_loading_error')} />}
       {session && <ActivityContainer pathwayId={session.pathway_id} />}
