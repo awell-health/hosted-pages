@@ -11,6 +11,7 @@ import { useEffect } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { isNil } from 'lodash'
 import { useLocalStorage } from '../src/hooks/useLocalStorage'
+import Head from 'next/head'
 
 const Home: NextPage = () => {
   const { t } = useTranslation()
@@ -38,6 +39,11 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>{t('awell_activities')}</title>
+        <meta property="og:title" content={t('awell_activities')} key="title" />
+        <meta name="description" content={t('awell_page_description')} />
+      </Head>
       <Navbar logo={awell_logo} />
       {loading && <LoadingPage title={t('session_loading')} />}
       {error && <ErrorPage title={t('session_loading_error')} />}
