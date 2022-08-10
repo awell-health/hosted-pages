@@ -18,5 +18,6 @@
   "submit": "Submit",
   "open_video": "Open video",
   "open_link": "Open link",
-  "download": "Download"
+  "download": "Download",
+  "waiting_for_new_activities": "Waiting for new activities"
 }
