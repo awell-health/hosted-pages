@@ -1,20 +1,20 @@
 import { ApolloProvider } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
-import { createClient } from '../services/graphql/apollo-client'
+import { createClient } from '../services/graphql'
 import React, { FC } from 'react'
 import fragmentTypes from '../types/generated/fragment-types'
+import * as Sentry from '@sentry/nextjs'
 
 const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
   if (networkError) {
-    // TODO add error reporting
-    // CrashReporter.report(networkError, {
-    //   contexts: {
-    //     graphql: {
-    //       operation: operation.operationName,
-    //       variables: JSON.stringify(operation.variables.input),
-    //     },
-    //   },
-    // })
+    Sentry.captureException(networkError, {
+      contexts: {
+        graphql: {
+          operation: operation.operationName,
+          variables: JSON.stringify(operation.variables.input),
+        },
+      },
+    })
   }
 }
 

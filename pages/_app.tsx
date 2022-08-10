@@ -5,6 +5,7 @@ import { GraphqlWrapper } from '../src/components/GraphqlWrapper'
 import { AuthGuard } from '../src/components/AuthGuard'
 import { AuthenticationProvider } from '../src/services/authentication'
 import { NoSSRComponent } from '../src/components/NoSSR'
+import { ErrorBoundary } from '../src/components/ErrorBoundary'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
