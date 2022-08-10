@@ -2,6 +2,8 @@
   "activity_loading_error": "Ups! Something went wrong while loading activities: {{ error }}",
   "activity_loading": "Loading activity...",
   "activity_not_supported": "Loaded activity type is not supported",
+  "awell_activities": "Awell Activities",
+  "awell_page_description": "Complete activities in your care flow with Awell hosted pages.",
   "authentication_loading": "Authenticating. Please wait.",
   "checklist_loading_error": "Ups! Something went wrong while loading checklist: {{ error }}",
   "done": "Done",
