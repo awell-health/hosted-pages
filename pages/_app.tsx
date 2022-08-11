@@ -13,7 +13,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <AuthGuard>
         <GraphqlWrapper>
           <NoSSRComponent>
-            <Component {...pageProps} />
+            <ErrorBoundary>
+              <Component {...pageProps} />
+            </ErrorBoundary>
           </NoSSRComponent>
         </GraphqlWrapper>
       </AuthGuard>
