@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type { NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
@@ -19,23 +20,38 @@ const Home: NextPage = () => {
   const { removeItem: removeAccessToken } = useLocalStorage('accessToken', '')
   const router = useRouter()
 
+  const redirectAfterSession = (url: string) => {
+    // adding 2 second delay so users are aware of the redirection and we don't change the page abruptly
+    setTimeout(() => {
+      router.push(url)
+      removeAccessToken()
+    }, 2000)
+  }
+
   useEffect(() => {
     if (isNil(session?.status) || typeof window === undefined) {
       return
     }
+
     switch (session?.status) {
       case HostedSessionStatus.Completed:
-        removeAccessToken()
-        router.push(session.success_url)
+        redirectAfterSession(session.success_url)
         return
       case HostedSessionStatus.Expired:
-        removeAccessToken()
-        router.push(session.cancel_url)
+        redirectAfterSession(session.cancel_url)
         return
       default:
         return
     }
   }, [session])
+
+  if (session?.status !== HostedSessionStatus.Active) {
+    return (
+      <ThemeProvider accentColor={branding?.accent_color || undefined}>
+        <LoadingPage title={t('redirecting_to_next_page')} />
+      </ThemeProvider>
+    )
+  }
 
   return (
     <>

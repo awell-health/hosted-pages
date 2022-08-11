@@ -4,13 +4,19 @@ import { ActivityDetails } from './ActivityDetails'
 import { useCurrentActivity } from '../../hooks/activityNavigation'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
+import { ActivityStatus } from '../../hooks/useForm'
 
 export const Activities: FC<{ activities: Array<Activity> }> = ({
   activities,
 }) => {
   const { currentActivity } = useCurrentActivity()
   const { t } = useTranslation()
-  if (activities.length === 0) {
+
+  const pendingActivities = activities.filter(
+    (activity) => activity.status === ActivityStatus.Active
+  )
+
+  if (pendingActivities.length === 0) {
     return <LoadingPage title={t('waiting_for_new_activities')} />
   }
   return (
