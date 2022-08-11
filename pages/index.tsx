@@ -45,7 +45,7 @@ const Home: NextPage = () => {
     }
   }, [session])
 
-  if (session?.status !== HostedSessionStatus.Active) {
+  if (session && session?.status !== HostedSessionStatus.Active) {
     return (
       <ThemeProvider accentColor={branding?.accent_color || undefined}>
         <LoadingPage title={t('redirecting_to_next_page')} />
