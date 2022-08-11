@@ -4,5 +4,10 @@ query GetHostedSession {
         session {
             ...HostedSession
         }
+        branding {
+            logo_url
+            hosted_page_title
+            accent_color
+        }
     }
 }
