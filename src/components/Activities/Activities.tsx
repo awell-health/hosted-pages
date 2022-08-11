@@ -2,7 +2,6 @@ import { FC } from 'react'
 import { Activity } from './types'
 import { ActivityDetails } from './ActivityDetails'
 import { useCurrentActivity } from '../../hooks/activityNavigation'
-import Head from 'next/head'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 
