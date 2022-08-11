@@ -13,6 +13,7 @@ import { defaultTo, isNil } from 'lodash'
 import { useLocalStorage } from '../src/hooks/useLocalStorage'
 import Head from 'next/head'
 
+const AWELL_BRAND_COLOR = '#004ac2'
 const Home: NextPage = () => {
   const { t } = useTranslation()
   const { loading, session, branding, error } = useHostedSession()
@@ -46,7 +47,7 @@ const Home: NextPage = () => {
         <meta property="og:title" content={t('awell_activities')} key="title" />
         <meta name="description" content={t('awell_page_description')} />
       </Head>
-      <ThemeProvider accentColor={branding?.accent_color || undefined}>
+      <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
         <Navbar logo={defaultTo(branding?.logo_url, awell_logo)} />
         {loading && <LoadingPage hideLoader title={t('session_loading')} />}
         {error && <ErrorPage title={t('session_loading_error')} />}
