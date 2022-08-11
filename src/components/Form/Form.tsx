@@ -26,7 +26,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     return <LoadingPage title={t('form_loading')} />
   }
   if (error) {
-    return <ErrorPage title={t('form_loading_error', { error })} />
+    return <ErrorPage title={t('form_loading_error')} />
   }
 
   const handleEvaluateFormRules = async (

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useHostedSession } from '../src/hooks/useHostedSession'
 import { ActivityContainer, LoadingPage, ErrorPage } from '../src/components'
 import '@awell_health/ui-library/dist/index.css'
-import { Navbar } from '@awell_health/ui-library'
+import { Navbar, ThemeProvider } from '@awell_health/ui-library'
 import awell_logo from '../src/assets/logo.svg'
 import { useEffect } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
@@ -46,10 +46,12 @@ const Home: NextPage = () => {
         <meta property="og:title" content={t('awell_activities')} key="title" />
         <meta name="description" content={t('awell_page_description')} />
       </Head>
-      <Navbar logo={defaultTo(branding?.logo_url, awell_logo)} />
-      {loading && <LoadingPage title={t('session_loading')} />}
-      {error && <ErrorPage title={t('session_loading_error')} />}
-      {session && <ActivityContainer pathwayId={session.pathway_id} />}
+      <ThemeProvider accentColor={branding?.accent_color || undefined}>
+        <Navbar logo={defaultTo(branding?.logo_url, awell_logo)} />
+        {loading && <LoadingPage hideLoader title={t('session_loading')} />}
+        {error && <ErrorPage title={t('session_loading_error')} />}
+        {session && <ActivityContainer pathwayId={session.pathway_id} />}
+      </ThemeProvider>
     </>
   )
 }

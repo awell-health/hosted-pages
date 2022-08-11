@@ -2,10 +2,18 @@ import { HorizontalSpinner, Text } from '@awell_health/ui-library'
 import classes from './loadingPage.module.css'
 import { FC } from 'react'
 
-export const LoadingPage: FC<{ title: string }> = ({ title }): JSX.Element => {
+interface LoadingPageProps {
+  title: string
+  /* This is needed to avoid css flickers until branding is loaded */
+  hideLoader?: boolean
+}
+export const LoadingPage: FC<LoadingPageProps> = ({
+  title,
+  hideLoader,
+}): JSX.Element => {
   return (
     <div className={classes.loading_page}>
-      <HorizontalSpinner />
+      {!hideLoader && <HorizontalSpinner />}
       <Text>{title}</Text>
     </div>
   )
