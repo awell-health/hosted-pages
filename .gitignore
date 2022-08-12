@@ -33,7 +33,10 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
 # Sentry
 .sentryclirc
-/.yalc
-/yalc.lock
+
+# yalc
+.yalc
+yalc.lock

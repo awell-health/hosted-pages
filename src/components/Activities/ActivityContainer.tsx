@@ -6,6 +6,7 @@ import { ErrorPage } from '../ErrorPage'
 import { ActivityProvider } from '../../hooks/activityNavigation'
 import { Activities } from './Activities'
 import { ErrorBoundary } from '../ErrorBoundary'
+import classes from './activityContainer.module.css'
 
 export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   const { t } = useTranslation()
@@ -22,9 +23,11 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
 
   return (
     <ErrorBoundary pathwayId={pathwayId}>
-      <ActivityProvider activities={activities}>
-        <Activities activities={activities} />
-      </ActivityProvider>
+      <div className={classes.awell_activity_container}>
+        <ActivityProvider activities={activities}>
+          <Activities activities={activities} />
+        </ActivityProvider>
+      </div>
     </ErrorBoundary>
   )
 }
