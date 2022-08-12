@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
 import { ActivityProvider } from '../../hooks/activityNavigation'
 import { Activities } from './Activities'
+import { ErrorBoundary } from '../ErrorBoundary'
 import classes from './activityContainer.module.css'
 
 export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
@@ -21,10 +22,12 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   }
 
   return (
-    <ActivityProvider activities={activities}>
+    <ErrorBoundary pathwayId={pathwayId}>
       <div className={classes.awell_activity_container}>
-        <Activities activities={activities} />
+        <ActivityProvider activities={activities}>
+          <Activities activities={activities} />
+        </ActivityProvider>
       </div>
-    </ActivityProvider>
+    </ErrorBoundary>
   )
 }
