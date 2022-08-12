@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
 import { ActivityProvider } from '../../hooks/activityNavigation'
 import { Activities } from './Activities'
+import { ErrorBoundary } from '../ErrorBoundary'
 
 export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   const { t } = useTranslation()
@@ -20,8 +21,10 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   }
 
   return (
-    <ActivityProvider activities={activities}>
-      <Activities activities={activities} />
-    </ActivityProvider>
+    <ErrorBoundary pathwayId={pathwayId}>
+      <ActivityProvider activities={activities}>
+        <Activities activities={activities} />
+      </ActivityProvider>
+    </ErrorBoundary>
   )
 }

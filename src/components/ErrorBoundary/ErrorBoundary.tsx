@@ -1,20 +1,7 @@
 import React from 'react'
 import { ErrorPage } from '../ErrorPage'
-
-interface ErrorInfo {
-  componentStack: string
-}
-
-interface ErrorBoundaryProps {
-  onError?: (error: Error) => void
-  children: React.ReactNode
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean
-  error: Error | null
-  info: ErrorInfo | null
-}
+import { ErrorBoundaryProps, ErrorInfo, ErrorBoundaryState } from './types'
+import { reportErrorToSentry } from './reportErrorToSentry'
 
 // https://reactjs.org/docs/error-boundaries.html
 export class ErrorBoundary extends React.Component<
@@ -40,6 +27,7 @@ export class ErrorBoundary extends React.Component<
       error,
       info,
     }))
+    reportErrorToSentry(error, info)
     const { onError } = this.props
     if (onError) onError(error)
   }
@@ -53,11 +41,10 @@ export class ErrorBoundary extends React.Component<
       if (showStack) {
         return (
           <article style={{ whiteSpace: 'pre-wrap' }}>
-            <h1 className="type-m">Oops, something went wrong</h1>
-            <p className="type-s">The error: {error && error.toString()}</p>
-            <p className="type-s">
-              Where it occurred: {info && info.componentStack}
-            </p>
+            <ErrorPage title="Oops, something went wrong">
+              <div>{error?.toString()}</div>
+              {showStack && <div>{info?.componentStack}</div>}
+            </ErrorPage>
           </article>
         )
       }
