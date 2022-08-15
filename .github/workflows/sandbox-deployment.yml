@@ -1,4 +1,4 @@
-name: Production Deployment 
+name: Sandbox Deployment 
 
 on:
   push:
@@ -18,14 +18,14 @@ jobs:
           git config --local user.name "mohsinht" # for testing only, we can use any username that has permissions on this repo
     - name: Set env
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-    - name: Production release message
+    - name: Sandbox release message
       run: |
         echo $RELEASE_VERSION
-        echo "Releasing version ${{ env.RELEASE_VERSION }} to PRODUCTION"
-    - name: Merge release content into production
+        echo "Releasing version ${{ env.RELEASE_VERSION }} to SANDBOX"
+    - name: Merge release content into sandbox
       run: |
         git fetch --unshallow
-        git checkout production
-        git pull origin production
-        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "Merging main into production – ${{ env.RELEASE_VERSION }}"
-        git push origin production
+        git checkout sandbox
+        git pull origin sandbox
+        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "Merging main into sandbox – ${{ env.RELEASE_VERSION }}"
+        git push origin sandbox
