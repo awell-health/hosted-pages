@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set Git config
       run: |
           git config --local user.email "mohsinhayat104@gmail.com" # for testing only, we can use any email that has permissions on this repo
