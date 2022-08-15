@@ -28,5 +28,5 @@ jobs:
           git fetch --unshallow
           git checkout production
           git pull origin production
-          git merge --no-ff origin main -m "Merging main into production – ${{ env.RELEASE_VERSION }}"
+          git merge --no-ff origin/main -m "Merging main into production – ${{ env.RELEASE_VERSION }}"
           git push origin production
