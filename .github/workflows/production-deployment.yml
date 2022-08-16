@@ -27,5 +27,5 @@ jobs:
         git fetch --unshallow
         git checkout production
         git pull origin production
-        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "Merging main into production – ${{ env.RELEASE_VERSION }}"
+        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "merge tags/${{ env.RELEASE_VERSION }} in production"
         git push origin production
