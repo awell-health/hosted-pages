@@ -27,5 +27,5 @@ jobs:
         git fetch --unshallow
         git checkout sandbox
         git pull origin sandbox
-        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "Merging main into sandbox – ${{ env.RELEASE_VERSION }}"
+        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "merge tags/${{ env.RELEASE_VERSION }} in sandbox"
         git push origin sandbox
