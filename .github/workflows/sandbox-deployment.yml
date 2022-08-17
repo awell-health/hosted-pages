@@ -1,12 +1,7 @@
 name: Sandbox Deployment 
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Release tag version'
-        required: true
-        type: string
+  workflow_dispatch
 
 jobs:
   merge-release-content-to-production:
@@ -19,16 +14,10 @@ jobs:
       run: |
           git config --local user.email "mohsinhayat104@gmail.com" # for testing only, we can use any email that has permissions on this repo
           git config --local user.name "mohsinht" # for testing only, we can use any username that has permissions on this repo
-    - name: Set env
-      run: echo "RELEASE_VERSION=$TAG"
-    - name: Sandbox release message
-      run: |
-        echo $RELEASE_VERSION
-        echo "Releasing version ${{ env.RELEASE_VERSION }} to SANDBOX"
     - name: Merge release content into sandbox
       run: |
         git fetch --unshallow
         git checkout sandbox
         git pull origin sandbox
-        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "merge tags/${{ env.RELEASE_VERSION }} in sandbox"
+        git merge --no-ff staging -m "merge staging in sandbox"
         git push origin sandbox
