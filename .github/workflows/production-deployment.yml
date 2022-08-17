@@ -1,9 +1,12 @@
 name: Production Deployment 
 
 on:
-  push:
-    tags:
-    - '*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag version'
+        required: true
+        type: string
 
 jobs:
   merge-release-content-to-production:
@@ -17,7 +20,7 @@ jobs:
           git config --local user.email "mohsinhayat104@gmail.com" # for testing only, we can use any email that has permissions on this repo
           git config --local user.name "mohsinht" # for testing only, we can use any username that has permissions on this repo
     - name: Set env
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: echo "RELEASE_VERSION=$TAG"
     - name: Production release message
       run: |
         echo $RELEASE_VERSION
