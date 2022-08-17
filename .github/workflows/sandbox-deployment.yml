@@ -19,5 +19,5 @@ jobs:
         git fetch --unshallow
         git checkout sandbox
         git pull origin sandbox
-        git merge --no-ff staging -m "merge staging in sandbox"
+        git merge --no-ff origin/staging -m "merge staging in sandbox"
         git push origin sandbox
