@@ -1,12 +1,7 @@
 name: Production Deployment 
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Release tag version'
-        required: true
-        type: string
+  workflow_dispatch
 
 jobs:
   merge-release-content-to-production:
@@ -19,16 +14,10 @@ jobs:
       run: |
           git config --local user.email "mohsinhayat104@gmail.com" # for testing only, we can use any email that has permissions on this repo
           git config --local user.name "mohsinht" # for testing only, we can use any username that has permissions on this repo
-    - name: Set env
-      run: echo "RELEASE_VERSION=$TAG"
-    - name: Production release message
-      run: |
-        echo $RELEASE_VERSION
-        echo "Releasing version ${{ env.RELEASE_VERSION }} to PRODUCTION"
     - name: Merge release content into production
       run: |
         git fetch --unshallow
         git checkout production
         git pull origin production
-        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "merge tags/${{ env.RELEASE_VERSION }} in production"
+        git merge --no-ff origin/staging -m "merge staging in production"
         git push origin production
