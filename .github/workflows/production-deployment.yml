@@ -1,9 +1,7 @@
 name: Production Deployment 
 
 on:
-  push:
-    tags:
-    - '*'
+  workflow_dispatch
 
 jobs:
   merge-release-content-to-production:
@@ -11,21 +9,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set Git config
       run: |
           git config --local user.email "mohsinhayat104@gmail.com" # for testing only, we can use any email that has permissions on this repo
           git config --local user.name "mohsinht" # for testing only, we can use any username that has permissions on this repo
-    - name: Set env
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-    - name: Production release message
-      run: |
-        echo $RELEASE_VERSION
-        echo "Releasing version ${{ env.RELEASE_VERSION }} to PRODUCTION"
     - name: Merge release content into production
       run: |
         git fetch --unshallow
         git checkout production
         git pull origin production
-        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "Merging main into production – ${{ env.RELEASE_VERSION }}"
+        git merge --no-ff origin/staging -m "merge staging in production"
         git push origin production
