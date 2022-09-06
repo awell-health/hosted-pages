@@ -20,7 +20,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { loading, form, error } = useForm(activity)
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
-  const { onSubmit, disabled } = useSubmitForm({ activity })
+  const { onSubmit } = useSubmitForm({ activity })
 
   if (loading) {
     return <LoadingPage title={t('form_loading')} />
