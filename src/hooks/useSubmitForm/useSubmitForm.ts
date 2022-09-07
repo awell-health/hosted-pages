@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { useTranslation } from 'next-i18next'
 import type { Activity, AnswerInput } from './types'
-import { GetFormResponseDocument, useSubmitFormResponseMutation } from './types'
+import { useSubmitFormResponseMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
 
 interface UseFormActivityHook {
@@ -13,14 +15,17 @@ export const useSubmitForm = ({
 }: {
   activity: Activity
 }): UseFormActivityHook => {
-  const { id: activity_id, stream_id: pathway_id } = activity
+  const { t } = useTranslation()
+  const { id: activity_id } = activity
   const { handleNavigateToNextActivity } = useCurrentActivity()
 
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const onSubmit = async (response: Array<AnswerInput>) => {
+    const id = toast.loading(t('saving'))
     setIsSubmitting(true)
+
     try {
       await submitFormResponse({
         variables: {
@@ -29,23 +34,22 @@ export const useSubmitForm = ({
             response,
           },
         },
-        refetchQueries: [
-          {
-            query: GetFormResponseDocument,
-            variables: {
-              pathway_id,
-              activity_id,
-            },
-          },
-        ],
-        awaitRefetchQueries: true,
+      })
+      toast.update(id, {
+        render: t('saving_success'),
+        type: 'success',
+        isLoading: false,
+        autoClose: 500,
       })
 
       handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
-      // TODO ???
-      console.error(error)
+      toast.update(id, {
+        render: t('form_saving_error'),
+        type: 'error',
+        isLoading: false,
+      })
     }
   }
 
