@@ -15,11 +15,6 @@ interface ActivityContentProps {
 export const ActivityDetails: FC<ActivityContentProps> = ({ activity }) => {
   const { t } = useTranslation()
 
-  useEffect(() => {
-    // When new activity is loaded all toasts from previous one should be removed
-    toast.dismiss()
-  }, [activity.id])
-
   switch (activity?.object.type) {
     case ActivityObjectType.Form:
       return <Form activity={activity} />

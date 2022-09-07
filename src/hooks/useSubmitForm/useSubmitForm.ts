@@ -23,7 +23,6 @@ export const useSubmitForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const onSubmit = async (response: Array<AnswerInput>) => {
-    const id = toast.loading(t('saving'))
     setIsSubmitting(true)
 
     try {
@@ -35,21 +34,10 @@ export const useSubmitForm = ({
           },
         },
       })
-      toast.update(id, {
-        render: t('saving_success'),
-        type: 'success',
-        isLoading: false,
-        autoClose: 500,
-      })
-
       handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
-      toast.update(id, {
-        render: t('form_saving_error'),
-        type: 'error',
-        isLoading: false,
-      })
+      toast.error(t('form_saving_error'))
     }
   }
 

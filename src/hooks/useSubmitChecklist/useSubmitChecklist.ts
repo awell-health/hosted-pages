@@ -22,7 +22,6 @@ export const useSubmitChecklist = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const onSubmit = async () => {
-    const id = toast.loading(t('saving'))
     setIsSubmitting(true)
 
     try {
@@ -33,22 +32,10 @@ export const useSubmitChecklist = ({
           },
         },
       })
-
-      toast.update(id, {
-        render: t('saving_success'),
-        type: 'success',
-        isLoading: false,
-        autoClose: 500,
-      })
-
       handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
-      toast.update(id, {
-        render: t('checklist_saving_error'),
-        type: 'error',
-        isLoading: false,
-      })
+      toast.error(t('checklist_saving_error'))
     }
   }
 

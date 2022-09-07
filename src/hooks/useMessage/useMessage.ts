@@ -30,7 +30,6 @@ export const useMessage = ({
   })
 
   const onRead = async () => {
-    const id = toast.loading(t('message_mark_as_read'))
     try {
       await markMessageAsRead({
         variables: {
@@ -39,19 +38,9 @@ export const useMessage = ({
           },
         },
       })
-      toast.update(id, {
-        render: t('message_mark_as_read_success'),
-        type: 'success',
-        isLoading: false,
-        autoClose: 500,
-      })
       handleNavigateToNextActivity()
     } catch (err) {
-      toast.update(id, {
-        render: t('message_mark_as_read_error'),
-        type: 'error',
-        isLoading: false,
-      })
+      toast.error(t('message_mark_as_read_error'))
     }
   }
 
