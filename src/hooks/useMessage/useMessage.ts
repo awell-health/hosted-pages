@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify'
+import { useTranslation } from 'next-i18next'
 import type { Activity, Message } from './types'
 import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
@@ -14,6 +16,7 @@ export const useMessage = ({
 }: {
   activity: Activity
 }): UseMessageActivityHook => {
+  const { t } = useTranslation()
   const {
     id: activity_id,
     object: { id: message_id },
@@ -37,7 +40,7 @@ export const useMessage = ({
       })
       handleNavigateToNextActivity()
     } catch (err) {
-      console.error(err)
+      toast.error(t('message_mark_as_read_error'))
     }
   }
 
