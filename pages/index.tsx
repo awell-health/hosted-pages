@@ -7,6 +7,8 @@ import { useHostedSession } from '../src/hooks/useHostedSession'
 import { ActivityContainer, LoadingPage, ErrorPage } from '../src/components'
 import '@awell_health/ui-library/dist/index.css'
 import { Navbar, ThemeProvider } from '@awell_health/ui-library'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
 import { useEffect } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
@@ -68,6 +70,15 @@ const Home: NextPage = () => {
         {loading && <LoadingPage hideLoader title={t('session_loading')} />}
         {error && <ErrorPage title={t('session_loading_error')} />}
         {session && <ActivityContainer pathwayId={session.pathway_id} />}
+        <ToastContainer
+          position="bottom-right"
+          newestOnTop
+          closeOnClick
+          pauseOnFocusLoss
+          autoClose={12000}
+          hideProgressBar
+          draggable
+        />
       </ThemeProvider>
     </>
   )
