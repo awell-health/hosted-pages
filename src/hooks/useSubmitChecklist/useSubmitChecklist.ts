@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { useTranslation } from 'next-i18next'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
@@ -13,6 +15,7 @@ export const useSubmitChecklist = ({
 }: {
   activity: Activity
 }): UseChecklistHook => {
+  const { t } = useTranslation()
   const { id: activity_id } = activity
   const { handleNavigateToNextActivity } = useCurrentActivity()
   const [submitChecklist] = useSubmitChecklistMutation()
@@ -20,6 +23,7 @@ export const useSubmitChecklist = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true)
+
     try {
       await submitChecklist({
         variables: {
@@ -31,7 +35,7 @@ export const useSubmitChecklist = ({
       handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
-      console.error(error)
+      toast.error(t('checklist_saving_error'))
     }
   }
 
