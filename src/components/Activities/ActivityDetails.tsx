@@ -23,7 +23,7 @@ export const ActivityDetails: FC<ActivityContentProps> = ({ activity }) => {
     case ActivityObjectType.Checklist:
       return <Checklist activity={activity} />
     default:
-      return <ErrorPage title={t('activity_not_supported')} />
+      return <ErrorPage title={t('activities.activity_not_supported')} />
   }
 }
 
