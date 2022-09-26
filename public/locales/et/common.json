@@ -14,30 +14,30 @@
       "toast_mark_as_read_error": "Viga sõnumi loetuks märkimisel."
     },
     "form": {
-      "cta_start_form": "Alusta vormi",
-      "cta_submit": "Esita",
+      "cta_start_form": "Alusta vormi täitmisega",
+      "cta_submit": "Esita vastused",
       "loading_error": "Vormi laadimisel läks midagi valesti.",
       "loading": "Vormi laadimine...",
-      "next_question_label": "Edasi",
+      "next_question_label": "Järgmine",
       "previous_question_label": "Eelmine",
       "question_required_error": "See küsimus on kohustuslik.",
       "saving_error": "Vormi esitamine ebaõnnestus."
     },
     "checklist": {
-      "cta_submit": "Esita",
-      "loading_error": "Midagi läks kontrollnimekirja laadimisel valesti.",
-      "saving_error": "Kontrollnimekirja esitamine ebaõnnestus."
+      "cta_submit": "Esita vastused",
+      "loading_error": "Midagi läks nimekirja laadimisel valesti.",
+      "saving_error": "Nimekirja esitamine ebaõnnestus."
     }
   },
   "seo": {
-    "title": "Awell tegevused",
-    "description": "Viige oma hooldusvoo tegevusi lõpule Awelli hostitud lehtedega."
+    "title": "Awelli tegevused",
+    "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega."
   },
   "session": {
     "authentication_loading": "Autentimine, palun oodake.",
     "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
     "loading_error": "Midagi läks seansi laadimisel valesti.",
     "loading": "Seansi laadimine...",
-    "redirecting_to_next_page": "Suunab teid hetke pärast ümber."
+    "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber."
   }
 }
