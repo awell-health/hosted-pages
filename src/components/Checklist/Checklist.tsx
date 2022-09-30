@@ -24,7 +24,9 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
     return <LoadingPage title="Loading activity" />
   }
   if (error) {
-    return <ErrorPage title={t('checklist_loading_error', { error })} />
+    return (
+      <ErrorPage title={t('activities.checklist.loading_error', { error })} />
+    )
   }
 
   return (
@@ -34,7 +36,7 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
         items={items || []}
         onSubmit={onSubmit}
         disabled={isSubmitting}
-        submitLabel={t('submit')}
+        submitLabel={t('activities.checklist.cta_submit')}
       />
     </article>
   )

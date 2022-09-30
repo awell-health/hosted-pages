@@ -23,10 +23,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { onSubmit } = useSubmitForm({ activity })
 
   if (loading) {
-    return <LoadingPage title={t('form_loading')} />
+    return <LoadingPage title={t('activities.form.loading')} />
   }
   if (error) {
-    return <ErrorPage title={t('form_loading_error')} />
+    return <ErrorPage title={t('activities.form.loading_error')} />
   }
 
   const handleEvaluateFormRules = async (
@@ -44,11 +44,12 @@ export const Form: FC<FormProps> = ({ activity }) => {
     <WizardForm
       form={form as any}
       buttonLabels={{
-        prev: t('form_previous_question_label'),
-        next: t('form_next_question_label'),
-        submit: t('submit'),
+        prev: t('activities.form.previous_question_label'),
+        next: t('activities.form.next_question_label'),
+        submit: t('activities.form.cta_submit'),
+        start_form: t('activities.form.cta_start_form'),
       }}
-      errorLabels={{ required: t('form_question_required_error') }}
+      errorLabels={{ required: t('activities.form.question_required_error') }}
       onSubmit={handleSubmit}
       evaluateDisplayConditions={handleEvaluateFormRules}
     />
