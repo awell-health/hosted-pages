@@ -47,7 +47,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
         prev: t('activities.form.previous_question_label'),
         next: t('activities.form.next_question_label'),
         submit: t('activities.form.cta_submit'),
-        //@ts-expect-error remove as soon as new version of ui-library is deployed
         start_form: t('activities.form.cta_start_form'),
       }}
       errorLabels={{ required: t('activities.form.question_required_error') }}
