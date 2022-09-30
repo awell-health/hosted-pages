@@ -17,7 +17,7 @@ export const Activities: FC<{ activities: Array<Activity> }> = ({
   )
 
   if (pendingActivities.length === 0) {
-    return <LoadingPage title={t('waiting_for_new_activities')} />
+    return <LoadingPage title={t('activities.waiting_for_new_activities')} />
   }
   return (
     <>

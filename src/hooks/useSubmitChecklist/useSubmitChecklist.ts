@@ -35,7 +35,7 @@ export const useSubmitChecklist = ({
       handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
-      toast.error(t('checklist_saving_error'))
+      toast.error(t('activities.checklist.saving_error'))
     }
   }
 
