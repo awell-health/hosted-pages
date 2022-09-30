@@ -15,10 +15,10 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   })
 
   if (loading) {
-    return <LoadingPage title={t('activity_loading')} />
+    return <LoadingPage title={t('activities.loading')} />
   }
   if (error) {
-    return <ErrorPage title={t('activity_loading_error')} />
+    return <ErrorPage title={t('activities.loading_error')} />
   }
 
   return (

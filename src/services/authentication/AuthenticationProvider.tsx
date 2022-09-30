@@ -56,12 +56,12 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   }
 
   if (router.isReady && !router.query.sessionId) {
-    return <ErrorPage title={t('error_invalid_url')} />
+    return <ErrorPage title={t('session.error_invalid_url')} />
   }
 
   // Wait while token is being generated
   if (!router.isReady || tokenLoading) {
-    return <LoadingPage title={t('authentication_loading')} />
+    return <LoadingPage title={t('session.authentication_loading')} />
   }
 
   return (

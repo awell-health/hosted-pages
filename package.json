@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
-    "@awell_health/ui-library": "0.0.34",
+    "@awell_health/ui-library": "0.0.37",
     "@sentry/nextjs": "^7.9.0",
     "graphql": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
