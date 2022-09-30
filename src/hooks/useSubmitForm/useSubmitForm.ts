@@ -37,7 +37,7 @@ export const useSubmitForm = ({
       handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
-      toast.error(t('form_saving_error'))
+      toast.error(t('activities.form.saving_error'))
     }
   }
 

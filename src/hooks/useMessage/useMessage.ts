@@ -40,7 +40,7 @@ export const useMessage = ({
       })
       handleNavigateToNextActivity()
     } catch (err) {
-      toast.error(t('message_mark_as_read_error'))
+      toast.error(t('activities.message.toast_mark_as_read_error'))
     }
   }
 

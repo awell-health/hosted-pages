@@ -1,0 +1,43 @@
+{
+  "activities": {
+    "loading_error": "Midagi läks tegevuste laadimisel valesti.",
+    "loading": "Tegevuse laadimine...",
+    "activity_not_supported": "Tegevuse tüüpi ei toetata.",
+    "waiting_for_new_activities": "Uute tegevuste ootel.",
+    "message": {
+      "cta_mark_as_read": "Valmis",
+      "open_video_attachment": "Ava video",
+      "open_link_attachment": "Ava link",
+      "download_file_attachment": "Lae alla",
+      "loading": "Sõnumi laadimine...",
+      "loading_error": "Midagi läks sõnumi laadimisel valesti.",
+      "toast_mark_as_read_error": "Viga sõnumi loetuks märkimisel."
+    },
+    "form": {
+      "cta_start_form": "Alusta vormi täitmisega",
+      "cta_submit": "Esita vastused",
+      "loading_error": "Vormi laadimisel läks midagi valesti.",
+      "loading": "Vormi laadimine...",
+      "next_question_label": "Järgmine",
+      "previous_question_label": "Eelmine",
+      "question_required_error": "See küsimus on kohustuslik.",
+      "saving_error": "Vormi esitamine ebaõnnestus."
+    },
+    "checklist": {
+      "cta_submit": "Esita vastused",
+      "loading_error": "Midagi läks nimekirja laadimisel valesti.",
+      "saving_error": "Nimekirja esitamine ebaõnnestus."
+    }
+  },
+  "seo": {
+    "title": "Awelli tegevused",
+    "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega."
+  },
+  "session": {
+    "authentication_loading": "Autentimine, palun oodake.",
+    "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
+    "loading_error": "Midagi läks seansi laadimisel valesti.",
+    "loading": "Seansi laadimine...",
+    "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber."
+  }
+}

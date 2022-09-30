@@ -1,0 +1,43 @@
+{
+  "activities": {
+    "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
+    "loading": "Activiteit laden...",
+    "activity_not_supported": "Dit type activiteit wordt nog niet ondersteunt.",
+    "waiting_for_new_activities": "Wachten op nieuwe activiteit.",
+    "message": {
+      "cta_mark_as_read": "Klaar",
+      "open_video_attachment": "Open video",
+      "open_link_attachment": "Open link",
+      "download_file_attachment": "Download",
+      "loading": "Bericht laden...",
+      "loading_error": "Er is iets misgelopen bij het ophalen van het bericht.",
+      "toast_mark_as_read_error": "Er is iets misgelopen bij het lezen van het bericht."
+    },
+    "form": {
+      "cta_start_form": "Vragenlijst starten",
+      "cta_submit": "Verzenden",
+      "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
+      "loading": "Vragenlijst laden...",
+      "next_question_label": "Volgende",
+      "previous_question_label": "Vorige",
+      "question_required_error": "Deze vraag is verplicht.",
+      "saving_error": "Vragenlijst kon niet verzonden worden."
+    },
+    "checklist": {
+      "cta_submit": "Klaar",
+      "loading_error": "Er is iets misgelopen bij het ophalen van de checklist.",
+      "saving_error": "Checklist kon niet verzonden worden."
+    }
+  },
+  "seo": {
+    "title": "Awell Activiteiten",
+    "description": "Voltooi activiteiten in uw zorgpad met Awell hosted pages."
+  },
+  "session": {
+    "authentication_loading": "Authenticeren, even geduld.",
+    "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
+    "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
+    "loading": "Sessie laden...",
+    "redirecting_to_next_page": "Je wordt meteen doorverwezen."
+  }
+}

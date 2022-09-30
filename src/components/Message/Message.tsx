@@ -18,11 +18,11 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
   })
 
   if (loading) {
-    return <LoadingPage title={t('message_loading')} />
+    return <LoadingPage title={t('activities.message.loading')} />
   }
 
   if (error || !message) {
-    return <ErrorPage title={t('message_loading_error')} />
+    return <ErrorPage title={t('activities.message.loading_error')} />
   }
 
   return (
@@ -35,9 +35,9 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
         <Image src={attachmentIcon} alt="" width={20} height={20} />
       }
       attachmentLabels={{
-        video: t('open_video'),
-        link: t('open_link'),
-        file: t('download'),
+        video: t('activities.message.open_video_attachment'),
+        link: t('activities.message.open_link_attachment'),
+        file: t('activities.message.download_file_attachment'),
       }}
     >
       <div className={classes.message_button_wrapper}>
@@ -45,7 +45,7 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
           id={`${activity.object.id}-mark-as-read`}
           onClick={() => onRead()}
         >
-          {t('done')}
+          {t('activities.message.cta_mark_as_read')}
         </Button>
       </div>
     </MessageViewer>

@@ -1,31 +1,43 @@
 {
-  "activity_not_supported": "Loaded activity type is not supported",
-  "authentication_loading": "Authenticating. Please wait.",
-  "checklist_loading_error": "Ups! Something went wrong while loading checklist",
-  "checklist_saving_error": "Checklist submission failed",
-  "done": "Done",
-  "error_invalid_session_id": "Authorization Failed: Session ID is not valid",
-  "error_invalid_url": "Invalid URL: URL must contain `sessionId` parameter",
-  "form_loading_error": "Ups! Something went wrong while loading form",
-  "form_loading": "Loading form...",
-  "form_next_question_label": "Next",
-  "form_previous_question_label": "Prev",
-  "form_question_required_error": "Answer for this question is required",
-  "message_loading_error": "Ups! Something went wrong while loading message",
-  "message_loading": "Loading message...",
-  "message_mark_as_read": "Marking message as read...",
-  "message_mark_as_read_success": "Done!",
-  "message_mark_as_read_error": "Error while marking message as read",
-  "saving": "Saving...",
-  "saving_success": "Saved!",
-  "form_saving_error": "Form submission failed",
-  "session_loading_error": "Something when wrong while loading session. Session could already be expired",
-  "session_loading": "Loading session...",
-  "start_pathway_session_title": "Démarrer une session hostée",
-  "submit": "Submit",
-  "open_video": "Open video",
-  "open_link": "Open link",
-  "download": "Download",
-  "waiting_for_new_activities": "Waiting for new activities",
-  "redirecting_to_next_page": "Redirecting you in a moment"
+  "activities": {
+    "loading_error": "Something went wrong while loading activities.",
+    "loading": "Loading activity...",
+    "activity_not_supported": "Activity type is not supported.",
+    "waiting_for_new_activities": "Waiting for new activities.",
+    "message": {
+      "cta_mark_as_read": "Done",
+      "open_video_attachment": "Open video",
+      "open_link_attachment": "Open link",
+      "download_file_attachment": "Download",
+      "loading": "Loading message...",
+      "loading_error": "Something went wrong while loading message.",
+      "toast_mark_as_read_error": "Error while marking message as read."
+    },
+    "form": {
+      "cta_start_form": "Start form",
+      "cta_submit": "Submit",
+      "loading_error": "Something went wrong while loading form.",
+      "loading": "Loading form...",
+      "next_question_label": "Next",
+      "previous_question_label": "Prev",
+      "question_required_error": "This question is required.",
+      "saving_error": "Form submission failed."
+    },
+    "checklist": {
+      "cta_submit": "Submit",
+      "loading_error": "Something went wrong while loading checklist.",
+      "saving_error": "Checklist submission failed."
+    }
+  },
+  "seo": {
+    "title": "Awell Activities",
+    "description": "Complete activities in your care flow with Awell hosted pages."
+  },
+  "session": {
+    "authentication_loading": "Authenticating, please wait.",
+    "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
+    "loading_error": "Something when wrong while loading session.",
+    "loading": "Loading session...",
+    "redirecting_to_next_page": "Redirecting you in a moment."
+  }
 }

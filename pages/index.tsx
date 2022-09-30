@@ -51,7 +51,7 @@ const Home: NextPage = () => {
   if (session && session?.status !== HostedSessionStatus.Active) {
     return (
       <ThemeProvider accentColor={branding?.accent_color || undefined}>
-        <LoadingPage title={t('redirecting_to_next_page')} />
+        <LoadingPage title={t('session.redirecting_to_next_page')} />
       </ThemeProvider>
     )
   }
@@ -59,16 +59,14 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>
-          {defaultTo(branding?.hosted_page_title, t('awell_activities'))}
-        </title>
-        <meta property="og:title" content={t('awell_activities')} key="title" />
-        <meta name="description" content={t('awell_page_description')} />
+        <title>{defaultTo(branding?.hosted_page_title, t('seo.title'))}</title>
+        <meta property="og:title" content={t('seo.title')} key="title" />
+        <meta name="description" content={t('seo.description')} />
       </Head>
       <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
         <Navbar logo={defaultTo(branding?.logo_url, awell_logo)} />
-        {loading && <LoadingPage hideLoader title={t('session_loading')} />}
-        {error && <ErrorPage title={t('session_loading_error')} />}
+        {loading && <LoadingPage hideLoader title={t('session.loading')} />}
+        {error && <ErrorPage title={t('session.loading_error')} />}
         {session && <ActivityContainer pathwayId={session.pathway_id} />}
         <ToastContainer
           position="bottom-right"
