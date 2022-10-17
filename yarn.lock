@@ -65,12 +65,13 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell_health/ui-library@0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.0.33.tgz#acaeb0a704198944b68ae76b02dba1669624d3e4"
-  integrity sha512-rQBOKmyBo8WgxtZudH55MfJ/wr1J41tBjasMoo9SKWERk9mDxH3dJboOy4/Gt9zFHLiX85Br9UQ2D0H3kyiwGQ==
+"@awell_health/ui-library@0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.0.38.tgz#0eb9e80b61c47193d0a4dfe72ece1fbe721a03fb"
+  integrity sha512-QeV8MzYXlLSZqSt8xFhqAHgf8TsAsEdhi+mJTGbegSv11Fc9nbb1lsjUHs3jB8ExMERmKn0IRVYy3XM9STRAVw==
   dependencies:
     date-fns "^2.29.1"
+    dompurify "^2.4.0"
     escape-html "^1.0.3"
     html-react-parser "^3.0.1"
     react-date-picker "^8.4.0"
@@ -2561,6 +2562,11 @@ domhandler@5.0.3, domhandler@^5.0.1, domhandler@^5.0.2:
   integrity sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==
   dependencies:
     domelementtype "^2.3.0"
+
+dompurify@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.4.0.tgz#c9c88390f024c2823332615c9e20a453cf3825dd"
+  integrity sha512-Be9tbQMZds4a3C6xTmz68NlMfeONA//4dOavl/1rNw50E+/QO0KVpbcU0PcaW0nsQxurXls9ZocqFxk8R2mWEA==
 
 domutils@^3.0.1:
   version "3.0.1"
