@@ -14,7 +14,7 @@
       "toast_mark_as_read_error": "Viga sõnumi loetuks märkimisel."
     },
     "form": {
-      "cta_start_form": "Alusta vormi täitmisega",
+      "cta_start_form": "Alusta teekonnaga",
       "cta_submit": "Esita vastused",
       "loading_error": "Vormi laadimisel läks midagi valesti.",
       "loading": "Vormi laadimine...",
