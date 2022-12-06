@@ -21,6 +21,7 @@
       "next_question_label": "Järgmine",
       "previous_question_label": "Eelmine",
       "question_required_error": "See küsimus on kohustuslik.",
+      "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
       "saving_error": "Vormi esitamine ebaõnnestus."
     },
     "checklist": {
