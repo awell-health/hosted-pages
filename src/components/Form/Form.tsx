@@ -49,7 +49,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
         submit: t('activities.form.cta_submit'),
         start_form: t('activities.form.cta_start_form'),
       }}
-      errorLabels={{ required: t('activities.form.question_required_error') }}
+      errorLabels={{
+        required: t('activities.form.question_required_error'),
+        sliderNotTouched: t('activities.form.slider_not_touched_error'),
+      }}
       onSubmit={handleSubmit}
       evaluateDisplayConditions={handleEvaluateFormRules}
     />
