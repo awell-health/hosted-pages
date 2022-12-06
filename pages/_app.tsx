@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import '@awell_health/ui-library/dist/index.css'
 import type { AppProps } from 'next/app'
 import { appWithTranslation } from 'next-i18next'
 import { GraphqlWrapper } from '../src/components/GraphqlWrapper'
