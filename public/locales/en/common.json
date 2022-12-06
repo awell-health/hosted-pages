@@ -21,6 +21,7 @@
       "next_question_label": "Next",
       "previous_question_label": "Prev",
       "question_required_error": "This question is required.",
+      "slider_not_touched_error": "Please move the slider to indicate your answer.",
       "saving_error": "Form submission failed."
     },
     "checklist": {
