@@ -17,17 +17,16 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   if (loading) {
     return <LoadingPage title={t('activities.loading')} />
   }
+
   if (error) {
     return <ErrorPage title={t('activities.loading_error')} />
   }
 
   return (
     <ErrorBoundary pathwayId={pathwayId}>
-      <div className={classes.awell_activity_container}>
-        <ActivityProvider activities={activities}>
-          <Activities activities={activities} />
-        </ActivityProvider>
-      </div>
+      <ActivityProvider activities={activities}>
+        <Activities activities={activities} />
+      </ActivityProvider>
     </ErrorBoundary>
   )
 }

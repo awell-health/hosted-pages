@@ -5,7 +5,11 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useHostedSession } from '../src/hooks/useHostedSession'
 import { ActivityContainer, LoadingPage, ErrorPage } from '../src/components'
-import { Navbar, ThemeProvider } from '@awell_health/ui-library'
+import {
+  Navbar,
+  ThemeProvider,
+  HostedPageLayout,
+} from '@awell_health/ui-library'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
@@ -30,6 +34,10 @@ const Home: NextPage = () => {
     }, 2000)
   }
 
+  const onCloseHostedPage = () => {
+    router.push(session?.cancel_url || 'https://awell.health')
+  }
+
   useEffect(() => {
     if (isNil(session?.status) || typeof window === undefined) {
       return
@@ -47,10 +55,30 @@ const Home: NextPage = () => {
     }
   }, [session])
 
+  if (loading) {
+    return (
+      <>
+        <Head>
+          <title>{t('seo.loading_title')}</title>
+          <meta
+            property="og:title"
+            content={t('seo.loading_title')}
+            key="title"
+          />
+        </Head>
+      </>
+    )
+  }
+
   if (session && session?.status !== HostedSessionStatus.Active) {
     return (
       <ThemeProvider accentColor={branding?.accent_color || undefined}>
-        <LoadingPage title={t('session.redirecting_to_next_page')} />
+        <HostedPageLayout
+          logo={defaultTo(branding?.logo_url, awell_logo)}
+          onCloseHostedPage={onCloseHostedPage}
+        >
+          <LoadingPage title={t('session.redirecting_to_next_page')} />
+        </HostedPageLayout>
       </ThemeProvider>
     )
   }
@@ -63,19 +91,23 @@ const Home: NextPage = () => {
         <meta name="description" content={t('seo.description')} />
       </Head>
       <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
-        <Navbar logo={defaultTo(branding?.logo_url, awell_logo)} />
-        {loading && <LoadingPage hideLoader title={t('session.loading')} />}
-        {error && <ErrorPage title={t('session.loading_error')} />}
-        {session && <ActivityContainer pathwayId={session.pathway_id} />}
-        <ToastContainer
-          position="bottom-right"
-          newestOnTop
-          closeOnClick
-          pauseOnFocusLoss
-          autoClose={12000}
-          hideProgressBar
-          draggable
-        />
+        <HostedPageLayout
+          logo={defaultTo(branding?.logo_url, awell_logo)}
+          onCloseHostedPage={onCloseHostedPage}
+        >
+          {loading && <LoadingPage hideLoader title={t('session.loading')} />}
+          {error && <ErrorPage title={t('session.loading_error')} />}
+          {session && <ActivityContainer pathwayId={session.pathway_id} />}
+          <ToastContainer
+            position="bottom-right"
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss
+            autoClose={12000}
+            hideProgressBar
+            draggable
+          />
+        </HostedPageLayout>
       </ThemeProvider>
     </>
   )
