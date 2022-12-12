@@ -1,11 +1,33 @@
-.loading_page {
+.error_page {
   width: 100%;
   display: flex;
-  margin-top: 150px;
   justify-content: center;
 }
 
-.loading_page_content {
+.error_icon_container {
+  background: var(--awell-secondary-color);
+  color: var(--awell-accent-color);
+  padding: var(--awell-spacing-4);
+  border-radius: 50%;
+}
+
+.error_icon {
+  width: 52px;
+  height: 52px;
+  position: relative;
+  top: 2px;
+}
+
+.error_text {
+  margin-top: var(--awell-spacing-4);
+  text-align: center;
+  font-size: var(--awell-font-size-lg);
+  line-height: var(--awell-leading-6);
+  color: var(--awell-slate700);
+  font-weight: var(--awell-font-medium);
+}
+
+.error_page_content {
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,9 +1,0 @@
-.awell_activity_container {
-    padding: var(--awell-spacing-10) 0;
-}
-
-@media (min-width: 600px) {
-    .awell_activity_container {
-        padding: var(--awell-spacing-8) 0;
-    }
-  }
