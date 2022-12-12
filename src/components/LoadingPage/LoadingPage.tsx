@@ -14,7 +14,7 @@ export const LoadingPage: FC<LoadingPageProps> = ({
   return (
     <div className={classes.loading_page}>
       {!hideLoader && <HorizontalSpinner />}
-      <Text>{title}</Text>
+      <div className={classes.loading_text}>{title}</div>
     </div>
   )
 }
