@@ -28,8 +28,7 @@ export const useSessionActivities = ({
     only_stakeholder_activities: onlyStakeholderActivities,
   }
   const client = useApolloClient()
-  const { data, error, loading } = useGetHostedSessionActivitiesQuery({
-    pollInterval: 10000, // refetch this query every 10 seconds
+  const { data, error, loading, refetch } = useGetHostedSessionActivitiesQuery({
     variables,
   })
 
@@ -59,6 +58,15 @@ export const useSessionActivities = ({
     sortActivitiesByDate(
       data?.hostedSessionActivities.activities as Activity[]
     ) ?? []
+
+  // temporary solution to refetch query when subscription does not work
+  useEffect(() => {
+    const myInterval = setInterval(() => {
+      refetch()
+    }, 10000)
+    // clear interval on component unmount
+    return () => clearInterval(myInterval)
+  })
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
