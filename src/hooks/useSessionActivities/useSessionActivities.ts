@@ -9,9 +9,7 @@ import {
   useOnSessionActivityUpdatedSubscription,
   useOnSessionActivityCreatedSubscription,
   useGetHostedSessionActivitiesQuery,
-  GetHostedSessionActivitiesQueryVariables,
   GetHostedSessionActivitiesDocument,
-  ActivityStatus,
   GetHostedSessionActivitiesQuery,
 } from './types'
 
@@ -31,6 +29,7 @@ export const useSessionActivities = ({
   }
   const client = useApolloClient()
   const { data, error, loading } = useGetHostedSessionActivitiesQuery({
+    pollInterval: 10000, // refetch this query every 10 seconds
     variables,
   })
 
