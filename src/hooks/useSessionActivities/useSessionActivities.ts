@@ -19,6 +19,8 @@ interface UsePathwayActivitiesHook {
   error?: string
 }
 
+const POLLING_DELAY = 10000 // 10 seconds
+
 export const useSessionActivities = ({
   onlyStakeholderActivities,
 }: {
@@ -61,11 +63,11 @@ export const useSessionActivities = ({
 
   // temporary solution to refetch query when subscription does not work
   useEffect(() => {
-    const myInterval = setInterval(() => {
+    const refetchQueryInterval = setInterval(() => {
       refetch()
-    }, 10000)
+    }, POLLING_DELAY)
     // clear interval on component unmount
-    return () => clearInterval(myInterval)
+    return () => clearInterval(refetchQueryInterval)
   })
 
   useEffect(() => {
