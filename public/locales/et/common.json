@@ -39,6 +39,7 @@
     "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
     "loading_error": "Midagi läks seansi laadimisel valesti.",
     "loading": "Seansi laadimine...",
-    "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber."
+    "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
+    "try_again": "Proovi uuesti"
   }
 }
