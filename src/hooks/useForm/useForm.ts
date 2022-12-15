@@ -19,7 +19,7 @@ export const useForm = (activity: Activity): UseFormHook => {
     refetch,
   } = useGetFormQuery({
     variables: {
-      id: activity.object.id + 1,
+      id: activity.object.id,
     },
     onCompleted: () => {
       if (activity.status === ActivityStatus.Done) {
