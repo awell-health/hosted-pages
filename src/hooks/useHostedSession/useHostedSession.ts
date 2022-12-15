@@ -14,6 +14,7 @@ import { isNil } from 'lodash'
 import { useApolloClient } from '@apollo/client'
 import { updateQuery } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
+import { useRouter } from 'next/router'
 
 interface UseHostedSessionHook {
   loading: boolean
@@ -35,6 +36,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
     },
   })
   const client = useApolloClient()
+  const router = useRouter()
 
   const onHostedSessionCompleted = useOnHostedSessionCompletedSubscription()
   const onHostedSessionExpired = useOnHostedSessionExpiredSubscription()
@@ -56,10 +58,16 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }
 
   useEffect(() => {
+    Sentry.setTags({
+      session: router.query.sessionId as string,
+      api_endpoint: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API,
+    })
+  })
+
+  useEffect(() => {
     if (!isNil(data?.hostedSession?.session)) {
       const hostedSession = data?.hostedSession.session
       Sentry.setTags({
-        session: hostedSession?.id,
         pathway: hostedSession?.pathway_id,
         stakeholder: hostedSession?.stakeholder.id,
       })
