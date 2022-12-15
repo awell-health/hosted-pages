@@ -50,13 +50,14 @@ export const useMessage = ({
   })
 
   const onRead = async () => {
+    const markMessageAsReadVariables = {
+      input: {
+        activity_id,
+      },
+    }
     try {
       await markMessageAsRead({
-        variables: {
-          input: {
-            activity_id: activity_id,
-          },
-        },
+        variables: markMessageAsReadVariables,
       })
       handleNavigateToNextActivity()
     } catch (err) {
@@ -65,11 +66,7 @@ export const useMessage = ({
         contexts: {
           graphql: {
             query: 'MarkMessageAsRead',
-            variables: JSON.stringify({
-              input: {
-                activity_id,
-              },
-            }),
+            variables: JSON.stringify(markMessageAsReadVariables),
           },
         },
       })
