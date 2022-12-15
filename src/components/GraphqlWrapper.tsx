@@ -1,4 +1,4 @@
-import { ApolloProvider, ServerError } from '@apollo/client'
+import { ApolloProvider, ServerError, ServerParseError } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
 import { createClient } from '../services/graphql'
 import React, { FC } from 'react'
@@ -19,6 +19,10 @@ const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
           statusCode:
             networkError.name === 'ServerError'
               ? JSON.stringify((networkError as ServerError).statusCode)
+              : undefined,
+          bodyText:
+            networkError.name === 'ServerParseError'
+              ? JSON.stringify((networkError as ServerParseError).bodyText)
               : undefined,
         },
       },
