@@ -10,13 +10,14 @@ export const useEvaluateFormRules = (
   return [
     async (answers: Array<AnswerInput>): Promise<Array<QuestionRuleResult>> => {
       try {
-        const { data } = await evaluateFormRules({
-          variables: {
-            input: {
-              form_id,
-              answers,
-            },
+        const variables = {
+          input: {
+            form_id,
+            answers,
           },
+        }
+        const { data } = await evaluateFormRules({
+          variables,
           onError: (error) => {
             captureException(error, {
               contexts: {
@@ -28,12 +29,7 @@ export const useEvaluateFormRules = (
                 },
                 graphql: {
                   query: 'EvaluateFormRules',
-                  variables: JSON.stringify({
-                    input: {
-                      form_id,
-                      answers,
-                    },
-                  }),
+                  variables: JSON.stringify(variables),
                 },
               },
             })

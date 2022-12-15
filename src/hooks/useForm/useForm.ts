@@ -12,15 +12,16 @@ interface UseFormHook {
 }
 
 export const useForm = (activity: Activity): UseFormHook => {
+  const variables = {
+    id: activity.object.id,
+  }
   const {
     data: formData,
     loading,
     error,
     refetch,
   } = useGetFormQuery({
-    variables: {
-      id: activity.object.id,
-    },
+    variables,
     onCompleted: () => {
       if (activity.status === ActivityStatus.Done) {
         //TODO Navigate to success page
@@ -42,6 +43,10 @@ export const useForm = (activity: Activity): UseFormHook => {
         },
         activity: {
           ...activity,
+        },
+        graphql: {
+          query: 'GetForm',
+          variables: JSON.stringify(variables),
         },
       },
     })

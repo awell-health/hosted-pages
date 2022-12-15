@@ -18,10 +18,12 @@ export const useChecklist = ({
     object: { id: checklist_id },
   } = activity
 
+  const variables = {
+    id: checklist_id,
+  }
+
   const { data, loading, error, refetch } = useGetChecklistQuery({
-    variables: {
-      id: checklist_id,
-    },
+    variables,
     onError: (error) => {
       captureException(error, {
         contexts: {
@@ -33,7 +35,7 @@ export const useChecklist = ({
           },
           graphql: {
             query: 'GetChecklist',
-            variables: JSON.stringify({ id: checklist_id }),
+            variables: JSON.stringify(variables),
           },
         },
       })

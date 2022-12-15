@@ -24,14 +24,14 @@ export const useSubmitChecklist = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true)
-
+    const variables = {
+      input: {
+        activity_id,
+      },
+    }
     try {
       await submitChecklist({
-        variables: {
-          input: {
-            activity_id,
-          },
-        },
+        variables,
       })
       handleNavigateToNextActivity()
     } catch (error) {
@@ -42,11 +42,7 @@ export const useSubmitChecklist = ({
           activity,
           graphql: {
             query: 'SubmitChecklist',
-            variables: JSON.stringify({
-              input: {
-                activity_id,
-              },
-            }),
+            variables: JSON.stringify(variables),
           },
         },
       })

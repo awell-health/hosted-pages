@@ -24,15 +24,16 @@ export const useSubmitForm = ({
 
   const onSubmit = async (response: Array<AnswerInput>) => {
     setIsSubmitting(true)
+    const variables = {
+      input: {
+        activity_id,
+        response,
+      },
+    }
 
     try {
       await submitFormResponse({
-        variables: {
-          input: {
-            activity_id,
-            response,
-          },
-        },
+        variables,
       })
       handleNavigateToNextActivity()
     } catch (error) {
@@ -43,11 +44,7 @@ export const useSubmitForm = ({
           activity,
           graphql: {
             query: 'SubmitFormResponse',
-            variables: JSON.stringify({
-              input: {
-                activity_id,
-              },
-            }),
+            variables: JSON.stringify(variables),
           },
         },
       })

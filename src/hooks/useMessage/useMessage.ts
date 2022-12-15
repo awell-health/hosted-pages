@@ -27,8 +27,9 @@ export const useMessage = ({
 
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
 
+  const variables = { id: message_id }
   const { data, loading, error, refetch } = useGetMessageQuery({
-    variables: { id: message_id },
+    variables,
     onError: (error) => {
       captureException(error, {
         contexts: {
@@ -40,7 +41,7 @@ export const useMessage = ({
           },
           graphql: {
             query: 'GetMessage',
-            variables: JSON.stringify({ id: message_id }),
+            variables: JSON.stringify(variables),
           },
         },
       })
