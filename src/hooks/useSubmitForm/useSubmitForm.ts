@@ -42,6 +42,9 @@ export const useSubmitForm = ({
       captureException(error, {
         contexts: {
           activity,
+          form: {
+            response: JSON.stringify(variables),
+          },
           graphql: {
             query: 'SubmitFormResponse',
             variables: JSON.stringify(variables),
