@@ -10,6 +10,7 @@ interface UseMessageActivityHook {
   message?: Message
   error?: string
   onRead: () => Promise<void>
+  refetch?: () => void
 }
 
 export const useMessage = ({
@@ -26,7 +27,7 @@ export const useMessage = ({
 
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
 
-  const { data, loading, error } = useGetMessageQuery({
+  const { data, loading, error, refetch } = useGetMessageQuery({
     variables: { id: message_id },
     onError: (error) => {
       captureException(error, {
@@ -86,6 +87,7 @@ export const useMessage = ({
       error: error.message,
       loading: false,
       onRead,
+      refetch,
     }
   }
 
@@ -93,5 +95,6 @@ export const useMessage = ({
     loading,
     message: data?.message.message,
     onRead,
+    refetch,
   }
 }

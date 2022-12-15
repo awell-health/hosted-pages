@@ -8,6 +8,7 @@ interface UseFormHook {
   loading: boolean
   form?: Form
   error?: string
+  refetch?: () => {}
 }
 
 export const useForm = (activity: Activity): UseFormHook => {
@@ -15,9 +16,10 @@ export const useForm = (activity: Activity): UseFormHook => {
     data: formData,
     loading,
     error,
+    refetch,
   } = useGetFormQuery({
     variables: {
-      id: activity.object.id,
+      id: activity.object.id + 1,
     },
     onCompleted: () => {
       if (activity.status === ActivityStatus.Done) {
@@ -44,11 +46,12 @@ export const useForm = (activity: Activity): UseFormHook => {
       },
     })
 
-    return { loading: false, error: message }
+    return { loading: false, error: message, refetch }
   }
 
   return {
     loading: false,
     form: formData?.form.form,
+    refetch,
   }
 }

@@ -6,6 +6,7 @@ interface UseChecklistHook {
   error?: string
   title?: string
   items?: Array<ChecklistItem>
+  refetch?: () => void
 }
 
 export const useChecklist = ({
@@ -17,7 +18,7 @@ export const useChecklist = ({
     object: { id: checklist_id },
   } = activity
 
-  const { data, loading, error } = useGetChecklistQuery({
+  const { data, loading, error, refetch } = useGetChecklistQuery({
     variables: {
       id: checklist_id,
     },
@@ -49,6 +50,7 @@ export const useChecklist = ({
     return {
       loading: false,
       error: error.message,
+      refetch,
     }
   }
 
@@ -63,5 +65,6 @@ export const useChecklist = ({
     loading,
     title,
     items: formatted_items,
+    refetch,
   }
 }
