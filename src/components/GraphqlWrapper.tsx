@@ -1,4 +1,4 @@
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider, ServerError } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
 import { createClient } from '../services/graphql'
 import React, { FC } from 'react'
@@ -7,11 +7,21 @@ import * as Sentry from '@sentry/nextjs'
 
 const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
   if (networkError) {
+    console.log(networkError)
+    console.log(JSON.stringify(networkError))
     Sentry.captureException(networkError, {
       contexts: {
         graphql: {
           operation: operation.operationName,
-          variables: JSON.stringify(operation.variables.input),
+          variables: JSON.stringify(operation.variables),
+          response:
+            networkError.name === 'ServerError'
+              ? JSON.stringify((networkError as ServerError).result)
+              : undefined,
+          statusCode:
+            networkError.name === 'ServerError'
+              ? JSON.stringify((networkError as ServerError).statusCode)
+              : undefined,
         },
       },
     })

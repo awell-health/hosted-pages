@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import type { Activity, AnswerInput } from './types'
 import { useSubmitFormResponseMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
-
+import { captureException } from '@sentry/nextjs'
 interface UseFormActivityHook {
   disabled: boolean
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
@@ -38,6 +38,19 @@ export const useSubmitForm = ({
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.form.saving_error'))
+      captureException(error, {
+        contexts: {
+          activity,
+          graphql: {
+            query: 'SubmitFormResponse',
+            variables: JSON.stringify({
+              input: {
+                activity_id,
+              },
+            }),
+          },
+        },
+      })
     }
   }
 

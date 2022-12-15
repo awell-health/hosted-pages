@@ -1,6 +1,6 @@
 import type { ChecklistItem, Activity } from './types'
 import { useGetChecklistQuery } from './types'
-
+import { captureException } from '@sentry/nextjs'
 interface UseChecklistHook {
   loading: boolean
   error?: string
@@ -20,6 +20,22 @@ export const useChecklist = ({
   const { data, loading, error } = useGetChecklistQuery({
     variables: {
       id: checklist_id,
+    },
+    onError: (error) => {
+      captureException(error, {
+        contexts: {
+          checklist: {
+            checklist_id,
+          },
+          activity: {
+            ...activity,
+          },
+          graphql: {
+            query: 'GetChecklist',
+            variables: JSON.stringify({ id: checklist_id }),
+          },
+        },
+      })
     },
   })
 

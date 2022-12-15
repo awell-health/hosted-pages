@@ -12,6 +12,7 @@ import {
   GetHostedSessionActivitiesDocument,
   GetHostedSessionActivitiesQuery,
 } from './types'
+import { captureException } from '@sentry/nextjs'
 
 interface UsePathwayActivitiesHook {
   loading: boolean
@@ -32,6 +33,16 @@ export const useSessionActivities = ({
   const client = useApolloClient()
   const { data, error, loading, refetch } = useGetHostedSessionActivitiesQuery({
     variables,
+    onError: (error) => {
+      captureException(error, {
+        contexts: {
+          graphql: {
+            query: 'GetHostedSessionActivities',
+            variables: JSON.stringify(variables),
+          },
+        },
+      })
+    },
   })
 
   const onActivityCreated = useOnSessionActivityCreatedSubscription({

@@ -1,4 +1,5 @@
 fragment HostedSession on HostedSession {
+    id
     pathway_id
     status
     success_url

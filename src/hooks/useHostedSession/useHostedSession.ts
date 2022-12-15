@@ -13,6 +13,7 @@ import { useEffect } from 'react'
 import { isNil } from 'lodash'
 import { useApolloClient } from '@apollo/client'
 import { updateQuery } from '../../services/graphql'
+import * as Sentry from '@sentry/nextjs'
 
 interface UseHostedSessionHook {
   loading: boolean
@@ -22,7 +23,17 @@ interface UseHostedSessionHook {
 }
 
 export const useHostedSession = (): UseHostedSessionHook => {
-  const { data, loading, error } = useGetHostedSessionQuery()
+  const { data, loading, error } = useGetHostedSessionQuery({
+    onError: (error) => {
+      Sentry.captureException(error, {
+        contexts: {
+          graphql: {
+            query: 'GetHostedSession',
+          },
+        },
+      })
+    },
+  })
   const client = useApolloClient()
 
   const onHostedSessionCompleted = useOnHostedSessionCompletedSubscription()
@@ -43,6 +54,32 @@ export const useHostedSession = (): UseHostedSessionHook => {
       data: updatedQuery,
     })
   }
+
+  useEffect(() => {
+    if (!isNil(data?.hostedSession?.session)) {
+      const hostedSession = data?.hostedSession.session
+      Sentry.setTags({
+        session: hostedSession?.id,
+        pathway: hostedSession?.pathway_id,
+        stakeholder: hostedSession?.stakeholder.id,
+      })
+      Sentry.setContext('session', {
+        id: hostedSession?.id,
+        pathway_id: hostedSession?.pathway_id,
+        success_url: hostedSession?.success_url,
+        cancel_url: hostedSession?.cancel_url,
+      })
+      Sentry.setContext('stakeholder', {
+        id: hostedSession?.stakeholder.id,
+        name: hostedSession?.stakeholder.name,
+        type: hostedSession?.stakeholder.type,
+      })
+      Sentry.setExtras({
+        hostedSession,
+        branding: data?.hostedSession.branding,
+      })
+    }
+  }, [data])
 
   useEffect(() => {
     if (!isNil(onHostedSessionCompleted.data)) {
