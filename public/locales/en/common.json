@@ -1,6 +1,6 @@
 {
   "activities": {
-    "loading_error": "Something went wrong while loading activities.",
+    "loading_error": "Something went wrong while loading your activities.",
     "loading": "Loading activity...",
     "activity_not_supported": "Activity type is not supported.",
     "waiting_for_new_activities": "Waiting for new activities.",
@@ -10,13 +10,13 @@
       "open_link_attachment": "Open link",
       "download_file_attachment": "Download",
       "loading": "Loading message...",
-      "loading_error": "Something went wrong while loading message.",
+      "loading_error": "Something went wrong while loading the message.",
       "toast_mark_as_read_error": "Error while marking message as read."
     },
     "form": {
       "cta_start_form": "Start form",
       "cta_submit": "Submit",
-      "loading_error": "Something went wrong while loading form.",
+      "loading_error": "Something went wrong while loading the form.",
       "loading": "Loading form...",
       "next_question_label": "Next",
       "previous_question_label": "Prev",
@@ -26,7 +26,7 @@
     },
     "checklist": {
       "cta_submit": "Submit",
-      "loading_error": "Something went wrong while loading checklist.",
+      "loading_error": "Something went wrong while loading the checklist.",
       "saving_error": "Checklist submission failed."
     }
   },
@@ -38,7 +38,7 @@
   "session": {
     "authentication_loading": "Authenticating, please wait.",
     "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
-    "loading_error": "Something when wrong while loading session.",
+    "loading_error": "Something went wrong while loading your session.",
     "loading": "Loading session...",
     "redirecting_to_next_page": "Redirecting you in a moment.",
     "try_again": "Try again"
