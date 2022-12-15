@@ -31,7 +31,7 @@ export const useForm = (activity: Activity): UseFormHook => {
     return { loading: true }
   }
   if (error || isNil(formData?.form?.form)) {
-    const messsage = error?.message || t('activities.form.loading_error')
+    const message = error?.message || t('activities.form.loading_error')
     const populatedError = error || new Error('Error fetching form')
     captureException(populatedError, {
       contexts: {
@@ -44,7 +44,7 @@ export const useForm = (activity: Activity): UseFormHook => {
       },
     })
 
-    return { loading: false, error: messsage }
+    return { loading: false, error: message }
   }
 
   return {

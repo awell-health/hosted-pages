@@ -7,14 +7,12 @@ import * as Sentry from '@sentry/nextjs'
 
 const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
   if (networkError) {
-    console.log(networkError)
-    console.log(JSON.stringify(networkError))
     Sentry.captureException(networkError, {
       contexts: {
         graphql: {
           operation: operation.operationName,
           variables: JSON.stringify(operation.variables),
-          response:
+          result:
             networkError.name === 'ServerError'
               ? JSON.stringify((networkError as ServerError).result)
               : undefined,
