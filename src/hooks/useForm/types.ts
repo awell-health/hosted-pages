@@ -10,6 +10,7 @@ export {
   QuestionType,
   ActivityStatus,
   useGetFormQuery,
+  GetFormDocument,
 } from './../../types/generated/types-orchestration'
 
 export type Form = GetFormQuery['form']['form']

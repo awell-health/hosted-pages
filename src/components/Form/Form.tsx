@@ -17,7 +17,7 @@ interface FormProps {
 }
 
 export const Form: FC<FormProps> = ({ activity }) => {
-  const { loading, form, error } = useForm(activity)
+  const { loading, form, error, refetch } = useForm(activity)
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit } = useSubmitForm({ activity })
@@ -26,7 +26,9 @@ export const Form: FC<FormProps> = ({ activity }) => {
     return <LoadingPage title={t('activities.form.loading')} />
   }
   if (error) {
-    return <ErrorPage title={t('activities.form.loading_error')} />
+    return (
+      <ErrorPage title={t('activities.form.loading_error')} onRetry={refetch} />
+    )
   }
 
   const handleEvaluateFormRules = async (

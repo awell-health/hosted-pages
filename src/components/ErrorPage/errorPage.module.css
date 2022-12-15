@@ -34,3 +34,7 @@
   flex-direction: column;
   width: 250px;
 }
+
+.try_again_btn {
+  margin-top: var(--awell-spacing-4);
+}
