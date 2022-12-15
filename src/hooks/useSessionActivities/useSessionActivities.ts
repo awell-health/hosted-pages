@@ -9,9 +9,7 @@ import {
   useOnSessionActivityUpdatedSubscription,
   useOnSessionActivityCreatedSubscription,
   useGetHostedSessionActivitiesQuery,
-  GetHostedSessionActivitiesQueryVariables,
   GetHostedSessionActivitiesDocument,
-  ActivityStatus,
   GetHostedSessionActivitiesQuery,
 } from './types'
 
@@ -20,6 +18,8 @@ interface UsePathwayActivitiesHook {
   activities: Array<Activity>
   error?: string
 }
+
+const POLLING_DELAY = 10000 // 10 seconds
 
 export const useSessionActivities = ({
   onlyStakeholderActivities,
@@ -30,7 +30,7 @@ export const useSessionActivities = ({
     only_stakeholder_activities: onlyStakeholderActivities,
   }
   const client = useApolloClient()
-  const { data, error, loading } = useGetHostedSessionActivitiesQuery({
+  const { data, error, loading, refetch } = useGetHostedSessionActivitiesQuery({
     variables,
   })
 
@@ -60,6 +60,15 @@ export const useSessionActivities = ({
     sortActivitiesByDate(
       data?.hostedSessionActivities.activities as Activity[]
     ) ?? []
+
+  // temporary solution to refetch query when subscription does not work
+  useEffect(() => {
+    const refetchQueryInterval = setInterval(() => {
+      refetch()
+    }, POLLING_DELAY)
+    // clear interval on component unmount
+    return () => clearInterval(refetchQueryInterval)
+  })
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
