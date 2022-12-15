@@ -1,5 +1,6 @@
 import type { AnswerInput, QuestionRuleResult } from './types'
 import { useEvaluateFormRulesMutation } from './types'
+import { captureException } from '@sentry/nextjs'
 
 export const useEvaluateFormRules = (
   form_id: string
@@ -9,12 +10,29 @@ export const useEvaluateFormRules = (
   return [
     async (answers: Array<AnswerInput>): Promise<Array<QuestionRuleResult>> => {
       try {
+        const variables = {
+          input: {
+            form_id,
+            answers,
+          },
+        }
         const { data } = await evaluateFormRules({
-          variables: {
-            input: {
-              form_id,
-              answers,
-            },
+          variables,
+          onError: (error) => {
+            captureException(error, {
+              contexts: {
+                form: {
+                  form_id,
+                },
+                answers: {
+                  ...answers,
+                },
+                graphql: {
+                  query: 'EvaluateFormRules',
+                  variables: JSON.stringify(variables),
+                },
+              },
+            })
           },
         })
         if (!data) {

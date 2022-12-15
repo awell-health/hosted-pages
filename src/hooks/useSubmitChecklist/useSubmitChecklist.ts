@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
+import { captureException } from '@sentry/nextjs'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -23,19 +24,28 @@ export const useSubmitChecklist = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true)
-
+    const variables = {
+      input: {
+        activity_id,
+      },
+    }
     try {
       await submitChecklist({
-        variables: {
-          input: {
-            activity_id,
-          },
-        },
+        variables,
       })
       handleNavigateToNextActivity()
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.checklist.saving_error'))
+      captureException(error, {
+        contexts: {
+          activity,
+          graphql: {
+            query: 'SubmitChecklist',
+            variables: JSON.stringify(variables),
+          },
+        },
+      })
     }
   }
 

@@ -3,12 +3,14 @@ import { useTranslation } from 'next-i18next'
 import type { Activity, Message } from './types'
 import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
-
+import { captureException } from '@sentry/nextjs'
+import { GraphQLError } from 'graphql'
 interface UseMessageActivityHook {
   loading: boolean
   message?: Message
   error?: string
   onRead: () => Promise<void>
+  refetch?: () => void
 }
 
 export const useMessage = ({
@@ -25,22 +27,49 @@ export const useMessage = ({
 
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
 
-  const { data, loading, error } = useGetMessageQuery({
-    variables: { id: message_id },
+  const variables = { id: message_id }
+  const { data, loading, error, refetch } = useGetMessageQuery({
+    variables,
+    onError: (error) => {
+      captureException(error, {
+        contexts: {
+          message: {
+            message_id,
+          },
+          activity: {
+            ...activity,
+          },
+          graphql: {
+            query: 'GetMessage',
+            variables: JSON.stringify(variables),
+          },
+        },
+      })
+      GraphQLError
+    },
   })
 
   const onRead = async () => {
+    const markMessageAsReadVariables = {
+      input: {
+        activity_id,
+      },
+    }
     try {
       await markMessageAsRead({
-        variables: {
-          input: {
-            activity_id,
-          },
-        },
+        variables: markMessageAsReadVariables,
       })
       handleNavigateToNextActivity()
     } catch (err) {
       toast.error(t('activities.message.toast_mark_as_read_error'))
+      captureException(err, {
+        contexts: {
+          graphql: {
+            query: 'MarkMessageAsRead',
+            variables: JSON.stringify(markMessageAsReadVariables),
+          },
+        },
+      })
     }
   }
 
@@ -56,6 +85,7 @@ export const useMessage = ({
       error: error.message,
       loading: false,
       onRead,
+      refetch,
     }
   }
 
@@ -63,5 +93,6 @@ export const useMessage = ({
     loading,
     message: data?.message.message,
     onRead,
+    refetch,
   }
 }

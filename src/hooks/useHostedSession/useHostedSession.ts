@@ -13,17 +13,31 @@ import { useEffect } from 'react'
 import { isNil } from 'lodash'
 import { useApolloClient } from '@apollo/client'
 import { updateQuery } from '../../services/graphql'
+import * as Sentry from '@sentry/nextjs'
+import { useRouter } from 'next/router'
 
 interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
   branding?: BrandingSettings
   error?: string
+  refetch?: () => {}
 }
 
 export const useHostedSession = (): UseHostedSessionHook => {
-  const { data, loading, error } = useGetHostedSessionQuery()
+  const { data, loading, error, refetch } = useGetHostedSessionQuery({
+    onError: (error) => {
+      Sentry.captureException(error, {
+        contexts: {
+          graphql: {
+            query: 'GetHostedSession',
+          },
+        },
+      })
+    },
+  })
   const client = useApolloClient()
+  const router = useRouter()
 
   const onHostedSessionCompleted = useOnHostedSessionCompletedSubscription()
   const onHostedSessionExpired = useOnHostedSessionExpiredSubscription()
@@ -45,6 +59,38 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }
 
   useEffect(() => {
+    Sentry.setTags({
+      session: router.query.sessionId as string,
+      api_endpoint: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API,
+    })
+  })
+
+  useEffect(() => {
+    if (!isNil(data?.hostedSession?.session)) {
+      const hostedSession = data?.hostedSession.session
+      Sentry.setTags({
+        pathway: hostedSession?.pathway_id,
+        stakeholder: hostedSession?.stakeholder.id,
+      })
+      Sentry.setContext('session', {
+        id: hostedSession?.id,
+        pathway_id: hostedSession?.pathway_id,
+        success_url: hostedSession?.success_url,
+        cancel_url: hostedSession?.cancel_url,
+      })
+      Sentry.setContext('stakeholder', {
+        id: hostedSession?.stakeholder.id,
+        name: hostedSession?.stakeholder.name,
+        type: hostedSession?.stakeholder.type,
+      })
+      Sentry.setExtras({
+        hostedSession,
+        branding: data?.hostedSession.branding,
+      })
+    }
+  }, [data])
+
+  useEffect(() => {
     if (!isNil(onHostedSessionCompleted.data)) {
       const { sessionCompleted } = onHostedSessionCompleted.data
       updateHostedSessionQuery({ updatedHostedSession: sessionCompleted })
@@ -63,12 +109,13 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }
 
   if (error) {
-    return { loading: false, error: error.message }
+    return { loading: false, error: error.message, refetch }
   }
 
   return {
     loading: false,
     session: data?.hostedSession?.session,
     branding: data?.hostedSession?.branding as BrandingSettings,
+    refetch,
   }
 }
