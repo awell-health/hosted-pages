@@ -12,11 +12,13 @@ import {
   GetHostedSessionActivitiesDocument,
   GetHostedSessionActivitiesQuery,
 } from './types'
+import { captureException } from '@sentry/nextjs'
 
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
   error?: string
+  refetch?: () => {}
 }
 
 const POLLING_DELAY = 10000 // 10 seconds
@@ -32,6 +34,16 @@ export const useSessionActivities = ({
   const client = useApolloClient()
   const { data, error, loading, refetch } = useGetHostedSessionActivitiesQuery({
     variables,
+    onError: (error) => {
+      captureException(error, {
+        contexts: {
+          graphql: {
+            query: 'GetHostedSessionActivities',
+            variables: JSON.stringify(variables),
+          },
+        },
+      })
+    },
   })
 
   const onActivityCreated = useOnSessionActivityCreatedSubscription({
@@ -92,5 +104,5 @@ export const useSessionActivities = ({
     }
   }, [onActivityCreated.data])
 
-  return { activities, loading, error: error?.message }
+  return { activities, loading, error: error?.message, refetch }
 }

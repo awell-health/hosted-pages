@@ -39,6 +39,7 @@
     "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
     "loading": "Sessie laden...",
-    "redirecting_to_next_page": "Je wordt meteen doorverwezen."
+    "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
+    "try_again": "Opnieuw proberen"
   }
 }

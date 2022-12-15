@@ -1,10 +1,14 @@
 import classes from './errorPage.module.css'
 import { FC, ReactNode } from 'react'
+import { Button } from '@awell_health/ui-library'
+import { useTranslation } from 'next-i18next'
 
 export const ErrorPage: FC<{
   title: string | ReactNode
   children?: ReactNode
-}> = ({ title, children }): JSX.Element => {
+  onRetry?: () => void
+}> = ({ title, children, onRetry }): JSX.Element => {
+  const { t } = useTranslation()
   return (
     <div className={classes.error_page}>
       <div className={classes.error_page_content}>
@@ -25,6 +29,12 @@ export const ErrorPage: FC<{
           </svg>
         </div>
         <div className={classes.error_text}>{title}</div>
+
+        {onRetry && (
+          <div className={classes.try_again_btn}>
+            <Button onClick={() => onRetry()}>{t('session.try_again')}</Button>
+          </div>
+        )}
       </div>
       {children}
     </div>

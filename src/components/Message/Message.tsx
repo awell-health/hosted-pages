@@ -12,7 +12,7 @@ interface MessageProps {
 
 export const Message = ({ activity }: MessageProps): JSX.Element => {
   const { t } = useTranslation()
-  const { loading, message, error, onRead } = useMessage({
+  const { loading, message, error, onRead, refetch } = useMessage({
     activity,
   })
 
@@ -21,7 +21,12 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
   }
 
   if (error || !message) {
-    return <ErrorPage title={t('activities.message.loading_error')} />
+    return (
+      <ErrorPage
+        title={t('activities.message.loading_error')}
+        onRetry={refetch}
+      />
+    )
   }
 
   return (

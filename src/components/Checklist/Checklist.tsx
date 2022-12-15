@@ -13,7 +13,7 @@ interface ChecklistProps {
 
 export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   const { t } = useTranslation()
-  const { loading, items, title, error } = useChecklist({
+  const { loading, items, title, error, refetch } = useChecklist({
     activity,
   })
   const { onSubmit, isSubmitting } = useSubmitChecklist({
@@ -25,7 +25,10 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   }
   if (error) {
     return (
-      <ErrorPage title={t('activities.checklist.loading_error', { error })} />
+      <ErrorPage
+        title={t('activities.checklist.loading_error', { error })}
+        onRetry={refetch}
+      />
     )
   }
 

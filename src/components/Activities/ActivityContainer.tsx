@@ -10,7 +10,7 @@ import classes from './activityContainer.module.css'
 
 export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   const { t } = useTranslation()
-  const { activities, loading, error } = useSessionActivities({
+  const { activities, loading, error, refetch } = useSessionActivities({
     onlyStakeholderActivities: true,
   })
 
@@ -19,7 +19,7 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   }
 
   if (error) {
-    return <ErrorPage title={t('activities.loading_error')} />
+    return <ErrorPage title={t('activities.loading_error')} onRetry={refetch} />
   }
 
   return (
