@@ -18,6 +18,7 @@ interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
   error?: string
+  refetch?: () => {}
 }
 
 const POLLING_DELAY = 10000 // 10 seconds
@@ -103,5 +104,5 @@ export const useSessionActivities = ({
     }
   }, [onActivityCreated.data])
 
-  return { activities, loading, error: error?.message }
+  return { activities, loading, error: error?.message, refetch }
 }

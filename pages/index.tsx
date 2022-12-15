@@ -22,7 +22,7 @@ import Head from 'next/head'
 const AWELL_BRAND_COLOR = '#004ac2'
 const Home: NextPage = () => {
   const { t } = useTranslation()
-  const { loading, session, branding, error } = useHostedSession()
+  const { loading, session, branding, error, refetch } = useHostedSession()
   const { removeItem: removeAccessToken } = useLocalStorage('accessToken', '')
   const router = useRouter()
 
@@ -96,7 +96,9 @@ const Home: NextPage = () => {
           onCloseHostedPage={onCloseHostedPage}
         >
           {loading && <LoadingPage hideLoader title={t('session.loading')} />}
-          {error && <ErrorPage title={t('session.loading_error')} />}
+          {error && (
+            <ErrorPage title={t('session.loading_error')} onRetry={refetch} />
+          )}
           {session && <ActivityContainer pathwayId={session.pathway_id} />}
           <ToastContainer
             position="bottom-right"

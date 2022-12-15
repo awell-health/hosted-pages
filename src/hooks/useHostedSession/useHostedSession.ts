@@ -21,10 +21,11 @@ interface UseHostedSessionHook {
   session?: HostedSession
   branding?: BrandingSettings
   error?: string
+  refetch?: () => {}
 }
 
 export const useHostedSession = (): UseHostedSessionHook => {
-  const { data, loading, error } = useGetHostedSessionQuery({
+  const { data, loading, error, refetch } = useGetHostedSessionQuery({
     onError: (error) => {
       Sentry.captureException(error, {
         contexts: {
@@ -108,12 +109,13 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }
 
   if (error) {
-    return { loading: false, error: error.message }
+    return { loading: false, error: error.message, refetch }
   }
 
   return {
     loading: false,
     session: data?.hostedSession?.session,
     branding: data?.hostedSession?.branding as BrandingSettings,
+    refetch,
   }
 }
