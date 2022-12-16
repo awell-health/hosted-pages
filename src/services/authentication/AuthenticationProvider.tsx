@@ -7,7 +7,6 @@ import { useRouter } from 'next/router'
 import useSwr from 'swr'
 import { ErrorPage, LoadingPage } from '../../components'
 import { useTranslation } from 'next-i18next'
-import { isNil } from 'lodash'
 interface AuthenticationProviderProps {
   children?: React.ReactNode
 }
