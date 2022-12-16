@@ -18,6 +18,8 @@ import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { defaultTo, isNil } from 'lodash'
 import { useLocalStorage } from '../src/hooks/useLocalStorage'
 import Head from 'next/head'
+import { addSentryBreadcrumb } from '../src/services/ErrorReporter'
+import { BreadcrumbCategory } from '../src/services/ErrorReporter/addSentryBreadcrumb'
 
 const AWELL_BRAND_COLOR = '#004ac2'
 const Home: NextPage = () => {
@@ -35,6 +37,10 @@ const Home: NextPage = () => {
   }
 
   const onCloseHostedPage = () => {
+    addSentryBreadcrumb({
+      category: BreadcrumbCategory.SESSION_CANCEL,
+      data: session,
+    })
     router.push(session?.cancel_url || 'https://awell.health')
   }
 
@@ -45,9 +51,17 @@ const Home: NextPage = () => {
 
     switch (session?.status) {
       case HostedSessionStatus.Completed:
+        addSentryBreadcrumb({
+          category: BreadcrumbCategory.SESSION_COMPLETE,
+          data: session,
+        })
         redirectAfterSession(session.success_url)
         return
       case HostedSessionStatus.Expired:
+        addSentryBreadcrumb({
+          category: BreadcrumbCategory.SESSION_EXPIRE,
+          data: session,
+        })
         redirectAfterSession(session.cancel_url)
         return
       default:
