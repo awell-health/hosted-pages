@@ -38,7 +38,7 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
     addSentryBreadcrumb({
       category: BreadcrumbCategory.SUBMIT_CHECKLIST,
       data: {
-        items,
+        checklist_id: activity.id,
       },
     })
     onSubmit()

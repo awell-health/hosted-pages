@@ -35,7 +35,7 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
     addSentryBreadcrumb({
       category: BreadcrumbCategory.READ_MESSAGE,
       data: {
-        message,
+        message: message?.id,
       },
     })
     onRead()

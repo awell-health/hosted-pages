@@ -39,8 +39,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     addSentryBreadcrumb({
       category: BreadcrumbCategory.EVALUATE_FORM_RULES,
       data: {
-        response,
-        form,
+        form_id: form?.id,
       },
     })
     return evaluateFormRules(response)
@@ -50,8 +49,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     addSentryBreadcrumb({
       category: BreadcrumbCategory.SUBMIT_FORM,
       data: {
-        response,
-        form,
+        form_id: form?.id,
       },
     })
     await onSubmit(response)
