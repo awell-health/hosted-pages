@@ -32,7 +32,9 @@ export const ErrorPage: FC<{
 
         {onRetry && (
           <div className={classes.try_again_btn}>
-            <Button onClick={() => onRetry()}>{t('session.try_again')}</Button>
+            <Button data-cy="tryAgainButton" onClick={() => onRetry()}>
+              {t('session.try_again')}
+            </Button>
           </div>
         )}
       </div>
