@@ -11,6 +11,8 @@ import { LoadingPage } from '../LoadingPage'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
 import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
+import { addSentryBreadcrumb } from '../../services/ErrorReporter'
+import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 
 interface FormProps {
   activity: Activity
@@ -34,10 +36,22 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const handleEvaluateFormRules = async (
     response: Array<AnswerInput>
   ): Promise<Array<QuestionRuleResult>> => {
+    addSentryBreadcrumb({
+      category: BreadcrumbCategory.EVALUATE_FORM_RULES,
+      data: {
+        form_id: form?.id,
+      },
+    })
     return evaluateFormRules(response)
   }
 
   const handleSubmit = async (response: Array<any>) => {
+    addSentryBreadcrumb({
+      category: BreadcrumbCategory.SUBMIT_FORM,
+      data: {
+        form_id: form?.id,
+      },
+    })
     await onSubmit(response)
   }
 
