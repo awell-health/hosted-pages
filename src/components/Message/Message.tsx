@@ -6,6 +6,8 @@ import { useMessage, Activity } from '../../hooks/useMessage'
 import { LoadingPage } from '../LoadingPage'
 import { ErrorPage } from '../ErrorPage'
 import attachmentIcon from './../../assets/link.svg'
+import { addSentryBreadcrumb } from '../../services/ErrorReporter'
+import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 interface MessageProps {
   activity: Activity
 }
@@ -29,6 +31,16 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
     )
   }
 
+  const handleReadMessage = () => {
+    addSentryBreadcrumb({
+      category: BreadcrumbCategory.READ_MESSAGE,
+      data: {
+        message,
+      },
+    })
+    onRead()
+  }
+
   return (
     <>
       <MessageViewer
@@ -44,7 +56,7 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
           link: t('activities.message.open_link_attachment'),
           file: t('activities.message.download_file_attachment'),
         }}
-        onMessageRead={() => onRead()}
+        onMessageRead={handleReadMessage}
         buttonLabels={{ readMessage: t('activities.message.cta_mark_as_read') }}
       />
     </>

@@ -6,6 +6,8 @@ import { LoadingPage } from '../LoadingPage'
 import { ErrorPage } from '../ErrorPage'
 import classes from './checklist.module.css'
 import { useTranslation } from 'next-i18next'
+import { addSentryBreadcrumb } from '../../services/ErrorReporter'
+import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 
 interface ChecklistProps {
   activity: Activity
@@ -32,12 +34,22 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
     )
   }
 
+  const handleSubmit = () => {
+    addSentryBreadcrumb({
+      category: BreadcrumbCategory.SUBMIT_CHECKLIST,
+      data: {
+        items,
+      },
+    })
+    onSubmit()
+  }
+
   return (
     <article className={classes.awell_checklist_wrapper}>
       <ChecklistComponent
         title={title || ''}
         items={items || []}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         disabled={isSubmitting}
         submitLabel={t('activities.checklist.cta_submit')}
       />
