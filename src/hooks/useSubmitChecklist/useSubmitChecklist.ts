@@ -26,7 +26,7 @@ export const useSubmitChecklist = ({
     setIsSubmitting(true)
     const variables = {
       input: {
-        activity_id: activity_id + 1,
+        activity_id: activity_id,
       },
     }
     try {
