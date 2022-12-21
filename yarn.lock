@@ -66,10 +66,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell_health/ui-library@0.0.44":
-  version "0.0.44"
-  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.0.44.tgz#4caf4f0192e3d48adb4cea78148e3559d9dd6682"
-  integrity sha512-zDIcg5MvEKESeMNPNOJPcauIfFJiIOzAyRIXPQ5Y4UvL3ZMHowgrkiDHqzW7HrS4/heNCaGB+Yf4kN4K/nWygg==
+"@awell_health/ui-library@0.0.46":
+  version "0.0.46"
+  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.0.46.tgz#5c428662e4c77ea57b499a64b9d501cabfae736e"
+  integrity sha512-G66hG/UkpT+uD6APMgkM4SknhbppvJ4jFg3m79mFXSw0VD1U9+RbA0kRHzxJs7CGh37ONP0RhEL0JI55JddLNA==
   dependencies:
     date-fns "^2.29.1"
     dompurify "^2.4.0"
