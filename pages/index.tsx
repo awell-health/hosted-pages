@@ -6,14 +6,15 @@ import { useRouter } from 'next/router'
 import { useHostedSession } from '../src/hooks/useHostedSession'
 import { ActivityContainer, LoadingPage, ErrorPage } from '../src/components'
 import {
-  Navbar,
   ThemeProvider,
   HostedPageLayout,
+  Modal,
+  Button,
 } from '@awell_health/ui-library'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { defaultTo, isNil } from 'lodash'
 import { useLocalStorage } from '../src/hooks/useLocalStorage'
@@ -22,11 +23,15 @@ import { addSentryBreadcrumb } from '../src/services/ErrorReporter'
 import { BreadcrumbCategory } from '../src/services/ErrorReporter/addSentryBreadcrumb'
 
 const AWELL_BRAND_COLOR = '#004ac2'
+
 const Home: NextPage = () => {
   const { t } = useTranslation()
   const { loading, session, branding, error, refetch } = useHostedSession()
   const { removeItem: removeAccessToken } = useLocalStorage('accessToken', '')
   const router = useRouter()
+
+  const [isCloseConfirmationModalOpen, setIsCloseConfirmationModalOpen] =
+    useState(false)
 
   const redirectAfterSession = (url: string) => {
     // adding 2 second delay so users are aware of the redirection and we don't change the page abruptly
@@ -84,19 +89,6 @@ const Home: NextPage = () => {
     )
   }
 
-  if (session && session?.status !== HostedSessionStatus.Active) {
-    return (
-      <ThemeProvider accentColor={branding?.accent_color || undefined}>
-        <HostedPageLayout
-          logo={defaultTo(branding?.logo_url, awell_logo)}
-          onCloseHostedPage={onCloseHostedPage}
-        >
-          <LoadingPage title={t('session.redirecting_to_next_page')} />
-        </HostedPageLayout>
-      </ThemeProvider>
-    )
-  }
-
   return (
     <>
       <Head>
@@ -107,9 +99,11 @@ const Home: NextPage = () => {
       <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
         <HostedPageLayout
           logo={defaultTo(branding?.logo_url, awell_logo)}
-          onCloseHostedPage={onCloseHostedPage}
+          onCloseHostedPage={() => setIsCloseConfirmationModalOpen(true)}
         >
-          {loading && <LoadingPage hideLoader title={t('session.loading')} />}
+          {session && session?.status !== HostedSessionStatus.Active && (
+            <LoadingPage title={t('session.redirecting_to_next_page')} />
+          )}
           {error && (
             <ErrorPage title={t('session.loading_error')} onRetry={refetch} />
           )}
@@ -122,6 +116,29 @@ const Home: NextPage = () => {
             autoClose={12000}
             hideProgressBar
             draggable
+          />
+          <Modal
+            isOpen={isCloseConfirmationModalOpen}
+            title={t('session.close_modal.title')}
+            description={t('session.close_modal.description')}
+            onCloseModal={() => setIsCloseConfirmationModalOpen(false)}
+            icon="warning"
+            buttons={[
+              <Button
+                key="cancel-button"
+                variant="primary"
+                onClick={() => setIsCloseConfirmationModalOpen(false)}
+              >
+                {t('session.close_modal.cancel_button_label')}
+              </Button>,
+              <Button
+                key="confirm-button"
+                variant="tertiary"
+                onClick={onCloseHostedPage}
+              >
+                {t('session.close_modal.confirm_button_label')}
+              </Button>,
+            ]}
           />
         </HostedPageLayout>
       </ThemeProvider>

@@ -40,6 +40,12 @@
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
     "loading": "Sessie laden...",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
-    "try_again": "Opnieuw proberen"
+    "try_again": "Opnieuw proberen",
+    "close_modal": {
+      "title": "Ben je zeker dat je de sessie wil afsluiten?",
+      "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
+      "cancel_button_label": "Nee, ga door",
+      "confirm_button_label": "Ja, sluit sessie af"
+    }
   }
 }
