@@ -4,13 +4,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useHostedSession } from '../src/hooks/useHostedSession'
-import { ActivityContainer, LoadingPage, ErrorPage } from '../src/components'
 import {
-  ThemeProvider,
-  HostedPageLayout,
-  Modal,
-  Button,
-} from '@awell_health/ui-library'
+  ActivityContainer,
+  LoadingPage,
+  ErrorPage,
+  CloseHostedSessionModal,
+} from '../src/components'
+import { ThemeProvider, HostedPageLayout } from '@awell_health/ui-library'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   const { removeItem: removeAccessToken } = useLocalStorage('accessToken', '')
   const router = useRouter()
 
-  const [isCloseConfirmationModalOpen, setIsCloseConfirmationModalOpen] =
+  const [isCloseHostedSessionModalOpen, setisCloseHostedSessionModalOpen] =
     useState(false)
 
   const redirectAfterSession = (url: string) => {
@@ -41,7 +41,15 @@ const Home: NextPage = () => {
     }, 2000)
   }
 
-  const onCloseHostedPage = () => {
+  const onOpenCloseHostedSessionModal = () => {
+    setisCloseHostedSessionModalOpen(true)
+  }
+
+  const onCloseHostedSessionModal = () => {
+    setisCloseHostedSessionModalOpen(false)
+  }
+
+  const onCloseHostedSession = () => {
     addSentryBreadcrumb({
       category: BreadcrumbCategory.SESSION_CANCEL,
       data: session,
@@ -89,6 +97,24 @@ const Home: NextPage = () => {
     )
   }
 
+  if (session && session?.status !== HostedSessionStatus.Active) {
+    return (
+      <ThemeProvider accentColor={branding?.accent_color || undefined}>
+        <HostedPageLayout
+          logo={defaultTo(branding?.logo_url, awell_logo)}
+          onCloseHostedPage={onOpenCloseHostedSessionModal}
+        >
+          <LoadingPage title={t('session.redirecting_to_next_page')} />
+          <CloseHostedSessionModal
+            isModalOpen={isCloseHostedSessionModalOpen}
+            onCloseHostedSession={onCloseHostedSession}
+            onCloseModal={onCloseHostedSessionModal}
+          />
+        </HostedPageLayout>
+      </ThemeProvider>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -99,11 +125,8 @@ const Home: NextPage = () => {
       <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
         <HostedPageLayout
           logo={defaultTo(branding?.logo_url, awell_logo)}
-          onCloseHostedPage={() => setIsCloseConfirmationModalOpen(true)}
+          onCloseHostedPage={onOpenCloseHostedSessionModal}
         >
-          {session && session?.status !== HostedSessionStatus.Active && (
-            <LoadingPage title={t('session.redirecting_to_next_page')} />
-          )}
           {error && (
             <ErrorPage title={t('session.loading_error')} onRetry={refetch} />
           )}
@@ -117,28 +140,10 @@ const Home: NextPage = () => {
             hideProgressBar
             draggable
           />
-          <Modal
-            isOpen={isCloseConfirmationModalOpen}
-            title={t('session.close_modal.title')}
-            description={t('session.close_modal.description')}
-            onCloseModal={() => setIsCloseConfirmationModalOpen(false)}
-            icon="warning"
-            buttons={[
-              <Button
-                key="cancel-button"
-                variant="primary"
-                onClick={() => setIsCloseConfirmationModalOpen(false)}
-              >
-                {t('session.close_modal.cancel_button_label')}
-              </Button>,
-              <Button
-                key="confirm-button"
-                variant="tertiary"
-                onClick={onCloseHostedPage}
-              >
-                {t('session.close_modal.confirm_button_label')}
-              </Button>,
-            ]}
+          <CloseHostedSessionModal
+            isModalOpen={isCloseHostedSessionModalOpen}
+            onCloseHostedSession={onCloseHostedSession}
+            onCloseModal={onCloseHostedSessionModal}
           />
         </HostedPageLayout>
       </ThemeProvider>
