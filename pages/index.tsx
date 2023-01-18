@@ -9,6 +9,7 @@ import {
   ThemeProvider,
   HostedPageLayout,
   Modal,
+  Button,
 } from '@awell_health/ui-library'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -120,13 +121,24 @@ const Home: NextPage = () => {
             isOpen={isCloseConfirmationModalOpen}
             title={t('session.close_modal.title')}
             description={t('session.close_modal.description')}
-            onConfirm={onCloseHostedPage}
-            onClose={() => setIsCloseConfirmationModalOpen(false)}
+            onCloseModal={() => setIsCloseConfirmationModalOpen(false)}
             icon="warning"
-            buttonLabels={{
-              confirm: t('session.close_modal.confirm_button_label'),
-              cancel: t('session.close_modal.cancel_button_label'),
-            }}
+            buttons={[
+              <Button
+                key="cancel-button"
+                variant="primary"
+                onClick={() => setIsCloseConfirmationModalOpen(false)}
+              >
+                {t('session.close_modal.cancel_button_label')}
+              </Button>,
+              <Button
+                key="confirm-button"
+                variant="tertiary"
+                onClick={onCloseHostedPage}
+              >
+                {t('session.close_modal.confirm_button_label')}
+              </Button>,
+            ]}
           />
         </HostedPageLayout>
       </ThemeProvider>

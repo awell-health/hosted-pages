@@ -42,10 +42,10 @@
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "try_again": "Proovi uuesti",
     "close_modal": {
-      "title": "Are you sure you want to cancel your session?",
-      "description": "There are still some activities for you to complete. If you cancel your session, you might also data you haven't submitted yet.",
-      "cancel_button_label": "No",
-      "confirm_button_label": "Yes, cancel session"
+      "title": "Soovid pöördumise täitmise pooleli jätta?",
+      "description": "Kui täitmise katkestad, siis arstikeskus sinu pöördumist kätte ei saa.",
+      "cancel_button_label": "Jätkan täitmist",
+      "confirm_button_label": "Jätan pooleli"
     }
   }
 }

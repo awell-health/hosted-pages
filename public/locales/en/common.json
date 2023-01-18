@@ -45,7 +45,7 @@
     "close_modal": {
       "title": "Are you sure you want to cancel your session?",
       "description": "There are still some activities for you to complete. If you cancel your session, you might lose data you haven't submitted yet.",
-      "cancel_button_label": "No",
+      "cancel_button_label": "No, continue",
       "confirm_button_label": "Yes, cancel session"
     }
   }
