@@ -44,7 +44,7 @@
     "close_modal": {
       "title": "Ben je zeker dat je de sessie wil afsluiten?",
       "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
-      "cancel_button_label": "Nee",
+      "cancel_button_label": "Nee, ga door",
       "confirm_button_label": "Ja, sluit sessie af"
     }
   }
