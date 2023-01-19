@@ -4,7 +4,7 @@ on:
   workflow_dispatch
 
 jobs:
-  merge-release-content-to-production:
+  merge-release-content-to-sandbox:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
