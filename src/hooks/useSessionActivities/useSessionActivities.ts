@@ -21,7 +21,7 @@ interface UsePathwayActivitiesHook {
   refetch?: () => {}
 }
 
-const POLLING_DELAY = 10000 // 10 seconds
+const POLLING_DELAY = 5000 // 5 seconds
 
 export const useSessionActivities = ({
   onlyStakeholderActivities,
