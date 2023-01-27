@@ -23,7 +23,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
     ) {
       return
     }
-    const currentActivityId = activities[currentActivity]?.id
+    const currentActivityId = activities[currentActivity].id
 
     const nextActivityIndex = activities.findIndex(
       (activity) =>
@@ -31,7 +31,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
         activity.id !== currentActivityId
     )
 
-    if (isNil(nextActivityIndex) || nextActivityIndex < 0) {
+    if (nextActivityIndex === -1 || currentActivity === nextActivityIndex) {
       return
     }
 
