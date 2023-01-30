@@ -58,7 +58,7 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    if (isNil(session?.status) || typeof window === undefined) {
+    if (isNil(session?.status) || typeof window === 'undefined') {
       return
     }
 
