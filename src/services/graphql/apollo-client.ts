@@ -9,8 +9,9 @@ import {
   split,
 } from '@apollo/client'
 import { ErrorLink, onError } from '@apollo/client/link/error'
-import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
+import { createClient as createWebsocketClient } from 'graphql-ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 
 export const createClient = ({
   httpUri,
@@ -46,15 +47,14 @@ export const createClient = ({
 
   const wsLink =
     typeof window !== 'undefined'
-      ? new WebSocketLink({
-          uri: wsUri,
-          options: {
-            reconnect: true,
+      ? new GraphQLWsLink(
+          createWebsocketClient({
+            url: wsUri,
             connectionParams: {
-              authToken: window.localStorage.getItem('accessToken'),
+              authToken: localStorage.getItem('accessToken'),
             },
-          },
-        })
+          })
+        )
       : null
 
   const isSubscription = ({ query }: { query: DocumentNode }) => {
