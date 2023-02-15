@@ -8,6 +8,10 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
 
 Sentry.init({
   dsn: SENTRY_DSN,
+  // These environment EnvVars are set automatically on Vercel and do not need to be configured
+  // They ensure that the correct environment is set in Sentry as this is a known issue
+  // See https://github.com/getsentry/sentry-javascript/issues/6993 for latest
+  environment: process.env.NEXT_PUBLIC_AWELL_ENVIRONMENT,
   // Adjust this value in production, or use tracesSampler for greater control
   // TODO in future use tracesSampler
   tracesSampleRate: 0.5,
