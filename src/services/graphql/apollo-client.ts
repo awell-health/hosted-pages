@@ -34,7 +34,7 @@ export const createClient = ({
   })
 
   const authenticationLink = new ApolloLink((operation, forward) => {
-    const accessToken = localStorage.getItem('accessToken')
+    const accessToken = sessionStorage.getItem('accessToken')
 
     operation.setContext({
       headers: {
@@ -51,7 +51,7 @@ export const createClient = ({
           options: {
             reconnect: true,
             connectionParams: {
-              authToken: window.localStorage.getItem('accessToken'),
+              authToken: window.sessionStorage.getItem('accessToken'),
             },
           },
         })
