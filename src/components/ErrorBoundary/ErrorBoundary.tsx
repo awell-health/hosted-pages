@@ -35,7 +35,9 @@ export class ErrorBoundary extends React.Component<
   render(): React.ReactNode {
     const { hasError, error, info } = this.state
     const { children } = this.props
-    const showStack = process.env.NODE_ENV === 'development'
+    const showStack =
+      process.env.NODE_ENV === 'development' ||
+      process.env.NEXT_PUBLIC_AWELL_ENVIRONMENT === 'staging'
 
     if (hasError) {
       if (showStack) {
