@@ -11,6 +11,7 @@ import {
   useGetHostedSessionActivitiesQuery,
   GetHostedSessionActivitiesDocument,
   GetHostedSessionActivitiesQuery,
+  ActivityStatus,
 } from './types'
 import { captureException } from '@sentry/nextjs'
 
@@ -88,13 +89,18 @@ export const useSessionActivities = ({
      * when a user is waiting for activities to load, not when
      * they are actively interacting with one.
      */
-    if (activities.length === 0) {
+
+    const activeActivities = activities.filter(
+      ({ status }) => status === ActivityStatus.Active
+    )
+
+    if (activeActivities.length === 0) {
       refetchQueryInterval = setInterval(() => {
         refetch()
       }, POLLING_DELAY)
     }
 
-    if (activities.length !== 0 && !isNil(refetchQueryInterval)) {
+    if (activeActivities.length !== 0 && !isNil(refetchQueryInterval)) {
       clearInterval(refetchQueryInterval)
     }
 
