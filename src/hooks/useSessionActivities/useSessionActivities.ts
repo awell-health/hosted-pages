@@ -11,6 +11,7 @@ import {
   useGetHostedSessionActivitiesQuery,
   GetHostedSessionActivitiesDocument,
   GetHostedSessionActivitiesQuery,
+  ActivityStatus,
 } from './types'
 import { captureException } from '@sentry/nextjs'
 
@@ -75,12 +76,37 @@ export const useSessionActivities = ({
 
   // temporary solution to refetch query when subscription does not work
   useEffect(() => {
-    const refetchQueryInterval = setInterval(() => {
-      refetch()
-    }, POLLING_DELAY)
+    let refetchQueryInterval: NodeJS.Timer | undefined
+
+    /**
+     * Note: refetch() activities can return error if we continuously
+     * call it again and again.
+     */
+
+    /**
+     * Only try to refetch activities if there are none found.
+     * That means we would only risk showing an error message
+     * when a user is waiting for activities to load, not when
+     * they are actively interacting with one.
+     */
+
+    const activeActivities = activities.filter(
+      ({ status }) => status === ActivityStatus.Active
+    )
+
+    if (activeActivities.length === 0) {
+      refetchQueryInterval = setInterval(() => {
+        refetch()
+      }, POLLING_DELAY)
+    }
+
+    if (activeActivities.length !== 0 && !isNil(refetchQueryInterval)) {
+      clearInterval(refetchQueryInterval)
+    }
+
     // clear interval on component unmount
     return () => clearInterval(refetchQueryInterval)
-  })
+  }, [activities])
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
