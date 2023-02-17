@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useApolloClient } from '@apollo/client'
-import { isEmpty, isNil, size, sortBy } from 'lodash'
+import { isEmpty, isNil, sortBy } from 'lodash'
 import { useEffect } from 'react'
 import { updateQuery } from '../../services/graphql'
 import {
