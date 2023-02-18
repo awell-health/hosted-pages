@@ -13,6 +13,8 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import { isEmpty } from 'lodash'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 
 interface FormProps {
   activity: Activity
@@ -23,6 +25,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit } = useSubmitForm({ activity })
+  const { removeLocalItem, setLocalValue, storedLocalValue } = useLocalStorage(
+    activity.object.id,
+    ''
+  )
 
   if (loading) {
     return <LoadingPage title={t('activities.form.loading')} />
@@ -53,6 +59,14 @@ export const Form: FC<FormProps> = ({ activity }) => {
       },
     })
     await onSubmit(response)
+    removeLocalItem()
+  }
+
+  const handleOnAnswersChange = (response: Record<string, any>): void => {
+    if (JSON.stringify(response) === storedLocalValue) {
+      return
+    }
+    setLocalValue(JSON.stringify(response))
   }
 
   //FIXME type - need to be fixed in ui-lib
@@ -71,6 +85,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
       }}
       onSubmit={handleSubmit}
       evaluateDisplayConditions={handleEvaluateFormRules}
+      storedAnswers={storedLocalValue}
+      onAnswersChange={handleOnAnswersChange}
     />
   )
 }
