@@ -17,7 +17,7 @@ import awell_logo from '../src/assets/logo.svg'
 import { useEffect, useState } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { defaultTo, isNil } from 'lodash'
-import { useLocalStorage } from '../src/hooks/useLocalStorage'
+import { useSessionStorage } from '../src/hooks/useSessionStorage'
 import Head from 'next/head'
 import { addSentryBreadcrumb } from '../src/services/ErrorReporter'
 import { BreadcrumbCategory } from '../src/services/ErrorReporter/addSentryBreadcrumb'
@@ -27,7 +27,7 @@ const AWELL_BRAND_COLOR = '#004ac2'
 const Home: NextPage = () => {
   const { t } = useTranslation()
   const { loading, session, branding, error, refetch } = useHostedSession()
-  const { removeItem: removeAccessToken } = useLocalStorage('accessToken', '')
+  const { removeItem: removeAccessToken } = useSessionStorage('accessToken', '')
   const router = useRouter()
 
   const [isCloseHostedSessionModalOpen, setisCloseHostedSessionModalOpen] =
