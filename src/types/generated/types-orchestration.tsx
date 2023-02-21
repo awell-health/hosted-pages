@@ -23,13 +23,17 @@ const defaultOptions = {} as const;
       "BaselineInfoPayload",
       "ChecklistPayload",
       "ClinicalNotePayload",
+      "CreatePatientPayload",
       "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",
+      "EvaluateFormRulesPayload",
       "FormPayload",
+      "FormResponsePayload",
       "FormsPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
+      "MarkMessageAsReadPayload",
       "MessagePayload",
       "PathwayDataPointDefinitionsPayload",
       "PathwayPayload",
@@ -46,6 +50,7 @@ const defaultOptions = {} as const;
       "StartHostedActivitySessionPayload",
       "StartHostedPathwaySessionPayload",
       "StopTrackPayload",
+      "SubmitFormResponsePayload",
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
       "UserPayload",
@@ -101,6 +106,7 @@ export type Activity = {
   container_name?: Maybe<Scalars['String']>;
   context?: Maybe<PathwayContext>;
   date: Scalars['String'];
+  form?: Maybe<Form>;
   id: Scalars['ID'];
   indirect_object?: Maybe<ActivityObject>;
   isUserActivity: Scalars['Boolean'];
@@ -411,9 +417,11 @@ export type CreatePatientInput = {
   sex?: InputMaybe<Sex>;
 };
 
-export type CreatePatientPayload = {
+export type CreatePatientPayload = Payload & {
   __typename?: 'CreatePatientPayload';
+  code: Scalars['String'];
   patient?: Maybe<User>;
+  success: Scalars['Boolean'];
 };
 
 export type DataPointDefinition = {
@@ -421,7 +429,11 @@ export type DataPointDefinition = {
   category: DataPointSourceType;
   id: Scalars['ID'];
   key: Scalars['String'];
+  /** Additonal context on data point */
+  metadata?: Maybe<Array<DataPointMetaDataItem>>;
   optional?: Maybe<Scalars['Boolean']>;
+  /** Personally identifiable information */
+  pii?: Maybe<Scalars['Boolean']>;
   possibleValues?: Maybe<Array<DataPointPossibleValue>>;
   range?: Maybe<Range>;
   title: Scalars['String'];
@@ -431,6 +443,12 @@ export type DataPointDefinition = {
 
 export type DataPointInput = {
   data_point_definition_id: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type DataPointMetaDataItem = {
+  __typename?: 'DataPointMetaDataItem';
+  key: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -549,9 +567,11 @@ export type EvaluateFormRulesInput = {
   form_id: Scalars['String'];
 };
 
-export type EvaluateFormRulesPayload = {
+export type EvaluateFormRulesPayload = Payload & {
   __typename?: 'EvaluateFormRulesPayload';
+  code: Scalars['String'];
   results: Array<QuestionRuleResult>;
+  success: Scalars['Boolean'];
 };
 
 export type FilterActivitiesParams = {
@@ -559,7 +579,7 @@ export type FilterActivitiesParams = {
   activity_status: StringArrayFilter;
   activity_type: StringArrayFilter;
   pathway_definition_id: StringArrayFilter;
-  patient_id: TextFilter;
+  patient_id: TextFilterEquals;
 };
 
 export type FilterPathwayDataPointDefinitionsParams = {
@@ -581,15 +601,20 @@ export type FilterPatientPathways = {
 };
 
 export type FilterPatients = {
-  national_registry_number?: InputMaybe<TextFilter>;
-  patient_code?: InputMaybe<TextFilter>;
+  name?: InputMaybe<TextFilter>;
+  national_registry_number?: InputMaybe<TextFilterEquals>;
+  patient_code?: InputMaybe<TextFilterEquals>;
   profile_id?: InputMaybe<StringArrayFilter>;
+  search?: InputMaybe<TextFilterContains>;
 };
 
 export type Form = {
   __typename?: 'Form';
+  definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   questions: Array<Question>;
+  release_id: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -605,9 +630,11 @@ export type FormResponse = {
   answers: Array<Answer>;
 };
 
-export type FormResponsePayload = {
+export type FormResponsePayload = Payload & {
   __typename?: 'FormResponsePayload';
+  code: Scalars['String'];
   response: FormResponse;
+  success: Scalars['Boolean'];
 };
 
 export type FormattedText = {
@@ -702,9 +729,11 @@ export type MarkMessageAsReadInput = {
   activity_id: Scalars['String'];
 };
 
-export type MarkMessageAsReadPayload = {
+export type MarkMessageAsReadPayload = Payload & {
   __typename?: 'MarkMessageAsReadPayload';
   activity: Activity;
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type Message = {
@@ -1334,7 +1363,9 @@ export type QueryWebhookCallsForPathwayDefinitionArgs = {
 export type Question = {
   __typename?: 'Question';
   dataPointValueType?: Maybe<DataPointValueType>;
+  definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   options?: Maybe<Array<Option>>;
   questionConfig?: Maybe<QuestionConfig>;
   questionType?: Maybe<QuestionType>;
@@ -1580,9 +1611,11 @@ export type SubmitFormResponseInput = {
   response: Array<QuestionResponseInput>;
 };
 
-export type SubmitFormResponsePayload = {
+export type SubmitFormResponsePayload = Payload & {
   __typename?: 'SubmitFormResponsePayload';
   activity: Activity;
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type Subscription = {
@@ -1735,11 +1768,23 @@ export type Swimlanes = {
 
 export type Tenant = {
   __typename?: 'Tenant';
+  accent_color: Scalars['String'];
+  hosted_page_title: Scalars['String'];
   is_default: Scalars['Boolean'];
+  logo_path: Scalars['String'];
   name: Scalars['String'];
 };
 
 export type TextFilter = {
+  contains?: InputMaybe<Scalars['String']>;
+  eq?: InputMaybe<Scalars['String']>;
+};
+
+export type TextFilterContains = {
+  contains?: InputMaybe<Scalars['String']>;
+};
+
+export type TextFilterEquals = {
   eq?: InputMaybe<Scalars['String']>;
 };
 
