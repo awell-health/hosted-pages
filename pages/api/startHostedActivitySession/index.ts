@@ -28,7 +28,7 @@ export default async function handler(
     {
       method: 'POST',
       headers: {
-        token: `Bearer ${token}`,
+        authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
