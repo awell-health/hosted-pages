@@ -1,3 +1,4 @@
+import { defaultTo } from 'lodash'
 import { useState } from 'react'
 
 interface useLocalStorageHook {
@@ -16,18 +17,16 @@ export const useLocalStorage = (
       return initialValue
     }
     try {
-      // Get from local storage by key
       const item = window.localStorage.getItem(key)
-      // Parse stored json or if none return initialValue
-      return item ? `${item}` : initialValue
+      return defaultTo(item, initialValue)
     } catch (error) {
-      // If error also return initialValue
-      return `${initialValue}`
+      // If error, return initialValue
+      return initialValue
     }
   })
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setLocalValue = (value: any) => {
+  const setLocalValue = (value: Function | string): void => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore =
@@ -39,11 +38,11 @@ export const useLocalStorage = (
         window.localStorage.setItem(key, valueToStore)
       }
     } catch (error) {
-      throw error
+      console.warn('Error setting localStorage value: ', error)
     }
   }
 
-  const removeLocalItem = () => {
+  const removeLocalItem = (): void => {
     if (typeof window === 'undefined') {
       return
     }

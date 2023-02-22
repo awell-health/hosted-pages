@@ -63,10 +63,11 @@ export const Form: FC<FormProps> = ({ activity }) => {
   }
 
   const handleOnAnswersChange = (response: Record<string, any>): void => {
-    if (JSON.stringify(response) === storedLocalValue) {
+    const stringifiedResponse = JSON.stringify(response)
+    if (stringifiedResponse == storedLocalValue) {
       return
     }
-    setLocalValue(JSON.stringify(response))
+    setLocalValue(stringifiedResponse)
   }
 
   //FIXME type - need to be fixed in ui-lib
