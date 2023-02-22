@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import type { NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -14,17 +13,19 @@ import { ThemeProvider, HostedPageLayout } from '@awell_health/ui-library'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
-import { useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { defaultTo, isNil } from 'lodash'
 import { useSessionStorage } from '../src/hooks/useSessionStorage'
 import Head from 'next/head'
 import { addSentryBreadcrumb } from '../src/services/ErrorReporter'
 import { BreadcrumbCategory } from '../src/services/ErrorReporter/addSentryBreadcrumb'
+import { NextPageWithLayout } from './_app'
+import { HostedSessionLayout } from '../src/layouts'
 
 const AWELL_BRAND_COLOR = '#004ac2'
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   const { t } = useTranslation()
   const { loading, session, branding, error, refetch } = useHostedSession()
   const { removeItem: removeAccessToken } = useSessionStorage('accessToken', '')
@@ -149,6 +150,10 @@ const Home: NextPage = () => {
       </ThemeProvider>
     </>
   )
+}
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <HostedSessionLayout>{page}</HostedSessionLayout>
 }
 
 export default Home
