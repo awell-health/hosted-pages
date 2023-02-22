@@ -33,10 +33,10 @@ const Home: NextPage = () => {
   const [isCloseHostedSessionModalOpen, setisCloseHostedSessionModalOpen] =
     useState(false)
 
-  const redirectAfterSession = (url: string) => {
+  const redirectAfterSession = (url: string | undefined | null) => {
     // adding 2 second delay so users are aware of the redirection and we don't change the page abruptly
     setTimeout(() => {
-      router.push(url)
+      router.push(url ? url : 'https://awell.health')
       removeAccessToken()
     }, 2000)
   }
