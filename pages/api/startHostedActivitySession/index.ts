@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
+import { type HostedLinkParams, environment } from '../../../types'
 
 type Data = {
   session_id: string
@@ -10,46 +11,44 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { stakeholderId, pathwayId } = req.query
+  const { stakeholderId, pathwayId, tenantId } = req.query as HostedLinkParams
 
   const token = jwt.sign(
     {
-      username: process.env.HOSTED_PAGES_CONSUMER_NAME,
-      stakeholder_id: stakeholderId,
-      pathway_id: pathwayId,
+      username: environment.apiGatewayConsumerName,
+      feature: 'hosted-pages-link',
+      context: {
+        tenant_id: tenantId,
+      },
     },
-    process.env.HOSTED_PAGES_AUTH_SECRET as string,
+    environment.jwtAuthSecret,
     {
-      issuer: process.env.HOSTED_PAGES_AUTH_KEY,
-      subject: stakeholderId as string,
+      issuer: environment.jwtAuthKey,
     }
   )
 
-  const session = await fetch(
-    process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API as string,
-    {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `
+  const session = await fetch(environment.orchestrationApiUrl, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
           mutation StartHostedActivitySession($input: StartHostedActivitySessionInput!) {
             startHostedActivitySession(input: $input) {
               session_id
             }
           }
           `,
-        variables: {
-          input: {
-            stakeholder_id: stakeholderId,
-            pathway_id: pathwayId,
-          },
+      variables: {
+        input: {
+          stakeholder_id: stakeholderId,
+          pathway_id: pathwayId,
         },
-      }),
-    }
-  )
+      },
+    }),
+  })
 
   const session_response = await session.json()
 
