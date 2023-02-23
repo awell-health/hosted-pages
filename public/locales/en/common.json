@@ -30,6 +30,9 @@
       "saving_error": "Checklist submission failed."
     }
   },
+  "preview": {
+    "cta": "Start preview"
+  },
   "seo": {
     "loading_title": "Loading",
     "title": "Awell Activities",
