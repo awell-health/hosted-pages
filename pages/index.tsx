@@ -22,6 +22,8 @@ import { addSentryBreadcrumb } from '../src/services/ErrorReporter'
 import { BreadcrumbCategory } from '../src/services/ErrorReporter/addSentryBreadcrumb'
 import { NextPageWithLayout } from './_app'
 import { HostedSessionLayout } from '../src/layouts'
+import { SuccessPage } from '../src/components/SuccessPage'
+import { CancelPage } from '../src/components/CancelPage'
 
 const AWELL_BRAND_COLOR = '#004ac2'
 
@@ -34,10 +36,10 @@ const Home: NextPageWithLayout = () => {
   const [isCloseHostedSessionModalOpen, setisCloseHostedSessionModalOpen] =
     useState(false)
 
-  const redirectAfterSession = (url: string | undefined | null) => {
+  const redirectAfterSession = (url: string) => {
     // adding 2 second delay so users are aware of the redirection and we don't change the page abruptly
     setTimeout(() => {
-      router.push(url ? url : 'https://awell.health')
+      router.push(url)
       removeAccessToken()
     }, 2000)
   }
@@ -58,6 +60,12 @@ const Home: NextPageWithLayout = () => {
     router.push(session?.cancel_url || 'https://awell.health')
   }
 
+  const shouldRedirect =
+    (session?.status === HostedSessionStatus.Completed &&
+      !isNil(session?.success_url)) ||
+    (session?.status === HostedSessionStatus.Expired &&
+      !isNil(session?.cancel_url))
+
   useEffect(() => {
     if (isNil(session?.status) || typeof window === 'undefined') {
       return
@@ -69,14 +77,18 @@ const Home: NextPageWithLayout = () => {
           category: BreadcrumbCategory.SESSION_COMPLETE,
           data: session,
         })
-        redirectAfterSession(session.success_url)
+        if (shouldRedirect) {
+          redirectAfterSession(session.success_url as string)
+        }
         return
       case HostedSessionStatus.Expired:
         addSentryBreadcrumb({
           category: BreadcrumbCategory.SESSION_EXPIRE,
           data: session,
         })
-        redirectAfterSession(session.cancel_url)
+        if (shouldRedirect) {
+          redirectAfterSession(session.cancel_url as string)
+        }
         return
       default:
         return
@@ -105,12 +117,18 @@ const Home: NextPageWithLayout = () => {
           logo={defaultTo(branding?.logo_url, awell_logo)}
           onCloseHostedPage={onOpenCloseHostedSessionModal}
         >
-          <LoadingPage title={t('session.redirecting_to_next_page')} />
-          <CloseHostedSessionModal
-            isModalOpen={isCloseHostedSessionModalOpen}
-            onCloseHostedSession={onCloseHostedSession}
-            onCloseModal={onCloseHostedSessionModal}
-          />
+          {/* Show static success page if success URL is not available */}
+          {shouldRedirect === false &&
+            session.status === HostedSessionStatus.Completed && <SuccessPage />}
+
+          {/* Show static cancel page if cancel URL is not available */}
+          {shouldRedirect === false &&
+            session.status === HostedSessionStatus.Expired && <CancelPage />}
+
+          {/* Show 'redirecting' page if URL is available */}
+          {shouldRedirect && (
+            <LoadingPage title={t('session.redirecting_to_next_page')} />
+          )}
         </HostedPageLayout>
       </ThemeProvider>
     )

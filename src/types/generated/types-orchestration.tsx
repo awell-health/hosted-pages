@@ -1536,12 +1536,12 @@ export type StartHostedActivitySessionPayload = Payload & {
 };
 
 export type StartHostedPathwaySessionInput = {
-  cancel_url: Scalars['String'];
+  cancel_url?: InputMaybe<Scalars['String']>;
   data_points?: InputMaybe<Array<DataPointInput>>;
   language?: InputMaybe<Language>;
   pathway_definition_id: Scalars['String'];
   patient_id?: InputMaybe<Scalars['String']>;
-  success_url: Scalars['String'];
+  success_url?: InputMaybe<Scalars['String']>;
 };
 
 export type StartHostedPathwaySessionPayload = Payload & {
