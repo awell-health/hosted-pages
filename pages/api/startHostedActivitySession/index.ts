@@ -15,6 +15,8 @@ export default async function handler(
   const token = jwt.sign(
     {
       username: process.env.HOSTED_PAGES_CONSUMER_NAME,
+      stakeholder_id: stakeholderId,
+      pathway_id: pathwayId,
     },
     process.env.HOSTED_PAGES_AUTH_SECRET as string,
     {
