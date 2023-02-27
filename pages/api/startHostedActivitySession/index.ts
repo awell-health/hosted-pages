@@ -1,7 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
-import { type HostedLinkParams, environment } from '../../../types'
+import {
+  type StartHostedActivitySessionParams,
+  environment,
+} from '../../../types'
 
 type Data = {
   session_id: string
@@ -11,15 +14,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { stakeholderId, pathwayId, tenantId } = req.query as HostedLinkParams
+  const { stakeholderId, pathwayId, hostedPagesLinkId } =
+    req.query as StartHostedActivitySessionParams
 
   const token = jwt.sign(
     {
       username: environment.apiGatewayConsumerName,
       feature: 'hosted-pages-link',
-      context: {
-        tenant_id: tenantId,
-      },
+      hosted_pages_link_id: hostedPagesLinkId,
     },
     environment.jwtAuthSecret,
     {

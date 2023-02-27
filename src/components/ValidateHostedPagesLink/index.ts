@@ -1,0 +1,1 @@
+export { ValidateHostedPagesLink } from './ValidateHostedPagesLink'

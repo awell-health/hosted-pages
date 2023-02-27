@@ -7,7 +7,9 @@ import type { FC, ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { StartHostedActivitySessionFlow } from '../src/components/StartHostedActivitySessionFlow'
-import { HostedLinkParams } from '../types'
+import { StartHostedActivitySessionParams } from '../types'
+import { isNil } from 'lodash'
+import { ValidateHostedPagesLink } from '../src/components/ValidateHostedPagesLink'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -20,15 +22,21 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter()
 
-  // if it is a stakeholder session flow
-  const { stakeholderId, pathwayId, tenantId } =
-    router.query as HostedLinkParams
-  if ([stakeholderId, pathwayId, tenantId].every(Boolean)) {
+  // if it is a shortened URL
+  const { link } = router.query
+  if (!isNil(link) && typeof link === 'string') {
+    return <ValidateHostedPagesLink hostedPagesLinkId={link} />
+  }
+
+  // if it is a stakeholder session flow (redirected after validation)
+  const { stakeholderId, pathwayId, hostedPagesLinkId } =
+    router.query as StartHostedActivitySessionParams
+  if ([stakeholderId, pathwayId, hostedPagesLinkId].every(Boolean)) {
     return (
       <StartHostedActivitySessionFlow
         stakeholderId={stakeholderId}
         pathwayId={pathwayId}
-        tenantId={tenantId}
+        hostedPagesLinkId={hostedPagesLinkId}
       />
     )
   }

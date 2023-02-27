@@ -3,19 +3,19 @@ import { isNil } from 'lodash'
 import { useRouter } from 'next/router'
 import { FC, useEffect } from 'react'
 import useSWR from 'swr'
-import { HostedLinkParams } from '../../../types'
+import { StartHostedActivitySessionParams } from '../../../types'
 import { LoadingPage } from '../LoadingPage'
 import classes from './startHostedActivitySessionFlow.module.css'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
-type StartHostedActivitySessionFlowProps = HostedLinkParams
+type StartHostedActivitySessionFlowProps = StartHostedActivitySessionParams
 
 export const StartHostedActivitySessionFlow: FC<
   StartHostedActivitySessionFlowProps
-> = ({ stakeholderId, pathwayId, tenantId }): JSX.Element => {
+> = ({ stakeholderId, pathwayId, hostedPagesLinkId }): JSX.Element => {
   const router = useRouter()
-  const apiRouteQueryParams = `stakeholderId=${stakeholderId}&pathwayId=${pathwayId}&tenantId=${tenantId}`
+  const apiRouteQueryParams = `stakeholderId=${stakeholderId}&pathwayId=${pathwayId}&hostedPagesLinkId=${hostedPagesLinkId}`
   const { data, error } = useSWR(
     `/api/startHostedActivitySession/?${apiRouteQueryParams}`,
     fetcher
