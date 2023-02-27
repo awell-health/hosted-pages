@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import { StartHostedActivitySessionFlow } from '../src/components/StartHostedActivitySessionFlow'
 import { StartHostedActivitySessionParams } from '../types'
 import { isNil } from 'lodash'
-import { ValidateHostedPagesLink } from '../src/components/ValidateHostedPagesLink'
+import { ValidateAndRedirectHostedPagesLink } from '../src/components/ValidateAndRedirectHostedPagesLink'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // if it is a shortened URL
   const { link } = router.query
   if (!isNil(link) && typeof link === 'string') {
-    return <ValidateHostedPagesLink hostedPagesLinkId={link} />
+    return <ValidateAndRedirectHostedPagesLink hostedPagesLinkId={link} />
   }
 
   // if it is a stakeholder session flow (redirected after validation)

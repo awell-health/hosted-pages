@@ -12,9 +12,9 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 type ValidateHostedPagesLinkProps = HostedPagesLinkParams
 
-export const ValidateHostedPagesLink: FC<ValidateHostedPagesLinkProps> = ({
-  hostedPagesLinkId,
-}): JSX.Element => {
+export const ValidateAndRedirectHostedPagesLink: FC<
+  ValidateHostedPagesLinkProps
+> = ({ hostedPagesLinkId }): JSX.Element => {
   const router = useRouter()
   const apiRouteQueryParams = `hostedPagesLinkId=${hostedPagesLinkId}`
   const { data } = useSWR(`/api/link/?${apiRouteQueryParams}`, fetcher)
