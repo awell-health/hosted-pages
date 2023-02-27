@@ -1,6 +1,6 @@
 import { isNil } from 'lodash'
 import { useRouter } from 'next/router'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import {
   HostedPagesLinkParams,
@@ -19,8 +19,14 @@ export const ValidateHostedPagesLink: FC<ValidateHostedPagesLinkProps> = ({
   const apiRouteQueryParams = `hostedPagesLinkId=${hostedPagesLinkId}`
   const { data } = useSWR(`/api/link/?${apiRouteQueryParams}`, fetcher)
 
+  const [error, setError] = useState<any>(undefined)
+
   useEffect(() => {
     if (isNil(data)) {
+      return
+    }
+    if (!isNil(data.error)) {
+      setError(data.error)
       return
     }
     const { stakeholderId, pathwayId, hostedPagesLinkId } =
@@ -30,6 +36,10 @@ export const ValidateHostedPagesLink: FC<ValidateHostedPagesLinkProps> = ({
       router.replace(`?${startHostedActivitySessionParams}`)
     }
   }, [data])
+
+  if (error) {
+    return <LoadingPage title="Authentication failed" />
+  }
 
   return <LoadingPage title="Authenticating..." />
 }

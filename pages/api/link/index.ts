@@ -3,11 +3,15 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { type HostedPagesLinkParams, environment } from '../../../types'
 
-type Data = {
-  stakeholderId: string
-  tenantId: string
-  pathwayId: string
-}
+type Data =
+  | {
+      stakeholderId: string
+      hostedPagesLinkId: string
+      pathwayId: string
+    }
+  | {
+      error: any
+    }
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,15 +30,15 @@ export default async function handler(
       issuer: environment.jwtAuthKey,
     }
   )
-
-  const hosted_pages_link = await fetch(environment.orchestrationApiUrl, {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: `
+  try {
+    const hosted_pages_link = await fetch(environment.orchestrationApiUrl, {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
           query HostedPagesLink($id: String!) {
             hostedPagesLink(id: $id) {
               hosted_pages_link {
@@ -45,19 +49,19 @@ export default async function handler(
             }
           }
           `,
-      variables: {
-        id: hostedPagesLinkId,
-      },
-    }),
-  })
+        variables: {
+          id: hostedPagesLinkId,
+        },
+      }),
+    })
 
-  const link_response = await hosted_pages_link.json()
+    const link_response = await hosted_pages_link.json()
 
-  const {
-    stakeholder_id: stakeholderId,
-    tenant_id: tenantId,
-    pathway_id: pathwayId,
-  } = link_response?.data.hostedPagesLink.hosted_pages_link
+    const { stakeholder_id: stakeholderId, pathway_id: pathwayId } =
+      link_response?.data?.hostedPagesLink.hosted_pages_link
 
-  res.status(200).json({ stakeholderId, tenantId, pathwayId })
+    res.status(200).json({ stakeholderId, hostedPagesLinkId, pathwayId })
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 }
