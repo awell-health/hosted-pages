@@ -2,7 +2,6 @@ import { isNil } from 'lodash'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { StartHostedActivitySessionFlow } from '../../src/components/StartHostedActivitySessionFlow'
-import { ValidateAndRedirectHostedPagesLink } from '../../src/components/ValidateAndRedirectHostedPagesLink'
 import { StartHostedActivitySessionParams } from '../../types'
 
 /**
@@ -14,24 +13,12 @@ const HostedPagesLink: NextPage = () => {
   const router = useRouter()
 
   // if it is a stakeholder session flow (redirected after validation)
-  const { stakeholderId, pathwayId, hostedPagesLinkId } =
-    router.query as StartHostedActivitySessionParams
-  if ([stakeholderId, pathwayId, hostedPagesLinkId].every(Boolean)) {
-    return (
-      <StartHostedActivitySessionFlow
-        stakeholderId={stakeholderId}
-        pathwayId={pathwayId}
-        hostedPagesLinkId={hostedPagesLinkId}
-      />
-    )
-  }
+  const { hostedPagesLinkId } = router.query as StartHostedActivitySessionParams
 
   // if it is a shortened URL
   if (!isNil(hostedPagesLinkId) && typeof hostedPagesLinkId === 'string') {
     return (
-      <ValidateAndRedirectHostedPagesLink
-        hostedPagesLinkId={hostedPagesLinkId}
-      />
+      <StartHostedActivitySessionFlow hostedPagesLinkId={hostedPagesLinkId} />
     )
   }
 

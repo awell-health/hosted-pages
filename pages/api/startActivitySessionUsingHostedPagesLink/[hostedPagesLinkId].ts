@@ -1,13 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
-import { type HostedPagesLinkParams, environment } from '../../../types'
+import { environment, StartHostedActivitySessionParams } from '../../../types'
 
 type Data =
   | {
-      stakeholderId: string
-      hostedPagesLinkId: string
-      pathwayId: string
+      sessionId: string
     }
   | {
       error: any
@@ -17,7 +15,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { hostedPagesLinkId } = req.query as HostedPagesLinkParams
+  const { hostedPagesLinkId } = req.query as StartHostedActivitySessionParams
 
   const token = jwt.sign(
     {
@@ -39,28 +37,26 @@ export default async function handler(
       },
       body: JSON.stringify({
         query: `
-          query HostedPagesLink($id: String!) {
-            hostedPagesLink(id: $id) {
-              hosted_pages_link {
-                stakeholder_id
-                tenant_id
-                pathway_id
-              }
+          mutation StartActivitySessionUsingHostedPagesLink($input: StartActivitySessionUsingHostedPagesLinkInput!) {
+            startActivitySessionUsingHostedPagesLink(input: $input) {
+              session_id
             }
           }
           `,
         variables: {
-          id: hostedPagesLinkId,
+          input: {
+            hosted_pages_link_id: hostedPagesLinkId,
+          },
         },
       }),
     })
 
     const link_response = await hosted_pages_link.json()
 
-    const { stakeholder_id: stakeholderId, pathway_id: pathwayId } =
-      link_response?.data?.hostedPagesLink.hosted_pages_link
+    const { session_id } =
+      link_response?.data?.startActivitySessionUsingHostedPagesLink
 
-    res.status(200).json({ stakeholderId, hostedPagesLinkId, pathwayId })
+    res.status(200).json({ sessionId: session_id })
   } catch (error) {
     res.status(500).json({ error })
   }
