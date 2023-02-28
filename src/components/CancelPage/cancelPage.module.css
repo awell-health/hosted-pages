@@ -1,0 +1,20 @@
+.cancel_page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.cancel_icon {
+  padding: 32px;
+}
+
+.cancel_text {
+  margin-top: var(--awell-spacing-4);
+  text-align: center;
+  font-size: var(--awell-font-size-lg);
+  line-height: var(--awell-leading-6);
+  color: var(--awell-slate700);
+  font-weight: var(--awell-font-medium);
+  max-width: 320px;
+}

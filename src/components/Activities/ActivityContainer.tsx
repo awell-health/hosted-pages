@@ -23,7 +23,18 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   }
 
   return (
-    <ErrorBoundary pathwayId={pathwayId}>
+    // Styles need to be applied to the ErrorBoundary
+    // to make sure layout is rendered correctly.
+    <ErrorBoundary
+      pathwayId={pathwayId}
+      style={{
+        flex: 'auto',
+        display: 'flex',
+        height: '100%',
+        flexDirection: 'column',
+        overflowY: 'scroll',
+      }}
+    >
       <ActivityProvider activities={activities}>
         <Activities activities={activities} />
       </ActivityProvider>

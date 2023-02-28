@@ -23,13 +23,17 @@ const defaultOptions = {} as const;
       "BaselineInfoPayload",
       "ChecklistPayload",
       "ClinicalNotePayload",
+      "CreatePatientPayload",
       "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",
+      "EvaluateFormRulesPayload",
       "FormPayload",
+      "FormResponsePayload",
       "FormsPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
+      "MarkMessageAsReadPayload",
       "MessagePayload",
       "PathwayDataPointDefinitionsPayload",
       "PathwayPayload",
@@ -46,6 +50,7 @@ const defaultOptions = {} as const;
       "StartHostedActivitySessionPayload",
       "StartHostedPathwaySessionPayload",
       "StopTrackPayload",
+      "SubmitFormResponsePayload",
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
       "UserPayload",
@@ -101,6 +106,7 @@ export type Activity = {
   container_name?: Maybe<Scalars['String']>;
   context?: Maybe<PathwayContext>;
   date: Scalars['String'];
+  form?: Maybe<Form>;
   id: Scalars['ID'];
   indirect_object?: Maybe<ActivityObject>;
   isUserActivity: Scalars['Boolean'];
@@ -411,9 +417,11 @@ export type CreatePatientInput = {
   sex?: InputMaybe<Sex>;
 };
 
-export type CreatePatientPayload = {
+export type CreatePatientPayload = Payload & {
   __typename?: 'CreatePatientPayload';
+  code: Scalars['String'];
   patient?: Maybe<User>;
+  success: Scalars['Boolean'];
 };
 
 export type DataPointDefinition = {
@@ -421,7 +429,11 @@ export type DataPointDefinition = {
   category: DataPointSourceType;
   id: Scalars['ID'];
   key: Scalars['String'];
+  /** Additonal context on data point */
+  metadata?: Maybe<Array<DataPointMetaDataItem>>;
   optional?: Maybe<Scalars['Boolean']>;
+  /** Personally identifiable information */
+  pii?: Maybe<Scalars['Boolean']>;
   possibleValues?: Maybe<Array<DataPointPossibleValue>>;
   range?: Maybe<Range>;
   title: Scalars['String'];
@@ -431,6 +443,12 @@ export type DataPointDefinition = {
 
 export type DataPointInput = {
   data_point_definition_id: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type DataPointMetaDataItem = {
+  __typename?: 'DataPointMetaDataItem';
+  key: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -549,9 +567,11 @@ export type EvaluateFormRulesInput = {
   form_id: Scalars['String'];
 };
 
-export type EvaluateFormRulesPayload = {
+export type EvaluateFormRulesPayload = Payload & {
   __typename?: 'EvaluateFormRulesPayload';
+  code: Scalars['String'];
   results: Array<QuestionRuleResult>;
+  success: Scalars['Boolean'];
 };
 
 export type FilterActivitiesParams = {
@@ -559,7 +579,7 @@ export type FilterActivitiesParams = {
   activity_status: StringArrayFilter;
   activity_type: StringArrayFilter;
   pathway_definition_id: StringArrayFilter;
-  patient_id: TextFilter;
+  patient_id: TextFilterEquals;
 };
 
 export type FilterPathwayDataPointDefinitionsParams = {
@@ -581,15 +601,20 @@ export type FilterPatientPathways = {
 };
 
 export type FilterPatients = {
-  national_registry_number?: InputMaybe<TextFilter>;
-  patient_code?: InputMaybe<TextFilter>;
+  name?: InputMaybe<TextFilter>;
+  national_registry_number?: InputMaybe<TextFilterEquals>;
+  patient_code?: InputMaybe<TextFilterEquals>;
   profile_id?: InputMaybe<StringArrayFilter>;
+  search?: InputMaybe<TextFilterContains>;
 };
 
 export type Form = {
   __typename?: 'Form';
+  definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   questions: Array<Question>;
+  release_id: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -605,9 +630,11 @@ export type FormResponse = {
   answers: Array<Answer>;
 };
 
-export type FormResponsePayload = {
+export type FormResponsePayload = Payload & {
   __typename?: 'FormResponsePayload';
+  code: Scalars['String'];
   response: FormResponse;
+  success: Scalars['Boolean'];
 };
 
 export type FormattedText = {
@@ -646,12 +673,12 @@ export type GeneratedClinicalNoteNarrative = {
 
 export type HostedSession = {
   __typename?: 'HostedSession';
-  cancel_url: Scalars['String'];
+  cancel_url?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   pathway_id: Scalars['String'];
   stakeholder: HostedSessionStakeholder;
   status: HostedSessionStatus;
-  success_url: Scalars['String'];
+  success_url?: Maybe<Scalars['String']>;
 };
 
 export type HostedSessionActivitiesPayload = Payload & {
@@ -702,9 +729,11 @@ export type MarkMessageAsReadInput = {
   activity_id: Scalars['String'];
 };
 
-export type MarkMessageAsReadPayload = {
+export type MarkMessageAsReadPayload = Payload & {
   __typename?: 'MarkMessageAsReadPayload';
   activity: Activity;
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type Message = {
@@ -1334,10 +1363,13 @@ export type QueryWebhookCallsForPathwayDefinitionArgs = {
 export type Question = {
   __typename?: 'Question';
   dataPointValueType?: Maybe<DataPointValueType>;
+  definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   options?: Maybe<Array<Option>>;
   questionConfig?: Maybe<QuestionConfig>;
   questionType?: Maybe<QuestionType>;
+  release_id: Scalars['String'];
   rule?: Maybe<Rule>;
   title: Scalars['String'];
   userQuestionType?: Maybe<UserQuestionType>;
@@ -1490,11 +1522,11 @@ export type SortingParams = {
 };
 
 export type StartHostedActivitySessionInput = {
-  cancel_url: Scalars['String'];
+  cancel_url?: InputMaybe<Scalars['String']>;
   language?: InputMaybe<Language>;
   pathway_id: Scalars['String'];
   stakeholder_id: Scalars['String'];
-  success_url: Scalars['String'];
+  success_url?: InputMaybe<Scalars['String']>;
 };
 
 export type StartHostedActivitySessionPayload = Payload & {
@@ -1506,12 +1538,12 @@ export type StartHostedActivitySessionPayload = Payload & {
 };
 
 export type StartHostedPathwaySessionInput = {
-  cancel_url: Scalars['String'];
+  cancel_url?: InputMaybe<Scalars['String']>;
   data_points?: InputMaybe<Array<DataPointInput>>;
   language?: InputMaybe<Language>;
   pathway_definition_id: Scalars['String'];
   patient_id?: InputMaybe<Scalars['String']>;
-  success_url: Scalars['String'];
+  success_url?: InputMaybe<Scalars['String']>;
 };
 
 export type StartHostedPathwaySessionPayload = Payload & {
@@ -1580,9 +1612,11 @@ export type SubmitFormResponseInput = {
   response: Array<QuestionResponseInput>;
 };
 
-export type SubmitFormResponsePayload = {
+export type SubmitFormResponsePayload = Payload & {
   __typename?: 'SubmitFormResponsePayload';
   activity: Activity;
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type Subscription = {
@@ -1735,11 +1769,23 @@ export type Swimlanes = {
 
 export type Tenant = {
   __typename?: 'Tenant';
+  accent_color: Scalars['String'];
+  hosted_page_title: Scalars['String'];
   is_default: Scalars['Boolean'];
+  logo_path: Scalars['String'];
   name: Scalars['String'];
 };
 
 export type TextFilter = {
+  contains?: InputMaybe<Scalars['String']>;
+  eq?: InputMaybe<Scalars['String']>;
+};
+
+export type TextFilterContains = {
+  contains?: InputMaybe<Scalars['String']>;
+};
+
+export type TextFilterEquals = {
   eq?: InputMaybe<Scalars['String']>;
 };
 
@@ -1908,22 +1954,22 @@ export type GetFormResponseQuery = { __typename?: 'Query', formResponse: { __typ
 
 export type QuestionFragment = { __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null };
 
-export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
+export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
 
 export type OnHostedSessionCompletedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OnHostedSessionCompletedSubscription = { __typename?: 'Subscription', sessionCompleted: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
+export type OnHostedSessionCompletedSubscription = { __typename?: 'Subscription', sessionCompleted: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
 
 export type OnHostedSessionExpiredSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', sessionExpired: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
+export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', sessionExpired: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
 
 export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url: string, cancel_url: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } }, branding?: { __typename?: 'BrandingSettings', logo_url?: string | null, hosted_page_title?: string | null, accent_color?: string | null } | null } };
+export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } }, branding?: { __typename?: 'BrandingSettings', logo_url?: string | null, hosted_page_title?: string | null, accent_color?: string | null } | null } };
 
 export type GetMessageQueryVariables = Exact<{
   id: Scalars['String'];

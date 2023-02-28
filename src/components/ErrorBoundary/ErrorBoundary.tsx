@@ -53,6 +53,10 @@ export class ErrorBoundary extends React.Component<
       return <ErrorPage title="Oops, something went wrong" />
     }
 
-    return <div id="error-boundry">{children}</div>
+    return (
+      <div id="error-boundry" style={this.props.style}>
+        {children}
+      </div>
+    )
   }
 }
