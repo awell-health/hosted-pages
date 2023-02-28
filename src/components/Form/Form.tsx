@@ -1,6 +1,6 @@
 import { WizardForm } from '@awell_health/ui-library'
 import React, { FC } from 'react'
-import { useForm, Form as FormType } from '../../hooks/useForm'
+import { useForm } from '../../hooks/useForm'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import {
   Activity,
@@ -13,8 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
-import { isEmpty } from 'lodash'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
+import useLocalStorage from 'use-local-storage'
 
 interface FormProps {
   activity: Activity
@@ -25,7 +24,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit } = useSubmitForm({ activity })
-  const { removeLocalItem, setLocalValue, storedLocalValue } = useLocalStorage(
+
+  const [formProgress, setFormProgress] = useLocalStorage(
     activity.object.id,
     ''
   )
@@ -59,15 +59,13 @@ export const Form: FC<FormProps> = ({ activity }) => {
       },
     })
     await onSubmit(response)
-    removeLocalItem()
+    setFormProgress(undefined)
   }
 
-  const handleOnAnswersChange = (response: Record<string, any>): void => {
-    const stringifiedResponse = JSON.stringify(response)
-    if (stringifiedResponse == storedLocalValue) {
-      return
+  const handleOnAnswersChange = (response: string): void => {
+    if (response !== formProgress) {
+      setFormProgress(response)
     }
-    setLocalValue(stringifiedResponse)
   }
 
   //FIXME type - need to be fixed in ui-lib
@@ -86,7 +84,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       }}
       onSubmit={handleSubmit}
       evaluateDisplayConditions={handleEvaluateFormRules}
-      storedAnswers={storedLocalValue}
+      storedAnswers={formProgress}
       onAnswersChange={handleOnAnswersChange}
     />
   )

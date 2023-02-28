@@ -44,7 +44,6 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
   return (
     <>
       <MessageViewer
-        format={message.format}
         content={message.body}
         subject={message.subject}
         attachments={message.attachments || []}
