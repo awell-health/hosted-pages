@@ -16,8 +16,7 @@ export const ValidateAndRedirectHostedPagesLink: FC<
   ValidateHostedPagesLinkProps
 > = ({ hostedPagesLinkId }): JSX.Element => {
   const router = useRouter()
-  const apiRouteQueryParams = `hostedPagesLinkId=${hostedPagesLinkId}`
-  const { data } = useSWR(`/api/link/?${apiRouteQueryParams}`, fetcher)
+  const { data } = useSWR(`/api/hostedPagesLink/${hostedPagesLinkId}`, fetcher)
 
   const [error, setError] = useState<any>(undefined)
 

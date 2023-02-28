@@ -31,6 +31,7 @@ const defaultOptions = {} as const;
       "FormPayload",
       "FormResponsePayload",
       "FormsPayload",
+      "HostedPagesLinkPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
       "MarkMessageAsReadPayload",
@@ -612,6 +613,7 @@ export type Form = {
   __typename?: 'Form';
   definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   questions: Array<Question>;
   release_id: Scalars['String'];
   title: Scalars['String'];
@@ -668,6 +670,21 @@ export type GeneratedClinicalNoteNarrative = {
   id: Scalars['ID'];
   key: Scalars['String'];
   title: Scalars['String'];
+};
+
+export type HostedPagesLink = {
+  __typename?: 'HostedPagesLink';
+  id: Scalars['ID'];
+  pathway_id: Scalars['String'];
+  stakeholder_id: Scalars['String'];
+  tenant_id: Scalars['String'];
+};
+
+export type HostedPagesLinkPayload = Payload & {
+  __typename?: 'HostedPagesLinkPayload';
+  code: Scalars['String'];
+  hosted_pages_link: HostedPagesLink;
+  success: Scalars['Boolean'];
 };
 
 export type HostedSession = {
@@ -1164,6 +1181,7 @@ export type Query = {
   form: FormPayload;
   formResponse: FormResponsePayload;
   forms: FormsPayload;
+  hostedPagesLink: HostedPagesLinkPayload;
   hostedSession: HostedSessionPayload;
   hostedSessionActivities: HostedSessionActivitiesPayload;
   message: MessagePayload;
@@ -1254,6 +1272,11 @@ export type QueryFormResponseArgs = {
 export type QueryFormsArgs = {
   pathway_definition_id: Scalars['String'];
   release_id?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryHostedPagesLinkArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -1364,6 +1387,7 @@ export type Question = {
   dataPointValueType?: Maybe<DataPointValueType>;
   definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   options?: Maybe<Array<Option>>;
   questionConfig?: Maybe<QuestionConfig>;
   questionType?: Maybe<QuestionType>;
