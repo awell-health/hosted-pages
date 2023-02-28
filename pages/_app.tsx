@@ -20,27 +20,6 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const router = useRouter()
-
-  // if it is a shortened URL
-  const { link } = router.query
-  if (!isNil(link) && typeof link === 'string') {
-    return <ValidateAndRedirectHostedPagesLink hostedPagesLinkId={link} />
-  }
-
-  // if it is a stakeholder session flow (redirected after validation)
-  const { stakeholderId, pathwayId, hostedPagesLinkId } =
-    router.query as StartHostedActivitySessionParams
-  if ([stakeholderId, pathwayId, hostedPagesLinkId].every(Boolean)) {
-    return (
-      <StartHostedActivitySessionFlow
-        stakeholderId={stakeholderId}
-        pathwayId={pathwayId}
-        hostedPagesLinkId={hostedPagesLinkId}
-      />
-    )
-  }
-
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
 
