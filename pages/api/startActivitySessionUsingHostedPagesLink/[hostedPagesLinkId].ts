@@ -21,11 +21,11 @@ export default async function handler(
     {
       username: environment.apiGatewayConsumerName,
       feature: 'hosted-pages-link',
-      hosted_pages_link_id: hostedPagesLinkId,
     },
     environment.jwtAuthSecret,
     {
       issuer: environment.jwtAuthKey,
+      subject: hostedPagesLinkId,
     }
   )
   try {
