@@ -30,6 +30,9 @@
       "saving_error": "Checklist submission failed."
     }
   },
+  "preview": {
+    "cta": "Start preview"
+  },
   "seo": {
     "loading_title": "Loading",
     "title": "Awell Activities",
@@ -41,6 +44,8 @@
     "loading_error": "Something went wrong while loading your session.",
     "loading": "Loading session...",
     "redirecting_to_next_page": "Redirecting you in a moment.",
+    "all_activities_completed": "You have completed all your care activities. You can close this page now.",
+    "session_canceled": "Your session has been cancelled.",
     "try_again": "Try again",
     "close_modal": {
       "title": "Are you sure you want to cancel your session?",
