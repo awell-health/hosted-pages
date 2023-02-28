@@ -23,7 +23,6 @@
       "FormPayload",
       "FormResponsePayload",
       "FormsPayload",
-      "HostedPagesLinkPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
       "MarkMessageAsReadPayload",

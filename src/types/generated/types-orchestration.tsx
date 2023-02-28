@@ -31,7 +31,6 @@ const defaultOptions = {} as const;
       "FormPayload",
       "FormResponsePayload",
       "FormsPayload",
-      "HostedPagesLinkPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
       "MarkMessageAsReadPayload",
@@ -672,21 +671,6 @@ export type GeneratedClinicalNoteNarrative = {
   title: Scalars['String'];
 };
 
-export type HostedPagesLink = {
-  __typename?: 'HostedPagesLink';
-  id: Scalars['ID'];
-  pathway_id: Scalars['String'];
-  stakeholder_id: Scalars['String'];
-  tenant_id: Scalars['String'];
-};
-
-export type HostedPagesLinkPayload = Payload & {
-  __typename?: 'HostedPagesLinkPayload';
-  code: Scalars['String'];
-  hosted_pages_link: HostedPagesLink;
-  success: Scalars['Boolean'];
-};
-
 export type HostedSession = {
   __typename?: 'HostedSession';
   cancel_url?: Maybe<Scalars['String']>;
@@ -805,6 +789,7 @@ export type Mutation = {
   retryWebhookCall: RetryWebhookCallPayload;
   saveBaselineInfo: EmptyPayload;
   startHostedActivitySession: StartHostedActivitySessionPayload;
+  startHostedActivitySessionViaHostedPagesLink: StartHostedActivitySessionPayload;
   startHostedPathwaySession: StartHostedPathwaySessionPayload;
   startPathway: StartPathwayPayload;
   stopPathway: EmptyPayload;
@@ -894,6 +879,11 @@ export type MutationSaveBaselineInfoArgs = {
 
 export type MutationStartHostedActivitySessionArgs = {
   input: StartHostedActivitySessionInput;
+};
+
+
+export type MutationStartHostedActivitySessionViaHostedPagesLinkArgs = {
+  input: StartHostedActivitySessionViaHostedPagesLinkInput;
 };
 
 
@@ -1181,7 +1171,6 @@ export type Query = {
   form: FormPayload;
   formResponse: FormResponsePayload;
   forms: FormsPayload;
-  hostedPagesLink: HostedPagesLinkPayload;
   hostedSession: HostedSessionPayload;
   hostedSessionActivities: HostedSessionActivitiesPayload;
   message: MessagePayload;
@@ -1272,11 +1261,6 @@ export type QueryFormResponseArgs = {
 export type QueryFormsArgs = {
   pathway_definition_id: Scalars['String'];
   release_id?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryHostedPagesLinkArgs = {
-  id: Scalars['String'];
 };
 
 
@@ -1557,6 +1541,11 @@ export type StartHostedActivitySessionPayload = Payload & {
   session_id: Scalars['String'];
   session_url: Scalars['String'];
   success: Scalars['Boolean'];
+};
+
+export type StartHostedActivitySessionViaHostedPagesLinkInput = {
+  hosted_pages_link_id: Scalars['String'];
+  language?: InputMaybe<Language>;
 };
 
 export type StartHostedPathwaySessionInput = {
