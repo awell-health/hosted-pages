@@ -612,6 +612,7 @@ export type Form = {
   __typename?: 'Form';
   definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   questions: Array<Question>;
   release_id: Scalars['String'];
   title: Scalars['String'];
@@ -1364,6 +1365,7 @@ export type Question = {
   dataPointValueType?: Maybe<DataPointValueType>;
   definition_id: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   options?: Maybe<Array<Option>>;
   questionConfig?: Maybe<QuestionConfig>;
   questionType?: Maybe<QuestionType>;

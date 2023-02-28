@@ -1,3 +1,4 @@
+import { defaultTo } from 'lodash'
 import { useState } from 'react'
 
 interface useSessionStorageHook {
@@ -16,18 +17,15 @@ export const useSessionStorage = (
       return initialValue
     }
     try {
-      // Get from local storage by key
       const item = window.sessionStorage.getItem(key)
-      // Parse stored json or if none return initialValue
-      return item ? `${item}` : initialValue
+      return defaultTo(item, initialValue)
     } catch (error) {
-      // If error also return initialValue
-      return `${initialValue}`
+      return initialValue
     }
   })
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to sessionStorage.
-  const setValue = (value: any) => {
+  const setValue = (value: Function | string): void => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore =
@@ -39,11 +37,11 @@ export const useSessionStorage = (
         window.sessionStorage.setItem(key, valueToStore)
       }
     } catch (error) {
-      throw error
+      console.warn('Error setting sessionStorage value: ', error)
     }
   }
 
-  const removeItem = () => {
+  const removeItem = (): void => {
     if (typeof window === 'undefined') {
       return
     }

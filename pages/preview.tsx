@@ -45,7 +45,6 @@ const Preview: NextPage = () => {
               onCloseHostedPage={() => window.close()}
             >
               <MessageViewer
-                format="HTML"
                 content={`
               <p>
                 This is a preview of Awell Hosted Pages. Your

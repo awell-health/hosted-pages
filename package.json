@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.2",
-    "@awell_health/ui-library": "0.0.52",
+    "@awell_health/ui-library": "0.0.53",
     "@sentry/nextjs": "7.34.0",
     "graphql": "^16.5.0",
     "graphql-ws": "^5.11.3",
@@ -26,7 +26,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-toastify": "^9.0.8",
-    "swr": "^1.3.0"
+    "swr": "^1.3.0",
+    "use-local-storage": "^2.3.6"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^2.0.2",
