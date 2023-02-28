@@ -6,6 +6,7 @@ import {
   HostedPagesLinkParams,
   StartHostedActivitySessionParams,
 } from '../../../types'
+import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
@@ -37,7 +38,7 @@ export const ValidateAndRedirectHostedPagesLink: FC<
   }, [data])
 
   if (error) {
-    return <LoadingPage title="Authentication failed" />
+    return <ErrorPage title="Authentication failed" />
   }
 
   return <LoadingPage title="Authenticating..." />
