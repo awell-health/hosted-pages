@@ -29,7 +29,7 @@ export default async function handler(
     }
   )
   try {
-    const hosted_pages_link = await fetch(environment.orchestrationApiUrl, {
+    const session = await fetch(environment.orchestrationApiUrl, {
       method: 'POST',
       headers: {
         authorization: `Bearer ${token}`,
@@ -51,10 +51,10 @@ export default async function handler(
       }),
     })
 
-    const link_response = await hosted_pages_link.json()
+    const session_response = await session.json()
 
     const { session_id } =
-      link_response?.data?.startActivitySessionUsingHostedPagesLink
+      session_response?.data?.startActivitySessionUsingHostedPagesLink
 
     res.status(200).json({ sessionId: session_id })
   } catch (error) {
