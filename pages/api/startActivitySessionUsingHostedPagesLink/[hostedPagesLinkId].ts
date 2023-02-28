@@ -37,8 +37,8 @@ export default async function handler(
       },
       body: JSON.stringify({
         query: `
-          mutation StartActivitySessionUsingHostedPagesLink($input: StartActivitySessionUsingHostedPagesLinkInput!) {
-            startActivitySessionUsingHostedPagesLink(input: $input) {
+          mutation StartHostedActivitySessionViaHostedPagesLink($input: StartHostedActivitySessionViaHostedPagesLinkInput!) {
+            startHostedActivitySessionViaHostedPagesLink(input: $input) {
               session_id
             }
           }
