@@ -8,6 +8,7 @@ export interface ErrorBoundaryProps {
   onError?: (error: Error) => void
   children: React.ReactNode
   pathwayId?: string
+  style?: React.CSSProperties
 }
 
 export interface ErrorBoundaryState {

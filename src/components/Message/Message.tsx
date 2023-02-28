@@ -42,23 +42,21 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
   }
 
   return (
-    <>
-      <MessageViewer
-        format={message.format}
-        content={message.body}
-        subject={message.subject}
-        attachments={message.attachments || []}
-        attachmentIcon={
-          <Image src={attachmentIcon} alt="" width={20} height={20} />
-        }
-        attachmentLabels={{
-          video: t('activities.message.open_video_attachment'),
-          link: t('activities.message.open_link_attachment'),
-          file: t('activities.message.download_file_attachment'),
-        }}
-        onMessageRead={handleReadMessage}
-        buttonLabels={{ readMessage: t('activities.message.cta_mark_as_read') }}
-      />
-    </>
+    <MessageViewer
+      format={message.format}
+      content={message.body}
+      subject={message.subject}
+      attachments={message.attachments || []}
+      attachmentIcon={
+        <Image src={attachmentIcon} alt="" width={20} height={20} />
+      }
+      attachmentLabels={{
+        video: t('activities.message.open_video_attachment'),
+        link: t('activities.message.open_link_attachment'),
+        file: t('activities.message.download_file_attachment'),
+      }}
+      onMessageRead={handleReadMessage}
+      buttonLabels={{ readMessage: t('activities.message.cta_mark_as_read') }}
+    />
   )
 }
