@@ -17,7 +17,7 @@ export const StartHostedActivitySessionFlow: FC<
   const router = useRouter()
 
   const { data, error } = useSWR(
-    `/api/startActivitySessionUsingHostedPagesLink/${hostedPagesLinkId}`,
+    `/api/startHostedActivitySessionViaHostedPagesLink/${hostedPagesLinkId}`,
     fetcher
   )
   useEffect(() => {
@@ -26,9 +26,11 @@ export const StartHostedActivitySessionFlow: FC<
     }
   }, [data])
 
-  if (error) {
-    return <ErrorPage title="Authentication failed" />
+  if (error || !isNil(data?.error)) {
+    return (
+      <ErrorPage title="Something went wrong while fetching your activities." />
+    )
   }
 
-  return <LoadingPage title="Fetching activities" />
+  return <LoadingPage title="Fetching activities. Please wait." />
 }

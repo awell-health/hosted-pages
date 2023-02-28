@@ -54,7 +54,7 @@ export default async function handler(
     const session_response = await session.json()
 
     const { session_id } =
-      session_response?.data?.startActivitySessionUsingHostedPagesLink
+      session_response?.data?.startHostedActivitySessionViaHostedPagesLink
 
     res.status(200).json({ sessionId: session_id })
   } catch (error) {
