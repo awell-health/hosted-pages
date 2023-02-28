@@ -5,9 +5,7 @@ import { StartHostedActivitySessionFlow } from '../../src/components/StartHosted
 import { StartHostedActivitySessionParams } from '../../types'
 
 /**
- * Purpose of this page is to extract params from shortened URLs i.e. 'hosted-pages.awellhealth.com/l/<hostedPagesLinkId>'
- * then use this hostedPagesLinkId to fetch params i.e Pathway ID & Stakeholder ID from HostedPagesLink query
- * and call StartHostedActivitySessionFlow when all params are complete
+ * Purpose of this page is to support shortened URLs i.e. 'hosted-pages.awellhealth.com/l/<hostedPagesLinkId>'
  */
 const HostedPagesLink: NextPage = () => {
   const router = useRouter()
