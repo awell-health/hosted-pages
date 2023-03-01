@@ -1,7 +1,4 @@
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    margin-top: var(--awell-spacing-12)
 }
   
