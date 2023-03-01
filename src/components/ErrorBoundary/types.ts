@@ -1,10 +1,11 @@
+import { WithTranslation } from 'next-i18next'
 import React from 'react'
 
 export interface ErrorInfo {
   componentStack: string
 }
 
-export interface ErrorBoundaryProps {
+export interface ErrorBoundaryProps extends WithTranslation {
   onError?: (error: Error) => void
   children: React.ReactNode
   pathwayId?: string

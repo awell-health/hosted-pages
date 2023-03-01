@@ -24,8 +24,7 @@ import { NextPageWithLayout } from './_app'
 import { HostedSessionLayout } from '../src/layouts'
 import { SuccessPage } from '../src/components/SuccessPage'
 import { CancelPage } from '../src/components/CancelPage'
-
-const AWELL_BRAND_COLOR = '#004ac2'
+import { AWELL_BRAND_COLOR } from '../src/config'
 
 const Home: NextPageWithLayout = () => {
   const { t } = useTranslation()

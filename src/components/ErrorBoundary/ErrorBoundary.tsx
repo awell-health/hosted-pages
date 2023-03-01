@@ -2,9 +2,10 @@ import React from 'react'
 import { ErrorPage } from '../ErrorPage'
 import { ErrorBoundaryProps, ErrorInfo, ErrorBoundaryState } from './types'
 import { reportErrorToSentry } from './reportErrorToSentry'
+import { withTranslation } from 'next-i18next'
 
 // https://reactjs.org/docs/error-boundaries.html
-export class ErrorBoundary extends React.Component<
+class ErrorBoundary extends React.Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
 > {
@@ -43,20 +44,22 @@ export class ErrorBoundary extends React.Component<
       if (showStack) {
         return (
           <article style={{ whiteSpace: 'pre-wrap' }}>
-            <ErrorPage title="Oops, something went wrong">
+            <ErrorPage title={this.props.t('errors.app_error')}>
               <div>{error?.toString()}</div>
               {showStack && <div>{info?.componentStack}</div>}
             </ErrorPage>
           </article>
         )
       }
-      return <ErrorPage title="Oops, something went wrong" />
+      return <ErrorPage title={this.props.t('errors.app_error')} />
     }
 
     return (
-      <div id="error-boundry" style={this.props.style}>
+      <div id="error-boundary" style={this.props.style}>
         {children}
       </div>
     )
   }
 }
+
+export default withTranslation()(ErrorBoundary)

@@ -1,4 +1,5 @@
 {
+  "errors": { "app_error": "Oops, something went wrong. Please try again." },
   "activities": {
     "loading_error": "Something went wrong while loading your activities.",
     "loading": "Loading activity...",
@@ -26,17 +27,23 @@
     },
     "checklist": {
       "cta_submit": "Submit",
+      "loading": "Loading checklist...",
       "loading_error": "Something went wrong while loading the checklist.",
       "saving_error": "Checklist submission failed."
     }
   },
   "preview": {
-    "cta": "Start preview"
+    "cta": "Try it out"
   },
   "seo": {
     "loading_title": "Loading",
     "title": "Awell Activities",
     "description": "Complete activities in your care flow with Awell hosted pages."
+  },
+  "link_page": {
+    "loading": "Hang on, we are starting your session.",
+    "loading_error": "Oops, we could not start a session for you.",
+    "try_again": "Try again"
   },
   "session": {
     "authentication_loading": "Authenticating, please wait.",
@@ -44,7 +51,7 @@
     "loading_error": "Something went wrong while loading your session.",
     "loading": "Loading session...",
     "redirecting_to_next_page": "Redirecting you in a moment.",
-    "all_activities_completed": "You have completed all your care activities. You can close this page now.",
+    "all_activities_completed": "You have completed all your activities. You can close this page now.",
     "session_canceled": "Your session has been cancelled.",
     "try_again": "Try again",
     "close_modal": {

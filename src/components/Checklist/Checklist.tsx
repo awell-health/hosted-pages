@@ -22,8 +22,9 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   })
 
   if (loading) {
-    return <LoadingPage title="Loading activity" />
+    return <LoadingPage title={t('activities.checklist.loading')} />
   }
+
   if (error) {
     return (
       <ErrorPage
