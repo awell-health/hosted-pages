@@ -25,7 +25,13 @@
       "previous_question_label": "Prev",
       "question_required_error": "This question is required.",
       "slider_not_touched_error": "Please move the slider to indicate your answer.",
-      "saving_error": "Form submission failed."
+      "saving_error": "Form submission failed.",
+      "questions": {
+        "yes_no": {
+          "yes_answer": "Oui",
+          "no_answer": "Non"
+        }
+      }
     },
     "checklist": {
       "cta_submit": "Submit",

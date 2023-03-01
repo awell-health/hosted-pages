@@ -72,6 +72,11 @@ export const Form: FC<FormProps> = ({ activity }) => {
   return (
     <WizardForm
       form={form as any}
+      //@ts-ignore remove before merge
+      questionLabels={{
+        yes_label: t('activities.form.questions.yes_no.yes_answer'),
+        no_label: t('activities.form.questions.yes_no.no_answer'),
+      }}
       buttonLabels={{
         prev: t('activities.form.previous_question_label'),
         next: t('activities.form.next_question_label'),
