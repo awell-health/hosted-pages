@@ -68,11 +68,9 @@ export const Form: FC<FormProps> = ({ activity }) => {
     }
   }
 
-  //FIXME type - need to be fixed in ui-lib
   return (
     <WizardForm
       form={form as any}
-      //@ts-ignore remove before merge
       questionLabels={{
         yes_label: t('activities.form.questions.yes_no.yes_answer'),
         no_label: t('activities.form.questions.yes_no.no_answer'),
