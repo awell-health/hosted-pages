@@ -9,13 +9,13 @@ jobs:
   merge-release-content-to-staging:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set Git config
       run: |
-          git config --local user.email "mohsinhayat104@gmail.com" # for testing only, we can use any email that has permissions on this repo
-          git config --local user.name "mohsinht" # for testing only, we can use any username that has permissions on this repo
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
     - name: Set env
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: Staging release message

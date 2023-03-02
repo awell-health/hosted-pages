@@ -22,11 +22,6 @@ export const useForm = (activity: Activity): UseFormHook => {
     refetch,
   } = useGetFormQuery({
     variables,
-    onCompleted: () => {
-      if (activity.status === ActivityStatus.Done) {
-        //TODO Navigate to success page
-      }
-    },
   })
   const { t } = useTranslation()
 
