@@ -4,7 +4,6 @@ import { Activity, useChecklist } from '../../hooks/useChecklist'
 import { useSubmitChecklist } from '../../hooks/useSubmitChecklist'
 import { LoadingPage } from '../LoadingPage'
 import { ErrorPage } from '../ErrorPage'
-import classes from './checklist.module.css'
 import { useTranslation } from 'next-i18next'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
@@ -23,8 +22,9 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   })
 
   if (loading) {
-    return <LoadingPage title="Loading activity" />
+    return <LoadingPage title={t('activities.checklist.loading')} />
   }
+
   if (error) {
     return (
       <ErrorPage
@@ -45,15 +45,13 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   }
 
   return (
-    <article className={classes.awell_checklist_wrapper}>
-      <ChecklistComponent
-        title={title || ''}
-        items={items || []}
-        onSubmit={handleSubmit}
-        disabled={isSubmitting}
-        submitLabel={t('activities.checklist.cta_submit')}
-      />
-    </article>
+    <ChecklistComponent
+      title={title || ''}
+      items={items || []}
+      onSubmit={handleSubmit}
+      disabled={isSubmitting}
+      submitLabel={t('activities.checklist.cta_submit')}
+    />
   )
 }
 

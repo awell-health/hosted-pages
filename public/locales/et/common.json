@@ -1,4 +1,5 @@
 {
+  "errors": { "app_error": "Oops, something went wrong. Please try again." },
   "activities": {
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "loading": "Tegevuse laadimine...",
@@ -22,17 +23,33 @@
       "previous_question_label": "Eelmine",
       "question_required_error": "See küsimus on kohustuslik.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
-      "saving_error": "Vormi esitamine ebaõnnestus."
+      "saving_error": "Vormi esitamine ebaõnnestus.",
+      "questions": {
+        "yes_no": {
+          "yes_answer": "Jah",
+          "no_answer": "Ei"
+        }
+      }
     },
     "checklist": {
       "cta_submit": "Esita vastused",
+      "loading": "Laadimine...",
       "loading_error": "Midagi läks nimekirja laadimisel valesti.",
       "saving_error": "Nimekirja esitamine ebaõnnestus."
     }
   },
+  "preview": {
+    "cta": "Try it out"
+  },
   "seo": {
+    "loading_title": "Laadimine...",
     "title": "Awelli tegevused",
     "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega."
+  },
+  "link_page": {
+    "loading": "Hang on, we are starting your session.",
+    "loading_error": "Oops, we could not start a session for you.",
+    "try_again": "Proovi uuesti"
   },
   "session": {
     "authentication_loading": "Autentimine, palun oodake.",
@@ -40,6 +57,8 @@
     "loading_error": "Midagi läks seansi laadimisel valesti.",
     "loading": "Seansi laadimine...",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
+    "all_activities_completed": "You have completed all your activities. You can close this page now.",
+    "session_canceled": "Your session has been cancelled.",
     "try_again": "Proovi uuesti",
     "close_modal": {
       "title": "Soovid pöördumise täitmise pooleli jätta?",
