@@ -1,11 +1,12 @@
 import { isNil } from 'lodash'
-import type { NextPage } from 'next'
+import type { GetStaticPaths, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { StartHostedActivitySessionFlow } from '../../src/components/StartHostedActivitySessionFlow'
 import { StartHostedActivitySessionParams } from '../../types'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { ThemeProvider } from '@awell_health/ui-library'
 import { AWELL_BRAND_COLOR } from '../../src/config'
+import { NoSSRComponent } from '../../src/components/NoSSR'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'hosted-pages.awellhealth.com/l/<hostedPagesLinkId>'
@@ -13,19 +14,15 @@ import { AWELL_BRAND_COLOR } from '../../src/config'
 const HostedPagesLink: NextPage = () => {
   const router = useRouter()
 
-  // if it is a stakeholder session flow (redirected after validation)
   const { hostedPagesLinkId } = router.query as StartHostedActivitySessionParams
 
-  // if it is a shortened URL
-  if (!isNil(hostedPagesLinkId) && typeof hostedPagesLinkId === 'string') {
-    return (
+  return (
+    <NoSSRComponent>
       <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
         <StartHostedActivitySessionFlow hostedPagesLinkId={hostedPagesLinkId} />
       </ThemeProvider>
-    )
-  }
-
-  return <></>
+    </NoSSRComponent>
+  )
 }
 
 export default HostedPagesLink
@@ -35,5 +32,12 @@ export async function getStaticProps({ locale }: { locale: string }) {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
     },
+  }
+}
+
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
   }
 }
