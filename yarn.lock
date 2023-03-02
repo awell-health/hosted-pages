@@ -66,10 +66,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell_health/ui-library@0.0.49":
-  version "0.0.49"
-  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.0.49.tgz#ea3fdaca4db6d34754b7a8c6b0bf4e61eede920f"
-  integrity sha512-9f5vwx6kfgRLd/S+NO6XLXaCp86GGjswE3MRFAuieO5HqqH6Bv/0oPne1on9EGiAnzhAZaPE/N+61RQ1UeaI8Q==
+"@awell_health/ui-library@0.0.54":
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.0.54.tgz#04b8407f06cd34e702e666a7a579d9ca7eb0218a"
+  integrity sha512-ETr3cem9P/eAtXgoT6dFgoceVYpgLNR7vnf0KK+kwhVb+YsO9ewCbG7bzQgjIpnOzBPXRfXwbEvvXAK0Tl+Fqw==
   dependencies:
     "@heroicons/react" "^2.0.13"
     date-fns "^2.29.1"
@@ -5467,6 +5467,11 @@ url-loader@^4.1.0:
     loader-utils "^2.0.0"
     mime-types "^2.1.27"
     schema-utils "^3.0.0"
+
+use-local-storage@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/use-local-storage/-/use-local-storage-2.3.6.tgz#11058465143aa7537556af482b21c6b1f77a78a6"
+  integrity sha512-OJQHWYbH2M5mMaSY6uYIbfzOm7eVz1fBYFw1wqQurCR2+gQb+FjVt0KzzDAsgTOSEUNVAbaiJ0I4WcNjRn7u5w==
 
 use-sync-external-store@1.2.0:
   version "1.2.0"
