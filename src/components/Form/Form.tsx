@@ -68,10 +68,13 @@ export const Form: FC<FormProps> = ({ activity }) => {
     }
   }
 
-  //FIXME type - need to be fixed in ui-lib
   return (
     <WizardForm
       form={form as any}
+      questionLabels={{
+        yes_label: t('activities.form.questions.yes_no.yes_answer'),
+        no_label: t('activities.form.questions.yes_no.no_answer'),
+      }}
       buttonLabels={{
         prev: t('activities.form.previous_question_label'),
         next: t('activities.form.next_question_label'),

@@ -1,31 +1,49 @@
-import { HorizontalSpinner, Text } from '@awell_health/ui-library'
 import { isNil } from 'lodash'
 import { useRouter } from 'next/router'
 import { FC, useEffect } from 'react'
 import useSWR from 'swr'
-import { HostedLinkParams } from '../../../types'
+import { StartHostedActivitySessionParams } from '../../../types'
+import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
+import { useTranslation } from 'next-i18next'
 import classes from './startHostedActivitySessionFlow.module.css'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
-type StartHostedActivitySessionFlowProps = HostedLinkParams
+type StartHostedActivitySessionFlowProps = StartHostedActivitySessionParams
 
 export const StartHostedActivitySessionFlow: FC<
   StartHostedActivitySessionFlowProps
-> = ({ stakeholderId, pathwayId, tenantId }): JSX.Element => {
+> = ({ hostedPagesLinkId }): JSX.Element => {
   const router = useRouter()
-  const apiRouteQueryParams = `stakeholderId=${stakeholderId}&pathwayId=${pathwayId}&tenantId=${tenantId}`
+  const { t } = useTranslation()
+
   const { data, error } = useSWR(
-    `/api/startHostedActivitySession/?${apiRouteQueryParams}`,
+    `/api/startHostedActivitySessionViaHostedPagesLink/${hostedPagesLinkId}`,
     fetcher
   )
 
+  const retry = () => {
+    window.location.reload()
+  }
+
   useEffect(() => {
-    if (!isNil(data?.session_id)) {
-      router.replace(`?sessionId=${data?.session_id}`)
+    if (!isNil(data?.sessionId)) {
+      router.replace(`../?sessionId=${data?.sessionId}`)
     }
   }, [data])
 
-  return <LoadingPage title="Fetching activities" />
+  if (error || !isNil(data?.error)) {
+    return (
+      <div className={classes.container}>
+        <ErrorPage title={t('link_page.loading_error')} onRetry={retry} />
+      </div>
+    )
+  }
+
+  return (
+    <div className={classes.container}>
+      <LoadingPage title={t('link_page.loading')} />
+    </div>
+  )
 }

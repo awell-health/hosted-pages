@@ -1,4 +1,7 @@
 {
+  "errors": {
+    "app_error": "Oeps, er is iets misgelopen. Probeer het opnieuw."
+  },
   "activities": {
     "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
     "loading": "Activiteit laden...",
@@ -22,17 +25,33 @@
       "previous_question_label": "Vorige",
       "question_required_error": "Deze vraag is verplicht.",
       "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden.",
-      "saving_error": "Vragenlijst kon niet verzonden worden."
+      "saving_error": "Vragenlijst kon niet verzonden worden.",
+      "questions": {
+        "yes_no": {
+          "yes_answer": "Ja",
+          "no_answer": "Nee"
+        }
+      }
     },
     "checklist": {
       "cta_submit": "Klaar",
+      "loading": "Checklist laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van de checklist.",
       "saving_error": "Checklist kon niet verzonden worden."
     }
   },
+  "preview": {
+    "cta": "Probeer het uit"
+  },
   "seo": {
+    "loading_title": "Laden...",
     "title": "Awell Activiteiten",
     "description": "Voltooi activiteiten in uw zorgpad met Awell hosted pages."
+  },
+  "link_page": {
+    "loading": "Even geduld, we starten voor jouw een sessie.",
+    "loading_error": "Oeps, er is iets misgelopen tijdens het laden van jouw sessie.",
+    "try_again": "Opnieuw proberen"
   },
   "session": {
     "authentication_loading": "Authenticeren, even geduld.",
@@ -40,6 +59,8 @@
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
     "loading": "Sessie laden...",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
+    "all_activities_completed": "Je hebt alle activiteiten voltooid. Je kan deze pagina nu sluiten.",
+    "session_canceled": "Je sessie werd geannuleerd.",
     "try_again": "Opnieuw proberen",
     "close_modal": {
       "title": "Ben je zeker dat je de sessie wil afsluiten?",

@@ -789,6 +789,7 @@ export type Mutation = {
   retryWebhookCall: RetryWebhookCallPayload;
   saveBaselineInfo: EmptyPayload;
   startHostedActivitySession: StartHostedActivitySessionPayload;
+  startHostedActivitySessionViaHostedPagesLink: StartHostedActivitySessionPayload;
   startHostedPathwaySession: StartHostedPathwaySessionPayload;
   startPathway: StartPathwayPayload;
   stopPathway: EmptyPayload;
@@ -878,6 +879,11 @@ export type MutationSaveBaselineInfoArgs = {
 
 export type MutationStartHostedActivitySessionArgs = {
   input: StartHostedActivitySessionInput;
+};
+
+
+export type MutationStartHostedActivitySessionViaHostedPagesLinkArgs = {
+  input: StartHostedActivitySessionViaHostedPagesLinkInput;
 };
 
 
@@ -1535,6 +1541,11 @@ export type StartHostedActivitySessionPayload = Payload & {
   session_id: Scalars['String'];
   session_url: Scalars['String'];
   success: Scalars['Boolean'];
+};
+
+export type StartHostedActivitySessionViaHostedPagesLinkInput = {
+  hosted_pages_link_id: Scalars['String'];
+  language?: InputMaybe<Language>;
 };
 
 export type StartHostedPathwaySessionInput = {
