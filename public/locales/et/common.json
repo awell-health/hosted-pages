@@ -23,7 +23,13 @@
       "previous_question_label": "Eelmine",
       "question_required_error": "See küsimus on kohustuslik.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
-      "saving_error": "Vormi esitamine ebaõnnestus."
+      "saving_error": "Vormi esitamine ebaõnnestus.",
+      "questions": {
+        "yes_no": {
+          "yes_answer": "Jah",
+          "no_answer": "Ei"
+        }
+      }
     },
     "checklist": {
       "cta_submit": "Esita vastused",
