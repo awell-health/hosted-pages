@@ -7,6 +7,7 @@ import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 import classes from './startHostedActivitySessionFlow.module.css'
+import { mapLanguageToLocalePrefix } from '../../utils'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -30,7 +31,8 @@ export const StartHostedActivitySessionFlow: FC<
   useEffect(() => {
     if (!isNil(data?.sessionId) && !isNil(data?.language)) {
       const { sessionId, language } = data
-      router.replace(`../${language}?sessionId=${sessionId}`)
+      const language_prefix = mapLanguageToLocalePrefix({ language })
+      router.replace(`../${language_prefix}?sessionId=${sessionId}`)
     }
   }, [data, router])
 

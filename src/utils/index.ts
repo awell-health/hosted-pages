@@ -1,0 +1,1 @@
+export { mapLanguageToLocalePrefix } from './mapLanguageToLocalePrefix'
