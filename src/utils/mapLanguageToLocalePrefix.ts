@@ -24,6 +24,6 @@ export const mapLanguageToLocalePrefix = ({
     case Language.French:
       return 'fr'
     default:
-      return Language.English
+      return 'en'
   }
 }
