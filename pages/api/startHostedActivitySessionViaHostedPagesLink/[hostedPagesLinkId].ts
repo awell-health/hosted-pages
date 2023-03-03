@@ -1,12 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
-import { environment, StartHostedActivitySessionParams } from '../../../types'
+import {
+  environment,
+  StartHostedActivitySessionParams,
+  StartHostedActivitySessionPayload,
+} from '../../../types'
 
 type Data =
-  | {
-      sessionId: string
-    }
+  | StartHostedActivitySessionPayload
   | {
       error: any
     }
@@ -40,6 +42,7 @@ export default async function handler(
           mutation StartHostedActivitySessionViaHostedPagesLink($input: StartHostedActivitySessionViaHostedPagesLinkInput!) {
             startHostedActivitySessionViaHostedPagesLink(input: $input) {
               session_id
+              language
             }
           }
           `,
@@ -53,10 +56,10 @@ export default async function handler(
 
     const session_response = await session.json()
 
-    const { session_id } =
+    const { session_id, language } =
       session_response?.data?.startHostedActivitySessionViaHostedPagesLink
 
-    res.status(200).json({ sessionId: session_id })
+    res.status(200).json({ sessionId: session_id, language })
   } catch (error) {
     res.status(500).json({ error })
   }

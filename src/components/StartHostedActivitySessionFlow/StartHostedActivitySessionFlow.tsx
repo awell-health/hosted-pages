@@ -28,8 +28,8 @@ export const StartHostedActivitySessionFlow: FC<
   }
 
   useEffect(() => {
-    if (!isNil(data?.sessionId)) {
-      router.replace(`../?sessionId=${data?.sessionId}`)
+    if (!isNil(data?.sessionId) && !isNil(data?.language)) {
+      router.replace(`../${data?.language}?sessionId=${data?.sessionId}`)
     }
   }, [data])
 
