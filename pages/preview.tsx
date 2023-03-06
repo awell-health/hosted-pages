@@ -9,7 +9,6 @@ import {
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
 import Head from 'next/head'
-import classes from '../styles/Preview.module.css'
 import { ErrorBoundary } from '../src/components/ErrorBoundary'
 import { NoSSRComponent } from '../src/components/NoSSR'
 
