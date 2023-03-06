@@ -18,7 +18,7 @@ const AWELL_BRAND_COLOR = '#004ac2'
 const Preview: NextPage = () => {
   const { t } = useTranslation()
 
-  const onStartPreview = () => {
+  const onStartDemo = () => {
     window.location.href =
       'https://orchestration-stories.vercel.app/api/examples/preview-hosted-pages'
   }
@@ -26,10 +26,10 @@ const Preview: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Awell Hosted Pages Preview</title>
+        <title>Awell Hosted Pages Demo</title>
         <meta
           property="og:title"
-          content="Awell Hosted Pages Preview"
+          content="Awell Hosted Pages Demo"
           key="title"
         />
         <meta
@@ -75,7 +75,7 @@ const Preview: NextPage = () => {
                   link: '',
                   file: '',
                 }}
-                onMessageRead={onStartPreview}
+                onMessageRead={onStartDemo}
                 buttonLabels={{
                   readMessage: t('preview.cta'),
                 }}
