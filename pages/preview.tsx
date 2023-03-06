@@ -38,7 +38,11 @@ const Preview: NextPage = () => {
         />
       </Head>
       <NoSSRComponent>
-        <ErrorBoundary>
+        {/* 
+          Styles need to be applied to the ErrorBoundary
+          to make sure layout is rendered correctly. 
+        */}
+        <ErrorBoundary style={{ height: '100%' }}>
           <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
             <HostedPageLayout
               logo={awell_logo}
@@ -47,19 +51,23 @@ const Preview: NextPage = () => {
               <MessageViewer
                 content={`
               <p>
-                This is a preview of Awell Hosted Pages. Your
-                stakeholders will be redirected here to complete the pending
-                activities in their care flow.
+                This is a <strong>simulation</strong> of the Awell Hosted Pages app. The <a href='https://developers.awellhealth.com/awell-orchestration/docs/activities/awell-hosted-pages/what-are-awell-hosted-pages' title='What are Awell Hosted Pages'>Awell Hosted Pages app</a> 
+                is a prebuilt app where stakeholders (patient and clinical stakeholders) can 
+                interact with activities in care flows. Your stakeholders will be redirected 
+                to this app at run-time by clicking on the embedded link to complete their 
+                pending activities in the care flow.
               </p>
               <p>
-                A link for an Awell Hosted Pages session can only be generated
-                at run-time when care flows are orchestrated. In order to give
-                you a sense of how it works, click the button below. This will
-                create an Awell Hosted Pages session where you can interact
-                with some dummy activities.
+                In order to give you a sense of how it would work, click the button below. 
+                This will create an Awell Hosted Pages session where you can interact with <strong>some 
+                placeholder activities</strong> – not reflecting your care flow design.
+              </p>
+              <p>
+                Want to learn more about what it means to embed an Awell Hosted Pages link in your actions? 
+                – read <a href='http://help.awellhealth.com/en/articles/7021469-embed-an-awell-hosted-pages-link' title='Help article Awell Hosted Pages'>this Help article</a>.
               </p>
                 `}
-                subject="Awell Hosted Pages Preview"
+                subject="Awell Hosted Pages Demo"
                 attachments={[]}
                 attachmentIcon={<div />}
                 attachmentLabels={{
