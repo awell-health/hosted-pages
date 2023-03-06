@@ -1375,7 +1375,6 @@ export type Question = {
   options?: Maybe<Array<Option>>;
   questionConfig?: Maybe<QuestionConfig>;
   questionType?: Maybe<QuestionType>;
-  release_id: Scalars['String'];
   rule?: Maybe<Rule>;
   title: Scalars['String'];
   userQuestionType?: Maybe<UserQuestionType>;
@@ -1538,6 +1537,7 @@ export type StartHostedActivitySessionInput = {
 export type StartHostedActivitySessionPayload = Payload & {
   __typename?: 'StartHostedActivitySessionPayload';
   code: Scalars['String'];
+  language?: Maybe<Language>;
   session_id: Scalars['String'];
   session_url: Scalars['String'];
   success: Scalars['Boolean'];
@@ -1545,7 +1545,6 @@ export type StartHostedActivitySessionPayload = Payload & {
 
 export type StartHostedActivitySessionViaHostedPagesLinkInput = {
   hosted_pages_link_id: Scalars['String'];
-  language?: InputMaybe<Language>;
 };
 
 export type StartHostedPathwaySessionInput = {

@@ -2,11 +2,15 @@ import { isNil } from 'lodash'
 import { useRouter } from 'next/router'
 import { FC, useEffect } from 'react'
 import useSWR from 'swr'
-import { StartHostedActivitySessionParams } from '../../../types'
+import {
+  StartHostedActivitySessionParams,
+  StartHostedActivitySessionPayload,
+} from '../../../types'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 import classes from './startHostedActivitySessionFlow.module.css'
+import { redirect } from 'next/dist/server/api-utils'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -18,7 +22,7 @@ export const StartHostedActivitySessionFlow: FC<
   const router = useRouter()
   const { t } = useTranslation()
 
-  const { data, error } = useSWR(
+  const { data, error } = useSWR<StartHostedActivitySessionPayload>(
     `/api/startHostedActivitySessionViaHostedPagesLink/${hostedPagesLinkId}`,
     fetcher
   )
@@ -28,12 +32,13 @@ export const StartHostedActivitySessionFlow: FC<
   }
 
   useEffect(() => {
-    if (!isNil(data?.sessionId)) {
-      router.replace(`../?sessionId=${data?.sessionId}`)
+    if (data !== undefined && !isNil(data?.sessionUrl)) {
+      const { sessionUrl } = data
+      window.location.href = sessionUrl
     }
-  }, [data])
+  }, [data, router])
 
-  if (error || !isNil(data?.error)) {
+  if (error) {
     return (
       <div className={classes.container}>
         <ErrorPage title={t('link_page.loading_error')} onRetry={retry} />
