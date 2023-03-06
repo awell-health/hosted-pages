@@ -42,7 +42,7 @@ export default async function handler(
           mutation StartHostedActivitySessionViaHostedPagesLink($input: StartHostedActivitySessionViaHostedPagesLinkInput!) {
             startHostedActivitySessionViaHostedPagesLink(input: $input) {
               session_id
-              language
+              session_url
             }
           }
           `,
@@ -56,10 +56,10 @@ export default async function handler(
 
     const session_response = await session.json()
 
-    const { session_id, language } =
+    const { session_id, session_url } =
       session_response?.data?.startHostedActivitySessionViaHostedPagesLink
 
-    res.status(200).json({ sessionId: session_id, language })
+    res.status(200).json({ sessionId: session_id, sessionUrl: session_url })
   } catch (error) {
     res.status(500).json({ error })
   }
