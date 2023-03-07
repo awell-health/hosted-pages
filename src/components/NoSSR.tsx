@@ -5,7 +5,7 @@ const Wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return <>{children}</>
 }
 /**
- * Disable SSR on the whole app.
+ * This component disables SSR on all its chilren components.
  */
 export const NoSSRComponent = dynamic(Promise.resolve(Wrapper), {
   ssr: false,
