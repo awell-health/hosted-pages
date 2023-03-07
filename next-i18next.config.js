@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   i18n: {
     // These are all the locales you want to support in
@@ -8,6 +10,6 @@ module.exports = {
     // information detected from either the locale based domain or locale path as described above.
     localeDetection: false,
     defaultLocale: 'en',
-    localePath: './public/locales',
+    localePath: path.resolve('./public/locales'),
   },
 }
