@@ -25,10 +25,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit } = useSubmitForm({ activity })
 
-  const [formProgress, setFormProgress] = useLocalStorage(
-    activity.object.id,
-    ''
-  )
+  const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
   if (loading) {
     return <LoadingPage title={t('activities.form.loading')} />
