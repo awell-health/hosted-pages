@@ -1,5 +1,5 @@
 import { WizardForm } from '@awell_health/ui-library'
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import {
@@ -14,6 +14,7 @@ import { ErrorPage } from '../ErrorPage'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 import useLocalStorage from 'use-local-storage'
+import { isNil } from 'lodash'
 
 interface FormProps {
   activity: Activity
@@ -25,10 +26,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit } = useSubmitForm({ activity })
 
-  const [formProgress, setFormProgress] = useLocalStorage(
-    activity.object.id,
-    ''
-  )
+  const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
   if (loading) {
     return <LoadingPage title={t('activities.form.loading')} />
