@@ -1,3 +1,3 @@
-export enum ActivityName {
-  BOOK_APPOINTMENT = 'Book appointment',
+export enum CalDotComActionKey {
+  BOOK_APPOINTMENT = 'bookAppointment',
 }

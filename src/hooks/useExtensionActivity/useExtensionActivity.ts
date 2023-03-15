@@ -7,6 +7,8 @@ import { useEffect } from 'react'
 interface UseExtensionActivityHook {
   loading: boolean
   extensionActivityDetails?: ExtensionActivityDetails
+  error?: string
+  refetch?: () => void
 }
 
 export const useExtensionActivity = (id: string): UseExtensionActivityHook => {
@@ -26,7 +28,7 @@ export const useExtensionActivity = (id: string): UseExtensionActivityHook => {
   }, [id])
 
   if (!isNil(error)) {
-    return { loading: false }
+    return { loading: false, error: error.message, refetch }
   }
   if (loading) {
     return { loading: true }
@@ -35,5 +37,6 @@ export const useExtensionActivity = (id: string): UseExtensionActivityHook => {
   return {
     loading: false,
     extensionActivityDetails: data?.pluginActivityRecord.record,
+    refetch,
   }
 }
