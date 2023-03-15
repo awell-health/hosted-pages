@@ -8,7 +8,7 @@ import type {
   Activity,
   PluginActivityRecord,
 } from '../../../types/generated/types-orchestration'
-import { CalDotComActionKey } from './types'
+import { ActionKey } from './types'
 
 interface CalDotComPluginProps {
   activity: Activity
@@ -21,7 +21,7 @@ export const CalDotComPlugin: FC<CalDotComPluginProps> = ({
   const { t } = useTranslation()
 
   switch (activityDetails.plugin_action_key) {
-    case CalDotComActionKey.BOOK_APPOINTMENT:
+    case ActionKey.BOOK_APPOINTMENT:
       return <BookAppointmentAction activityDetails={activityDetails} />
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />

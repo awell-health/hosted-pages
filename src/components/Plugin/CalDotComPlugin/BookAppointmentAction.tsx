@@ -23,6 +23,7 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   )
 
   const onBookingSuccessful: BookingSuccessfulFunction = useCallback((data) => {
+    // TODO: update activity here
     console.log(data)
   }, [])
 

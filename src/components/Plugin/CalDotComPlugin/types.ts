@@ -1,4 +1,4 @@
-export enum CalDotComActionKey {
+export enum ActionKey {
   BOOK_APPOINTMENT = 'bookAppointment',
 }
 
