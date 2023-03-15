@@ -6,7 +6,7 @@ import { Form } from '../Form'
 import { Message } from '../Message'
 import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
-import { Plugin } from '../PluginAction'
+import { Plugin } from '../Plugin'
 import { ActivityObjectType } from '../../hooks/useSessionActivities'
 
 interface ActivityContentProps {
