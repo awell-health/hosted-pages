@@ -81,6 +81,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       errorLabels={{
         required: t('activities.form.question_required_error'),
         sliderNotTouched: t('activities.form.slider_not_touched_error'),
+        invalidPhoneNumber: t('activities.form.invalid_phone_number'),
       }}
       onSubmit={handleSubmit}
       evaluateDisplayConditions={handleEvaluateFormRules}
