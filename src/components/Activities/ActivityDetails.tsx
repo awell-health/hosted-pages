@@ -6,6 +6,7 @@ import { Form } from '../Form'
 import { Message } from '../Message'
 import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
+import { Plugin } from '../PluginAction'
 import { ActivityObjectType } from '../../hooks/useSessionActivities'
 
 interface ActivityContentProps {
@@ -22,6 +23,8 @@ export const ActivityDetails: FC<ActivityContentProps> = ({ activity }) => {
       return <Message activity={activity} />
     case ActivityObjectType.Checklist:
       return <Checklist activity={activity} />
+    case ActivityObjectType.PluginAction:
+      return <Plugin activity={activity} />
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />
   }
