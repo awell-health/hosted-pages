@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { useTranslation } from 'next-i18next'
 
 import { ErrorPage } from '../../ErrorPage'
+import { BookAppointmentAction } from './BookAppointmentAction'
 
 import type {
   Activity,
@@ -21,7 +22,7 @@ export const CalDotComPlugin: FC<CalDotComPluginProps> = ({
 
   switch (activityDetails.plugin_action_key) {
     case CalDotComActionKey.BOOK_APPOINTMENT:
-      return <>{JSON.stringify(activityDetails)}</>
+      return <BookAppointmentAction activityDetails={activityDetails} />
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />
   }
