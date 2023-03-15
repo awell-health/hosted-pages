@@ -7,7 +7,7 @@ import { useExtensionActivity } from '../../hooks/useExtensionActivity'
 import { LoadingPage } from '../LoadingPage'
 
 import type { Activity } from '../../types/generated/types-orchestration'
-import { PluginId } from './types'
+import { PluginKey } from './types'
 
 interface PluginProps {
   activity: Activity
@@ -32,7 +32,7 @@ export const Plugin: FC<PluginProps> = ({ activity }) => {
   }
 
   switch (activity?.indirect_object?.id) {
-    case PluginId.CAL_DOT_COM:
+    case PluginKey.CAL_DOT_COM:
       return (
         <CalDotComPlugin
           activity={activity}
