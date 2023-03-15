@@ -107,6 +107,8 @@ export type Activity = {
   context?: Maybe<PathwayContext>;
   date: Scalars['String'];
   form?: Maybe<Form>;
+  /** Url for icon, only used by extensions custom actions */
+  icon_url?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   indirect_object?: Maybe<ActivityObject>;
   isUserActivity: Scalars['Boolean'];
@@ -140,8 +142,10 @@ export enum ActivityAction {
   Processed = 'PROCESSED',
   Read = 'READ',
   Remind = 'REMIND',
+  Reported = 'REPORTED',
   Scheduled = 'SCHEDULED',
   Send = 'SEND',
+  Skipped = 'SKIPPED',
   Stopped = 'STOPPED',
   Submitted = 'SUBMITTED'
 }
@@ -462,6 +466,7 @@ export enum DataPointSourceType {
   ApiCall = 'API_CALL',
   ApiCallStatus = 'API_CALL_STATUS',
   Calculation = 'CALCULATION',
+  ExtensionWebhook = 'EXTENSION_WEBHOOK',
   Form = 'FORM',
   Pathway = 'PATHWAY',
   PatientProfile = 'PATIENT_PROFILE',
@@ -474,7 +479,8 @@ export enum DataPointValueType {
   Date = 'DATE',
   Number = 'NUMBER',
   NumbersArray = 'NUMBERS_ARRAY',
-  String = 'STRING'
+  String = 'STRING',
+  Telephone = 'TELEPHONE'
 }
 
 export type DateFilter = {
@@ -575,11 +581,11 @@ export type EvaluateFormRulesPayload = Payload & {
 };
 
 export type FilterActivitiesParams = {
-  action: StringArrayFilter;
-  activity_status: StringArrayFilter;
-  activity_type: StringArrayFilter;
-  pathway_definition_id: StringArrayFilter;
-  patient_id: TextFilterEquals;
+  action?: InputMaybe<StringArrayFilter>;
+  activity_status?: InputMaybe<StringArrayFilter>;
+  activity_type?: InputMaybe<StringArrayFilter>;
+  pathway_definition_id?: InputMaybe<StringArrayFilter>;
+  patient_id?: InputMaybe<TextFilterEquals>;
 };
 
 export type FilterPathwayDataPointDefinitionsParams = {
@@ -1603,9 +1609,11 @@ export type SubActivity = {
   action: ActivityAction;
   date: Scalars['String'];
   error?: Maybe<Scalars['String']>;
+  error_category?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   object?: Maybe<ActivityObject>;
   subject: ActivitySubject;
+  text?: Maybe<TranslatedText>;
 };
 
 export type SubmitChecklistInput = {
@@ -1880,6 +1888,7 @@ export enum UserQuestionType {
   ShortText = 'SHORT_TEXT',
   Signature = 'SIGNATURE',
   Slider = 'SLIDER',
+  Telephone = 'TELEPHONE',
   YesNo = 'YES_NO'
 }
 
@@ -1944,6 +1953,13 @@ export type EvaluateFormRulesMutationVariables = Exact<{
 
 
 export type EvaluateFormRulesMutation = { __typename?: 'Mutation', evaluateFormRules: { __typename?: 'EvaluateFormRulesPayload', results: Array<{ __typename?: 'QuestionRuleResult', question_id: string, rule_id: string, satisfied: boolean }> } };
+
+export type GetExtensionActivityDetailsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetExtensionActivityDetailsQuery = { __typename?: 'Query', pluginActivityRecord: { __typename?: 'PluginActivityRecordPayload', record: { __typename?: 'PluginActivityRecord', id: string, activity_id: string, pathway_id: string, plugin_key: string, plugin_action_key: string, date: string, fields: Array<{ __typename?: 'PluginActionField', id: string, type: PluginActionFieldType, label: string, value: string }>, settings?: Array<{ __typename?: 'PluginActionSettingsProperty', value: string, label: string, key: string }> | null } } };
 
 export type FormFragment = { __typename?: 'Form', id: string, title: string, questions: Array<{ __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> };
 
@@ -2226,6 +2242,59 @@ export function useEvaluateFormRulesMutation(baseOptions?: Apollo.MutationHookOp
 export type EvaluateFormRulesMutationHookResult = ReturnType<typeof useEvaluateFormRulesMutation>;
 export type EvaluateFormRulesMutationResult = Apollo.MutationResult<EvaluateFormRulesMutation>;
 export type EvaluateFormRulesMutationOptions = Apollo.BaseMutationOptions<EvaluateFormRulesMutation, EvaluateFormRulesMutationVariables>;
+export const GetExtensionActivityDetailsDocument = gql`
+    query GetExtensionActivityDetails($id: String!) {
+  pluginActivityRecord(id: $id) {
+    record {
+      id
+      activity_id
+      pathway_id
+      plugin_key
+      plugin_action_key
+      fields {
+        id
+        type
+        label
+        value
+      }
+      date
+      settings {
+        value
+        label
+        key
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetExtensionActivityDetailsQuery__
+ *
+ * To run a query within a React component, call `useGetExtensionActivityDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExtensionActivityDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetExtensionActivityDetailsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetExtensionActivityDetailsQuery(baseOptions: Apollo.QueryHookOptions<GetExtensionActivityDetailsQuery, GetExtensionActivityDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetExtensionActivityDetailsQuery, GetExtensionActivityDetailsQueryVariables>(GetExtensionActivityDetailsDocument, options);
+      }
+export function useGetExtensionActivityDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetExtensionActivityDetailsQuery, GetExtensionActivityDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetExtensionActivityDetailsQuery, GetExtensionActivityDetailsQueryVariables>(GetExtensionActivityDetailsDocument, options);
+        }
+export type GetExtensionActivityDetailsQueryHookResult = ReturnType<typeof useGetExtensionActivityDetailsQuery>;
+export type GetExtensionActivityDetailsLazyQueryHookResult = ReturnType<typeof useGetExtensionActivityDetailsLazyQuery>;
+export type GetExtensionActivityDetailsQueryResult = Apollo.QueryResult<GetExtensionActivityDetailsQuery, GetExtensionActivityDetailsQueryVariables>;
 export const GetFormDocument = gql`
     query GetForm($id: String!) {
   form(id: $id) {
