@@ -6,13 +6,13 @@ import { BookAppointmentAction } from './BookAppointmentAction'
 
 import type {
   Activity,
-  PluginActivityRecord,
+  ExtensionActivityRecord,
 } from '../../../types/generated/types-orchestration'
 import { ActionKey } from './types'
 
 interface CalDotComExtensionProps {
   activity: Activity
-  activityDetails: PluginActivityRecord
+  activityDetails: ExtensionActivityRecord
 }
 
 export const CalDotComExtension: FC<CalDotComExtensionProps> = ({

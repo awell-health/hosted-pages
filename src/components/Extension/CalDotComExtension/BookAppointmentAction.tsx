@@ -4,11 +4,11 @@ import { CalDotComScheduling } from '@awell_health/ui-library'
 import { mapActionFieldsToObject } from '../utils'
 
 import { BookAppointmentFields } from './types'
-import type { PluginActivityRecord } from '../../../types/generated/types-orchestration'
+import type { ExtensionActivityRecord } from '../../../types/generated/types-orchestration'
 import type { BookingSuccessfulFunction } from '@awell_health/ui-library/dist/types/atoms/scheduling/cal.com/calDotComTypes'
 
 interface BookAppointmentActionProps {
-  activityDetails: PluginActivityRecord
+  activityDetails: ExtensionActivityRecord
 }
 
 export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({

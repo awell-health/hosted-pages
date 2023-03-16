@@ -1104,15 +1104,15 @@ export type Payload = {
   success: Scalars['Boolean'];
 };
 
-export type PluginActionField = {
+export type ExtensionActionField = {
   __typename?: 'PluginActionField';
   id: Scalars['ID'];
   label: Scalars['String'];
-  type: PluginActionFieldType;
+  type: ExtensionActionFieldType;
   value: Scalars['String'];
 };
 
-export enum PluginActionFieldType {
+export enum ExtensionActionFieldType {
   Html = 'HTML',
   Json = 'JSON',
   Numeric = 'NUMERIC',
@@ -1120,29 +1120,29 @@ export enum PluginActionFieldType {
   Text = 'TEXT'
 }
 
-export type PluginActionSettingsProperty = {
+export type ExtensionActionSettingsProperty = {
   __typename?: 'PluginActionSettingsProperty';
   key: Scalars['String'];
   label: Scalars['String'];
   value: Scalars['String'];
 };
 
-export type PluginActivityRecord = {
+export type ExtensionActivityRecord = {
   __typename?: 'PluginActivityRecord';
   activity_id: Scalars['String'];
   date: Scalars['String'];
-  fields: Array<PluginActionField>;
+  fields: Array<ExtensionActionField>;
   id: Scalars['ID'];
   pathway_id: Scalars['String'];
   plugin_action_key: Scalars['String'];
   plugin_key: Scalars['String'];
-  settings?: Maybe<Array<PluginActionSettingsProperty>>;
+  settings?: Maybe<Array<ExtensionActionSettingsProperty>>;
 };
 
-export type PluginActivityRecordPayload = Payload & {
+export type ExtensionActivityRecordPayload = Payload & {
   __typename?: 'PluginActivityRecordPayload';
   code: Scalars['String'];
-  record: PluginActivityRecord;
+  record: ExtensionActivityRecord;
   success: Scalars['Boolean'];
 };
 
@@ -1192,7 +1192,7 @@ export type Query = {
   patient: PatientPayload;
   patientPathways: PatientPathwaysPayload;
   patients: PatientsPayload;
-  pluginActivityRecord: PluginActivityRecordPayload;
+  pluginActivityRecord: ExtensionActivityRecordPayload;
   publishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
   scheduledSteps: ScheduledStepsPayload;
   searchPatientsByNationalRegistryNumber: SearchPatientsPayload;
@@ -1959,7 +1959,7 @@ export type GetExtensionActivityDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetExtensionActivityDetailsQuery = { __typename?: 'Query', pluginActivityRecord: { __typename?: 'PluginActivityRecordPayload', record: { __typename?: 'PluginActivityRecord', id: string, activity_id: string, pathway_id: string, plugin_key: string, plugin_action_key: string, date: string, fields: Array<{ __typename?: 'PluginActionField', id: string, type: PluginActionFieldType, label: string, value: string }>, settings?: Array<{ __typename?: 'PluginActionSettingsProperty', value: string, label: string, key: string }> | null } } };
+export type GetExtensionActivityDetailsQuery = { __typename?: 'Query', pluginActivityRecord: { __typename?: 'PluginActivityRecordPayload', record: { __typename?: 'PluginActivityRecord', id: string, activity_id: string, pathway_id: string, plugin_key: string, plugin_action_key: string, date: string, fields: Array<{ __typename?: 'PluginActionField', id: string, type: ExtensionActionFieldType, label: string, value: string }>, settings?: Array<{ __typename?: 'PluginActionSettingsProperty', value: string, label: string, key: string }> | null } } };
 
 export type FormFragment = { __typename?: 'Form', id: string, title: string, questions: Array<{ __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> };
 
