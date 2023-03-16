@@ -3,9 +3,8 @@ import { useTranslation } from 'next-i18next'
 import { CalDotComScheduling } from '@awell_health/ui-library'
 import { mapActionFieldsToObject } from '../utils'
 
-import { BookAppointmentFields } from './types'
-import type { ExtensionActivityRecord } from '../../../types/generated/types-orchestration'
-import type { BookingSuccessfulFunction } from '@awell_health/ui-library/dist/types/atoms/scheduling/cal.com/calDotComTypes'
+import type { BookAppointmentFields, BookingSuccessfulFunction } from './types'
+import type { ExtensionActivityRecord } from '../types'
 
 interface BookAppointmentActionProps {
   activityDetails: ExtensionActivityRecord

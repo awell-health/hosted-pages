@@ -4,11 +4,8 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../../ErrorPage'
 import { BookAppointmentAction } from './BookAppointmentAction'
 
-import type {
-  Activity,
-  ExtensionActivityRecord,
-} from '../../../types/generated/types-orchestration'
 import { ActionKey } from './types'
+import type { Activity, ExtensionActivityRecord } from '../types'
 
 interface CalDotComExtensionProps {
   activity: Activity

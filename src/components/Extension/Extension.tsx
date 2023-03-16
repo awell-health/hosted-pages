@@ -6,8 +6,7 @@ import { CalDotComExtension } from './CalDotComExtension'
 import { useExtensionActivity } from '../../hooks/useExtensionActivity'
 import { LoadingPage } from '../LoadingPage'
 
-import type { Activity } from '../../types/generated/types-orchestration'
-import { ExtensionKey } from './types'
+import { type Activity, ExtensionKey } from './types'
 
 interface ExtensionProps {
   activity: Activity
