@@ -10,12 +10,12 @@ import type {
 } from '../../../types/generated/types-orchestration'
 import { ActionKey } from './types'
 
-interface CalDotComPluginProps {
+interface CalDotComExtensionProps {
   activity: Activity
   activityDetails: PluginActivityRecord
 }
 
-export const CalDotComPlugin: FC<CalDotComPluginProps> = ({
+export const CalDotComExtension: FC<CalDotComExtensionProps> = ({
   activityDetails,
 }) => {
   const { t } = useTranslation()
@@ -28,4 +28,4 @@ export const CalDotComPlugin: FC<CalDotComPluginProps> = ({
   }
 }
 
-CalDotComPlugin.displayName = 'CalDotComPlugin'
+CalDotComExtension.displayName = 'CalDotComExtension'

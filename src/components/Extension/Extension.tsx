@@ -2,18 +2,18 @@ import React, { FC } from 'react'
 import { useTranslation } from 'next-i18next'
 
 import { ErrorPage } from '../ErrorPage'
-import { CalDotComPlugin } from './CalDotComPlugin'
+import { CalDotComExtension } from './CalDotComExtension'
 import { useExtensionActivity } from '../../hooks/useExtensionActivity'
 import { LoadingPage } from '../LoadingPage'
 
 import type { Activity } from '../../types/generated/types-orchestration'
-import { PluginKey } from './types'
+import { ExtensionKey } from './types'
 
-interface PluginProps {
+interface ExtensionProps {
   activity: Activity
 }
 
-export const Plugin: FC<PluginProps> = ({ activity }) => {
+export const Extension: FC<ExtensionProps> = ({ activity }) => {
   const { t } = useTranslation()
   const { loading, extensionActivityDetails, error, refetch } =
     useExtensionActivity(activity.object.id)
@@ -32,9 +32,9 @@ export const Plugin: FC<PluginProps> = ({ activity }) => {
   }
 
   switch (activity?.indirect_object?.id) {
-    case PluginKey.CAL_DOT_COM:
+    case ExtensionKey.CAL_DOT_COM:
       return (
-        <CalDotComPlugin
+        <CalDotComExtension
           activity={activity}
           activityDetails={extensionActivityDetails}
         />
@@ -44,4 +44,4 @@ export const Plugin: FC<PluginProps> = ({ activity }) => {
   }
 }
 
-Plugin.displayName = 'Plugin'
+Extension.displayName = 'Extension'

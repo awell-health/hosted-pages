@@ -1,3 +1,3 @@
-export enum PluginKey {
+export enum ExtensionKey {
   CAL_DOT_COM = 'calDotCom',
 }
