@@ -25,6 +25,7 @@
       "previous_question_label": "Vorige",
       "question_required_error": "Deze vraag is verplicht.",
       "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden.",
+      "invalid_phone_number": "Phone number is invalid.",
       "saving_error": "Vragenlijst kon niet verzonden worden.",
       "questions": {
         "yes_no": {
