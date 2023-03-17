@@ -15,6 +15,7 @@
       "BaselineInfoPayload",
       "ChecklistPayload",
       "ClinicalNotePayload",
+      "CompleteExtensionActivityPayload",
       "CreatePatientPayload",
       "ElementsPayload",
       "EmptyPayload",

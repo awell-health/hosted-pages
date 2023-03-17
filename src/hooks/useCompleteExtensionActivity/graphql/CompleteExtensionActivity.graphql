@@ -1,0 +1,7 @@
+mutation CompleteExtensionActivity($input: CompleteExtensionActivityInput!) {
+  completeExtensionActivity(input: $input) {
+    activity {
+      ...Activity
+    }
+  }
+}
