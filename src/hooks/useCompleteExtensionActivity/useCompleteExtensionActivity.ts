@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-toastify'
 import { captureException } from '@sentry/nextjs'
@@ -16,38 +16,38 @@ export const useCompleteExtensionActivity =
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [completeExtensionActivity] = useCompleteExtensionActivityMutation()
 
-    const onSubmit: UseCompleteExtensionActivityHook['onSubmit'] = async (
-      activity_id,
-      data_points
-    ) => {
-      setIsSubmitting(true)
-      const variables = {
-        input: {
-          activity_id: activity_id,
-          data_points,
-        },
-      }
-      try {
-        await completeExtensionActivity({
-          variables,
-        })
-      } catch (error) {
-        toast.error(t('activities.checklist.saving_error'))
-        captureException(error, {
-          contexts: {
-            activity: {
-              activity_id,
-            },
-            graphql: {
-              query: 'CompleteExtensionActivity',
-              variables: JSON.stringify(variables),
-            },
+    const onSubmit: UseCompleteExtensionActivityHook['onSubmit'] = useCallback(
+      async (activity_id, data_points) => {
+        setIsSubmitting(true)
+        const variables = {
+          input: {
+            activity_id,
+            data_points,
           },
-        })
-      } finally {
-        setIsSubmitting(false)
-      }
-    }
+        }
+        try {
+          await completeExtensionActivity({
+            variables,
+          })
+        } catch (error) {
+          toast.error(t('activities.checklist.saving_error'))
+          captureException(error, {
+            contexts: {
+              activity: {
+                activity_id,
+              },
+              graphql: {
+                query: 'CompleteExtensionActivity',
+                variables: JSON.stringify(variables),
+              },
+            },
+          })
+        } finally {
+          setIsSubmitting(false)
+        }
+      },
+      [completeExtensionActivity, t]
+    )
 
     return {
       onSubmit,
