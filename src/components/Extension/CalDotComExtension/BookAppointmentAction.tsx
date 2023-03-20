@@ -15,7 +15,7 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   activityDetails,
 }) => {
   const { t } = useTranslation()
-  const { activity_id, fields } = activityDetails
+  const { activity_id, fields, pathway_id } = activityDetails
   const { onSubmit } = useCompleteBookAppointment()
 
   const { calLink } = useMemo(
@@ -33,6 +33,10 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   return (
     <CalDotComScheduling
       calLink={calLink}
+      metadata={{
+        awellPathwayId: pathway_id,
+        awellActivityId: activity_id,
+      }}
       onBookingSuccessful={onBookingSuccessful}
     />
   )
