@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo } from 'react'
-import { useTranslation } from 'next-i18next'
 import { CalDotComScheduling } from '@awell_health/ui-library'
 import { mapActionFieldsToObject } from '../utils'
 import { useCompleteBookAppointment } from './useCompleteBookAppointment'
@@ -14,7 +13,6 @@ interface BookAppointmentActionProps {
 export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   activityDetails,
 }) => {
-  const { t } = useTranslation()
   const { activity_id, fields, pathway_id } = activityDetails
   const { onSubmit } = useCompleteBookAppointment()
 
