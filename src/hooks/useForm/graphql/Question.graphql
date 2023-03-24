@@ -12,6 +12,7 @@ fragment Question on Question {
   questionConfig {
     recode_enabled
     mandatory
+    use_select
     slider {
       min
       max
