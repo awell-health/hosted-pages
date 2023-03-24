@@ -48,6 +48,7 @@ const defaultOptions = {} as const;
       "RetryWebhookCallPayload",
       "ScheduledStepsPayload",
       "SearchPatientsPayload",
+      "StakeholdersPayload",
       "StartHostedActivitySessionPayload",
       "StartHostedPathwaySessionPayload",
       "StopTrackPayload",
@@ -96,6 +97,7 @@ export type ActivitiesPayload = Payload & {
   __typename?: 'ActivitiesPayload';
   activities: Array<Activity>;
   code: Scalars['String'];
+  metadata?: Maybe<ActivityMetadata>;
   pagination?: Maybe<PaginationOutput>;
   sorting?: Maybe<SortingOutput>;
   success: Scalars['Boolean'];
@@ -156,6 +158,11 @@ export type ActivityLabel = {
   color: Scalars['String'];
   id?: Maybe<Scalars['String']>;
   text: Scalars['String'];
+};
+
+export type ActivityMetadata = {
+  __typename?: 'ActivityMetadata';
+  stakeholders?: Maybe<Array<ActivityObject>>;
 };
 
 export type ActivityObject = {
@@ -606,6 +613,7 @@ export type FilterActivitiesParams = {
   activity_type?: InputMaybe<StringArrayFilter>;
   pathway_definition_id?: InputMaybe<StringArrayFilter>;
   patient_id?: InputMaybe<TextFilterEquals>;
+  stakeholders?: InputMaybe<StringArrayFilter>;
 };
 
 export type FilterPathwayDataPointDefinitionsParams = {
@@ -1075,15 +1083,21 @@ export type PathwaysPayload = Payload & {
 
 export type PatientPathway = {
   __typename?: 'PatientPathway';
+  active_activities?: Maybe<Scalars['Float']>;
   baseline_info?: Maybe<Array<BaselineDataPoint>>;
   complete_date?: Maybe<Scalars['String']>;
+  failed_activities?: Maybe<Scalars['Float']>;
   id: Scalars['ID'];
+  latest_activity_date?: Maybe<Scalars['String']>;
+  latest_activity_title?: Maybe<Scalars['String']>;
+  latest_activity_type?: Maybe<Scalars['String']>;
   pathway_definition_id: Scalars['String'];
   release_id: Scalars['String'];
   status: PathwayStatus;
   status_explanation?: Maybe<Scalars['String']>;
   stop_date?: Maybe<Scalars['String']>;
   title: Scalars['String'];
+  total_activities?: Maybe<Scalars['Float']>;
   version?: Maybe<Scalars['Float']>;
 };
 
@@ -1130,15 +1144,15 @@ export type Payload = {
   success: Scalars['Boolean'];
 };
 
-export type ExtensionActionField = {
+export type PluginActionField = {
   __typename?: 'PluginActionField';
   id: Scalars['ID'];
   label: Scalars['String'];
-  type: ExtensionActionFieldType;
+  type: PluginActionFieldType;
   value: Scalars['String'];
 };
 
-export enum ExtensionActionFieldType {
+export enum PluginActionFieldType {
   Html = 'HTML',
   Json = 'JSON',
   Numeric = 'NUMERIC',
@@ -1146,39 +1160,47 @@ export enum ExtensionActionFieldType {
   Text = 'TEXT'
 }
 
-export type ExtensionActionSettingsProperty = {
+export type PluginActionSettingsProperty = {
   __typename?: 'PluginActionSettingsProperty';
   key: Scalars['String'];
   label: Scalars['String'];
   value: Scalars['String'];
 };
 
-export type ExtensionActivityRecord = {
+export type PluginActivityRecord = {
   __typename?: 'PluginActivityRecord';
   activity_id: Scalars['String'];
   date: Scalars['String'];
-  fields: Array<ExtensionActionField>;
+  fields: Array<PluginActionField>;
   id: Scalars['ID'];
   pathway_id: Scalars['String'];
   plugin_action_key: Scalars['String'];
   plugin_key: Scalars['String'];
-  settings?: Maybe<Array<ExtensionActionSettingsProperty>>;
+  settings?: Maybe<Array<PluginActionSettingsProperty>>;
 };
 
-export type ExtensionActivityRecordPayload = Payload & {
+export type PluginActivityRecordPayload = Payload & {
   __typename?: 'PluginActivityRecordPayload';
   code: Scalars['String'];
-  record: ExtensionActivityRecord;
+  record: PluginActivityRecord;
   success: Scalars['Boolean'];
 };
 
 export type PublishedPathwayDefinition = {
   __typename?: 'PublishedPathwayDefinition';
+  active_activities?: Maybe<Scalars['Float']>;
+  cancelled_activities?: Maybe<Scalars['Float']>;
   /** Starting/baseline data point definitions for the pathway */
   dataPointDefinitions: Array<DataPointDefinition>;
+  failed_activities?: Maybe<Scalars['Float']>;
   id: Scalars['ID'];
+  patients_with_pending_activities?: Maybe<Scalars['Float']>;
   release_id?: Maybe<Scalars['String']>;
+  stakeholders_with_pending_activities_list?: Maybe<Array<Scalars['String']>>;
   title: Scalars['String'];
+  total_activities?: Maybe<Scalars['Float']>;
+  total_patients?: Maybe<Scalars['Float']>;
+  total_stakeholders?: Maybe<Scalars['Float']>;
   version?: Maybe<Scalars['Float']>;
 };
 
@@ -1200,9 +1222,11 @@ export type Query = {
   checklist: ChecklistPayload;
   clinicalNote: ClinicalNotePayload;
   emrReport: EmrReportPayload;
+  filterStakeholders: StakeholdersPayload;
   form: FormPayload;
   formResponse: FormResponsePayload;
   forms: FormsPayload;
+  getStatusForPublishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
   hostedSession: HostedSessionPayload;
   hostedSessionActivities: HostedSessionActivitiesPayload;
   message: MessagePayload;
@@ -1218,11 +1242,14 @@ export type Query = {
   patient: PatientPayload;
   patientPathways: PatientPathwaysPayload;
   patients: PatientsPayload;
-  pluginActivityRecord: ExtensionActivityRecordPayload;
+  pluginActivityRecord: PluginActivityRecordPayload;
   publishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
   scheduledSteps: ScheduledStepsPayload;
   searchPatientsByNationalRegistryNumber: SearchPatientsPayload;
   searchPatientsByPatientCode: SearchPatientsPayload;
+  stakeholdersByDefinitionIds: StakeholdersPayload;
+  stakeholdersByPathwayDefinitionIds: StakeholdersPayload;
+  stakeholdersByReleaseIds: StakeholdersPayload;
   webhookCall: WebhookCallPayload;
   webhookCalls: WebhookCallsPayload;
   webhookCallsForPathwayDefinition: WebhookCallsPayload;
@@ -1276,6 +1303,13 @@ export type QueryClinicalNoteArgs = {
 
 export type QueryEmrReportArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryFilterStakeholdersArgs = {
+  pathway_definition_ids?: InputMaybe<Array<Scalars['String']>>;
+  release_ids?: InputMaybe<Array<Scalars['String']>>;
+  stakeholder_definition_ids?: InputMaybe<Array<Scalars['String']>>;
 };
 
 
@@ -1384,6 +1418,21 @@ export type QuerySearchPatientsByPatientCodeArgs = {
 };
 
 
+export type QueryStakeholdersByDefinitionIdsArgs = {
+  stakeholder_definition_ids: Array<Scalars['String']>;
+};
+
+
+export type QueryStakeholdersByPathwayDefinitionIdsArgs = {
+  pathway_definition_ids: Array<Scalars['String']>;
+};
+
+
+export type QueryStakeholdersByReleaseIdsArgs = {
+  release_ids: Array<Scalars['String']>;
+};
+
+
 export type QueryWebhookCallArgs = {
   webhook_call_id: Scalars['String'];
 };
@@ -1417,6 +1466,7 @@ export type QuestionConfig = {
   mandatory: Scalars['Boolean'];
   recode_enabled?: Maybe<Scalars['Boolean']>;
   slider?: Maybe<SliderConfig>;
+  use_select?: Maybe<Scalars['Boolean']>;
 };
 
 export type QuestionResponseInput = {
@@ -1556,6 +1606,34 @@ export type SortingOutput = {
 export type SortingParams = {
   direction: Scalars['String'];
   field: Scalars['String'];
+};
+
+export type Stakeholder = {
+  __typename?: 'Stakeholder';
+  clinical_app_role: StakeholderClinicalAppRole;
+  definition_id: Scalars['String'];
+  id: Scalars['ID'];
+  label: StakeholderLabel;
+  release_id: Scalars['String'];
+  version: Scalars['Float'];
+};
+
+export enum StakeholderClinicalAppRole {
+  Caregiver = 'CAREGIVER',
+  Patient = 'PATIENT',
+  Physician = 'PHYSICIAN'
+}
+
+export type StakeholderLabel = {
+  __typename?: 'StakeholderLabel';
+  en?: Maybe<Scalars['String']>;
+};
+
+export type StakeholdersPayload = Payload & {
+  __typename?: 'StakeholdersPayload';
+  code: Scalars['String'];
+  stakeholders: Array<Stakeholder>;
+  success: Scalars['Boolean'];
 };
 
 export type StartHostedActivitySessionInput = {
@@ -1992,16 +2070,16 @@ export type GetExtensionActivityDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetExtensionActivityDetailsQuery = { __typename?: 'Query', pluginActivityRecord: { __typename?: 'PluginActivityRecordPayload', record: { __typename?: 'PluginActivityRecord', id: string, activity_id: string, pathway_id: string, plugin_key: string, plugin_action_key: string, date: string, fields: Array<{ __typename?: 'PluginActionField', id: string, type: ExtensionActionFieldType, label: string, value: string }>, settings?: Array<{ __typename?: 'PluginActionSettingsProperty', value: string, label: string, key: string }> | null } } };
+export type GetExtensionActivityDetailsQuery = { __typename?: 'Query', pluginActivityRecord: { __typename?: 'PluginActivityRecordPayload', record: { __typename?: 'PluginActivityRecord', id: string, activity_id: string, pathway_id: string, plugin_key: string, plugin_action_key: string, date: string, fields: Array<{ __typename?: 'PluginActionField', id: string, type: PluginActionFieldType, label: string, value: string }>, settings?: Array<{ __typename?: 'PluginActionSettingsProperty', value: string, label: string, key: string }> | null } } };
 
-export type FormFragment = { __typename?: 'Form', id: string, title: string, questions: Array<{ __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> };
+export type FormFragment = { __typename?: 'Form', id: string, title: string, questions: Array<{ __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> };
 
 export type GetFormQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', form: { __typename?: 'FormPayload', form?: { __typename?: 'Form', id: string, title: string, questions: Array<{ __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> } | null } };
+export type GetFormQuery = { __typename?: 'Query', form: { __typename?: 'FormPayload', form?: { __typename?: 'Form', id: string, title: string, questions: Array<{ __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> } | null } };
 
 export type GetFormResponseQueryVariables = Exact<{
   pathway_id: Scalars['String'];
@@ -2011,7 +2089,7 @@ export type GetFormResponseQueryVariables = Exact<{
 
 export type GetFormResponseQuery = { __typename?: 'Query', formResponse: { __typename?: 'FormResponsePayload', response: { __typename?: 'FormResponse', answers: Array<{ __typename?: 'Answer', question_id: string, value: string, value_type: DataPointValueType }> } } };
 
-export type QuestionFragment = { __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null };
+export type QuestionFragment = { __typename?: 'Question', id: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null };
 
 export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
 
@@ -2103,6 +2181,7 @@ export const QuestionFragmentDoc = gql`
   questionConfig {
     recode_enabled
     mandatory
+    use_select
     slider {
       min
       max
