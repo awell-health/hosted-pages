@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { useGetExtensionActivityDetailsQuery } from './types'
-import type { ExtensionActivityDetails } from './types'
+import type { PluginActivityRecord } from './types'
 import { isNil } from 'lodash'
 import { useEffect } from 'react'
 
 interface UseExtensionActivityHook {
   loading: boolean
-  extensionActivityDetails?: ExtensionActivityDetails
+  extensionActivityDetails?: PluginActivityRecord
   error?: string
   refetch?: () => void
 }
