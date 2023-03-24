@@ -1,0 +1,23 @@
+query GetExtensionActivityDetails($id: String!) {
+  pluginActivityRecord(id: $id) {
+    record {
+      id
+      activity_id
+      pathway_id
+      plugin_key
+      plugin_action_key
+      fields {
+        id
+        type
+        label
+        value
+      }
+      date
+      settings {
+        value
+        label
+        key
+      }
+    }
+  }
+}

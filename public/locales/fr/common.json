@@ -25,6 +25,7 @@
       "previous_question_label": "Prev",
       "question_required_error": "This question is required.",
       "slider_not_touched_error": "Please move the slider to indicate your answer.",
+      "invalid_phone_number": "Phone number is invalid.",
       "saving_error": "Form submission failed.",
       "questions": {
         "yes_no": {
