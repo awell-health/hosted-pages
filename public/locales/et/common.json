@@ -23,6 +23,7 @@
       "previous_question_label": "Eelmine",
       "question_required_error": "See küsimus on kohustuslik.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
+      "invalid_phone_number": "Phone number is invalid.",
       "saving_error": "Vormi esitamine ebaõnnestus.",
       "questions": {
         "yes_no": {
