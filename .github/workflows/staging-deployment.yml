@@ -10,19 +10,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Git config
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-      - name: Determine latest release
-        id: latest_release
+      - name: Set env
         run: |
-          echo "::set-output name=tag_name::$(git describe --tags --abbrev=0)"
-      - name: Switch to staging branch
-        run: |
-          git switch staging
-          git pull origin staging
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo $RELEASE_VERSION
+          echo "Releasing version ${{ env.RELEASE_VERSION }} to STAGING"
       - name: Merge release content into staging
         run: |
-          git merge --no-ff "${{ steps.latest_release.outputs.tag_name }}" -m "merge ${{ steps.latest_release.outputs.tag_name }} into staging"
-          git push origin HEAD:staging
+          git fetch --unshallow
+          git checkout staging
+          git pull origin staging
+          git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "merge tags/${{ env.RELEASE_VERSION }} in staging"
+          git push origin staging
