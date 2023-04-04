@@ -1,8 +1,6 @@
 name: Staging Deployment 
 
 on:
-  release:
-    types: [released]
   workflow_dispatch:
 
 jobs:
