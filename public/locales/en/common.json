@@ -1,5 +1,7 @@
 {
-  "errors": { "app_error": "Oops, something went wrong. Please try again." },
+  "errors": {
+    "app_error": "Oops, something went wrong. Please try again."
+  },
   "activities": {
     "loading_error": "Something went wrong while loading your activities.",
     "loading": "Loading activity...",
@@ -29,6 +31,10 @@
         "yes_no": {
           "yes_answer": "Yes",
           "no_answer": "No"
+        },
+        "select": {
+          "search_placeholder": "Search for an option",
+          "no_options": "No options found"
         }
       }
     },
