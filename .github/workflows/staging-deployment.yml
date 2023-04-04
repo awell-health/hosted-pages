@@ -1,29 +1,50 @@
 name: Staging Deployment 
 
 on:
+  release:
+    types: [released]
   workflow_dispatch:
+    inputs:
+      deployment-type:
+        description: 'Deploy to main branch or latest release?'
+        required: true
+        default: 'latest-release'
 
 jobs:
   merge-release-content-to-staging:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set Git config
-      run: |
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Set Git config
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-    - name: Set env
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-    - name: Staging release message
-      run: |
-        echo $RELEASE_VERSION
-        echo "Releasing version ${{ env.RELEASE_VERSION }} to STAGING"
-    - name: Merge release content into staging
-      run: |
-        git fetch --unshallow
-        git checkout staging
-        git pull origin staging
-        git merge --no-ff tags/${{ env.RELEASE_VERSION }} -m "merge tags/${{ env.RELEASE_VERSION }} in staging"
-        git push origin staging
+      - name: Determine deployment type
+        id: deployment-type
+        run: |
+          echo "::set-output name=deployment-type::${{ github.event.inputs.deployment-type }}"
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+      - name: Staging release message
+        run: |
+          if [ "${{ steps.deployment-type.outputs.deployment-type }}" == "main" ]; then
+            echo "Deploying main branch"
+          else
+            latest_release=$(git describe --tags --abbrev=0)
+            echo "Deploying latest release ${latest_release}"
+          fi
+      - name: Switch to staging branch
+        run: |
+          if [ "${{ steps.deployment-type.outputs.deployment-type }}" == "main" ]; then
+            git switch main
+          else
+            latest_release=$(git describe --tags --abbrev=0)
+            git switch "${latest_release}"
+          fi
+      - name: Merge release content into staging
+        run: |
+          git merge --no-ff HEAD -m "merge ${github.ref} in staging"
+          git push origin HEAD:staging
