@@ -20,28 +20,23 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
-          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Git config
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-      - name: Determine deployment type
-        id: deployment-type
+      - name: Set deployment type
         run: |
-          echo "::set-output name=deployment-type::${{ github.event.inputs.deployment-type }}"
-      - name: Switch to sandbox branch
-        run: |
-          git checkout sandbox
-      - name: Pull latest changes from sandbox branch
-        run: |
-          git pull origin sandbox
+          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+        shell: bash
       - name: Merge staging into sandbox
         run: |
-          if [ "${{ steps.deployment-type.outputs.deployment-type }}" == "main" ]; then
-            git merge --no-ff origin/main -m "merge main into sandbox"
+          git fetch --unshallow
+          git switch sandbox
+          git pull origin sandbox
+          if [ "${{ env.DEPLOYMENT_TYPE }}" == "main" ]; then
+            git merge --no-ff origin/main -m "Merge main into sandbox"
           else
-            git merge --no-ff origin/staging -m "merge staging into sandbox"
+            git merge --no-ff origin/staging -m "Merge staging into sandbox"
           fi
-      - name: Push changes to sandbox branch
-        run: |
           git push origin sandbox
