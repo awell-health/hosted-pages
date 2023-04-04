@@ -1,15 +1,22 @@
-name: Production Deployment
+name: 🚨 Production Deployment
 
 on:
-  release:
-    types: [released]
+  workflow_dispatch:
+    inputs:
+      deployment-type:
+        description: 'Deploy to production from which branch? (staging for release, main for hotfix)'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - 'main'
+          - 'staging'
+
 jobs:
   merge-release-content-to-production:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Git config
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -17,18 +24,19 @@ jobs:
       - name: Merge release content into production
         run: |
           git fetch --tags --unshallow
-          latest_tag=$(git describe --tags --abbrev=0)
-          git checkout production
+          if [ "${{ github.event.inputs.deployment-type }}" == "main" ]; then
+            git checkout main
+          else
+            git checkout staging
+          fi
           git pull origin production
-          git merge --no-ff "${latest_tag}" -m "merge ${latest_tag} into production"
-          git push origin production
+          git merge --no-ff HEAD -m "merge changes into production branch"
+          git push origin HEAD:production
 
   merge-release-content-to-production-us:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Git config
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -36,8 +44,11 @@ jobs:
       - name: Merge release content into production-us branch
         run: |
           git fetch --tags --unshallow
-          latest_tag=$(git describe --tags --abbrev=0)
-          git checkout production-us
+          if [ "${{ github.event.inputs.deployment-type }}" == "main" ]; then
+            git checkout main
+          else
+            git checkout staging
+          fi
           git pull origin production-us
-          git merge --no-ff "${latest_tag}" -m "merge ${latest_tag} into production-us"
-          git push origin production-us
+          git merge --no-ff HEAD -m "merge changes into production-us branch"
+          git push origin HEAD:production-us
