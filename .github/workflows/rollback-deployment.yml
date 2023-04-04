@@ -1,0 +1,28 @@
+name: 🚑 Rollback Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rollback-to-previous-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set Git config
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Get latest tag
+        id: latest_tag
+        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+      - name: Revert to previous tag
+        run: |
+          for branch in sandbox production production-us; do
+            git switch $branch
+            git fetch origin refs/tags/${{ steps.latest_tag.outputs.tag }}:refs/tags/${{ steps.latest_tag.outputs.tag }}
+            git revert --no-edit ${branch}..${{ steps.latest_tag.outputs.tag }}
+            git push --force origin $branch
+          done

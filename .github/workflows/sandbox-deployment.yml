@@ -1,23 +1,42 @@
-name: Sandbox Deployment 
+name: 🛝 Sandbox Deployment
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      deployment-type:
+        description: 'Deploy to sandbox from which branch? (staging for release, main for hotfix)'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - 'main'
+          - 'staging'
 
 jobs:
-  merge-release-content-to-sandbox:
+  merge-staging-to-sandbox:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set Git config
-      run: |
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Git config
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-    - name: Merge release content into sandbox
-      run: |
-        git fetch --unshallow
-        git checkout sandbox
-        git pull origin sandbox
-        git merge --no-ff origin/staging -m "merge staging in sandbox"
-        git push origin sandbox
+      - name: Set deployment type
+        run: |
+          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+        shell: bash
+      - name: Merge staging into sandbox
+        run: |
+          git fetch --unshallow
+          git switch sandbox
+          git pull origin sandbox
+          if [ "${{ env.DEPLOYMENT_TYPE }}" == "main" ]; then
+            git merge --no-ff origin/main -m "Merge main into sandbox"
+          else
+            git merge --no-ff origin/staging -m "Merge staging into sandbox"
+          fi
+          git push origin sandbox
