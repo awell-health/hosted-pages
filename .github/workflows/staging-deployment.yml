@@ -1,18 +1,8 @@
-name: Staging Deployment
+name: 🚧 Staging Deployment
 
 on:
   release:
     types: [released]
-  workflow_dispatch:
-    inputs:
-      deployment-type:
-        description: 'Deploy main branch or latest release?'
-        required: true
-        default: 'latest-release'
-        type: choice
-        options:
-          - 'main'
-          - 'latest-release'
 
 jobs:
   merge-release-content-to-staging:
@@ -20,39 +10,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
       - name: Set Git config
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-      - name: Determine deployment type
-        id: deployment-type
+      - name: Determine latest release
+        id: latest_release
         run: |
-          echo "::set-output name=deployment-type::${{ github.event.inputs.deployment-type }}"
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-      - name: Staging release message
-        run: |
-          if [ "${{ steps.deployment-type.outputs.deployment-type }}" == "main" ]; then
-            echo "Deploying main branch"
-          else
-            latest_release=$(git describe --tags --abbrev=0)
-            echo "Deploying latest release ${latest_release}"
-          fi
+          echo "::set-output name=tag_name::$(git describe --tags --abbrev=0)"
       - name: Switch to staging branch
         run: |
-          if [ "${{ steps.deployment-type.outputs.deployment-type }}" == "main" ]; then
-            git switch main
-          else
-            latest_release=$(git describe --tags --abbrev=0)
-            if git show-ref --verify --quiet "refs/heads/${latest_release}"; then
-              git switch "${latest_release}"
-            else
-              git switch --detach "${latest_release}"
-            fi
-          fi
+          git switch staging
+          git pull origin staging
       - name: Merge release content into staging
         run: |
-          git merge --no-ff HEAD -m "merge changes into staging branch"
+          git merge --no-ff "${{ steps.latest_release.outputs.tag_name }}" -m "merge ${{ steps.latest_release.outputs.tag_name }} into staging"
           git push origin HEAD:staging
