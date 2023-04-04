@@ -1,7 +1,9 @@
 name: Production Deployment 
 
 on:
-  workflow_dispatch
+  release:
+    types: [released]
+  workflow_dispatch:
 
 jobs:
   merge-release-content-to-production:

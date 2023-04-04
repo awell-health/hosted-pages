@@ -71,6 +71,12 @@ export const Form: FC<FormProps> = ({ activity }) => {
       questionLabels={{
         yes_label: t('activities.form.questions.yes_no.yes_answer'),
         no_label: t('activities.form.questions.yes_no.no_answer'),
+        select: {
+          search_placeholder: t(
+            'activities.form.questions.select.search_placeholder'
+          ),
+          no_options: t('activities.form.questions.select.no_options'),
+        },
       }}
       buttonLabels={{
         prev: t('activities.form.previous_question_label'),
