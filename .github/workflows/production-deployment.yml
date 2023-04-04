@@ -19,6 +19,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Set Git config
         run: |
@@ -30,7 +32,6 @@ jobs:
         shell: bash
       - name: Merge "${{ env.DEPLOYMENT_TYPE }}" into production
         run: |
-          git fetch --unshallow
           git checkout "${{ env.DEPLOYMENT_TYPE }}"
           git pull origin production
           git merge --no-ff HEAD -m "merge changes into production branch"
@@ -42,6 +43,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Set Git config
         run: |
@@ -53,7 +56,6 @@ jobs:
         shell: bash
       - name: Merge "${{ env.DEPLOYMENT_TYPE }}" into production-us
         run: |
-          git fetch --unshallow
           git checkout "${{ env.DEPLOYMENT_TYPE }}"
           git pull origin production-us
           git merge --no-ff HEAD -m "merge changes into production-us branch"
