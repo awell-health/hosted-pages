@@ -1,41 +1,60 @@
-name: Production Deployment 
+name: 🚨 Production Deployment
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      deployment-type:
+        description: 'Deploy to production from which branch? (staging for release, main for hotfix)'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - 'main'
+          - 'staging'
 
 jobs:
   merge-release-content-to-production:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set Git config
-      run: |
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set Git config
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-    - name: Merge release content into production
-      run: |
-        git fetch --unshallow
-        git checkout production
-        git pull origin production
-        git merge --no-ff origin/staging -m "merge staging in production"
-        git push origin production
+      - name: Set deployment type
+        run: |
+          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+        shell: bash
+      - name: Merge "${{ env.DEPLOYMENT_TYPE }}" into production
+        run: |
+          git fetch --unshallow
+          git checkout "${{ env.DEPLOYMENT_TYPE }}"
+          git pull origin production
+          git merge --no-ff HEAD -m "merge changes into production branch"
+          git push origin HEAD:production
 
   merge-release-content-to-production-us:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set Git config
-      run: |
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set Git config
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-    - name: Merge release content into production-us branch
-      run: |
-        git fetch --unshallow
-        git checkout production-us
-        git pull origin production-us
-        git merge --no-ff origin/staging -m "merge staging in production-us"
-        git push origin production-us
+      - name: Set deployment type
+        run: |
+          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+        shell: bash
+      - name: Merge "${{ env.DEPLOYMENT_TYPE }}" into production-us
+        run: |
+          git fetch --unshallow
+          git checkout "${{ env.DEPLOYMENT_TYPE }}"
+          git pull origin production-us
+          git merge --no-ff HEAD -m "merge changes into production-us branch"
+          git push origin HEAD:production-us

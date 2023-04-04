@@ -1,0 +1,94 @@
+name-template: "v$RESOLVED_VERSION 🪢"
+tag-template: "v$RESOLVED_VERSION"
+categories:
+  - title: "🔨 Breaking Changes"
+    labels:
+      - "breaking"
+  - title: "🚀 Features"
+    labels:
+      - "feat"
+      - "feature"
+      - "enhancement"
+      - "improvement"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "fix"
+      - "bugfix"
+      - "bug"
+      - "hotfix"
+  - title: "🧰 Maintenance"
+    labels:
+      - "chore"
+      - "refactor"
+      - "style"
+      - "test"
+      - "docs"
+      - "ci"
+      - "perf"
+      - "build"
+      - "revert"
+      - "release"
+      - "wip"
+      - "cleanup"
+  - title: "📝 Documentation"
+    labels:
+      - "docs"
+      - "documentation"
+change-template: "- $TITLE by @$AUTHOR in #$NUMBER"
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+exclude-labels:
+  - "skip-changelog"
+autolabeler:
+  - label: "bug"
+    branch:
+      - '/fix\/.+/'
+    title:
+      - "/fix/i"
+  - label: "bug"
+    branch:
+      - '/bug\/.+/'
+    title:
+      - "/bug/i"
+  - label: "feature"
+    branch:
+      - '/feat\/.+/'
+    title:
+      - "/feat/i"
+  - label: "chore"
+    branch:
+      - '/chore\/.+/'
+    title:
+      - "/chore/i"
+  - label: "ci"
+    branch:
+      - '/ci\/.+/'
+    title:
+      - "/ci/i"
+  - label: "test"
+    branch:
+      - '/test\/.+/'
+    title:
+      - "/test/i"
+  - label: "refactor"
+    branch:
+      - '/refactor\/.+/'
+    title:
+      - "/refactor/i"
+  - label: "breaking"
+    body:
+      - "/breaking change/i"
+version-resolver:
+  major:
+    labels:
+      - "major"
+  minor:
+    labels:
+      - "minor"
+  patch:
+    labels:
+      - "patch"
+  default: patch
+template: |
+  ## Changes
+
+  $CHANGES
