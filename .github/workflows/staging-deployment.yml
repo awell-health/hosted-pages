@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       deployment-type:
-        description: 'Deploy to main branch or latest release?'
+        description: 'Deploy main branch or latest release?'
         required: true
         default: 'latest-release'
         type: choice
@@ -54,5 +54,5 @@ jobs:
           fi
       - name: Merge release content into staging
         run: |
-          git merge --no-ff HEAD -m "merge ${github.ref} in staging"
+          git merge --no-ff HEAD -m "merge changes into staging branch"
           git push origin HEAD:staging
