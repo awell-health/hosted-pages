@@ -18,7 +18,7 @@
     "graphql": "^16.5.0",
     "graphql-ws": "^5.11.3",
     "jsonwebtoken": "^8.5.1",
-    "next": "12.2.3",
+    "next": "12.2.4",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^11.3.0",
     "next-images": "^1.8.4",
