@@ -1,24 +1,24 @@
-name: Sandbox Deployment 
+name: Sandbox Deployment
 
 on:
   release:
     types: [released]
-  workflow_dispatch:
 jobs:
   merge-release-content-to-sandbox:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set Git config
-      run: |
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Git config
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-    - name: Merge release content into sandbox
-      run: |
-        git fetch --unshallow
-        git checkout sandbox
-        git pull origin sandbox
-        git merge --no-ff origin/staging -m "merge staging in sandbox"
-        git push origin sandbox
+      - name: Merge release content into sandbox
+        run: |
+          git fetch --tags --unshallow
+          latest_tag=$(git describe --tags --abbrev=0)
+          git checkout sandbox
+          git pull origin sandbox
+          git merge --no-ff "${latest_tag}" -m "merge ${latest_tag} into sandbox"
+          git push origin sandbox

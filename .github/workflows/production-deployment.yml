@@ -1,43 +1,43 @@
-name: Production Deployment 
+name: Production Deployment
 
 on:
   release:
     types: [released]
-  workflow_dispatch:
-
 jobs:
   merge-release-content-to-production:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set Git config
-      run: |
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Git config
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-    - name: Merge release content into production
-      run: |
-        git fetch --unshallow
-        git checkout production
-        git pull origin production
-        git merge --no-ff origin/staging -m "merge staging in production"
-        git push origin production
+      - name: Merge release content into production
+        run: |
+          git fetch --tags --unshallow
+          latest_tag=$(git describe --tags --abbrev=0)
+          git checkout production
+          git pull origin production
+          git merge --no-ff "${latest_tag}" -m "merge ${latest_tag} into production"
+          git push origin production
 
   merge-release-content-to-production-us:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set Git config
-      run: |
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Git config
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-    - name: Merge release content into production-us branch
-      run: |
-        git fetch --unshallow
-        git checkout production-us
-        git pull origin production-us
-        git merge --no-ff origin/staging -m "merge staging in production-us"
-        git push origin production-us
+      - name: Merge release content into production-us branch
+        run: |
+          git fetch --tags --unshallow
+          latest_tag=$(git describe --tags --abbrev=0)
+          git checkout production-us
+          git pull origin production-us
+          git merge --no-ff "${latest_tag}" -m "merge ${latest_tag} into production-us"
+          git push origin production-us

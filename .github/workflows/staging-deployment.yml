@@ -1,4 +1,4 @@
-name: Staging Deployment 
+name: Staging Deployment
 
 on:
   release:
@@ -11,8 +11,8 @@ on:
         default: 'latest-release'
         type: choice
         options:
-          - "main"
-          - "latest-release"
+          - 'main'
+          - 'latest-release'
 
 jobs:
   merge-release-content-to-staging:
@@ -46,7 +46,11 @@ jobs:
             git switch main
           else
             latest_release=$(git describe --tags --abbrev=0)
-            git switch "${latest_release}"
+            if git show-ref --verify --quiet "refs/heads/${latest_release}"; then
+              git switch "${latest_release}"
+            else
+              git switch --detach "${latest_release}"
+            fi
           fi
       - name: Merge release content into staging
         run: |
