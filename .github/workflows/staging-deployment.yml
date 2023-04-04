@@ -9,6 +9,10 @@ on:
         description: 'Deploy to main branch or latest release?'
         required: true
         default: 'latest-release'
+        type: choice
+        options:
+          - "main"
+          - "latest-release"
 
 jobs:
   merge-release-content-to-staging:
