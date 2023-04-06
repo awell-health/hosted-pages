@@ -19,9 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
       - name: Set Git config
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -30,12 +28,13 @@ jobs:
         run: |
           echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
         shell: bash
-      - name: Merge "${{ env.DEPLOYMENT_TYPE }}" into production
+      - name: Merge ${{ env.DEPLOYMENT_TYPE }} into production
         run: |
-          git checkout "${{ env.DEPLOYMENT_TYPE }}"
+          git fetch --unshallow
+          git checkout production
           git pull origin production
-          git merge --no-ff HEAD -m "merge changes into production branch"
-          git push origin HEAD:production
+          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "merge ${{ env.DEPLOYMENT_TYPE }} in production"
+          git push origin production
 
   merge-release-content-to-production-us:
     runs-on: ubuntu-latest
@@ -43,9 +42,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
       - name: Set Git config
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -54,9 +51,10 @@ jobs:
         run: |
           echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
         shell: bash
-      - name: Merge "${{ env.DEPLOYMENT_TYPE }}" into production-us
+      - name: Merge ${{ env.DEPLOYMENT_TYPE }} into production-us
         run: |
-          git checkout "${{ env.DEPLOYMENT_TYPE }}"
+          git fetch --unshallow
+          git checkout production-us
           git pull origin production-us
-          git merge --no-ff HEAD -m "merge changes into production-us branch"
-          git push origin HEAD:production-us
+          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "merge ${{ env.DEPLOYMENT_TYPE }} in production-us"
+          git push origin production-us
