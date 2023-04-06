@@ -19,7 +19,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Git config
         run: |
@@ -34,9 +33,5 @@ jobs:
           git fetch --unshallow
           git switch sandbox
           git pull origin sandbox
-          if [ "${{ env.DEPLOYMENT_TYPE }}" == "main" ]; then
-            git merge --no-ff origin/main -m "Merge main into sandbox"
-          else
-            git merge --no-ff origin/staging -m "Merge staging into sandbox"
-          fi
+          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "Merge ${{ env.DEPLOYMENT_TYPE }} into sandbox"
           git push origin sandbox
