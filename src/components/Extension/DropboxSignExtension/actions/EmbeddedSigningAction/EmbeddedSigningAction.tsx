@@ -1,10 +1,7 @@
 import React, { FC, useMemo } from 'react'
 import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
 
-import type {
-  EmbeddedSigningFields,
-  DropboxSignExtensionSettings,
-} from '../../types'
+import { type EmbeddedSigningFields, validateSettings } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteEmbeddedSigningAction } from './hooks/useCompleteEmbeddedSigningAction'
 import { Button } from '@awell_health/ui-library'
@@ -25,10 +22,9 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     [fields]
   )
 
-  const { apiKey, clientId, testMode } = useMemo(
-    () => mapSettingsToObject<DropboxSignExtensionSettings>(settings),
-    [fields]
-  )
+  const settingsData = useMemo(() => mapSettingsToObject(settings), [fields])
+
+  const { testMode, clientId } = validateSettings(settingsData)
 
   /**
    * https://github.com/vercel/next.js/issues/35559
