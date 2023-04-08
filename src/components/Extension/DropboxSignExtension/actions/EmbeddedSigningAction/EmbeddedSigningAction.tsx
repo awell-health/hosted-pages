@@ -6,7 +6,7 @@ import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteEmbeddedSigningAction } from './hooks/useCompleteEmbeddedSigningAction'
 import { Button } from '@awell_health/ui-library'
 import { isAfter } from 'date-fns'
-
+import he from 'he'
 interface EmbeddedSigningActionActionProps {
   activityDetails: ExtensionActivityRecord
 }
@@ -21,6 +21,16 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     () => mapActionFieldsToObject<EmbeddedSigningFields>(fields),
     [fields]
   )
+
+  /**
+   * This is needed because Orchestration seems to encode string action field values
+   * - Data point value: https://url.com/?signature_id=ABC&token=DEF
+   * - Action field value https://url.com/?signature_id&#x3D;ABC&amp;token&#x3D;DEF
+   *
+   * We need the decoded action field value and he library helps us to force decode
+   * the url to a valid one.
+   */
+  const decodedSignUrl = he.decode(signUrl)
 
   const settingsData = useMemo(() => mapSettingsToObject(settings), [fields])
 
@@ -37,7 +47,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
         })
       })
       .then((client) => {
-        client.open(signUrl, {
+        client.open(decodedSignUrl, {
           allowCancel: true,
           testMode,
           debug: testMode,
