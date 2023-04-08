@@ -638,6 +638,25 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@formsort/constants@^1.7.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@formsort/constants/-/constants-1.8.0.tgz#519b642db81c9035c240d0eab7dc6dba89144d9c"
+  integrity sha512-cJS2t7WaUXKcaz4t21+h019agqcRyisAszMdUz2qsKOGlEmjndvh3LPZ68UaICRaCJdDK1GRQu3Czrvz4j8Wqw==
+
+"@formsort/react-embed@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@formsort/react-embed/-/react-embed-3.1.1.tgz#3460d0414b161a820a0ae144dc2fa55a5fc233ba"
+  integrity sha512-ADmQdppxHTq5s0/XJzw/n5btcdXzyNVj0FyojYeEzPhkSHKhlnz9SbxOVO5t+pnW3iGZnn1xdmVf/CF3JX+hwQ==
+  dependencies:
+    "@formsort/web-embed-api" "^2.4.1"
+
+"@formsort/web-embed-api@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@formsort/web-embed-api/-/web-embed-api-2.4.1.tgz#d1911e4688e45fe88c81fe8269733c3d7b09a361"
+  integrity sha512-n73J+obmu3QGu0IKk/f8JGhlgaqvfut13W/lO91BREJH7ZVh5/sKQlevc/bbaxOeOWXV+keJ9zopT7zfy3PV3Q==
+  dependencies:
+    "@formsort/constants" "^1.7.0"
+
 "@graphql-codegen/add@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/add/-/add-2.0.2.tgz#4acbb95be9ebb859a3cebfe7132fdf49ffe06dd8"
