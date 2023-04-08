@@ -17,6 +17,6 @@ export const mapSettingsToObject = <T extends Record<string, unknown>>(
   settings?.reduce((previousValue, currentValue) => {
     return {
       ...previousValue,
-      [currentValue.key]: currentValue.label,
+      [currentValue.key]: currentValue.value,
     }
   }, {}) as T
