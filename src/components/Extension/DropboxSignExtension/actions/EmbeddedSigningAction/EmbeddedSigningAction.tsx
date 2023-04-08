@@ -57,9 +57,21 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   const isSignUrlExpired = isAfter(new Date(), new Date(expiresAt))
 
   return (
-    <div>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        textAlign: 'center',
+      }}
+    >
       {isSignUrlExpired ? (
-        <div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+        >
           <p>The sign URL for this signature request is expired.</p>
           <Button onClick={() => onSubmit(activity_id)}>Continue</Button>
         </div>
