@@ -30,8 +30,6 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     [fields]
   )
 
-  console.log(testMode)
-
   /**
    * https://github.com/vercel/next.js/issues/35559
    */
