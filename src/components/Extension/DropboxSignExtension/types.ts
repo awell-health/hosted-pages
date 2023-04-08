@@ -10,7 +10,6 @@ export enum ActionKey {
 }
 
 export const SettingsValidationSchema = z.object({
-  apiKey: z.string(),
   clientId: z.string(),
   testMode: z
     .optional(z.enum(['Yes', 'No', 'yes', 'no']))
