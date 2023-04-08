@@ -1,0 +1,11 @@
+:root {
+  --awell-formsort-complete-flow-activity-max-width: var(--awell-activity-max-width);
+  --awell-formsort-complete-flow-activity-padding: var(--awell-activity-padding);
+}
+
+.container {
+  max-width: var(--awell-formsort-complete-flow-activity-max-width);
+  padding: var(--awell-formsort-complete-flow-activity-padding);
+  height: 500px;
+  margin: 0 auto;
+}

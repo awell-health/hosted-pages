@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react'
-import { mapActionFieldsToObject } from '../../../utils'
+import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
 import EmbedFlow from '@formsort/react-embed'
+import classes from './completeFlowAction.module.css'
 
-import type { CompleteFlowFields } from '../../types'
+import type { CompleteFlowFields, FormsortExtensionSettings } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteCompleteFlowAppointment } from './hooks/useCompleteCompleteFlowAction'
 
@@ -13,7 +14,7 @@ interface CompleteFlowActionActionProps {
 export const CompleteFlowAction: FC<CompleteFlowActionActionProps> = ({
   activityDetails,
 }) => {
-  const { activity_id, fields } = activityDetails
+  const { activity_id, fields, settings } = activityDetails
   const { onSubmit } = useCompleteCompleteFlowAppointment()
 
   const { clientLabel, flowLabel, variantLabel } = useMemo(
@@ -21,12 +22,18 @@ export const CompleteFlowAction: FC<CompleteFlowActionActionProps> = ({
     [fields]
   )
 
+  const { environment } = useMemo(
+    () => mapSettingsToObject<FormsortExtensionSettings>(settings),
+    [fields]
+  )
+
   return (
-    <div>
+    <div className={classes.container}>
       <EmbedFlow
         clientLabel={clientLabel}
         flowLabel={flowLabel}
         variantLabel={variantLabel}
+        formsortEnv={environment}
         embedConfig={{
           style: {
             width: '100%',
