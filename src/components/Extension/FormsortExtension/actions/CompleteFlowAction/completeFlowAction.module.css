@@ -1,5 +1,6 @@
 .container {
-  max-width: var(--awell-activity-max-width);
+  width: 100%;
+  max-width: 900px;
   padding: var(--awell-activity-padding);
   height: 500px;
   margin: 0 auto;
