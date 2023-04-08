@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react'
 import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
-import HelloSign from 'hellosign-embedded'
 
 import type {
   EmbeddedSigningFields,
@@ -31,19 +30,25 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     [fields]
   )
 
-  const client = new HelloSign({
-    clientId,
-  })
+  /**
+   * https://github.com/vercel/next.js/issues/35559
+   */
+  const singDocument = () => {
+    import('hellosign-embedded')
+      .then(({ default: HelloSign }) => {
+        return new HelloSign({
+          allowCancel: false,
+          clientId,
+          skipDomainVerification: true,
+        })
+      })
+      .then((client) => {
+        client.open(signUrl)
 
-  client.on('sign', () => {
-    onSubmit(activity_id)
-  })
-
-  const startSigning = (signingUrl: string) => {
-    client.open(signingUrl, {
-      allowCancel: false,
-      skipDomainVerification: true,
-    })
+        client.on('sign', () => {
+          onSubmit(activity_id)
+        })
+      })
   }
 
   const isSignUrlExpired = isAfter(new Date(), new Date(expiresAt))
@@ -56,7 +61,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
           <Button onClick={() => onSubmit(activity_id)}>Continue</Button>
         </div>
       ) : (
-        <Button onClick={() => startSigning(signUrl)}>Sign document</Button>
+        <Button onClick={singDocument}>Sign document</Button>
       )}
     </div>
   )
