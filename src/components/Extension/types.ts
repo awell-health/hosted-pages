@@ -6,4 +6,5 @@ export type ExtensionActivityRecord =
 
 export enum ExtensionKey {
   CAL_DOT_COM = 'calDotCom',
+  FORMSORT = 'formsort',
 }
