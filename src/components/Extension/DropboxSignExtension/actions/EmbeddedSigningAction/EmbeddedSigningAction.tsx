@@ -37,13 +37,16 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     import('hellosign-embedded')
       .then(({ default: HelloSign }) => {
         return new HelloSign({
-          allowCancel: false,
           clientId,
-          skipDomainVerification: true,
         })
       })
       .then((client) => {
-        client.open(signUrl)
+        client.open(signUrl, {
+          allowCancel: true,
+          testMode,
+          debug: testMode,
+          skipDomainVerification: true,
+        })
 
         client.on('sign', () => {
           onSubmit(activity_id)
