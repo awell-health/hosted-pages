@@ -30,6 +30,8 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     [fields]
   )
 
+  console.log(testMode)
+
   /**
    * https://github.com/vercel/next.js/issues/35559
    */
@@ -62,6 +64,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
         display: 'flex',
         justifyContent: 'center',
         textAlign: 'center',
+        padding: '12px 0 0 0',
       }}
     >
       {isSignUrlExpired ? (
