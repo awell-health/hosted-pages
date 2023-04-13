@@ -2,8 +2,13 @@ import { GetExtensionActivityDetailsQuery } from '../../types/generated/types-or
 
 export type { Activity } from '../../hooks/useSessionActivities'
 export type ExtensionActivityRecord =
-  GetExtensionActivityDetailsQuery['pluginActivityRecord']['record']
+  GetExtensionActivityDetailsQuery['extensionActivityRecord']['record']
+
+export type ExtensionActivityRecordSettings =
+  GetExtensionActivityDetailsQuery['extensionActivityRecord']['record']['settings']
 
 export enum ExtensionKey {
   CAL_DOT_COM = 'calDotCom',
+  FORMSORT = 'formsort',
+  DROPBOXSIGN = 'dropboxSign',
 }

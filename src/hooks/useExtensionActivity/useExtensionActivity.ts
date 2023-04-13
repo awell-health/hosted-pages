@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { useGetExtensionActivityDetailsQuery } from './types'
-import type { PluginActivityRecord } from './types'
+import type { ExtensionActivityRecord } from './types'
 import { isNil } from 'lodash'
 import { useEffect } from 'react'
 
 interface UseExtensionActivityHook {
   loading: boolean
-  extensionActivityDetails?: PluginActivityRecord
+  extensionActivityDetails?: ExtensionActivityRecord
   error?: string
   refetch?: () => void
 }
@@ -36,7 +36,7 @@ export const useExtensionActivity = (id: string): UseExtensionActivityHook => {
 
   return {
     loading: false,
-    extensionActivityDetails: data?.pluginActivityRecord.record,
+    extensionActivityDetails: data?.extensionActivityRecord.record,
     refetch,
   }
 }
