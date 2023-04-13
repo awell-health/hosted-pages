@@ -7,6 +7,8 @@ import { useExtensionActivity } from '../../hooks/useExtensionActivity'
 import { LoadingPage } from '../LoadingPage'
 
 import { type Activity, ExtensionKey } from './types'
+import { FormsortExtension } from './FormsortExtension'
+import { DropboxSignExtension } from './DropboxSignExtension'
 
 interface ExtensionProps {
   activity: Activity
@@ -34,6 +36,20 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     case ExtensionKey.CAL_DOT_COM:
       return (
         <CalDotComExtension
+          activity={activity}
+          activityDetails={extensionActivityDetails}
+        />
+      )
+    case ExtensionKey.DROPBOXSIGN:
+      return (
+        <DropboxSignExtension
+          activity={activity}
+          activityDetails={extensionActivityDetails}
+        />
+      )
+    case ExtensionKey.FORMSORT:
+      return (
+        <FormsortExtension
           activity={activity}
           activityDetails={extensionActivityDetails}
         />
