@@ -1,15 +1,18 @@
 import { useEffect, useRef } from 'react'
 
 export const useScript = (url: string) => {
-  const script = useRef(document.createElement('script'))
-  useEffect(() => {
-    script.current.src = url
-    script.current.async = true
+  const scriptRef = useRef(document.createElement('script'))
 
-    document.body.appendChild(script.current)
+  useEffect(() => {
+    const script = scriptRef.current
+
+    script.src = url
+    script.async = true
+
+    document.body.appendChild(script)
 
     return () => {
-      document.body.removeChild(script.current)
+      document.body.removeChild(script)
     }
   }, [url])
 }
