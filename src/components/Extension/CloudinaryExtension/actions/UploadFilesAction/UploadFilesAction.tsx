@@ -19,7 +19,7 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
 }) => {
   const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([])
 
-  const { activity_id, fields, settings } = activityDetails
+  const { activity_id, fields, settings, pathway_id } = activityDetails
   const { onSubmit } = useCompleteUploadFilesAction()
 
   const {
@@ -57,6 +57,10 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
         uploadPreset={uploadPresetActionFields ?? uploadPresetSettings}
         folder={folderActionFields ?? folderSettings}
         tags={tagsArray}
+        context={{
+          awellPathwayId: pathway_id,
+          awellActivityId: activity_id,
+        }}
         onImageUpload={(publicId) => onImageUploadHandler(publicId)}
       />
       <br />

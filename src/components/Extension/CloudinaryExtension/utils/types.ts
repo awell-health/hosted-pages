@@ -26,4 +26,5 @@ export interface WidgetOptions {
   maxFileSize?: number
   maxImageFileSize?: number
   maxVideoFileSize?: number
+  context?: Record<string, string>
 }
