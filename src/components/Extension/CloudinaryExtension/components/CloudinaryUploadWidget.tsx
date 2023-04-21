@@ -1,21 +1,22 @@
+import { useScript } from '../../../../hooks/useScript'
 import { openUploadWidget } from '../utils/CloudinaryService'
+import { WidgetOptions } from '../utils/types'
 
-interface CloudinaryUploadWidgetProps {
-  cloudName: string
-  uploadPreset: string
+interface CloudinaryUploadWidgetProps extends WidgetOptions {
   onImageUpload: (publicId: string) => void
 }
 
 export const CloudinaryUploadWidget = ({
-  cloudName,
-  uploadPreset,
   onImageUpload,
+  ...widgetOptions
 }: CloudinaryUploadWidgetProps) => {
+  useScript('https://widget.cloudinary.com/v2.0/global/all.js')
+
   const uploadImageWidget = () => {
     const myUploadWidget = openUploadWidget(
       {
-        cloudName,
-        uploadPreset,
+        ...widgetOptions,
+        sources: ['local'],
       },
       function (error: unknown, result: Record<string, unknown>) {
         if (!error && result?.event === 'success') {
