@@ -9,6 +9,7 @@ import type {
 import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteUploadFilesAction } from './hooks/useCompleteUploadFilesAction'
 import { CloudinaryUploadWidget, CloudinaryGallery } from '../../components'
+import { Button } from '@awell_health/ui-library'
 
 interface UploadFilesActionProps {
   activityDetails: ExtensionActivityRecord
@@ -63,12 +64,19 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
         }}
         onImageUpload={(publicId) => onImageUploadHandler(publicId)}
       />
+
       <br />
       <br />
+
       <CloudinaryGallery
         cloudName={cloudName}
         imagesUploaded={imagesUploadedList}
       />
+
+      <br />
+      <br />
+
+      <Button onClick={onSave}>Finish</Button>
     </div>
   )
 }

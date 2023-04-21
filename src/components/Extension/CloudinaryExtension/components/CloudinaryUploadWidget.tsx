@@ -1,3 +1,4 @@
+import { Button } from '@awell_health/ui-library'
 import { useScript } from '../../../../hooks/useScript'
 import { openUploadWidget } from '../utils/CloudinaryService'
 import { WidgetOptions } from '../utils/types'
@@ -29,5 +30,5 @@ export const CloudinaryUploadWidget = ({
     myUploadWidget.open()
   }
 
-  return <button onClick={uploadImageWidget}>Upload Image</button>
+  return <Button onClick={uploadImageWidget}>Upload Image</Button>
 }
