@@ -3,7 +3,7 @@ import {
   Cloudinary as CoreCloudinary,
   Util,
 } from 'cloudinary-core'
-import { type WidgetOptions } from './types'
+import { type UploadWidgetOptions } from './types'
 
 export const url = (publicId: string, options: Configuration.Options) => {
   try {
@@ -16,7 +16,7 @@ export const url = (publicId: string, options: Configuration.Options) => {
 }
 
 export const openUploadWidget = (
-  options: WidgetOptions,
+  options: UploadWidgetOptions,
   callback: (error: unknown, result: Record<string, unknown>) => void
 ) => {
   if (window?.cloudinary === undefined) {

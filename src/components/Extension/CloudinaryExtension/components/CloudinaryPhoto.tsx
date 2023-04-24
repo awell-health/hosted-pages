@@ -1,4 +1,4 @@
-import { AdvancedImage, lazyload } from '@cloudinary/react'
+import { AdvancedImage, lazyload, placeholder } from '@cloudinary/react'
 import { fill } from '@cloudinary/url-gen/actions/resize'
 import { quality } from '@cloudinary/url-gen/actions/delivery'
 import { Cloudinary } from '@cloudinary/url-gen'
@@ -21,5 +21,10 @@ export const CloudinaryPhoto = ({
   const myImage = cld.image(publicId)
   myImage.resize(fill().width(250).height(250)).delivery(quality(60))
 
-  return <AdvancedImage cldImg={myImage} plugins={[lazyload()]} />
+  return (
+    <AdvancedImage
+      cldImg={myImage}
+      plugins={[lazyload(), placeholder({ mode: 'blur' })]}
+    />
+  )
 }

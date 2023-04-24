@@ -1,19 +1,16 @@
 import { Button } from '@awell_health/ui-library'
-import { useScript } from '../../../../hooks/useScript'
 import { openUploadWidget } from '../utils/CloudinaryService'
-import { WidgetOptions } from '../utils/types'
+import { UploadWidgetOptions } from '../utils/types'
 
-interface CloudinaryUploadWidgetProps extends WidgetOptions {
-  onImageUpload: (publicId: string) => void
+interface CloudinaryUploadWidgetProps extends UploadWidgetOptions {
+  onFileUpload: (publicId: string) => void
 }
 
 export const CloudinaryUploadWidget = ({
-  onImageUpload,
+  onFileUpload: onFileUpload,
   ...widgetOptions
 }: CloudinaryUploadWidgetProps) => {
-  useScript('https://widget.cloudinary.com/v2.0/global/all.js')
-
-  const uploadImageWidget = () => {
+  const uploadFileWidget = () => {
     const myUploadWidget = openUploadWidget(
       {
         ...widgetOptions,
@@ -22,7 +19,7 @@ export const CloudinaryUploadWidget = ({
       function (error: unknown, result: Record<string, unknown>) {
         if (!error && result?.event === 'success') {
           //@ts-expect-error
-          onImageUpload(result?.info?.public_id)
+          onFileUpload(result?.info?.public_id)
         }
       }
     )
@@ -30,5 +27,5 @@ export const CloudinaryUploadWidget = ({
     myUploadWidget.open()
   }
 
-  return <Button onClick={uploadImageWidget}>Upload Image</Button>
+  return <Button onClick={uploadFileWidget}>Upload File</Button>
 }

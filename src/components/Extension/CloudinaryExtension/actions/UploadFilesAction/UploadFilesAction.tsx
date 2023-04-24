@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from 'react'
 import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
+import { Button } from '@awell_health/ui-library'
 import classes from './UploadFilesAction.module.css'
 
 import type {
@@ -9,7 +10,6 @@ import type {
 import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteUploadFilesAction } from './hooks/useCompleteUploadFilesAction'
 import { CloudinaryUploadWidget, CloudinaryGallery } from '../../components'
-import { Button } from '@awell_health/ui-library'
 
 interface UploadFilesActionProps {
   activityDetails: ExtensionActivityRecord
@@ -18,10 +18,10 @@ interface UploadFilesActionProps {
 export const UploadFilesAction: FC<UploadFilesActionProps> = ({
   activityDetails,
 }) => {
-  const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([])
+  const [uploadedFilesList, setUploadedFilesList] = useState<string[]>([])
 
   const { activity_id, fields, settings, pathway_id } = activityDetails
-  const { onSubmit } = useCompleteUploadFilesAction()
+  const { onSubmit, isSubmitting } = useCompleteUploadFilesAction()
 
   const {
     cloudName,
@@ -44,12 +44,12 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
   const tagsArray = useMemo(() => tags?.split(',') ?? [], [tags])
 
   const onImageUploadHandler = (publicId: string) => {
-    setImagesUploadedList((prevState) => [...prevState, publicId])
+    setUploadedFilesList((prevState) => [...prevState, publicId])
   }
 
   const onSave = useCallback(() => {
-    onSubmit(activity_id, imagesUploadedList)
-  }, [activity_id, imagesUploadedList, onSubmit])
+    onSubmit(activity_id, uploadedFilesList)
+  }, [activity_id, uploadedFilesList, onSubmit])
 
   return (
     <div className={classes.container}>
@@ -62,7 +62,7 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
           awellPathwayId: pathway_id,
           awellActivityId: activity_id,
         }}
-        onImageUpload={(publicId) => onImageUploadHandler(publicId)}
+        onFileUpload={onImageUploadHandler}
       />
 
       <br />
@@ -70,13 +70,15 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
 
       <CloudinaryGallery
         cloudName={cloudName}
-        imagesUploaded={imagesUploadedList}
+        filesUploaded={uploadedFilesList}
       />
 
       <br />
       <br />
 
-      <Button onClick={onSave}>Finish</Button>
+      <Button onClick={onSave} disabled={isSubmitting}>
+        Finish
+      </Button>
     </div>
   )
 }

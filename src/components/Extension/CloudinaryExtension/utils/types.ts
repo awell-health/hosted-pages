@@ -13,9 +13,25 @@ type SourceType =
   | 'unsplash'
   | 'google_drive'
 
-export interface WidgetOptions {
+export interface UploadWidgetOptions {
   cloudName: string
   uploadPreset: string
+  multiple?: boolean
+  maxFiles?: number
+  folder?: string
+  tags?: string[]
+  sources?: SourceType[]
+  resourceType?: ResourceType
+  clientAllowedFormats?: string[]
+  maxFileSize?: number
+  maxImageFileSize?: number
+  maxVideoFileSize?: number
+  context?: Record<string, string>
+}
+
+export interface ProductGalleryOptions {
+  cloudName: string
+  container: string
   multiple?: boolean
   maxFiles?: number
   folder?: string

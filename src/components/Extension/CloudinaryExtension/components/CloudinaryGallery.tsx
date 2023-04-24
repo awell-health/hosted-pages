@@ -2,29 +2,27 @@ import { CloudinaryPhoto } from './'
 
 interface CloudinaryGalleryProps {
   cloudName: string
-  imagesUploaded: Array<string>
+  filesUploaded: Array<string>
 }
 
 export const CloudinaryGallery = ({
-  imagesUploaded,
+  filesUploaded,
   cloudName,
 }: CloudinaryGalleryProps) => {
   return (
     <div className="photos">
-      {imagesUploaded && imagesUploaded.length === 0 && (
-        <p>No photos were added yet.</p>
+      {filesUploaded && filesUploaded.length === 0 && (
+        <p>No files were added yet.</p>
       )}
-      {imagesUploaded &&
-        imagesUploaded.length !== 0 &&
-        imagesUploaded.map((publicId) => {
-          return (
-            <CloudinaryPhoto
-              key={publicId}
-              publicId={publicId}
-              cloudName={cloudName}
-            />
-          )
-        })}
+      {filesUploaded?.map((publicId) => {
+        return (
+          <CloudinaryPhoto
+            key={publicId}
+            publicId={publicId}
+            cloudName={cloudName}
+          />
+        )
+      })}
     </div>
   )
 }
