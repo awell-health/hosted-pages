@@ -1,4 +1,5 @@
 import { Button } from '@awell_health/ui-library'
+import { useScript } from '../../../../hooks/useScript'
 import { openUploadWidget } from '../utils/CloudinaryService'
 import { UploadWidgetOptions } from '../utils/types'
 
@@ -10,6 +11,10 @@ export const CloudinaryUploadWidget = ({
   onFileUpload: onFileUpload,
   ...widgetOptions
 }: CloudinaryUploadWidgetProps) => {
+  const { isLoaded } = useScript(
+    'https://widget.cloudinary.com/v2.0/global/all.js'
+  )
+
   const uploadFileWidget = () => {
     const myUploadWidget = openUploadWidget(
       {
@@ -27,5 +32,9 @@ export const CloudinaryUploadWidget = ({
     myUploadWidget.open()
   }
 
-  return <Button onClick={uploadFileWidget}>Upload File</Button>
+  return (
+    <Button onClick={uploadFileWidget} disabled={!isLoaded}>
+      Upload File
+    </Button>
+  )
 }
