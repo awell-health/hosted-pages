@@ -43,9 +43,9 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
 
   const tagsArray = useMemo(() => tags?.split(',') ?? [], [tags])
 
-  const onImageUploadHandler = (publicId: string) => {
+  const onImageUploadHandler = useCallback((publicId: string) => {
     setUploadedFilesList((prevState) => [...prevState, publicId])
-  }
+  }, [])
 
   const onSave = useCallback(() => {
     onSubmit(activity_id, uploadedFilesList)

@@ -1,4 +1,5 @@
 import { Button } from '@awell_health/ui-library'
+import { useMemo } from 'react'
 import { useScript } from '../../../../hooks/useScript'
 import { openUploadWidget } from '../utils/CloudinaryService'
 import { UploadWidgetOptions } from '../utils/types'
@@ -15,21 +16,25 @@ export const CloudinaryUploadWidget = ({
     'https://widget.cloudinary.com/v2.0/global/all.js'
   )
 
-  const uploadFileWidget = () => {
-    const myUploadWidget = openUploadWidget(
-      {
-        ...widgetOptions,
-        sources: ['local'],
-      },
-      function (error: unknown, result: Record<string, unknown>) {
-        if (!error && result?.event === 'success') {
-          //@ts-expect-error
-          onFileUpload(result?.info?.public_id)
-        }
-      }
-    )
+  const widget = useMemo(() => {
+    return isLoaded
+      ? openUploadWidget(
+          {
+            ...widgetOptions,
+            sources: ['local'],
+          },
+          function (error: unknown, result: Record<string, unknown>) {
+            if (!error && result?.event === 'success') {
+              //@ts-expect-error
+              onFileUpload(result?.info?.public_id)
+            }
+          }
+        )
+      : undefined
+  }, [isLoaded, onFileUpload, widgetOptions])
 
-    myUploadWidget.open()
+  const uploadFileWidget = () => {
+    widget?.open()
   }
 
   return (

@@ -18,11 +18,11 @@ export const url = (publicId: string, options: Configuration.Options) => {
 export const openUploadWidget = (
   options: UploadWidgetOptions,
   callback: (error: unknown, result: Record<string, unknown>) => void
-) => {
+): { open: () => void } => {
   if (window?.cloudinary === undefined) {
     throw new Error('Cloudinary is not instantiated on window.')
   }
 
   //@ts-expect-error
-  return window.cloudinary.openUploadWidget(options, callback)
+  return window.cloudinary.createUploadWidget(options, callback)
 }
