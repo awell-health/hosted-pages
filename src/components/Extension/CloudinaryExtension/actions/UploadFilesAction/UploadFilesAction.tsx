@@ -1,15 +1,15 @@
-import React, { FC, useCallback, useMemo, useState } from 'react'
+import React, { ComponentProps, FC, useCallback, useMemo } from 'react'
+import Image from 'next/image'
+import { CloudinaryUpload } from '@awell_health/ui-library'
+import { useTranslation } from 'next-i18next'
 import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
-import { Button } from '@awell_health/ui-library'
-import classes from './UploadFilesAction.module.css'
-
+import { useCompleteUploadFilesAction } from './hooks/useCompleteUploadFilesAction'
+import attachmentIcon from './../../../../../assets/link.svg'
 import type {
   CloudinaryExtensionSettings,
   UploadFilesFields,
 } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
-import { useCompleteUploadFilesAction } from './hooks/useCompleteUploadFilesAction'
-import { CloudinaryUploadWidget, CloudinaryGallery } from '../../components'
 
 interface UploadFilesActionProps {
   activityDetails: ExtensionActivityRecord
@@ -18,10 +18,9 @@ interface UploadFilesActionProps {
 export const UploadFilesAction: FC<UploadFilesActionProps> = ({
   activityDetails,
 }) => {
-  const [uploadedFilesList, setUploadedFilesList] = useState<string[]>([])
-
+  const { t } = useTranslation()
   const { activity_id, fields, settings, pathway_id } = activityDetails
-  const { onSubmit, isSubmitting } = useCompleteUploadFilesAction()
+  const { onSubmit } = useCompleteUploadFilesAction()
 
   const {
     cloudName,
@@ -43,43 +42,46 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
 
   const tagsArray = useMemo(() => tags?.split(',') ?? [], [tags])
 
-  const onImageUploadHandler = useCallback((publicId: string) => {
-    setUploadedFilesList((prevState) => [...prevState, publicId])
-  }, [])
-
-  const onSave = useCallback(() => {
-    onSubmit(activity_id, uploadedFilesList)
-  }, [activity_id, uploadedFilesList, onSubmit])
+  const onSave: ComponentProps<typeof CloudinaryUpload>['onFinish'] =
+    useCallback(
+      (files) => {
+        onSubmit(
+          activity_id,
+          files.map((file) => file.url)
+        )
+      },
+      [activity_id, onSubmit]
+    )
 
   return (
-    <div className={classes.container}>
-      <CloudinaryUploadWidget
-        cloudName={cloudName}
-        uploadPreset={uploadPresetActionFields ?? uploadPresetSettings}
-        folder={folderActionFields ?? folderSettings}
-        tags={tagsArray}
-        context={{
-          awellPathwayId: pathway_id,
-          awellActivityId: activity_id,
-        }}
-        onFileUpload={onImageUploadHandler}
-      />
-
-      <br />
-      <br />
-
-      <CloudinaryGallery
-        cloudName={cloudName}
-        filesUploaded={uploadedFilesList}
-      />
-
-      <br />
-      <br />
-
-      <Button onClick={onSave} disabled={isSubmitting}>
-        Finish
-      </Button>
-    </div>
+    <CloudinaryUpload
+      cloudName={cloudName}
+      uploadPreset={uploadPresetActionFields ?? uploadPresetSettings}
+      folder={folderActionFields ?? folderSettings}
+      tags={tagsArray}
+      context={{
+        awellPathwayId: pathway_id,
+        awellActivityId: activity_id,
+      }}
+      onFinish={onSave}
+      text={{
+        subject: t('activities.cloudinary.subject'),
+        attachmentIcon: (
+          <Image src={attachmentIcon} alt="" width={20} height={20} />
+        ),
+        attachmentLabels: {
+          file: t('activities.cloudinary.file_attachment'),
+          video: t('activities.cloudinary.video_attachment'),
+          link: t('activities.cloudinary.link_attachment'),
+        },
+        fileCountHeader: (count) =>
+          t('activities.cloudinary.file_count', { count }),
+        buttonLabels: {
+          upload: t('activities.cloudinary.cta_upload_files'),
+          done: t('activities.cta_done'),
+        },
+      }}
+    />
   )
 }
 
