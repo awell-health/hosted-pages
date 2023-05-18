@@ -66,13 +66,14 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell_health/ui-library@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/@awell_health/ui-library/-/ui-library-0.1.4.tgz"
-  integrity sha512-FCUyuPU9rvXQW40/szTDSYNH6+0IvQnmpg15IhcQUBk+/t5XW3VvjC9Uy3Qbo9UHJ+4E0I016vYT/y05He4OsQ==
+"@awell_health/ui-library@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.1.6.tgz#a439612fb3bb883fc4f1093f186add60bdf18e4a"
+  integrity sha512-5fofDbqBakDFcQb1ye0hDrfrUIhKc+5F2RGk1wZZMQLfEbGqTfwPc3fGKbTsVk8WwIhr8/djm2thiveQPmqjAw==
   dependencies:
     "@calcom/embed-react" "^1.0.10"
     "@heroicons/react" "^2.0.13"
+    cloudinary-core "^2.13.0"
     date-fns "^2.29.1"
     dompurify "^2.4.0"
     escape-html "^1.0.3"
@@ -615,39 +616,6 @@
   integrity sha512-bPO6Yqomd/Zz8Ij2wk9el/JFzdosk7/nsNDfZDwjpLxGqVBF46dgtwoL+rpTnY2EK0uBNIkOp6oXg4sZSFEeQQ==
   dependencies:
     "@calcom/embed-core" "*"
-
-"@cloudinary/html@^1.11.2":
-  version "1.11.2"
-  resolved "https://registry.npmjs.org/@cloudinary/html/-/html-1.11.2.tgz"
-  integrity sha512-IibBZliI7MOK3dxvz0WlsEyTIsqZhY3SiCBQM0CNwCKxn3N1TO8OgetfU26Now1lJbdoF5JQ8S7Cn6ZWNuU1KA==
-  dependencies:
-    "@types/lodash.clonedeep" "^4.5.6"
-    "@types/lodash.debounce" "^4.0.6"
-    "@types/node" "^14.14.10"
-    lodash.clonedeep "^4.5.0"
-    lodash.debounce "^4.0.8"
-    typescript "^4.1.2"
-
-"@cloudinary/react@^1.11.2":
-  version "1.11.2"
-  resolved "https://registry.npmjs.org/@cloudinary/react/-/react-1.11.2.tgz"
-  integrity sha512-ZnVthMW7TExLMPmyven4N7EVr2oX2yZqnHn6EHBlni9iM0AZd6qtR8R5/SscxNLNwgBieWuvmejUlUT4LqPpMg==
-  dependencies:
-    "@cloudinary/html" "^1.11.2"
-
-"@cloudinary/transformation-builder-sdk@^1.2.7":
-  version "1.2.7"
-  resolved "https://registry.npmjs.org/@cloudinary/transformation-builder-sdk/-/transformation-builder-sdk-1.2.7.tgz"
-  integrity sha512-Q1fhw37BXXmN6/BCxdnw3OUJ6aAy/zpDWH5t+xIwmG5GtYUYMZqOjvdOkOhWBmus9ptq9znuGsYn8h5vtSjT+w==
-  dependencies:
-    "@cloudinary/url-gen" "^1.7.0"
-
-"@cloudinary/url-gen@^1.10.0", "@cloudinary/url-gen@^1.7.0":
-  version "1.10.0"
-  resolved "https://registry.npmjs.org/@cloudinary/url-gen/-/url-gen-1.10.0.tgz"
-  integrity sha512-J3V+gzT6Tepw9bMrR3prWVbW22cIFJtPS8Wkt1WFSZVHWpZx8/vv9ACHaxUmRqaSkjhX8ErsuzDY5YxdWnaCbw==
-  dependencies:
-    "@cloudinary/transformation-builder-sdk" "^1.2.7"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
@@ -1507,21 +1475,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash.clonedeep@^4.5.6":
-  version "4.5.7"
-  resolved "https://registry.npmjs.org/@types/lodash.clonedeep/-/lodash.clonedeep-4.5.7.tgz"
-  integrity sha512-ccNqkPptFIXrpVqUECi60/DFxjNKsfoQxSQsgcBJCX/fuX1wgyQieojkcWH/KpE3xzLoWN/2k+ZeGqIN3paSvw==
-  dependencies:
-    "@types/lodash" "*"
-
-"@types/lodash.debounce@^4.0.6":
-  version "4.0.7"
-  resolved "https://registry.npmjs.org/@types/lodash.debounce/-/lodash.debounce-4.0.7.tgz"
-  integrity sha512-X1T4wMZ+gT000M2/91SYj0d/7JfeNZ9PeeOldSNoE/lunLeQXKvkmIumI29IaKMotU/ln/McOIvgzZcQ/3TrSA==
-  dependencies:
-    "@types/lodash" "*"
-
-"@types/lodash@*", "@types/lodash@^4.14.182":
+"@types/lodash@^4.14.182":
   version "4.14.182"
   resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.182.tgz"
   integrity sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==
@@ -1530,11 +1484,6 @@
   version "18.6.1"
   resolved "https://registry.npmjs.org/@types/node/-/node-18.6.1.tgz"
   integrity sha512-z+2vB6yDt1fNwKOeGbckpmirO+VBDuQqecXkgeIqDlaOtmKn6hPR/viQ8cxCfqLU4fTlvM3+YjM367TukWdxpg==
-
-"@types/node@^14.14.10":
-  version "14.18.42"
-  resolved "https://registry.npmjs.org/@types/node/-/node-14.18.42.tgz"
-  integrity sha512-xefu+RBie4xWlK8hwAzGh3npDz/4VhF6icY/shU+zv/1fNn+ZVG7T7CRwe9LId9sAYRPxI+59QBPuKL3WpyGRg==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -4005,16 +3954,6 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash.clonedeep@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz"
-  integrity sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==
-
-lodash.debounce@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
-  integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
-
 lodash.includes@^4.3.0:
   version "4.3.0"
   resolved "https://registry.npmjs.org/lodash.includes/-/lodash.includes-4.3.0.tgz"
@@ -5520,7 +5459,7 @@ type-fest@^0.21.3:
   resolved "https://registry.npmjs.org/type-fest/-/type-fest-0.21.3.tgz"
   integrity sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==
 
-typescript@4.7.4, typescript@^4.1.2:
+typescript@4.7.4:
   version "4.7.4"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.7.4.tgz"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==

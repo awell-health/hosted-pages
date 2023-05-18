@@ -13,12 +13,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.2",
-    "@awell_health/ui-library": "0.1.4",
-    "@cloudinary/react": "^1.11.2",
-    "@cloudinary/url-gen": "^1.10.0",
+    "@awell_health/ui-library": "0.1.6",
     "@formsort/react-embed": "^3.1.1",
     "@sentry/nextjs": "7.34.0",
-    "cloudinary-core": "^2.13.0",
     "date-fns": "^2.29.3",
     "graphql": "^16.5.0",
     "graphql-ws": "^5.11.3",
