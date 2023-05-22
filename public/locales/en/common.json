@@ -3,6 +3,7 @@
     "app_error": "Oops, something went wrong. Please try again."
   },
   "activities": {
+    "cta_done": "Done",
     "loading_error": "Something went wrong while loading your activities.",
     "loading": "Loading activity...",
     "activity_not_supported": "Activity type is not supported.",
@@ -43,6 +44,17 @@
       "loading": "Loading checklist...",
       "loading_error": "Something went wrong while loading the checklist.",
       "saving_error": "Checklist submission failed."
+    },
+    "cloudinary": {
+      "cta_upload_files": "Upload files",
+      "subject": "Upload files",
+      "no_files": "You have not uploaded any files yet.",
+      "video_attachment": "Open video",
+      "link_attachment": "Open link",
+      "file_attachment": "View file",
+      "file_count_zero": "You have not uploaded any files yet.",
+      "file_count_one": "You have uploaded 1 file.",
+      "file_count_other": "You have uploaded {{count}} files."
     }
   },
   "preview": {

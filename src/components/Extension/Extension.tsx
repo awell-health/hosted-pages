@@ -9,6 +9,7 @@ import { LoadingPage } from '../LoadingPage'
 import { type Activity, ExtensionKey } from './types'
 import { FormsortExtension } from './FormsortExtension'
 import { DropboxSignExtension } from './DropboxSignExtension'
+import { CloudinaryExtension } from './CloudinaryExtension'
 
 interface ExtensionProps {
   activity: Activity
@@ -43,6 +44,13 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     case ExtensionKey.DROPBOXSIGN:
       return (
         <DropboxSignExtension
+          activity={activity}
+          activityDetails={extensionActivityDetails}
+        />
+      )
+    case ExtensionKey.CLOUDINARY:
+      return (
+        <CloudinaryExtension
           activity={activity}
           activityDetails={extensionActivityDetails}
         />
