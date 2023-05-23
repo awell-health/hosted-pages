@@ -66,13 +66,14 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell_health/ui-library@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.1.4.tgz#4e663dd17f18b2cf30885a9d70bb5d460b48119d"
-  integrity sha512-FCUyuPU9rvXQW40/szTDSYNH6+0IvQnmpg15IhcQUBk+/t5XW3VvjC9Uy3Qbo9UHJ+4E0I016vYT/y05He4OsQ==
+"@awell_health/ui-library@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.1.7.tgz#f00c0356d59d0e660294fe4126abc7dc8fac125c"
+  integrity sha512-cloDI343hQG+fFRs9UM+XUlxDiK8/3+yHcOuqUBjqTMXJvwqKhdfHJT3Cs64vwrEFYXTgK10ms8fNStsEmixhA==
   dependencies:
     "@calcom/embed-react" "^1.0.10"
     "@heroicons/react" "^2.0.13"
+    cloudinary-core "^2.13.0"
     date-fns "^2.29.1"
     dompurify "^2.4.0"
     escape-html "^1.0.3"
@@ -2186,6 +2187,11 @@ clone@^1.0.2:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==
+
+cloudinary-core@^2.13.0:
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/cloudinary-core/-/cloudinary-core-2.13.0.tgz#b59f90871b6c708c3d0735b9be47ac08181c57fb"
+  integrity sha512-Nt0Q5I2FtenmJghtC4YZ3MZZbGg1wLm84SsxcuVwZ83OyJqG9CNIGp86CiI6iDv3QobaqBUpOT7vg+HqY5HxEA==
 
 clsx@^1.1.1:
   version "1.2.1"
