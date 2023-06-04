@@ -36,6 +36,11 @@ export const useSessionActivities = ({
   const { data, error, loading, refetch } = useGetHostedSessionActivitiesQuery({
     variables,
     onError: (error) => {
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.NEXT_PUBLIC_AWELL_ENVIRONMENT === 'staging'
+      )
+        console.error(error)
       captureException(error, {
         contexts: {
           graphql: {
@@ -49,6 +54,22 @@ export const useSessionActivities = ({
 
   const onActivityCreated = useOnSessionActivityCreatedSubscription({
     variables,
+    onError: (error) => {
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.NEXT_PUBLIC_AWELL_ENVIRONMENT === 'staging'
+      )
+        console.error(error)
+      captureException(error, {
+        contexts: {
+          graphql: {
+            query: 'OnSessionActivityCreated',
+            variables: JSON.stringify(variables),
+          },
+        },
+      })
+    },
+    shouldResubscribe: true,
   })
 
   /**
@@ -57,8 +78,38 @@ export const useSessionActivities = ({
    * returned via these subscriptions will automatically be updated in the cache,
    * which means the `activities` array will also be automatically updated.
    */
-  useOnSessionActivityUpdatedSubscription({ variables })
-  useOnSessionActivityCompletedSubscription({ variables })
+  useOnSessionActivityUpdatedSubscription({
+    variables,
+    onError: (error) => {
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.NEXT_PUBLIC_AWELL_ENVIRONMENT === 'staging'
+      )
+        console.error(error)
+      captureException(error, {
+        contexts: {
+          graphql: {
+            query: 'OnSessionActivityUpdated',
+            variables: JSON.stringify(variables),
+          },
+        },
+      })
+    },
+  })
+  useOnSessionActivityCompletedSubscription({
+    variables,
+    onError: (error) => {
+      captureException(error, {
+        contexts: {
+          graphql: {
+            query: 'OnSessionActivityCompleted',
+            variables: JSON.stringify(variables),
+          },
+        },
+      })
+    },
+    shouldResubscribe: true,
+  })
 
   const sortActivitiesByDate = (activities: Activity[]): Activity[] => {
     if (isNil(activities) || isEmpty(activities)) {
