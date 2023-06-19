@@ -66,10 +66,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell_health/ui-library@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.1.10.tgz#869f1d5d3ea8b1bee34cf0d03e7ecdc5359980e0"
-  integrity sha512-rdkoBW9w9Hn5/O/b5yoQtviKf81uPx1ZrjYfALlw41bAJHMzF40+5V0OirwuP0fqWZQddK/YYlHfgXL4BgCNDg==
+"@awell_health/ui-library@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.1.11.tgz#ca2f926e2da00ddc91622e32739599d49548eec7"
+  integrity sha512-iYO5rxuO6+3FkqRNhgMHtokHeTutiBoYPbOWVNEG2YD8miiATYLV0PLRWuyzcsICHgeOSr4mavrVrtkTzD66cg==
   dependencies:
     "@calcom/embed-react" "^1.0.10"
     "@heroicons/react" "^2.0.13"
