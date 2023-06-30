@@ -1,6 +1,6 @@
 {
   "name": "hosted-pages",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.2",
-    "@awell_health/ui-library": "0.1.11",
+    "@awell_health/ui-library": "0.1.13",
     "@formsort/react-embed": "^3.1.1",
     "@sentry/nextjs": "7.34.0",
     "date-fns": "^2.29.3",
