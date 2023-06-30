@@ -6,7 +6,6 @@ import { ErrorPage } from '../ErrorPage'
 import { ActivityProvider } from '../../hooks/activityNavigation'
 import { Activities } from './Activities'
 import { ErrorBoundary } from '../ErrorBoundary'
-import classes from './activityContainer.module.css'
 
 export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   const { t } = useTranslation()
