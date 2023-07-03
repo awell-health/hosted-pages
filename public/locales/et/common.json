@@ -3,6 +3,7 @@
     "app_error": "Oih, midagi läks valesti. Palun proovi uuesti."
   },
   "activities": {
+    "cta_done": "Valmis",
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "loading": "Tegevuse laadimine...",
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
