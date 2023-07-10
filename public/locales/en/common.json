@@ -7,7 +7,7 @@
     "loading_error": "Something went wrong while loading your activities.",
     "loading": "Loading activity...",
     "activity_not_supported": "Activity type is not supported.",
-    "waiting_for_new_activities": "Waiting for new activities.",
+    "waiting_for_new_activities": "Checking to see if anything else is needed from you.",
     "message": {
       "cta_mark_as_read": "Done",
       "open_video_attachment": "Open video",
