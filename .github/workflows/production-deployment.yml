@@ -58,3 +58,26 @@ jobs:
           git pull origin production-us
           git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "merge ${{ env.DEPLOYMENT_TYPE }} in production-us"
           git push origin production-us
+
+  merge-release-content-to-production-uk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Git config
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Set deployment type
+        run: |
+          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+        shell: bash
+      - name: Merge ${{ env.DEPLOYMENT_TYPE }} into production-uk
+        run: |
+          git fetch --unshallow
+          git checkout production-uk
+          git pull origin production-uk
+          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "merge ${{ env.DEPLOYMENT_TYPE }} in production-uk"
+          git push origin production-uk
