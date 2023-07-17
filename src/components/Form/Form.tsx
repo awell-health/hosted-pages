@@ -1,10 +1,11 @@
-import { WizardForm } from '@awell_health/ui-library'
+import { ConversationalForm, TraditionalForm } from '@awell_health/ui-library'
 import React, { FC } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import {
   Activity,
   AnswerInput,
+  FormDisplayMode,
   QuestionRuleResult,
 } from '../../types/generated/types-orchestration'
 import { LoadingPage } from '../LoadingPage'
@@ -45,6 +46,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
         form_id: form?.id,
       },
     })
+
     return evaluateFormRules(response)
   }
 
@@ -65,30 +67,49 @@ export const Form: FC<FormProps> = ({ activity }) => {
     }
   }
 
-  return (
-    <WizardForm
+  const labels = {
+    yes_label: t('activities.form.questions.yes_no.yes_answer'),
+    no_label: t('activities.form.questions.yes_no.no_answer'),
+    select: {
+      search_placeholder: t(
+        'activities.form.questions.select.search_placeholder'
+      ),
+      no_options: t('activities.form.questions.select.no_options'),
+    },
+  }
+
+  const button_labels = {
+    prev: t('activities.form.previous_question_label'),
+    next: t('activities.form.next_question_label'),
+    submit: t('activities.form.cta_submit'),
+    start_form: t('activities.form.cta_start_form'),
+  }
+
+  const error_labels = {
+    required: t('activities.form.question_required_error'),
+    sliderNotTouched: t('activities.form.slider_not_touched_error'),
+    invalidPhoneNumber: t('activities.form.invalid_phone_number'),
+    formHasErrors: t('activities.form.form_has_errors'),
+  }
+
+  return activity.form_display_mode &&
+    activity.form_display_mode === FormDisplayMode.Regular ? (
+    <TraditionalForm
       form={form as any}
-      questionLabels={{
-        yes_label: t('activities.form.questions.yes_no.yes_answer'),
-        no_label: t('activities.form.questions.yes_no.no_answer'),
-        select: {
-          search_placeholder: t(
-            'activities.form.questions.select.search_placeholder'
-          ),
-          no_options: t('activities.form.questions.select.no_options'),
-        },
-      }}
-      buttonLabels={{
-        prev: t('activities.form.previous_question_label'),
-        next: t('activities.form.next_question_label'),
-        submit: t('activities.form.cta_submit'),
-        start_form: t('activities.form.cta_start_form'),
-      }}
-      errorLabels={{
-        required: t('activities.form.question_required_error'),
-        sliderNotTouched: t('activities.form.slider_not_touched_error'),
-        invalidPhoneNumber: t('activities.form.invalid_phone_number'),
-      }}
+      questionLabels={labels}
+      buttonLabels={button_labels}
+      errorLabels={error_labels}
+      onSubmit={handleSubmit}
+      evaluateDisplayConditions={handleEvaluateFormRules}
+      storedAnswers={formProgress}
+      onAnswersChange={handleOnAnswersChange}
+    />
+  ) : (
+    <ConversationalForm
+      form={form as any}
+      questionLabels={labels}
+      buttonLabels={button_labels}
+      errorLabels={error_labels}
       onSubmit={handleSubmit}
       evaluateDisplayConditions={handleEvaluateFormRules}
       storedAnswers={formProgress}

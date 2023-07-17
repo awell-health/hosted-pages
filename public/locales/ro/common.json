@@ -26,6 +26,7 @@
       "question_required_error": "Această întrebare este obligatorie.",
       "slider_not_touched_error": "Vă rugam să mutați cursorul pentru a indica răspunsul dumneavoastră.",
       "invalid_phone_number": "Numărul de telefon este invalid.",
+      "form_has_errors": "Please fix the errors in the form before submitting",
       "saving_error": "Trimiterea formularului a eșuat.",
       "questions": {
         "yes_no": {
