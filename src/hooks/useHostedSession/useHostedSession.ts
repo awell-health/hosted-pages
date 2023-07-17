@@ -24,8 +24,11 @@ interface UseHostedSessionHook {
   refetch?: () => {}
 }
 
+const POLLING_DELAY = 5000 // 5 seconds
+
 export const useHostedSession = (): UseHostedSessionHook => {
   const { data, loading, error, refetch } = useGetHostedSessionQuery({
+    pollInterval: POLLING_DELAY,
     onError: (error) => {
       Sentry.captureException(error, {
         contexts: {
