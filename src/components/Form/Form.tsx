@@ -93,6 +93,9 @@ export const Form: FC<FormProps> = ({ activity }) => {
       evaluateDisplayConditions={handleEvaluateFormRules}
       storedAnswers={formProgress}
       onAnswersChange={handleOnAnswersChange}
+
+      // ADD DISPLAY MODE HERE:
+      // displayMode={activity.form_display_mode}
     />
   )
 }
