@@ -56,4 +56,5 @@ fragment Activity on Activity {
     step_id
     action_id
   }
+  form_display_mode
 }
