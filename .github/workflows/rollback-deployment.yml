@@ -20,7 +20,7 @@ jobs:
         run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
       - name: Revert to previous tag
         run: |
-          for branch in sandbox production production-us; do
+          for branch in sandbox production production-us production-uk; do
             git switch $branch
             git fetch origin refs/tags/${{ steps.latest_tag.outputs.tag }}:refs/tags/${{ steps.latest_tag.outputs.tag }}
             git revert --no-edit ${branch}..${{ steps.latest_tag.outputs.tag }}
