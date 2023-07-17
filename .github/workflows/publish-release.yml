@@ -17,6 +17,6 @@ jobs:
         run: sudo apt-get install -y libdatetime-perl
 
       - name: Publish release
-        run: ./scripts/ci/release.sh
+        run: ./scripts/publish_release.sh
         env:
           ECHOESHQ_API_KEY_RELEASES: ${{ secrets.ECHOESHQ_API_KEY_RELEASES }}
