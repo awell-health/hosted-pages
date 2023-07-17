@@ -1,6 +1,7 @@
 name: 📊 Publish release on Echoes
 
 on:
+  workflow_dispatch:
   release:
     types: [released]
 
