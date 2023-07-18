@@ -27,6 +27,7 @@
       "question_required_error": "Ответ на этот вопрос обязателен.",
       "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ.",
       "invalid_phone_number": "Номер телефона недействительный.",
+      "form_has_errors": "Please fix the errors in the form before submitting",
       "saving_error": "Не удалось подать форму.",
       "questions": {
         "yes_no": {
