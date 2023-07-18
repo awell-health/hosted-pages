@@ -26,6 +26,7 @@
       "question_required_error": "This question is required.",
       "slider_not_touched_error": "Please move the slider to indicate your answer.",
       "invalid_phone_number": "Phone number is invalid.",
+      "form_has_errors": "Please fix the errors in the form before submitting",
       "saving_error": "Form submission failed.",
       "questions": {
         "yes_no": {

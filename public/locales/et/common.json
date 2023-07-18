@@ -27,6 +27,7 @@
       "question_required_error": "See küsimus on kohustuslik.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
       "invalid_phone_number": "Telefoninumber pole õige.",
+      "form_has_errors": "Please fix the errors in the form before submitting",
       "saving_error": "Vormi esitamine ebaõnnestus.",
       "questions": {
         "yes_no": {
