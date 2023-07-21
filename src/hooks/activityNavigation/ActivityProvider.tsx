@@ -9,33 +9,44 @@ interface ActivityProviderProps {
   children?: React.ReactNode
   activities: Array<Activity>
 }
-
+/**
+ * Provider to store ID of the current activity being shown to user
+ * and to determine the next activity from the activities list.
+ */
 export const ActivityProvider: FC<ActivityProviderProps> = ({
   children,
   activities,
 }) => {
-  const [currentActivity, setCurrentActivity] = useState(0)
+  const [currentActivityId, setCurrentActivityId] = useState<string>('')
+
+  useEffect(() => {
+    findNextActiveActivity()
+  }, [])
+
+  const findCurrentActivity = (): Activity | undefined => {
+    return activities.find(({ id }) => id === currentActivityId)
+  }
+
+  const findNextActiveActivity = (): Activity | undefined => {
+    return activities.find(
+      ({ status, id }) =>
+        status === ActivityStatus.Active && id !== currentActivityId
+    )
+  }
 
   const handleSetCurrent = () => {
-    if (
-      activities.length === 0 ||
-      activities[currentActivity].status === ActivityStatus.Active
-    ) {
-      return
-    }
-    const currentActivityId = activities[currentActivity].id
+    const currentActivity = findCurrentActivity()
 
-    const nextActivityIndex = activities.findIndex(
-      (activity) =>
-        activity.status === ActivityStatus.Active &&
-        activity.id !== currentActivityId
-    )
-
-    if (nextActivityIndex === -1 || currentActivity === nextActivityIndex) {
+    // if current activity is still active, then do not move
+    // to the next activity unless it is marked as completed
+    if (currentActivity?.status === ActivityStatus.Active) {
       return
     }
 
-    setCurrentActivity(nextActivityIndex)
+    const nextActivity = findNextActiveActivity()
+    if (!isNil(nextActivity)) {
+      setCurrentActivityId(nextActivity.id)
+    }
   }
 
   useEffect(() => {
@@ -45,7 +56,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   return (
     <ActivityContext.Provider
       value={{
-        currentActivity,
+        currentActivityId,
         handleNavigateToNextActivity: handleSetCurrent,
       }}
     >
