@@ -32,6 +32,7 @@ export const useSubmitChecklist = ({
     try {
       await submitChecklist({
         variables,
+        refetchQueries: ['GetHostedSessionActivities'],
       })
       handleNavigateToNextActivity()
     } catch (error) {
