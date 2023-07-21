@@ -34,6 +34,7 @@ export const useSubmitForm = ({
     try {
       await submitFormResponse({
         variables,
+        refetchQueries: ['GetHostedSessionActivities'],
       })
       handleNavigateToNextActivity()
     } catch (error) {

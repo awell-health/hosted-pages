@@ -58,6 +58,7 @@ export const useMessage = ({
     try {
       await markMessageAsRead({
         variables: markMessageAsReadVariables,
+        refetchQueries: ['GetHostedSessionActivities'],
       })
       handleNavigateToNextActivity()
     } catch (err) {
