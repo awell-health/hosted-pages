@@ -28,6 +28,7 @@ export const useCompleteExtensionActivity =
         try {
           await completeExtensionActivity({
             variables,
+            refetchQueries: ['GetHostedSessionActivities'],
           })
         } catch (error) {
           toast.error(t('activities.checklist.saving_error'))
