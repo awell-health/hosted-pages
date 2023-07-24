@@ -5,6 +5,7 @@ import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
+import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
 interface UseMessageActivityHook {
   loading: boolean
   message?: Message
@@ -24,6 +25,7 @@ export const useMessage = ({
     object: { id: message_id },
   } = activity
   const { handleNavigateToNextActivity } = useCurrentActivity()
+  const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
 
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
 
@@ -56,9 +58,13 @@ export const useMessage = ({
       },
     }
     try {
-      await markMessageAsRead({
+      const markMessageAsReadMutationResult = await markMessageAsRead({
         variables: markMessageAsReadVariables,
         refetchQueries: ['GetHostedSessionActivities'],
+      })
+      updateSessionActivitiesQuery({
+        updatedActivity:
+          markMessageAsReadMutationResult.data?.markMessageAsRead.activity,
       })
       handleNavigateToNextActivity()
     } catch (err) {
