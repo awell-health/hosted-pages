@@ -4,6 +4,8 @@ import { toast } from 'react-toastify'
 import { captureException } from '@sentry/nextjs'
 
 import { type DataPoints, useCompleteExtensionActivityMutation } from './types'
+import { useCurrentActivity } from '../activityNavigation'
+import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
 
 interface UseCompleteExtensionActivityHook {
   onSubmit: (activity_id: string, data_points: DataPoints) => Promise<void>
@@ -15,6 +17,8 @@ export const useCompleteExtensionActivity =
     const { t } = useTranslation()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [completeExtensionActivity] = useCompleteExtensionActivityMutation()
+    const { handleNavigateToNextActivity } = useCurrentActivity()
+    const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
 
     const onSubmit: UseCompleteExtensionActivityHook['onSubmit'] = useCallback(
       async (activity_id, data_points) => {
@@ -26,10 +30,17 @@ export const useCompleteExtensionActivity =
           },
         }
         try {
-          await completeExtensionActivity({
-            variables,
-            refetchQueries: ['GetHostedSessionActivities'],
+          const completeExtensionMutationResult =
+            await completeExtensionActivity({
+              variables,
+              refetchQueries: ['GetHostedSessionActivities'],
+            })
+          updateSessionActivitiesQuery({
+            updatedActivity:
+              completeExtensionMutationResult.data?.completeExtensionActivity
+                .activity,
           })
+          handleNavigateToNextActivity()
         } catch (error) {
           toast.error(t('activities.checklist.saving_error'))
           captureException(error, {
