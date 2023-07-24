@@ -20,7 +20,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   const [currentActivityId, setCurrentActivityId] = useState<string>('')
 
   const findCurrentActivity = (): Activity | undefined => {
-    if (activities.length === 0 || currentActivityId === '') {
+    if (activities.length === 0) {
       return undefined
     }
     return activities.find(({ id }) => id === currentActivityId)
@@ -36,13 +36,9 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   const handleSetCurrent = () => {
     const currentActivity = findCurrentActivity()
 
-    if (isNil(currentActivity)) {
-      return
-    }
-
     // if current activity is still active, then do not move
     // to the next activity unless it is marked as completed
-    if (currentActivity.status === ActivityStatus.Active) {
+    if (currentActivity?.status === ActivityStatus.Active) {
       return
     }
 
