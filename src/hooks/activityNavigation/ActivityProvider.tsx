@@ -20,7 +20,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   const [currentActivityId, setCurrentActivityId] = useState<string>('')
 
   const findCurrentActivity = (): Activity | undefined => {
-    if (activities.length === 0) {
+    if (activities.length === 0 || currentActivityId === '') {
       return undefined
     }
     return activities.find(({ id }) => id === currentActivityId)
