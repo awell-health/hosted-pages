@@ -56,6 +56,9 @@
       "file_count_zero": "You have not uploaded any files yet.",
       "file_count_one": "You have uploaded 1 file.",
       "file_count_other": "You have uploaded {{count}} files."
+    },
+    "docu_sign": {
+      "cta_sign_document": "Sign document"
     }
   },
   "preview": {
