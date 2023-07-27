@@ -105,8 +105,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
       evaluateDisplayConditions={handleEvaluateFormRules}
       storedAnswers={formProgress}
       onAnswersChange={handleOnAnswersChange}
-      /** uncomment the following when UI library is updated */
-      // autoProgress={branding?.hosted_page_auto_progress ?? false}
     />
   ) : (
     <ConversationalForm
@@ -118,6 +116,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       evaluateDisplayConditions={handleEvaluateFormRules}
       storedAnswers={formProgress}
       onAnswersChange={handleOnAnswersChange}
+      autoProgress={branding?.hosted_page_auto_progress ?? false}
     />
   )
 }
