@@ -12,7 +12,7 @@ export type EmbeddedSigningFields = {
 }
 
 export enum WindowEventType {
-  DOCU_SIGN_IFRAME = 'docu_sign_iframe',
+  DOCU_SIGN_SET_EVENT = 'docu_sign_set_event',
 }
 
 export enum DocuSignEvent {

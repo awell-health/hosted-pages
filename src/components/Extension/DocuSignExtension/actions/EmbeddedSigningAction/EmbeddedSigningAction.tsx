@@ -27,6 +27,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   const [isIframeLoaded, setIsIframeLoaded] = useState(false)
   const [event, setEvent] = useState<DocuSignEvent | undefined>(undefined)
   const isFinished = !!event
+  const isIframe = !!iframeEvent
 
   const [isSignProcess, setIsSignProcess] = useState(false)
   const { signUrl } = useMemo(
@@ -54,6 +55,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
 
   useEffect(() => {
     if (isFinished) {
+      setIsIframeLoaded(false)
       // finishSigning()
     }
   }, [finishSigning, isFinished])
@@ -62,44 +64,50 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     <>
       <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
 
-      <div className={classes.wrapper}>
-        {!isFinished ? (
-          <>
-            {!isSignProcess && (
-              <span>
-                <Button onClick={beginSigning}>
-                  {t('activities.docu_sign.cta_sign_document')}
-                </Button>
-              </span>
-            )}
-            {isSignProcess && (
-              <>
-                {!isIframeLoaded && (
-                  <LoadingPage
-                    title={t('activities.docu_sign.loading_sign_document')}
+      {!isIframe && (
+        <div
+          className={`${classes.wrapper} ${
+            isIframeLoaded ? classes['flex-full'] : ''
+          }`}
+        >
+          {!isFinished ? (
+            <>
+              {!isSignProcess && (
+                <span>
+                  <Button onClick={beginSigning}>
+                    {t('activities.docu_sign.cta_sign_document')}
+                  </Button>
+                </span>
+              )}
+              {isSignProcess && (
+                <>
+                  {!isIframeLoaded && (
+                    <LoadingPage
+                      title={t('activities.docu_sign.loading_sign_document')}
+                    />
+                  )}
+                  <iframe
+                    className={
+                      isIframeLoaded
+                        ? classes['iframe-loaded']
+                        : classes['iframe-loading']
+                    }
+                    src={decodedSignUrl}
+                    onLoad={() => {
+                      setIsIframeLoaded(true)
+                    }}
                   />
-                )}
-                <iframe
-                  className={
-                    isIframeLoaded
-                      ? classes['iframe-loaded']
-                      : classes['iframe-loading']
-                  }
-                  src={decodedSignUrl}
-                  onLoad={() => {
-                    setIsIframeLoaded(true)
-                  }}
-                />
-              </>
-            )}
-          </>
-        ) : (
-          // auto on success, else message
-          <LoadingPage
-            title={t('activities.docu_sign.finished_sign_document')}
-          />
-        )}
-      </div>
+                </>
+              )}
+            </>
+          ) : (
+            // auto on success, else message
+            <LoadingPage
+              title={t('activities.docu_sign.finished_sign_document')}
+            />
+          )}
+        </div>
+      )}
     </>
   )
 }

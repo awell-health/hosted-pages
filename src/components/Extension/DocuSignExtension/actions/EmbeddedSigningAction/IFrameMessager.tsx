@@ -20,7 +20,7 @@ export const IFrameMessager: FC<IFrameMessager> = ({
       }
 
       switch (event.data?.type) {
-        case WindowEventType.DOCU_SIGN_IFRAME:
+        case WindowEventType.DOCU_SIGN_SET_EVENT:
           setEvent(event.data.event)
           break
         default:
@@ -33,7 +33,7 @@ export const IFrameMessager: FC<IFrameMessager> = ({
   useEffect(() => {
     if (isIframe) {
       window.top?.postMessage(
-        { event: iframeEvent, type: WindowEventType.DOCU_SIGN_IFRAME },
+        { event: iframeEvent, type: WindowEventType.DOCU_SIGN_SET_EVENT },
         location.origin
       )
     } else {
