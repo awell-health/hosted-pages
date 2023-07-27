@@ -15,6 +15,7 @@ import { ErrorPage } from '../ErrorPage'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 import useLocalStorage from 'use-local-storage'
+import { useHostedSession } from '../../hooks/useHostedSession'
 
 interface FormProps {
   activity: Activity
@@ -25,6 +26,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit } = useSubmitForm({ activity })
+  const { branding } = useHostedSession()
 
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
@@ -103,6 +105,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
       evaluateDisplayConditions={handleEvaluateFormRules}
       storedAnswers={formProgress}
       onAnswersChange={handleOnAnswersChange}
+      /** uncomment the following when UI library is updated */
+      // autoProgress={branding?.hosted_page_auto_progress ?? false}
     />
   ) : (
     <ConversationalForm
