@@ -49,9 +49,12 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   useEffect(() => {
     if (isFinished) {
       setIsIframeLoaded(false)
-      finishSigning()
+
+      if (event === DocuSignEvent.SIGNING_COMPLETE) {
+        finishSigning()
+      }
     }
-  }, [finishSigning, isFinished])
+  }, [event, finishSigning, isFinished])
 
   if (isIframe) {
     return <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
