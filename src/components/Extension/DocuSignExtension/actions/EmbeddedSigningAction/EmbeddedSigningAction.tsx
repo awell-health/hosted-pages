@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { parse } from 'query-string'
-import { Button } from '@awell_health/ui-library'
 import { mapActionFieldsToObject } from '../../../utils'
 import { DocuSignEvent, type EmbeddedSigningFields } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
@@ -10,6 +9,7 @@ import he from 'he'
 import { IFrameMessager } from './IFrameMessager'
 import classes from './embeddedSigning.module.css'
 import { LoadingPage } from '../../../../LoadingPage'
+import { SigningProcess } from './SigningProcess'
 
 interface EmbeddedSigningActionActionProps {
   activityDetails: ExtensionActivityRecord
@@ -29,7 +29,6 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   const isFinished = !!event
   const isIframe = !!iframeEvent
 
-  const [isSignProcess, setIsSignProcess] = useState(false)
   const { signUrl } = useMemo(
     () => mapActionFieldsToObject<EmbeddedSigningFields>(fields),
     [fields]
@@ -49,10 +48,6 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     onSubmit(activity_id)
   }, [activity_id, onSubmit])
 
-  const beginSigning = () => {
-    setIsSignProcess(true)
-  }
-
   useEffect(() => {
     if (isFinished) {
       setIsIframeLoaded(false)
@@ -60,54 +55,32 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     }
   }, [finishSigning, isFinished])
 
+  if (isIframe) {
+    return <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
+  }
+
   return (
     <>
       <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
 
-      {!isIframe && (
-        <div
-          className={`${classes.wrapper} ${
-            isIframeLoaded ? classes['flex-full'] : ''
-          }`}
-        >
-          {!isFinished ? (
-            <>
-              {!isSignProcess && (
-                <span>
-                  <Button onClick={beginSigning}>
-                    {t('activities.docu_sign.cta_sign_document')}
-                  </Button>
-                </span>
-              )}
-              {isSignProcess && (
-                <>
-                  {!isIframeLoaded && (
-                    <LoadingPage
-                      title={t('activities.docu_sign.loading_sign_document')}
-                    />
-                  )}
-                  <iframe
-                    className={
-                      isIframeLoaded
-                        ? classes['iframe-loaded']
-                        : classes['iframe-loading']
-                    }
-                    src={decodedSignUrl}
-                    onLoad={() => {
-                      setIsIframeLoaded(true)
-                    }}
-                  />
-                </>
-              )}
-            </>
-          ) : (
-            // auto on success, else message
-            <LoadingPage
-              title={t('activities.docu_sign.finished_sign_document')}
-            />
-          )}
-        </div>
-      )}
+      <div
+        className={`${classes.wrapper} ${
+          isIframeLoaded ? classes['flex-full'] : ''
+        }`}
+      >
+        {!isFinished ? (
+          <SigningProcess
+            signUrl={decodedSignUrl}
+            isIframeLoaded={isIframeLoaded}
+            setIsIframeLoaded={setIsIframeLoaded}
+          />
+        ) : (
+          // auto on success, else message
+          <LoadingPage
+            title={t('activities.docu_sign.finished_sign_document')}
+          />
+        )}
+      </div>
     </>
   )
 }
