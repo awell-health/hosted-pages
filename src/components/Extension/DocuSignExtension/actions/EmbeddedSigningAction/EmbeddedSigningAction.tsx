@@ -1,15 +1,14 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'next-i18next'
 import { parse } from 'query-string'
+import he from 'he'
 import { mapActionFieldsToObject } from '../../../utils'
 import { DocuSignEvent, type EmbeddedSigningFields } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteEmbeddedSigningAction } from './hooks/useCompleteEmbeddedSigningAction'
-import he from 'he'
 import { IFrameMessager } from './IFrameMessager'
-import classes from './embeddedSigning.module.css'
-import { LoadingPage } from '../../../../LoadingPage'
 import { SigningProcess } from './SigningProcess'
+import { FinishedMessage } from './FinishedMessage'
+import classes from './embeddedSigning.module.css'
 
 interface EmbeddedSigningActionActionProps {
   activityDetails: ExtensionActivityRecord
@@ -18,7 +17,6 @@ interface EmbeddedSigningActionActionProps {
 export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   activityDetails,
 }) => {
-  const { t } = useTranslation()
   const { activity_id, fields } = activityDetails
   const { onSubmit } = useCompleteEmbeddedSigningAction()
   // visible in IFrame only
@@ -51,7 +49,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   useEffect(() => {
     if (isFinished) {
       setIsIframeLoaded(false)
-      // finishSigning()
+      finishSigning()
     }
   }, [finishSigning, isFinished])
 
@@ -75,10 +73,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
             setIsIframeLoaded={setIsIframeLoaded}
           />
         ) : (
-          // auto on success, else message
-          <LoadingPage
-            title={t('activities.docu_sign.finished_sign_document')}
-          />
+          <FinishedMessage event={event} finishSigning={finishSigning} />
         )}
       </div>
     </>

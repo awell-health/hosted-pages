@@ -60,7 +60,9 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "loading_sign_document": "Loading the document",
-      "finished_sign_document": "Wrapping up"
+      "finished_sign_document": "Wrapping up",
+      "expired_sign_document": "Signing link has expired.",
+      "failed_sign_document": "Signing link has failed."
     }
   },
   "preview": {
