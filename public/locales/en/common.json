@@ -58,7 +58,9 @@
       "file_count_other": "You have uploaded {{count}} files."
     },
     "docu_sign": {
-      "cta_sign_document": "Sign document"
+      "cta_sign_document": "Sign document",
+      "loading_sign_document": "Loading the document",
+      "finished_sign_document": "Wrapping up"
     }
   },
   "preview": {

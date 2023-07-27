@@ -1,11 +1,15 @@
-import React, { FC, useMemo, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import { parse } from 'query-string'
+import { Button } from '@awell_health/ui-library'
 import { mapActionFieldsToObject } from '../../../utils'
-import { type EmbeddedSigningFields } from '../../types'
+import { DocuSignEvent, type EmbeddedSigningFields } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteEmbeddedSigningAction } from './hooks/useCompleteEmbeddedSigningAction'
-import { Button } from '@awell_health/ui-library'
 import he from 'he'
-import { useTranslation } from 'next-i18next'
+import { IFrameMessager } from './IFrameMessager'
+import classes from './embeddedSigning.module.css'
+import { LoadingPage } from '../../../../LoadingPage'
 
 interface EmbeddedSigningActionActionProps {
   activityDetails: ExtensionActivityRecord
@@ -17,9 +21,14 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   const { t } = useTranslation()
   const { activity_id, fields } = activityDetails
   const { onSubmit } = useCompleteEmbeddedSigningAction()
+  // visible in IFrame only
+  const { event: iframeEvent } =
+    (parse(location.search) as { event?: DocuSignEvent }) ?? {}
+  const [isIframeLoaded, setIsIframeLoaded] = useState(false)
+  const [event, setEvent] = useState<DocuSignEvent | undefined>(undefined)
+  const isFinished = !!event
 
   const [isSignProcess, setIsSignProcess] = useState(false)
-
   const { signUrl } = useMemo(
     () => mapActionFieldsToObject<EmbeddedSigningFields>(fields),
     [fields]
@@ -35,30 +44,63 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
    */
   const decodedSignUrl = he.decode(signUrl)
 
-  const finishSigning = () => {
+  const finishSigning = useCallback(() => {
     onSubmit(activity_id)
-  }
+  }, [activity_id, onSubmit])
 
   const beginSigning = () => {
     setIsSignProcess(true)
   }
 
+  useEffect(() => {
+    if (isFinished) {
+      // finishSigning()
+    }
+  }, [finishSigning, isFinished])
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        textAlign: 'center',
-        padding: '12px 0 0 0',
-      }}
-    >
-      {!isSignProcess && (
-        <Button onClick={beginSigning}>
-          {t('activities.docu_sign.cta_sign_document')}
-        </Button>
-      )}
-      {isSignProcess && <iframe src={decodedSignUrl} />}
-    </div>
+    <>
+      <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
+
+      <div className={classes.wrapper}>
+        {!isFinished ? (
+          <>
+            {!isSignProcess && (
+              <span>
+                <Button onClick={beginSigning}>
+                  {t('activities.docu_sign.cta_sign_document')}
+                </Button>
+              </span>
+            )}
+            {isSignProcess && (
+              <>
+                {!isIframeLoaded && (
+                  <LoadingPage
+                    title={t('activities.docu_sign.loading_sign_document')}
+                  />
+                )}
+                <iframe
+                  className={
+                    isIframeLoaded
+                      ? classes['iframe-loaded']
+                      : classes['iframe-loading']
+                  }
+                  src={decodedSignUrl}
+                  onLoad={() => {
+                    setIsIframeLoaded(true)
+                  }}
+                />
+              </>
+            )}
+          </>
+        ) : (
+          // auto on success, else message
+          <LoadingPage
+            title={t('activities.docu_sign.finished_sign_document')}
+          />
+        )}
+      </div>
+    </>
   )
 }
 
