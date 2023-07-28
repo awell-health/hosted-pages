@@ -56,27 +56,32 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     }
   }, [event, finishSigning, isFinished])
 
+  // this window is iframe content -> render only messager
   if (isIframe) {
     return <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
   }
 
+  // this window is extension content -> render messager and extension
   return (
     <>
       <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
 
       <div
+        // if iframe is loaded -> fill screen
         className={`${classes.wrapper} ${
           isIframeLoaded ? classes['flex-full'] : ''
         }`}
       >
-        {!isFinished ? (
+        {isFinished ? (
+          // signing process is finished -> display messsage
+          <FinishedMessage event={event} finishSigning={finishSigning} />
+        ) : (
+          // signing process incomplete (or user refreshed page) -> display signing process
           <SigningProcess
             signUrl={decodedSignUrl}
             isIframeLoaded={isIframeLoaded}
             setIsIframeLoaded={setIsIframeLoaded}
           />
-        ) : (
-          <FinishedMessage event={event} finishSigning={finishSigning} />
         )}
       </div>
     </>
