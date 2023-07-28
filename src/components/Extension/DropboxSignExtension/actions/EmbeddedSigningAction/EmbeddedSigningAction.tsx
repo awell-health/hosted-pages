@@ -32,7 +32,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
    */
   const decodedSignUrl = he.decode(signUrl)
 
-  const settingsData = useMemo(() => mapSettingsToObject(settings), [fields])
+  const settingsData = useMemo(() => mapSettingsToObject(settings), [settings])
 
   const { testMode, clientId } = validateSettings(settingsData)
 
