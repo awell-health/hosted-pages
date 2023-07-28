@@ -42,16 +42,19 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
    */
   const decodedSignUrl = he.decode(signUrl)
 
-  const finishSigning = useCallback(() => {
-    onSubmit(activity_id)
-  }, [activity_id, onSubmit])
+  const finishSigning = useCallback(
+    ({ signed }: { signed: boolean }) => {
+      onSubmit(activity_id, { signed })
+    },
+    [activity_id, onSubmit]
+  )
 
   useEffect(() => {
     if (isFinished) {
       setIsIframeLoaded(false)
 
       if (event === DocuSignEvent.SIGNING_COMPLETE) {
-        finishSigning()
+        finishSigning({ signed: true })
       }
     }
   }, [event, finishSigning, isFinished])

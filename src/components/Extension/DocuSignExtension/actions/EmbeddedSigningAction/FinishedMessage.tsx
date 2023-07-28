@@ -6,7 +6,7 @@ import { LoadingPage } from '../../../../LoadingPage'
 
 interface FinishedMessage {
   event: DocuSignEvent
-  finishSigning: () => void
+  finishSigning: (args: { signed: boolean }) => void
 }
 
 export const FinishedMessage: FC<FinishedMessage> = ({
@@ -14,6 +14,10 @@ export const FinishedMessage: FC<FinishedMessage> = ({
   finishSigning,
 }) => {
   const { t } = useTranslation()
+
+  const finishAndFailSigning = () => {
+    finishSigning({ signed: false })
+  }
 
   switch (event) {
     case DocuSignEvent.SIGNING_COMPLETE:
@@ -25,7 +29,9 @@ export const FinishedMessage: FC<FinishedMessage> = ({
         <>
           <span>
             <h2>{t('activities.docu_sign.expired_sign_document')}</h2>
-            <Button onClick={finishSigning}>{t('activities.cta_done')}</Button>
+            <Button onClick={finishAndFailSigning}>
+              {t('activities.cta_done')}
+            </Button>
           </span>
         </>
       )
@@ -34,7 +40,9 @@ export const FinishedMessage: FC<FinishedMessage> = ({
         <>
           <span>
             <h2>{t('activities.docu_sign.failed_sign_document')}</h2>
-            <Button onClick={finishSigning}>{t('activities.cta_done')}</Button>
+            <Button onClick={finishAndFailSigning}>
+              {t('activities.cta_done')}
+            </Button>
           </span>
         </>
       )
