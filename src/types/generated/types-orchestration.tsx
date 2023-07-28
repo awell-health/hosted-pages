@@ -377,6 +377,8 @@ export enum BooleanOperator {
 export type BrandingSettings = {
   __typename?: 'BrandingSettings';
   accent_color?: Maybe<Scalars['String']>;
+  /** Auto advance in radio questions in conversational display mode. */
+  hosted_page_auto_progress?: Maybe<Scalars['Boolean']>;
   hosted_page_title?: Maybe<Scalars['String']>;
   logo_url?: Maybe<Scalars['String']>;
 };
@@ -690,6 +692,7 @@ export type FilterActivitiesParams = {
   activity_status?: InputMaybe<StringArrayFilter>;
   activity_type?: InputMaybe<StringArrayFilter>;
   pathway_definition_id?: InputMaybe<StringArrayFilter>;
+  pathway_status?: InputMaybe<StringArrayFilter>;
   patient_id?: InputMaybe<TextFilterEquals>;
   stakeholders?: InputMaybe<StringArrayFilter>;
 };
@@ -2219,7 +2222,7 @@ export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', 
 export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } }, branding?: { __typename?: 'BrandingSettings', logo_url?: string | null, hosted_page_title?: string | null, accent_color?: string | null } | null } };
+export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } }, branding?: { __typename?: 'BrandingSettings', logo_url?: string | null, hosted_page_title?: string | null, accent_color?: string | null, hosted_page_auto_progress?: boolean | null } | null } };
 
 export type GetMessageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2707,6 +2710,7 @@ export const GetHostedSessionDocument = gql`
       logo_url
       hosted_page_title
       accent_color
+      hosted_page_auto_progress
     }
   }
 }

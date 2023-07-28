@@ -1,13 +1,14 @@
 # import 'HostedSession'
 query GetHostedSession {
-    hostedSession {
-        session {
-            ...HostedSession
-        }
-        branding {
-            logo_url
-            hosted_page_title
-            accent_color
-        }
+  hostedSession {
+    session {
+      ...HostedSession
     }
+    branding {
+      logo_url
+      hosted_page_title
+      accent_color
+      hosted_page_auto_progress
+    }
+  }
 }
