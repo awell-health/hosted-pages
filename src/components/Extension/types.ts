@@ -12,4 +12,5 @@ export enum ExtensionKey {
   FORMSORT = 'formsort',
   DROPBOXSIGN = 'dropboxSign',
   CLOUDINARY = 'cloudinary',
+  DOCU_SIGN = 'docuSign',
 }
