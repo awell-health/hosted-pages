@@ -55,7 +55,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
         })
 
         client.on('sign', () => {
-          onSubmit(activity_id)
+          onSubmit(activity_id, { signed: true })
         })
       })
   }
@@ -80,7 +80,9 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
           }}
         >
           <p>The sign URL for this signature request is expired.</p>
-          <Button onClick={() => onSubmit(activity_id)}>Continue</Button>
+          <Button onClick={() => onSubmit(activity_id, { signed: false })}>
+            Continue
+          </Button>
         </div>
       ) : (
         <Button onClick={singDocument}>Sign document</Button>

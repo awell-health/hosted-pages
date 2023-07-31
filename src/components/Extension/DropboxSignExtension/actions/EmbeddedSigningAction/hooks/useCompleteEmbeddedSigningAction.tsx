@@ -5,8 +5,8 @@ export const useCompleteEmbeddedSigningAction = () => {
   const { isSubmitting, onSubmit: _onSubmit } = useCompleteExtensionActivity()
 
   const onSubmit = useCallback(
-    async (activityId: string) => {
-      const dataPoints: DataPoints = []
+    async (activityId: string, { signed }: { signed: boolean }) => {
+      const dataPoints: DataPoints = [{ key: 'signed', value: String(signed) }]
 
       return _onSubmit(activityId, dataPoints)
     },
