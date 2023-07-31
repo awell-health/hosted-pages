@@ -54,6 +54,10 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
           skipDomainVerification: true,
         })
 
+        /*
+         ! Needs handling of all events; currently only `sign` event is handled
+         ! https://github.com/hellosign/hellosign-embedded/wiki/API-Documentation-(v2)#events
+         */
         client.on('sign', () => {
           onSubmit(activity_id, { signed: true })
         })
