@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding: 12px 0 0 0;
+}
+
+.flex-full {
+  flex: 1 0;
+}
+
+.wrapper > iframe {
+  border: 0;
+}
+
+.iframe-loaded {
+  width: 80%;
+  height: 80%;
+}
+
+.iframe-loading {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
