@@ -56,6 +56,13 @@
       "file_count_zero": "You have not uploaded any files yet.",
       "file_count_one": "You have uploaded 1 file.",
       "file_count_other": "You have uploaded {{count}} files."
+    },
+    "docu_sign": {
+      "cta_sign_document": "Sign document",
+      "loading_sign_document": "Loading the document",
+      "finished_sign_document": "Wrapping up",
+      "expired_sign_document": "Signing link has expired.",
+      "failed_sign_document": "Signing link has failed."
     }
   },
   "preview": {
