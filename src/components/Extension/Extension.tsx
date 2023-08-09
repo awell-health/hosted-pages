@@ -10,6 +10,7 @@ import { type Activity, ExtensionKey } from './types'
 import { FormsortExtension } from './FormsortExtension'
 import { DropboxSignExtension } from './DropboxSignExtension'
 import { CloudinaryExtension } from './CloudinaryExtension'
+import { DocuSignExtension } from './DocuSignExtension'
 
 interface ExtensionProps {
   activity: Activity
@@ -58,6 +59,13 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     case ExtensionKey.FORMSORT:
       return (
         <FormsortExtension
+          activity={activity}
+          activityDetails={extensionActivityDetails}
+        />
+      )
+    case ExtensionKey.DOCU_SIGN:
+      return (
+        <DocuSignExtension
           activity={activity}
           activityDetails={extensionActivityDetails}
         />
