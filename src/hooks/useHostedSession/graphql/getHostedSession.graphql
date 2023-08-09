@@ -9,6 +9,7 @@ query GetHostedSession {
       hosted_page_title
       accent_color
       hosted_page_auto_progress
+      hosted_page_autosave
     }
   }
 }

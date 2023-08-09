@@ -105,6 +105,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       evaluateDisplayConditions={handleEvaluateFormRules}
       storedAnswers={formProgress}
       onAnswersChange={handleOnAnswersChange}
+      autosaveAnswers={branding?.hosted_page_autosave ?? true}
     />
   ) : (
     <ConversationalForm
@@ -117,6 +118,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       storedAnswers={formProgress}
       onAnswersChange={handleOnAnswersChange}
       autoProgress={branding?.hosted_page_auto_progress ?? false}
+      autosaveAnswers={branding?.hosted_page_autosave ?? true}
     />
   )
 }
