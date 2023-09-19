@@ -10,6 +10,7 @@ import type {
   UploadFilesFields,
 } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
+import { isEmpty, isNil } from 'lodash'
 
 interface UploadFilesActionProps {
   activityDetails: ExtensionActivityRecord
@@ -56,7 +57,11 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
   return (
     <CloudinaryUpload
       cloudName={cloudName}
-      uploadPreset={uploadPresetActionFields ?? uploadPresetSettings}
+      uploadPreset={
+        !isEmpty(uploadPresetActionFields) && !isNil(uploadPresetActionFields)
+          ? uploadPresetActionFields
+          : uploadPresetSettings
+      }
       folder={folderActionFields ?? folderSettings}
       tags={tagsArray}
       context={{
