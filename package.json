@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.2",
-    "@awell_health/ui-library": "0.1.25",
+    "@awell_health/ui-library": "0.1.26",
     "@formsort/react-embed": "^3.1.1",
     "@sentry/nextjs": "^7.59.3",
     "date-fns": "^2.29.3",
