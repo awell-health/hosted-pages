@@ -6,7 +6,6 @@ import { updateQuery } from '../../services/graphql'
 import {
   Activity,
   useOnSessionActivityCompletedSubscription,
-  useOnSessionActivityUpdatedSubscription,
   useOnSessionActivityCreatedSubscription,
   useGetHostedSessionActivitiesQuery,
   GetHostedSessionActivitiesDocument,
@@ -57,7 +56,6 @@ export const useSessionActivities = ({
    * returned via these subscriptions will automatically be updated in the cache,
    * which means the `activities` array will also be automatically updated.
    */
-  useOnSessionActivityUpdatedSubscription({ variables })
   useOnSessionActivityCompletedSubscription({ variables })
 
   const sortActivitiesByDate = (activities: Activity[]): Activity[] => {

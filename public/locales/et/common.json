@@ -1,6 +1,9 @@
 {
-  "errors": { "app_error": "Oops, something went wrong. Please try again." },
+  "errors": {
+    "app_error": "Oih, midagi läks valesti. Palun proovi uuesti."
+  },
   "activities": {
+    "cta_done": "Valmis",
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "loading": "Tegevuse laadimine...",
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
@@ -23,12 +26,17 @@
       "previous_question_label": "Eelmine",
       "question_required_error": "See küsimus on kohustuslik.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
-      "invalid_phone_number": "Phone number is invalid.",
+      "invalid_phone_number": "Telefoninumber pole õige.",
+      "form_has_errors": "Please fix the errors in the form before submitting",
       "saving_error": "Vormi esitamine ebaõnnestus.",
       "questions": {
         "yes_no": {
           "yes_answer": "Jah",
           "no_answer": "Ei"
+        },
+        "select": {
+          "search_placeholder": "Otsi valikut",
+          "no_options": "Valikuid ei leidnud"
         }
       }
     },
@@ -40,7 +48,7 @@
     }
   },
   "preview": {
-    "cta": "Try it out"
+    "cta": "Proovi"
   },
   "seo": {
     "loading_title": "Laadimine...",
@@ -48,8 +56,8 @@
     "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega."
   },
   "link_page": {
-    "loading": "Hang on, we are starting your session.",
-    "loading_error": "Oops, we could not start a session for you.",
+    "loading": "Palun oodake, alustame sessiooni.",
+    "loading_error": "Oih, meil ei õnnestunud sessiooni alustada.",
     "try_again": "Proovi uuesti"
   },
   "session": {
@@ -58,8 +66,8 @@
     "loading_error": "Midagi läks seansi laadimisel valesti.",
     "loading": "Seansi laadimine...",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
-    "all_activities_completed": "You have completed all your activities. You can close this page now.",
-    "session_canceled": "Your session has been cancelled.",
+    "all_activities_completed": "Oled lõpetanud oma tegevused. Võid selle akna nüüd sulgeda.",
+    "session_canceled": "Teie sessioon on katkestatud.",
     "try_again": "Proovi uuesti",
     "close_modal": {
       "title": "Soovid pöördumise täitmise pooleli jätta?",

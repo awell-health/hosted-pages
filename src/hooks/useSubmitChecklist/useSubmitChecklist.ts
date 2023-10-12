@@ -5,6 +5,7 @@ import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
+import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -21,6 +22,7 @@ export const useSubmitChecklist = ({
   const { handleNavigateToNextActivity } = useCurrentActivity()
   const [submitChecklist] = useSubmitChecklistMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -30,8 +32,13 @@ export const useSubmitChecklist = ({
       },
     }
     try {
-      await submitChecklist({
+      const submitChecklistMutationResult = await submitChecklist({
         variables,
+        refetchQueries: ['GetHostedSessionActivities'],
+      })
+      updateSessionActivitiesQuery({
+        updatedActivity:
+          submitChecklistMutationResult.data?.submitChecklist.activity,
       })
       handleNavigateToNextActivity()
     } catch (error) {

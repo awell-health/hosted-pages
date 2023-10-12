@@ -32,7 +32,7 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
    */
   const decodedSignUrl = he.decode(signUrl)
 
-  const settingsData = useMemo(() => mapSettingsToObject(settings), [fields])
+  const settingsData = useMemo(() => mapSettingsToObject(settings), [settings])
 
   const { testMode, clientId } = validateSettings(settingsData)
 
@@ -54,8 +54,12 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
           skipDomainVerification: true,
         })
 
+        /*
+         ! Needs handling of all events; currently only `sign` event is handled
+         ! https://github.com/hellosign/hellosign-embedded/wiki/API-Documentation-(v2)#events
+         */
         client.on('sign', () => {
-          onSubmit(activity_id)
+          onSubmit(activity_id, { signed: true })
         })
       })
   }
@@ -80,7 +84,9 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
           }}
         >
           <p>The sign URL for this signature request is expired.</p>
-          <Button onClick={() => onSubmit(activity_id)}>Continue</Button>
+          <Button onClick={() => onSubmit(activity_id, { signed: false })}>
+            Continue
+          </Button>
         </div>
       ) : (
         <Button onClick={singDocument}>Sign document</Button>

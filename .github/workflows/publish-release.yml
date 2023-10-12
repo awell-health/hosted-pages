@@ -1,0 +1,23 @@
+name: 📊 Publish release on Echoes
+
+on:
+  workflow_dispatch:
+  release:
+    types: [released]
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        with:
+          fetch-depth: 0
+        uses: actions/checkout@v2
+
+      - name: Install packages
+        run: sudo apt-get install -y libdatetime-perl
+
+      - name: Publish release
+        run: ./scripts/publish_release.sh
+        env:
+          ECHOESHQ_API_KEY_RELEASES: ${{ secrets.ECHOESHQ_API_KEY_RELEASES }}

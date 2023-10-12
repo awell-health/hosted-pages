@@ -5,6 +5,7 @@ import type { Activity, AnswerInput } from './types'
 import { useSubmitFormResponseMutation } from './types'
 import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
+import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
 interface UseFormActivityHook {
   disabled: boolean
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
@@ -18,6 +19,7 @@ export const useSubmitForm = ({
   const { t } = useTranslation()
   const { id: activity_id } = activity
   const { handleNavigateToNextActivity } = useCurrentActivity()
+  const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
 
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -32,8 +34,13 @@ export const useSubmitForm = ({
     }
 
     try {
-      await submitFormResponse({
+      const submitFormMutationResult = await submitFormResponse({
         variables,
+        refetchQueries: ['GetHostedSessionActivities'],
+      })
+      updateSessionActivitiesQuery({
+        updatedActivity:
+          submitFormMutationResult.data?.submitFormResponse.activity,
       })
       handleNavigateToNextActivity()
     } catch (error) {

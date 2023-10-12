@@ -11,4 +11,6 @@ export enum ExtensionKey {
   CAL_DOT_COM = 'calDotCom',
   FORMSORT = 'formsort',
   DROPBOXSIGN = 'dropboxSign',
+  CLOUDINARY = 'cloudinary',
+  DOCU_SIGN = 'docuSign',
 }

@@ -1,5 +1,4 @@
-import { FC, useEffect } from 'react'
-import { toast } from 'react-toastify'
+import { FC } from 'react'
 import { Activity } from './types'
 import { useTranslation } from 'next-i18next'
 import { Form } from '../Form'

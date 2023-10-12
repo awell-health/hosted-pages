@@ -2,6 +2,7 @@
 fragment Form on Form {
   id
   title
+  trademark
   questions {
     ...Question
   }
