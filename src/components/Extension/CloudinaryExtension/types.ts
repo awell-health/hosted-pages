@@ -11,10 +11,14 @@ export type CloudinaryExtensionSettings = {
 
 export enum ActionKey {
   UPLOAD_FILES = 'uploadFiles',
+  UPLOAD_SINGLE_FILE = 'uploadSingleFile',
 }
 
-export type UploadFilesFields = {
+type baseUploadFileFields = {
   uploadPreset?: string
   folder?: string
   tags?: string
 }
+
+export type UploadFilesFields = baseUploadFileFields
+export type UploadSingleFileFields = baseUploadFileFields
