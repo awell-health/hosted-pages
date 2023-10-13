@@ -111,7 +111,10 @@ export const useSessionActivities = ({
       const {
         data: { sessionActivityCreated },
       } = onActivityCreated
-      const updatedActivities = [sessionActivityCreated, ...activities]
+      const updatedActivities = sortActivitiesByDate([
+        sessionActivityCreated,
+        ...activities,
+      ])
       const updatedQuery = updateQuery<
         GetHostedSessionActivitiesQuery,
         Array<Activity>
