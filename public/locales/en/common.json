@@ -47,6 +47,12 @@
       "saving_error": "Checklist submission failed."
     },
     "cloudinary": {
+      "single_file_upload_action": {
+        "subject_single_file_upload": "Upload file",
+        "cta_upload_file": "Upload file",
+        "no_file_uploaded": "You have not uploaded a file yet.",
+        "file_uploaded": "You have successfully uploaded a file."
+      },
       "cta_upload_files": "Upload files",
       "subject": "Upload files",
       "no_files": "You have not uploaded any files yet.",
