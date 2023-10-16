@@ -66,10 +66,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell_health/ui-library@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.1.26.tgz#799026ff27698d1ae1d62a044b7668ec8d05b0a9"
-  integrity sha512-ep4TD8AdCcahXf1vduaqgWL79+irgQda/Dt6WmvekAY2HwXlTH34ewJhmQ1M5rUb9KH/63QnSygSXSvh0NT6PQ==
+"@awell_health/ui-library@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@awell_health/ui-library/-/ui-library-0.1.28.tgz#814f61529923ccc5743be31b7ac13387948d5d7c"
+  integrity sha512-Yb/V1rz0pDC+8N3HlsBCT6eng5VyJ4XYNiuavxeqfxw7rjmSkrBDYtObF00QshPIDqam5ggTFGnsoUCL5BHQnQ==
   dependencies:
     "@calcom/embed-react" "^1.0.10"
     "@heroicons/react" "^2.0.13"
@@ -646,6 +646,11 @@
     js-yaml "^4.1.0"
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
+
+"@fastify/busboy@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.0.0.tgz#f22824caff3ae506b18207bad4126dbc6ccdb6b8"
+  integrity sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==
 
 "@formsort/constants@^1.7.0":
   version "1.8.0"
@@ -5540,11 +5545,11 @@ unc-path-regex@^0.1.2:
   integrity sha512-eXL4nmJT7oCpkZsHZUOJo8hcX3GbsiDOa0Qu9F646fi8dT3XuSVopVqAcEiVzSKKH7UoDti23wNX3qGFxcW5Qg==
 
 undici@^5.8.0:
-  version "5.21.0"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-5.21.0.tgz#b00dfc381f202565ab7f52023222ab862bb2494f"
-  integrity sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==
+  version "5.26.3"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-5.26.3.tgz#ab3527b3d5bb25b12f898dfd22165d472dd71b79"
+  integrity sha512-H7n2zmKEWgOllKkIUkLvFmsJQj062lSm3uA4EYApG8gLuiOM0/go9bIoC3HVaSnfg4xunowDE2i9p8drkXuvDw==
   dependencies:
-    busboy "^1.6.0"
+    "@fastify/busboy" "^2.0.0"
 
 unixify@^1.0.0:
   version "1.0.0"
