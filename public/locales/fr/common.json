@@ -3,7 +3,7 @@
     "app_error": "Oups, quelque chose s'est mal passé. Veuillez réessayer."
   },
   "activities": {
-    "cta_done": "Done",
+    "cta_done": "Terminé",
     "loading_error": "Quelque chose s'est mal passé lors du chargement des activités.",
     "loading": "Chargement de l'activité...",
     "activity_not_supported": "Le type d'activité n'est pas pris en charge.",
@@ -35,8 +35,8 @@
           "no_answer": "Non"
         },
         "select": {
-          "search_placeholder": "Search for an option",
-          "no_options": "No options found"
+          "search_placeholder": "Rechercher une option",
+          "no_options": "Aucune option trouvée"
         }
       }
     },
@@ -48,27 +48,27 @@
     },
     "cloudinary": {
       "single_file_upload_action": {
-        "subject_single_file_upload": "Upload file",
-        "cta_upload_file": "Upload file",
-        "no_file_uploaded": "You have not uploaded a file yet.",
-        "file_uploaded": "You have successfully uploaded a file."
+        "subject_single_file_upload": "Télécharger le fichier",
+        "cta_upload_file": "Télécharger le fichier",
+        "no_file_uploaded": "Vous n'avez pas encore téléchargé de fichier.",
+        "file_uploaded": "Vous avez téléchargé un fichier avec succès."
       },
-      "cta_upload_files": "Upload files",
-      "subject": "Upload files",
-      "no_files": "You have not uploaded any files yet.",
-      "video_attachment": "Open video",
-      "link_attachment": "Open link",
-      "file_attachment": "View file",
-      "file_count_zero": "You have not uploaded any files yet.",
-      "file_count_one": "You have uploaded 1 file.",
-      "file_count_other": "You have uploaded {{count}} files."
+      "cta_upload_files": "Télécharger des fichiers",
+      "subject": "Télécharger des fichiers",
+      "no_files": "Vous n'avez pas encore téléchargé de fichiers.",
+      "video_attachment": "Ouvrir la vidéo",
+      "link_attachment": "Ouvrir le lien",
+      "file_attachment": "Voir le fichier",
+      "file_count_zero": "Vous n'avez pas encore téléchargé de fichiers.",
+      "file_count_one": "Vous avez téléchargé 1 fichier.",
+      "file_count_other": "Vous avez téléchargé {{count}} fichiers."
     },
     "docu_sign": {
-      "cta_sign_document": "Sign document",
-      "loading_sign_document": "Loading the document",
-      "finished_sign_document": "Wrapping up",
-      "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "cta_sign_document": "Signer le document",
+      "loading_sign_document": "Chargement du document",
+      "finished_sign_document": "Finalisation",
+      "expired_sign_document": "Le lien de signature a expiré.",
+      "failed_sign_document": "Échec du lien de signature."
     }
   },
   "preview": {
