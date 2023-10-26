@@ -1,1 +1,4 @@
-export type { Activity } from '../../hooks/useSessionActivities'
+export {
+  type Activity,
+  ActivityObjectType,
+} from '../../hooks/useSessionActivities'
