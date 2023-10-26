@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { isNil } from 'lodash'
+import { isNil, isEmpty } from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
 import { ActivityStatus } from '../useForm'
 import { ActivityContext } from './ActivityContext'
@@ -25,11 +25,19 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
         status === ActivityStatus.Active && id !== currentActivity?.id
     )
   }
+  const findCurrentActivity = (): Activity | undefined => {
+    if (isEmpty(activities) || isNil(currentActivity)) {
+      return undefined
+    }
+    return activities.find(({ id }) => id === currentActivity.id)
+  }
 
   const handleSetCurrent = () => {
+    // refetching current activity because it might have changed in the activities list via useEffect
+    const current = findCurrentActivity()
     // if current activity is still active, then do not move
     // to the next activity unless it is marked as completed
-    if (currentActivity?.status === ActivityStatus.Active) {
+    if (current?.status === ActivityStatus.Active) {
       return
     }
 
