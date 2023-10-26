@@ -3,7 +3,10 @@ import { useSessionActivities } from '../../hooks/useSessionActivities'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
-import { ActivityProvider } from '../../hooks/activityNavigation'
+import {
+  ActivityProvider,
+  useCurrentActivity,
+} from '../../hooks/activityNavigation'
 import { Activities } from './Activities'
 import { ErrorBoundary } from '../ErrorBoundary'
 

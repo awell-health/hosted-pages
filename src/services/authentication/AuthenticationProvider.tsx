@@ -1,7 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { parse } from 'query-string'
 import { AuthenticationContext } from './AuthenticationContext'
-import { urlHasAuthState } from './urlHasAuthState'
 import { useSessionStorage } from '../../hooks/useSessionStorage'
 import { useRouter } from 'next/router'
 import useSwr from 'swr'
@@ -36,17 +34,20 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     fetcher
   )
 
+  // @REVIEW - why do we remove the token rather than overwriting/replacing it
   useEffect(() => {
     // remove access token on first load
     removeAccessToken()
-  }, [removeAccessToken])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (data?.token) {
       setAccessToken(data?.token)
       setTokenLoading(false)
     }
-  }, [data?.token, setAccessToken])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.token])
 
   const authenticationContext = {
     isAuthenticated: accessToken !== '',

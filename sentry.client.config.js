@@ -32,6 +32,10 @@ Sentry.init({
     new Sentry.Replay({
       maskAllText: true,
       blockAllMedia: true,
+      // UNCOMMENT IN SEPARATE TICKET FOR MONITORING/LOGGING
+      // networkCaptureBodies: true,
+      // networkRequestHeaders: true,
+      // networkResponseHeaders: true,
     }),
   ],
 })

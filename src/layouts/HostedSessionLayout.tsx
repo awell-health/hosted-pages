@@ -12,8 +12,11 @@ interface LayoutProps {
 export const HostedSessionLayout: FC<LayoutProps> = ({ children }) => {
   return (
     <>
+      {/* Manages JWT tokens */}
       <AuthenticationProvider>
+        {/* Authorization layer to handle auth errors */}
         <AuthGuard>
+          {/* Manages JWT tokens */}
           <GraphqlWrapper>
             <NoSSRComponent>
               {/* 
