@@ -1,5 +1,10 @@
 {
-  "extends": ["next/core-web-vitals", "prettier"],
+  "extends": [
+    "next/core-web-vitals",
+    "prettier",
+    "plugin:jest-dom/recommended",
+    "plugin:jest-extended/all"
+  ],
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": ["error"],
