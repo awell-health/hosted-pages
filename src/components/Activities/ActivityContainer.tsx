@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import React, { FC } from 'react'
 import { useSessionActivities } from '../../hooks/useSessionActivities'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
@@ -35,7 +35,7 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
       }}
     >
       <ActivityProvider activities={activities}>
-        <Activities activities={activities} />
+        <Activities />
       </ActivityProvider>
     </ErrorBoundary>
   )

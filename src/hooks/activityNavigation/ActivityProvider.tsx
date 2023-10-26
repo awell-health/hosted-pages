@@ -17,25 +17,16 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   children,
   activities,
 }) => {
-  const [currentActivityId, setCurrentActivityId] = useState<string>('')
-
-  const findCurrentActivity = (): Activity | undefined => {
-    if (activities.length === 0 || currentActivityId === '') {
-      return undefined
-    }
-    return activities.find(({ id }) => id === currentActivityId)
-  }
+  const [currentActivity, setCurrentActivity] = useState<Activity>()
 
   const findNextActiveActivity = (): Activity | undefined => {
     return activities.find(
       ({ status, id }) =>
-        status === ActivityStatus.Active && id !== currentActivityId
+        status === ActivityStatus.Active && id !== currentActivity?.id
     )
   }
 
   const handleSetCurrent = () => {
-    const currentActivity = findCurrentActivity()
-
     // if current activity is still active, then do not move
     // to the next activity unless it is marked as completed
     if (currentActivity?.status === ActivityStatus.Active) {
@@ -44,7 +35,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
 
     const nextActivity = findNextActiveActivity()
     if (!isNil(nextActivity)) {
-      setCurrentActivityId(nextActivity.id)
+      setCurrentActivity(nextActivity)
     }
   }
 
@@ -52,10 +43,18 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
     handleSetCurrent()
   }, [activities])
 
+  const pendingActivities = activities.filter(
+    (activity) => activity.status === ActivityStatus.Active
+  )
+
+  const waitingForNewActivities =
+    isNil(currentActivity) || pendingActivities.length === 0
+
   return (
     <ActivityContext.Provider
       value={{
-        currentActivityId,
+        currentActivity,
+        waitingForNewActivities,
         handleNavigateToNextActivity: handleSetCurrent,
       }}
     >

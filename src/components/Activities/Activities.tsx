@@ -1,31 +1,34 @@
 import { FC } from 'react'
-import { Activity } from './types'
-import { ActivityDetails } from './ActivityDetails'
 import { useCurrentActivity } from '../../hooks/activityNavigation'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
-import { ActivityStatus } from '../../hooks/useForm'
-import { isNil } from 'lodash'
+import { Form } from '../Form'
+import { Message } from '../Message'
+import { Checklist } from '../Checklist'
+import { ErrorPage } from '../ErrorPage'
+import { Extension } from '../Extension'
+import { ActivityObjectType } from '../../hooks/useSessionActivities'
 
-export const Activities: FC<{ activities: Array<Activity> }> = ({
-  activities,
-}) => {
-  const { currentActivityId } = useCurrentActivity()
+export const Activities: FC = () => {
+  const { currentActivity, waitingForNewActivities } = useCurrentActivity()
   const { t } = useTranslation()
 
-  const pendingActivities = activities.filter(
-    (activity) => activity.status === ActivityStatus.Active
-  )
-
-  const currentActivity = activities.find(({ id }) => id === currentActivityId)
-
-  if (isNil(currentActivity) || pendingActivities.length === 0) {
+  if (waitingForNewActivities) {
     return <LoadingPage title={t('activities.waiting_for_new_activities')} />
   }
-
-  return (
-    <>
-      <ActivityDetails activity={currentActivity} key={currentActivityId} />
-    </>
-  )
+  const ActivityComponent = () => {
+    switch (currentActivity?.object.type) {
+      case ActivityObjectType.Form:
+        return <Form activity={currentActivity} />
+      case ActivityObjectType.Message:
+        return <Message activity={currentActivity} />
+      case ActivityObjectType.Checklist:
+        return <Checklist activity={currentActivity} />
+      case ActivityObjectType.PluginAction:
+        return <Extension activity={currentActivity} />
+      default:
+        return <ErrorPage title={t('activities.activity_not_supported')} />
+    }
+  }
+  return <>{ActivityComponent()}</>
 }

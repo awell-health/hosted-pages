@@ -1,12 +1,16 @@
 import { createContext } from 'react'
+import { Activity } from './types'
+import { Maybe } from '../../../types'
 
 export interface ActivityContextInterface {
-  currentActivityId: string
+  currentActivity: Maybe<Activity>
+  waitingForNewActivities: boolean
   handleNavigateToNextActivity: () => void
 }
 
 const initialContext = {
-  currentActivityId: '',
+  currentActivity: null,
+  waitingForNewActivities: true,
   handleNavigateToNextActivity: () => null,
 }
 
