@@ -1,16 +1,12 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { useSessionActivities } from '../../hooks/useSessionActivities'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
-import {
-  ActivityProvider,
-  useCurrentActivity,
-} from '../../hooks/activityNavigation'
+import { ActivityProvider } from '../../hooks/activityNavigation'
 import { Activities } from './Activities'
-import { ErrorBoundary } from '../ErrorBoundary'
 
-export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
+export const ActivityContainer = () => {
   const { t } = useTranslation()
   const { activities, loading, error, refetch } = useSessionActivities({
     onlyStakeholderActivities: true,
@@ -25,21 +21,8 @@ export const ActivityContainer: FC<{ pathwayId: string }> = ({ pathwayId }) => {
   }
 
   return (
-    // Styles need to be applied to the ErrorBoundary
-    // to make sure layout is rendered correctly.
-    <ErrorBoundary
-      pathwayId={pathwayId}
-      style={{
-        flex: 'auto',
-        display: 'flex',
-        height: '100%',
-        flexDirection: 'column',
-        overflowY: 'scroll',
-      }}
-    >
-      <ActivityProvider activities={activities}>
-        <Activities />
-      </ActivityProvider>
-    </ErrorBoundary>
+    <ActivityProvider activities={activities}>
+      <Activities />
+    </ActivityProvider>
   )
 }

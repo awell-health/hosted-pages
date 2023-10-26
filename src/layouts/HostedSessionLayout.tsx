@@ -23,9 +23,7 @@ export const HostedSessionLayout: FC<LayoutProps> = ({ children }) => {
                 Styles need to be applied to the ErrorBoundary
                 to make sure layout is rendered correctly. 
               */}
-              <ErrorBoundary style={{ height: '100%', overflowY: 'auto' }}>
-                {children}
-              </ErrorBoundary>
+              <ErrorBoundary>{children}</ErrorBoundary>
             </NoSSRComponent>
           </GraphqlWrapper>
         </AuthGuard>

@@ -147,7 +147,7 @@ const Home: NextPageWithLayout = () => {
           logo={defaultTo(branding?.logo_url, awell_logo)}
           onCloseHostedPage={onOpenCloseHostedSessionModal}
         >
-          {session && <ActivityContainer pathwayId={session.pathway_id} />}
+          {session && <ActivityContainer />}
           {error && (
             <ErrorPage title={t('session.loading_error')} onRetry={refetch} />
           )}
