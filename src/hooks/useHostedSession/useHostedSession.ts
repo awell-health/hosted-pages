@@ -15,7 +15,7 @@ import { useApolloClient } from '@apollo/client'
 import { updateQuery } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
-import { Maybe } from '../../../types'
+import { Maybe } from '../../types'
 
 interface UseHostedSessionHook {
   loading: boolean

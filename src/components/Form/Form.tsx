@@ -7,7 +7,7 @@ import {
   AnswerInput,
   FormDisplayMode,
   QuestionRuleResult,
-} from '../../types/generated/types-orchestration'
+} from './types'
 import { LoadingPage } from '../LoadingPage'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
 import { useTranslation } from 'next-i18next'
@@ -25,7 +25,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { loading, form, error, refetch } = useForm(activity)
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
-  const { onSubmit } = useSubmitForm({ activity })
+  const { onSubmit } = useSubmitForm(activity)
   const { branding } = useHostedSession()
 
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')

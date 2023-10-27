@@ -11,11 +11,7 @@ interface UseFormActivityHook {
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
 }
 
-export const useSubmitForm = ({
-  activity,
-}: {
-  activity: Activity
-}): UseFormActivityHook => {
+export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
   const { t } = useTranslation()
   const { id: activity_id } = activity
   const { handleNavigateToNextActivity } = useCurrentActivity()

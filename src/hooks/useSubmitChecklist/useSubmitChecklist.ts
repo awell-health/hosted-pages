@@ -12,11 +12,7 @@ interface UseChecklistHook {
   isSubmitting: boolean
 }
 
-export const useSubmitChecklist = ({
-  activity,
-}: {
-  activity: Activity
-}): UseChecklistHook => {
+export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
   const { t } = useTranslation()
   const { id: activity_id } = activity
   const { handleNavigateToNextActivity } = useCurrentActivity()

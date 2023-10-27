@@ -14,11 +14,7 @@ interface UseMessageActivityHook {
   refetch?: () => void
 }
 
-export const useMessage = ({
-  activity,
-}: {
-  activity: Activity
-}): UseMessageActivityHook => {
+export const useMessage = (activity: Activity): UseMessageActivityHook => {
   const { t } = useTranslation()
   const {
     id: activity_id,

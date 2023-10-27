@@ -1,4 +1,4 @@
-export type { Activity } from '../../hooks/useSessionActivities'
+export type { Activity } from '../../types'
 export {
   useGetHostedSessionActivitiesQuery,
   GetHostedSessionActivitiesDocument,

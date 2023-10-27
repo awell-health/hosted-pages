@@ -23,6 +23,7 @@ const defaultOptions = {} as const;
       "ApiCallsPayload",
       "BaselineInfoPayload",
       "CalculationResultsPayload",
+      "CancelScheduledTracksPayload",
       "ChecklistPayload",
       "ClinicalNotePayload",
       "CompleteExtensionActivityPayload",
@@ -39,16 +40,20 @@ const defaultOptions = {} as const;
       "HostedSessionPayload",
       "MarkMessageAsReadPayload",
       "MessagePayload",
+      "OrchestrationFactsPayload",
       "PathwayDataPointDefinitionsPayload",
       "PathwayPayload",
       "PathwaysPayload",
+      "PatientDemographicsPayload",
       "PatientPathwaysPayload",
       "PatientPayload",
       "PatientsPayload",
       "PublishedPathwayDefinitionsPayload",
       "RetryApiCallPayload",
       "RetryWebhookCallPayload",
+      "ScheduleTrackPayload",
       "ScheduledStepsPayload",
+      "ScheduledTracksPayload",
       "SearchPatientsPayload",
       "StakeholdersPayload",
       "StartHostedActivitySessionPayload",
@@ -58,6 +63,7 @@ const defaultOptions = {} as const;
       "SubmitChecklistPayload",
       "SubmitFormResponsePayload",
       "TracksPayload",
+      "UpdatePatientDemographicsQueryPayload",
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
       "UserPayload",
@@ -390,6 +396,17 @@ export type CalculationResultsPayload = Payload & {
   code: Scalars['String'];
   result: Array<SingleCalculationResult>;
   success: Scalars['Boolean'];
+};
+
+export type CancelScheduledTracksInput = {
+  ids: Array<Scalars['String']>;
+};
+
+export type CancelScheduledTracksPayload = Payload & {
+  __typename?: 'CancelScheduledTracksPayload';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  unscheduled_ids: Array<Scalars['String']>;
 };
 
 export type Checklist = {
@@ -734,6 +751,7 @@ export type Form = {
   definition_id: Scalars['String'];
   id: Scalars['ID'];
   key: Scalars['String'];
+  metadata?: Maybe<Scalars['String']>;
   questions: Array<Question>;
   release_id: Scalars['String'];
   title: Scalars['String'];
@@ -900,6 +918,8 @@ export type Mutation = {
   deletePatient: EmptyPayload;
   evaluateFormRules: EvaluateFormRulesPayload;
   markMessageAsRead: MarkMessageAsReadPayload;
+  /** Retrieve patient demographics from an external system */
+  requestPatientDemographics: PatientDemographicsPayload;
   retryActivity: EmptyPayload;
   retryAllApiCalls: EmptyPayload;
   retryAllFailedApiCalls: EmptyPayload;
@@ -910,6 +930,7 @@ export type Mutation = {
   retryPushToEmr: EmptyPayload;
   retryWebhookCall: RetryWebhookCallPayload;
   saveBaselineInfo: EmptyPayload;
+  scheduleTrack: ScheduleTrackPayload;
   startHostedActivitySession: StartHostedActivitySessionPayload;
   startHostedActivitySessionViaHostedPagesLink: StartHostedActivitySessionPayload;
   startHostedPathwaySession: StartHostedPathwaySessionPayload;
@@ -918,8 +939,11 @@ export type Mutation = {
   stopTrack: StopTrackPayload;
   submitChecklist: SubmitChecklistPayload;
   submitFormResponse: SubmitFormResponsePayload;
+  unscheduleTracks: CancelScheduledTracksPayload;
   updateBaselineInfo: EmptyPayload;
   updatePatient: UpdatePatientPayload;
+  /** Update which patient was created after import request for logging purposes */
+  updatePatientDemographicsQuery: UpdatePatientDemographicsQueryPayload;
   updatePatientLanguage: UpdatePatientLanguagePayload;
 };
 
@@ -957,6 +981,11 @@ export type MutationEvaluateFormRulesArgs = {
 
 export type MutationMarkMessageAsReadArgs = {
   input: MarkMessageAsReadInput;
+};
+
+
+export type MutationRequestPatientDemographicsArgs = {
+  input: PatientDemographicsInput;
 };
 
 
@@ -1010,6 +1039,11 @@ export type MutationSaveBaselineInfoArgs = {
 };
 
 
+export type MutationScheduleTrackArgs = {
+  input: ScheduleTrackInput;
+};
+
+
 export type MutationStartHostedActivitySessionArgs = {
   input: StartHostedActivitySessionInput;
 };
@@ -1050,6 +1084,11 @@ export type MutationSubmitFormResponseArgs = {
 };
 
 
+export type MutationUnscheduleTracksArgs = {
+  input: CancelScheduledTracksInput;
+};
+
+
 export type MutationUpdateBaselineInfoArgs = {
   input: UpdateBaselineInfoInput;
 };
@@ -1057,6 +1096,11 @@ export type MutationUpdateBaselineInfoArgs = {
 
 export type MutationUpdatePatientArgs = {
   input: UpdatePatientInput;
+};
+
+
+export type MutationUpdatePatientDemographicsQueryArgs = {
+  input: UpdatePatientDemographicsQueryInput;
 };
 
 
@@ -1083,6 +1127,23 @@ export type Option = {
   id: Scalars['ID'];
   label: Scalars['String'];
   value: Scalars['Float'];
+};
+
+export type OrchestrationFact = {
+  __typename?: 'OrchestrationFact';
+  content: Array<Scalars['String']>;
+  date: Scalars['String'];
+  level: Scalars['String'];
+  pathway_id: Scalars['String'];
+};
+
+export type OrchestrationFactsPayload = Payload & {
+  __typename?: 'OrchestrationFactsPayload';
+  code: Scalars['String'];
+  facts: Array<OrchestrationFact>;
+  pagination?: Maybe<PaginationOutput>;
+  sorting?: Maybe<SortingOutput>;
+  success: Scalars['Boolean'];
 };
 
 export type PaginationOutput = {
@@ -1149,6 +1210,12 @@ export type PathwayDefinitionDetails = {
   total_patients?: Maybe<Scalars['Float']>;
 };
 
+export type PathwayFactsFilters = {
+  date?: InputMaybe<DateFilter>;
+  keyword?: InputMaybe<Scalars['String']>;
+  pathway_id: Scalars['String'];
+};
+
 export type PathwayPayload = Payload & {
   __typename?: 'PathwayPayload';
   code: Scalars['String'];
@@ -1185,6 +1252,26 @@ export type PathwaysPayload = Payload & {
   pathways: Array<PathwaySummary>;
   sorting?: Maybe<SortingOutput>;
   success: Scalars['Boolean'];
+};
+
+export type PatientDemographicsInput = {
+  patient_identifier: Scalars['String'];
+};
+
+export type PatientDemographicsPayload = Payload & {
+  __typename?: 'PatientDemographicsPayload';
+  code: Scalars['String'];
+  entry?: Maybe<Array<UserProfile>>;
+  query_id: Scalars['String'];
+  status: Scalars['String'];
+  success: Scalars['Boolean'];
+  total?: Maybe<Scalars['Float']>;
+};
+
+export type PatientDemographicsQueryConfigurationPayload = {
+  __typename?: 'PatientDemographicsQueryConfigurationPayload';
+  input_box_text?: Maybe<Scalars['String']>;
+  is_enabled: Scalars['Boolean'];
 };
 
 export type PatientPathway = {
@@ -1267,8 +1354,13 @@ export type PublishedPathwayDefinition = {
   all?: Maybe<PathwayDefinitionDetails>;
   cancelled_activities?: Maybe<Scalars['Float']>;
   created?: Maybe<AuditTrail>;
-  /** Starting/baseline data point definitions for the pathway */
+  /**
+   * Starting/baseline data point definitions for the pathway
+   * @deprecated Use data_point_definitions instead
+   */
   dataPointDefinitions: Array<DataPointDefinition>;
+  /** Starting/baseline data point definitions for the pathway */
+  data_point_definitions?: Maybe<Array<DataPointDefinition>>;
   failed_activities?: Maybe<Scalars['Float']>;
   id: Scalars['ID'];
   last_updated?: Maybe<AuditTrail>;
@@ -1282,6 +1374,8 @@ export type PublishedPathwayDefinition = {
   total_activities?: Maybe<Scalars['Float']>;
   total_patients?: Maybe<Scalars['Float']>;
   total_stakeholders?: Maybe<Scalars['Float']>;
+  /** Tracks for the pathway */
+  track_definitions?: Maybe<Array<Track>>;
   version?: Maybe<Scalars['Float']>;
 };
 
@@ -1323,14 +1417,17 @@ export type Query = {
   pathwayActivities: ActivitiesPayload;
   pathwayDataPointDefinitions: PathwayDataPointDefinitionsPayload;
   pathwayElements: ElementsPayload;
+  pathwayFacts: OrchestrationFactsPayload;
   pathwayStepActivities: ActivitiesPayload;
   pathways: PathwaysPayload;
   patient: PatientPayload;
+  patientDemographicsQueryConfiguration: PatientDemographicsQueryConfigurationPayload;
   patientPathways: PatientPathwaysPayload;
   patients: PatientsPayload;
   publishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
   publishedPathwayDefinitionsDashboard: PublishedPathwayDefinitionsPayload;
   scheduledSteps: ScheduledStepsPayload;
+  scheduledTracksForPathway: ScheduledTracksPayload;
   searchPatientsByNationalRegistryNumber: SearchPatientsPayload;
   searchPatientsByPatientCode: SearchPatientsPayload;
   stakeholdersByDefinitionIds: StakeholdersPayload;
@@ -1468,6 +1565,13 @@ export type QueryPathwayElementsArgs = {
 };
 
 
+export type QueryPathwayFactsArgs = {
+  filters: PathwayFactsFilters;
+  pagination?: InputMaybe<PaginationParams>;
+  sorting?: InputMaybe<SortingParams>;
+};
+
+
 export type QueryPathwayStepActivitiesArgs = {
   pathway_id: Scalars['String'];
   step_id: Scalars['String'];
@@ -1507,6 +1611,11 @@ export type QueryPublishedPathwayDefinitionsDashboardArgs = {
 
 
 export type QueryScheduledStepsArgs = {
+  pathway_id: Scalars['String'];
+};
+
+
+export type QueryScheduledTracksForPathwayArgs = {
   pathway_id: Scalars['String'];
 };
 
@@ -1556,6 +1665,7 @@ export type Question = {
   definition_id: Scalars['String'];
   id: Scalars['ID'];
   key: Scalars['String'];
+  metadata?: Maybe<Scalars['String']>;
   options?: Maybe<Array<Option>>;
   questionConfig?: Maybe<QuestionConfig>;
   questionType?: Maybe<QuestionType>;
@@ -1659,10 +1769,46 @@ export type SaveBaselineInfoInput = {
   pathway_id: Scalars['String'];
 };
 
+export type ScheduleTrackInput = {
+  cancel_any_scheduled?: InputMaybe<Scalars['Boolean']>;
+  pathway_id: Scalars['String'];
+  scheduled_date: Scalars['String'];
+  track_id: Scalars['String'];
+};
+
+export type ScheduleTrackPayload = Payload & {
+  __typename?: 'ScheduleTrackPayload';
+  code: Scalars['String'];
+  id: Scalars['String'];
+  success: Scalars['Boolean'];
+};
+
 export type ScheduledStepsPayload = Payload & {
   __typename?: 'ScheduledStepsPayload';
   code: Scalars['String'];
   steps: Array<Element>;
+  success: Scalars['Boolean'];
+};
+
+export type ScheduledTrack = {
+  __typename?: 'ScheduledTrack';
+  created_by_user_id: Scalars['String'];
+  created_date: Scalars['String'];
+  id: Scalars['ID'];
+  modified_date?: Maybe<Scalars['String']>;
+  pathway_id: Scalars['String'];
+  release_id: Scalars['String'];
+  scheduled_date: Scalars['String'];
+  status: Scalars['String'];
+  tenant_id: Scalars['String'];
+  title: Scalars['String'];
+  track_definition_id: Scalars['String'];
+};
+
+export type ScheduledTracksPayload = Payload & {
+  __typename?: 'ScheduledTracksPayload';
+  code: Scalars['String'];
+  scheduled_tracks: Array<ScheduledTrack>;
   success: Scalars['Boolean'];
 };
 
@@ -2023,6 +2169,9 @@ export type TextFilterEquals = {
 
 export type Track = {
   __typename?: 'Track';
+  /** Whether the track can be triggered manually (i.e. via addTrack or scheduleTrack mutations) */
+  can_trigger_manually?: Maybe<Scalars['Boolean']>;
+  /** The definition ID of the Track, can be used for adding or scheduling */
   id: Scalars['ID'];
   release_id?: Maybe<Scalars['String']>;
   title: Scalars['String'];
@@ -2043,6 +2192,22 @@ export type TranslatedText = {
 export type UpdateBaselineInfoInput = {
   baseline_info: Array<BaselineInfoInput>;
   pathway_id: Scalars['String'];
+};
+
+export type UpdatePatientDemographicsQueryInput = {
+  /** Index from the array returned from the PDQ response, which was used to create the patient */
+  created_patient_entry_index: Scalars['Float'];
+  /** Patient ID of the created patient in Awell */
+  created_patient_id: Scalars['String'];
+  query_id: Scalars['String'];
+};
+
+export type UpdatePatientDemographicsQueryPayload = Payload & {
+  __typename?: 'UpdatePatientDemographicsQueryPayload';
+  code: Scalars['String'];
+  created_patient_entry_index: Scalars['Float'];
+  created_patient_id: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type UpdatePatientInput = {
@@ -2074,6 +2239,7 @@ export type User = {
   id: Scalars['ID'];
   profile?: Maybe<UserProfile>;
   tenant: Tenant;
+  tenant_id: Scalars['String'];
 };
 
 export type UserPayload = Payload & {
@@ -2175,7 +2341,7 @@ export type CompleteExtensionActivityMutationVariables = Exact<{
 }>;
 
 
-export type CompleteExtensionActivityMutation = { __typename?: 'Mutation', completeExtensionActivity: { __typename?: 'CompleteExtensionActivityPayload', activity: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } } };
+export type CompleteExtensionActivityMutation = { __typename?: 'Mutation', completeExtensionActivity: { __typename?: 'CompleteExtensionActivityPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } } };
 
 export type EvaluateFormRulesMutationVariables = Exact<{
   input: EvaluateFormRulesInput;
@@ -2239,51 +2405,51 @@ export type MarkMessageAsReadMutationVariables = Exact<{
 }>;
 
 
-export type MarkMessageAsReadMutation = { __typename?: 'Mutation', markMessageAsRead: { __typename?: 'MarkMessageAsReadPayload', activity: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } } };
+export type MarkMessageAsReadMutation = { __typename?: 'Mutation', markMessageAsRead: { __typename?: 'MarkMessageAsReadPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } } };
 
-export type ActivityFragment = { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null };
+export type ActivityFragment = { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null };
 
 export type GetHostedSessionActivitiesQueryVariables = Exact<{
   only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
-export type GetHostedSessionActivitiesQuery = { __typename?: 'Query', hostedSessionActivities: { __typename?: 'HostedSessionActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null }> } };
+export type GetHostedSessionActivitiesQuery = { __typename?: 'Query', hostedSessionActivities: { __typename?: 'HostedSessionActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }> } };
 
 export type OnSessionActivityCompletedSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnSessionActivityCompletedSubscription = { __typename?: 'Subscription', sessionActivityCompleted: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
+export type OnSessionActivityCompletedSubscription = { __typename?: 'Subscription', sessionActivityCompleted: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } };
 
 export type OnSessionActivityCreatedSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnSessionActivityCreatedSubscription = { __typename?: 'Subscription', sessionActivityCreated: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
+export type OnSessionActivityCreatedSubscription = { __typename?: 'Subscription', sessionActivityCreated: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } };
 
 export type OnSessionActivityUpdatedSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnSessionActivityUpdatedSubscription = { __typename?: 'Subscription', sessionActivityUpdated: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } };
+export type OnSessionActivityUpdatedSubscription = { __typename?: 'Subscription', sessionActivityUpdated: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } };
 
 export type SubmitChecklistMutationVariables = Exact<{
   input: SubmitChecklistInput;
 }>;
 
 
-export type SubmitChecklistMutation = { __typename?: 'Mutation', submitChecklist: { __typename?: 'SubmitChecklistPayload', activity: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } } };
+export type SubmitChecklistMutation = { __typename?: 'Mutation', submitChecklist: { __typename?: 'SubmitChecklistPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } } };
 
 export type SubmitFormResponseMutationVariables = Exact<{
   input: SubmitFormResponseInput;
 }>;
 
 
-export type SubmitFormResponseMutation = { __typename?: 'Mutation', submitFormResponse: { __typename?: 'SubmitFormResponsePayload', activity: { __typename?: 'Activity', id: string, stream_id: string, session_id?: string | null, action: ActivityAction, date: string, status: ActivityStatus, resolution?: ActivityResolution | null, reference_id: string, container_name?: string | null, isUserActivity: boolean, form_display_mode?: FormDisplayMode | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, track?: { __typename?: 'ActivityTrack', id?: string | null, title: string } | null, label?: { __typename?: 'ActivityLabel', id?: string | null, text: string, color: string } | null, sub_activities: Array<{ __typename?: 'SubActivity', id: string, date: string, action: ActivityAction, error?: string | null, subject: { __typename?: 'ActivitySubject', id?: string | null, type: ActivitySubjectType, name: string }, object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null }>, context?: { __typename?: 'PathwayContext', instance_id: string, pathway_id: string, track_id?: string | null, step_id?: string | null, action_id?: string | null } | null } } };
+export type SubmitFormResponseMutation = { __typename?: 'Mutation', submitFormResponse: { __typename?: 'SubmitFormResponsePayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } } };
 
 export const QuestionFragmentDoc = gql`
     fragment Question on Question {
@@ -2341,15 +2507,9 @@ export const HostedSessionFragmentDoc = gql`
 export const ActivityFragmentDoc = gql`
     fragment Activity on Activity {
   id
-  stream_id
-  session_id
-  subject {
-    id
-    type
-    name
-  }
-  action
   date
+  status
+  form_display_mode
   object {
     id
     type
@@ -2360,44 +2520,6 @@ export const ActivityFragmentDoc = gql`
     type
     name
   }
-  status
-  resolution
-  reference_id
-  track {
-    id
-    title
-  }
-  container_name
-  label {
-    id
-    text
-    color
-  }
-  sub_activities {
-    id
-    date
-    action
-    error
-    subject {
-      id
-      type
-      name
-    }
-    object {
-      id
-      type
-      name
-    }
-  }
-  isUserActivity
-  context {
-    instance_id
-    pathway_id
-    track_id
-    step_id
-    action_id
-  }
-  form_display_mode
 }
     `;
 export const GetChecklistDocument = gql`
