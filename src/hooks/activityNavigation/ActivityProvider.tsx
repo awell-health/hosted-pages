@@ -4,20 +4,23 @@ import React, { FC, useEffect, useState } from 'react'
 import { ActivityStatus } from '../useForm'
 import { ActivityContext } from './ActivityContext'
 import { Activity } from './types'
+import { useSessionActivities } from '../useSessionActivities'
+import { useTranslation } from 'next-i18next'
+import { ErrorPage, LoadingPage } from '../../components'
 
 interface ActivityProviderProps {
   children?: React.ReactNode
-  activities: Array<Activity>
 }
 /**
  * Provider to store ID of the current activity being shown to user
  * and to determine the next activity from the activities list.
  */
-export const ActivityProvider: FC<ActivityProviderProps> = ({
-  children,
-  activities,
-}) => {
+export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
+  const { t } = useTranslation()
   const [currentActivity, setCurrentActivity] = useState<Activity>()
+  const { activities, loading, error, refetch } = useSessionActivities({
+    onlyStakeholderActivities: true,
+  })
 
   const findNextActiveActivity = (): Activity | undefined => {
     return activities.find(
@@ -50,6 +53,13 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({
   useEffect(() => {
     handleSetCurrent()
   }, [activities])
+  if (loading) {
+    return <LoadingPage title={t('activities.loading')} />
+  }
+
+  if (error) {
+    return <ErrorPage title={t('activities.loading_error')} onRetry={refetch} />
+  }
 
   const pendingActivities = activities.filter(
     (activity) => activity.status === ActivityStatus.Active
