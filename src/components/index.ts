@@ -1,5 +1,5 @@
 export { Form } from './Form'
-export { Activities } from './Activities'
+export { ActivitiesContainer } from './Activities'
 export { LoadingPage } from './LoadingPage'
 export { ErrorPage } from './ErrorPage'
 export { Message } from './Message'
