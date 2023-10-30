@@ -2,14 +2,11 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { ActivitiesContainer } from './ActivitiesContainer'
 import { useSessionActivities } from '../../hooks/useSessionActivities'
-import { ActivityProvider } from '../../hooks/activityNavigation'
-import { createWrapper } from '../../../spec'
 
 jest.mock('../../hooks/useSessionActivities')
 
 const useSessionActivitiesMock = jest.mocked(useSessionActivities)
 
-const getWrapper = () => createWrapper(ActivityProvider, {})
 describe('<ActivitiesContainer />', () => {
   describe('when activities fetch fails', () => {
     beforeEach(() => {
@@ -20,9 +17,7 @@ describe('<ActivitiesContainer />', () => {
       })
     })
     it('then it should render error page', () => {
-      const { getByText } = render(<ActivitiesContainer />, {
-        wrapper: getWrapper(),
-      })
+      const { getByText } = render(<ActivitiesContainer />)
       expect(getByText('activities.loading_error')).toBeInTheDocument()
     })
   })
@@ -35,9 +30,7 @@ describe('<ActivitiesContainer />', () => {
       })
     })
     it('then it should render loading page', () => {
-      const { getByText } = render(<ActivitiesContainer />, {
-        wrapper: getWrapper(),
-      })
+      const { getByText } = render(<ActivitiesContainer />)
       expect(getByText('activities.loading')).toBeInTheDocument()
     })
   })
@@ -50,9 +43,7 @@ describe('<ActivitiesContainer />', () => {
       })
     })
     it('then it should render loading page', () => {
-      const { getByText } = render(<ActivitiesContainer />, {
-        wrapper: getWrapper(),
-      })
+      const { getByText } = render(<ActivitiesContainer />)
       expect(
         getByText('activities.waiting_for_new_activities')
       ).toBeInTheDocument()
