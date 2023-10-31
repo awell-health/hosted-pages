@@ -12,6 +12,7 @@ import { ErrorLink, onError } from '@apollo/client/link/error'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient as createWebsocketClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { isNil } from 'lodash'
 
 export const createClient = ({
   httpUri,
@@ -47,17 +48,26 @@ export const createClient = ({
     return forward(operation)
   })
 
-  const wsLink =
-    typeof window !== 'undefined'
-      ? new GraphQLWsLink(
-          createWebsocketClient({
-            url: wsUri,
-            connectionParams: {
-              authToken: window.sessionStorage.getItem('accessToken'),
-            },
-          })
-        )
-      : null
+  const createWsLink = () => {
+    if (isNil(window?.sessionStorage.getItem('accessToken'))) {
+      return null
+    }
+    if (
+      window?.sessionStorage.getItem('TEST_DISABLE_SUBSCRIPTIONS') === 'true'
+    ) {
+      console.info('Disabling GraphQL subscriptions for testing purposes')
+      return null
+    }
+    return new GraphQLWsLink(
+      createWebsocketClient({
+        url: wsUri,
+        connectionParams: {
+          authToken: window.sessionStorage.getItem('accessToken'),
+        },
+      })
+    )
+  }
+  const wsLink = createWsLink()
 
   const isSubscription = ({ query }: { query: DocumentNode }) => {
     const definition = getMainDefinition(query)
