@@ -13,8 +13,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "types": ["vitest/globals"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "**/*.spec.ts*", "**/*.test.ts*"]
+  "exclude": ["node_modules"]
 }

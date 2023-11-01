@@ -1,16 +1,17 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { ActivitiesContainer } from './ActivitiesContainer'
-import { useSessionActivities } from '../../hooks/useSessionActivities'
-
-jest.mock('../../hooks/useSessionActivities')
-
-const useSessionActivitiesMock = jest.mocked(useSessionActivities)
+import * as useSessionActivitiesHook from '../../hooks/useSessionActivities'
 
 describe('<ActivitiesContainer />', () => {
+  const useSessionActivitiesSpy = vi.spyOn(
+    useSessionActivitiesHook,
+    'useSessionActivities'
+  )
   describe('when activities fetch fails', () => {
     beforeEach(() => {
-      useSessionActivitiesMock.mockReturnValue({
+      useSessionActivitiesSpy.mockReset()
+      useSessionActivitiesSpy.mockReturnValue({
         activities: [],
         error: 'Fetch error',
         loading: false,
@@ -24,7 +25,8 @@ describe('<ActivitiesContainer />', () => {
 
   describe('when activities fetch is loading', () => {
     beforeEach(() => {
-      useSessionActivitiesMock.mockReturnValue({
+      useSessionActivitiesSpy.mockReset()
+      useSessionActivitiesSpy.mockReturnValue({
         activities: [],
         loading: true,
       })
@@ -37,7 +39,8 @@ describe('<ActivitiesContainer />', () => {
 
   describe('when no activities', () => {
     beforeEach(() => {
-      useSessionActivitiesMock.mockReturnValue({
+      useSessionActivitiesSpy.mockReset()
+      useSessionActivitiesSpy.mockReturnValue({
         activities: [],
         loading: false,
       })

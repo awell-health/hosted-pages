@@ -5,7 +5,7 @@ import { Activity, ActivityObjectType, ActivityStatus } from '../types'
 const activity = (props?: Partial<Activity>): Activity => {
   return {
     id: faker.string.uuid(),
-    date: formatDate(new Date()) ?? '',
+    date: formatDate(new Date())!,
     status: ActivityStatus.Active,
     object: {
       id: faker.string.uuid(),

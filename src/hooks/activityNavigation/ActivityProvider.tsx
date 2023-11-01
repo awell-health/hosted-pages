@@ -53,6 +53,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   useEffect(() => {
     handleSetCurrent()
   }, [activities])
+
   if (loading) {
     return <LoadingPage title={t('activities.loading')} />
   }
