@@ -20,12 +20,29 @@ Sentry.init({
   // If the entire session is not sampled, use the below sample rate to sample
   // sessions when an error occurs.
   replaysOnErrorSampleRate: 1.0,
-  debug: true,
+  beforeSend(event) {
+    // for form submission requests, we want to mask the body
+    if (event.request?.data?.variables?.input?.answers?.length > 0) {
+      // mask the value field of each object in the array
+      event.request.data.variables.input.answers.forEach(
+        // replace the value with equal number of asterisks as length of value
+        (answer) => (answer.value = '*'.repeat(answer.value.length))
+      )
+    }
+    if (event.request?.data?.variables?.input?.responses?.length > 0) {
+      // mask the value field of each object in the array
+      event.request.data.variables.input.responses.forEach(
+        // replace the value with equal number of asterisks as length of value
+        (response) => (response.value = '*'.repeat(response.value.length))
+      )
+    }
+    return event
+  },
+  // debug: true, // Set this to `true` in development to see Sentry diagnostic information
   integrations: [
     new Sentry.Replay({
       maskAllInputs: true,
       blockAllMedia: true,
-      errorSampleRate: 1.0,
       networkDetailAllowUrls: [
         'https://api.awellhealth.com/orchestration/graphql',
         'https://api.uk.awellhealth.com/orchestration/graphql',
@@ -34,9 +51,14 @@ Sentry.init({
         'https://api.staging.awellhealth.com/orchestration/graphql',
         'https://api.development.awellhealth.com/orchestration/graphql',
       ],
-      networkRequestHeaders: ['X-Custom-Header'],
-      networkResponseHeaders: ['X-Custom-Header'],
-      networkCaptureBodies: true,
+      networkRequestHeaders: ['user-agent', 'content-type', 'referer'],
+      networkResponseHeaders: [
+        'content-type',
+        'content-length',
+        'content-encoding',
+      ],
+      // do not capture network bodies in production
+      networkCaptureBodies: !process.env.NODE_ENV.includes('prod'),
     }),
   ],
 })
