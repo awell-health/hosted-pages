@@ -12,13 +12,13 @@ export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
 
   switch (activity?.object.type) {
     case ActivityObjectType.Form:
-      return <Form activity={activity} />
+      return <Form activity={activity} key={activity.id} />
     case ActivityObjectType.Message:
-      return <Message activity={activity} />
+      return <Message activity={activity} key={activity.id} />
     case ActivityObjectType.Checklist:
-      return <Checklist activity={activity} />
+      return <Checklist activity={activity} key={activity.id} />
     case ActivityObjectType.PluginAction:
-      return <Extension activity={activity} />
+      return <Extension activity={activity} key={activity.id} />
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />
   }

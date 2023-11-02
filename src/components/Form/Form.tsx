@@ -16,6 +16,7 @@ import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 import useLocalStorage from 'use-local-storage'
 import { useHostedSession } from '../../hooks/useHostedSession'
+import { isNil } from 'lodash'
 
 interface FormProps {
   activity: Activity
@@ -33,7 +34,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   if (loading) {
     return <LoadingPage title={t('activities.form.loading')} />
   }
-  if (error) {
+  if (error || isNil(form)) {
     return (
       <ErrorPage title={t('activities.form.loading_error')} onRetry={refetch} />
     )
@@ -48,7 +49,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
         form_id: form?.id,
       },
     })
-
     return evaluateFormRules(response)
   }
 
@@ -59,8 +59,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
         form_id: form?.id,
       },
     })
-    await onSubmit(response)
     setFormProgress(undefined)
+    await onSubmit(response)
   }
 
   const handleOnAnswersChange = (response: string): void => {
@@ -94,32 +94,40 @@ export const Form: FC<FormProps> = ({ activity }) => {
     formHasErrors: t('activities.form.form_has_errors'),
   }
 
-  return activity.form_display_mode &&
-    activity.form_display_mode === FormDisplayMode.Regular ? (
-    <TraditionalForm
-      form={form as any}
-      questionLabels={labels}
-      buttonLabels={button_labels}
-      errorLabels={error_labels}
-      onSubmit={handleSubmit}
-      evaluateDisplayConditions={handleEvaluateFormRules}
-      storedAnswers={formProgress}
-      onAnswersChange={handleOnAnswersChange}
-      autosaveAnswers={branding?.hosted_page_autosave ?? true}
-    />
-  ) : (
-    <ConversationalForm
-      form={form as any}
-      questionLabels={labels}
-      buttonLabels={button_labels}
-      errorLabels={error_labels}
-      onSubmit={handleSubmit}
-      evaluateDisplayConditions={handleEvaluateFormRules}
-      storedAnswers={formProgress}
-      onAnswersChange={handleOnAnswersChange}
-      autoProgress={branding?.hosted_page_auto_progress ?? false}
-      autosaveAnswers={branding?.hosted_page_autosave ?? true}
-    />
+  const renderTraditionalForm =
+    activity.form_display_mode &&
+    activity.form_display_mode === FormDisplayMode.Regular
+
+  return (
+    <>
+      {renderTraditionalForm && (
+        <TraditionalForm
+          form={form}
+          questionLabels={labels}
+          buttonLabels={button_labels}
+          errorLabels={error_labels}
+          onSubmit={handleSubmit}
+          evaluateDisplayConditions={handleEvaluateFormRules}
+          storedAnswers={formProgress}
+          onAnswersChange={handleOnAnswersChange}
+          autosaveAnswers={branding?.hosted_page_autosave ?? true}
+        />
+      )}
+      {!renderTraditionalForm && (
+        <ConversationalForm
+          form={form}
+          questionLabels={labels}
+          buttonLabels={button_labels}
+          errorLabels={error_labels}
+          onSubmit={handleSubmit}
+          evaluateDisplayConditions={handleEvaluateFormRules}
+          storedAnswers={formProgress}
+          onAnswersChange={handleOnAnswersChange}
+          autoProgress={branding?.hosted_page_auto_progress ?? false}
+          autosaveAnswers={branding?.hosted_page_autosave ?? true}
+        />
+      )}
+    </>
   )
 }
 
