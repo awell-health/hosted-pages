@@ -9,10 +9,23 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
 Sentry.init({
   dsn: SENTRY_DSN,
   // Adjust this value in production, or use tracesSampler for greater control
-  // TODO use tracesSampler
   tracesSampleRate: 0.5,
-  // ...
-  // Note: if you want to override the automatic release value, do not set a
-  // `release` value here - use the environment variable `SENTRY_RELEASE`, so
-  // that it will also get attached to your source maps
+  beforeSend(event) {
+    // for form submission requests, we want to mask the body
+    if (event.request?.data?.variables?.input?.answers?.length > 0) {
+      // mask the value field of each object in the array
+      event.request.data.variables.input.answers.forEach(
+        // replace the value with equal number of asterisks as length of value
+        (answer) => (answer.value = '*'.repeat(answer.value.length))
+      )
+    }
+    if (event.request?.data?.variables?.input?.responses?.length > 0) {
+      // mask the value field of each object in the array
+      event.request.data.variables.input.responses.forEach(
+        // replace the value with equal number of asterisks as length of value
+        (response) => (response.value = '*'.repeat(response.value.length))
+      )
+    }
+    return event
+  },
 })
