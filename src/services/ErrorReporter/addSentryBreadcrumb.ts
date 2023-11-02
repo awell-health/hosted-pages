@@ -10,6 +10,7 @@ export enum BreadcrumbCategory {
   READ_MESSAGE = 'READ_MESSAGE',
   SUBMIT_CHECKLIST = 'SUBMIT_CHECKLIST',
   GENERIC = 'generic',
+  NAVIGATION = 'navigation',
 }
 
 const SentryBreadcrumbMessageDictionary = {
@@ -21,6 +22,7 @@ const SentryBreadcrumbMessageDictionary = {
   [BreadcrumbCategory.READ_MESSAGE]: 'Reading message',
   [BreadcrumbCategory.SUBMIT_CHECKLIST]: 'Submitting checklist',
   [BreadcrumbCategory.GENERIC]: 'Generic event',
+  [BreadcrumbCategory.NAVIGATION]: 'Navigation',
 }
 
 export const addSentryBreadcrumb = ({

@@ -38,7 +38,6 @@ Sentry.init({
     }
     return event
   },
-  // debug: true, // Set this to `true` in development to see Sentry diagnostic information
   integrations: [
     new Sentry.Replay({
       maskAllInputs: true,
@@ -57,8 +56,8 @@ Sentry.init({
         'content-length',
         'content-encoding',
       ],
-      // do not capture network bodies in production
-      networkCaptureBodies: !process.env.NODE_ENV.includes('prod'),
+      // TODO: Decide on capturing in production, if masking form data before send isn't good (enough)
+      // networkCaptureBodies: !process.env.NODE_ENV.includes('prod'),
     }),
   ],
 })
