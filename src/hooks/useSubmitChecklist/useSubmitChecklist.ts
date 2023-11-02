@@ -3,9 +3,7 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
-import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
-import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -15,10 +13,8 @@ interface UseChecklistHook {
 export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
   const { t } = useTranslation()
   const { id: activity_id } = activity
-  const { handleNavigateToNextActivity } = useCurrentActivity()
   const [submitChecklist] = useSubmitChecklistMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -28,15 +24,7 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
       },
     }
     try {
-      const submitChecklistMutationResult = await submitChecklist({
-        variables,
-        refetchQueries: ['GetHostedSessionActivities'],
-      })
-      updateSessionActivitiesQuery({
-        updatedActivity:
-          submitChecklistMutationResult.data?.submitChecklist.activity,
-      })
-      handleNavigateToNextActivity()
+      await submitChecklist({ variables })
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.checklist.saving_error'))

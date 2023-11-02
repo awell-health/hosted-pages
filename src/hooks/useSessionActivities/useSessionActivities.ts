@@ -23,13 +23,9 @@ interface UsePathwayActivitiesHook {
 
 const POLLING_DELAY = 5000 // 5 seconds
 
-export const useSessionActivities = ({
-  onlyStakeholderActivities,
-}: {
-  onlyStakeholderActivities: boolean
-}): UsePathwayActivitiesHook => {
+export const useSessionActivities = (): UsePathwayActivitiesHook => {
   const variables = {
-    only_stakeholder_activities: onlyStakeholderActivities,
+    only_stakeholder_activities: true,
   }
   const client = useApolloClient()
   const { data, error, loading, refetch } = useGetHostedSessionActivitiesQuery({

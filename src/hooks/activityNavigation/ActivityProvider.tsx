@@ -18,9 +18,7 @@ interface ActivityProviderProps {
 export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const { t } = useTranslation()
   const [currentActivity, setCurrentActivity] = useState<Activity>()
-  const { activities, loading, error, refetch } = useSessionActivities({
-    onlyStakeholderActivities: true,
-  })
+  const { activities, loading, error, refetch } = useSessionActivities()
 
   const findNextActiveActivity = (): Activity | undefined => {
     return activities.find(
@@ -74,7 +72,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       value={{
         currentActivity,
         waitingForNewActivities,
-        handleNavigateToNextActivity: handleSetCurrent,
       }}
     >
       {children}
