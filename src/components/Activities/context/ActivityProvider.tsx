@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { isNil, isEmpty } from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
-import { ActivityStatus } from '../useForm'
-import { ActivityContext } from './ActivityContext'
-import { Activity } from './types'
-import { useSessionActivities } from '../useSessionActivities'
+import { Activity, ActivityStatus } from '../types'
+import { useSessionActivities } from '../../../hooks/useSessionActivities'
 import { useTranslation } from 'next-i18next'
-import { ErrorPage, LoadingPage } from '../../components'
+import { ErrorPage, LoadingPage } from '../../'
+import { ActivityContext } from './ActivityContext'
 
 interface ActivityProviderProps {
   children?: React.ReactNode

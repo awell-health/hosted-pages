@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityProvider } from '../../hooks/activityNavigation'
+import { ActivityProvider } from './context'
 import { Activities } from './Activities'
 
 export const ActivitiesContainer = () => {

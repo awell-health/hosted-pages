@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react'
-import { render } from '../../../spec'
+import { render } from '../../../../spec'
 import { ActivityProvider } from './ActivityProvider'
 
 describe('ActivityProvider', () => {

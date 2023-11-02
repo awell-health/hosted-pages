@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useCurrentActivity } from '../../hooks/activityNavigation'
+import { useCurrentActivity } from './hooks'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 import { ActivityFactory } from './ActivityFactory'

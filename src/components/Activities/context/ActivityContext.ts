@@ -1,12 +1,12 @@
 import { createContext } from 'react'
-import { Activity } from './types'
+import { Activity } from '../types'
 
 export interface ActivityContextInterface {
   currentActivity: Activity | undefined
   waitingForNewActivities: boolean
 }
 
-const initialContext = {
+const initialContext: ActivityContextInterface = {
   currentActivity: undefined,
   waitingForNewActivities: true,
 }

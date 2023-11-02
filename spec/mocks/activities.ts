@@ -9,7 +9,7 @@ const activity = (props?: Partial<Activity>): Activity => {
     status: ActivityStatus.Active,
     object: {
       id: faker.string.uuid(),
-      type: ActivityObjectType.Action,
+      type: ActivityObjectType.Message,
       name: faker.lorem.word(),
     },
     indirect_object: {

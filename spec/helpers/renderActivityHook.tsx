@@ -3,7 +3,7 @@ import { SchemaLink } from '@apollo/client/link/schema'
 import { addMocksToSchema } from '@graphql-tools/mock'
 import { renderHook, RenderHookResult } from '@testing-library/react'
 import { schema } from './schema'
-import { ActivityProvider } from '../../src/hooks/activityNavigation'
+import { ActivityProvider } from '../../src/components/Activities/context'
 
 export function renderActivityHook<TProps = {}, TResult = any>(
   hook: (props: TProps) => TResult,

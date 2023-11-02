@@ -7,7 +7,6 @@ export type {
 
 export {
   QuestionType,
-  ActivityStatus,
   useGetFormQuery,
   GetFormDocument,
 } from './../../types/generated/types-orchestration'
