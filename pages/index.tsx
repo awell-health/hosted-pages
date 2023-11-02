@@ -34,23 +34,23 @@ const Home: NextPageWithLayout = () => {
   const { removeItem: removeAccessToken } = useSessionStorage('accessToken', '')
   const router = useRouter()
 
-  const [isCloseHostedSessionModalOpen, setisCloseHostedSessionModalOpen] =
+  const [isCloseHostedSessionModalOpen, setIsCloseHostedSessionModalOpen] =
     useState(false)
 
   const redirectAfterSession = (url: string) => {
     // adding 2 second delay so users are aware of the redirection and we don't change the page abruptly
     setTimeout(() => {
-      router.push(url)
       removeAccessToken()
+      router.push(url)
     }, 2000)
   }
 
   const onOpenCloseHostedSessionModal = () => {
-    setisCloseHostedSessionModalOpen(true)
+    setIsCloseHostedSessionModalOpen(true)
   }
 
   const onCloseHostedSessionModal = () => {
-    setisCloseHostedSessionModalOpen(false)
+    setIsCloseHostedSessionModalOpen(false)
   }
 
   const onCloseHostedSession = () => {
@@ -76,7 +76,7 @@ const Home: NextPageWithLayout = () => {
       case HostedSessionStatus.Completed:
         addSentryBreadcrumb({
           category: BreadcrumbCategory.SESSION_COMPLETE,
-          data: session,
+          data: { session },
         })
         if (shouldRedirect) {
           redirectAfterSession(session.success_url as string)
@@ -85,7 +85,7 @@ const Home: NextPageWithLayout = () => {
       case HostedSessionStatus.Expired:
         addSentryBreadcrumb({
           category: BreadcrumbCategory.SESSION_EXPIRE,
-          data: session,
+          data: { session },
         })
         if (shouldRedirect) {
           redirectAfterSession(session.cancel_url as string)

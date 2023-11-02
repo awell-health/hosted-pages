@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import useSwr from 'swr'
 import { ErrorPage, LoadingPage } from '../../components'
 import { useTranslation } from 'next-i18next'
+import { addBreadcrumb } from '@sentry/nextjs'
+import { BreadcrumbCategory } from '../ErrorReporter/addSentryBreadcrumb'
 interface AuthenticationProviderProps {
   children?: React.ReactNode
 }
@@ -56,11 +58,27 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   }
 
   if (router.isReady && !router.query.sessionId) {
+    addBreadcrumb({
+      category: BreadcrumbCategory.NAVIGATION,
+      message: 'Invalid URL',
+      data: {
+        url: router.asPath,
+        sessionId: router.query.sessionId,
+      },
+    })
     return <ErrorPage title={t('session.invalid_url')} />
   }
 
   // Wait while token is being generated
   if (!router.isReady || tokenLoading) {
+    addBreadcrumb({
+      category: BreadcrumbCategory.NAVIGATION,
+      message: 'Preparing router and/or token',
+      data: {
+        url: router.asPath,
+        sessionId: router.query.sessionId,
+      },
+    })
     return <LoadingPage title={t('session.authentication_loading')} />
   }
 
