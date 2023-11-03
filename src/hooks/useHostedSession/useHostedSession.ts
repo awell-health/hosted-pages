@@ -43,8 +43,8 @@ export const useHostedSession = (): UseHostedSessionHook => {
   const client = useApolloClient()
   const router = useRouter()
 
-  // const onHostedSessionCompleted = useOnHostedSessionCompletedSubscription()
-  // const onHostedSessionExpired = useOnHostedSessionExpiredSubscription()
+  const onHostedSessionCompleted = useOnHostedSessionCompletedSubscription()
+  const onHostedSessionExpired = useOnHostedSessionExpiredSubscription()
 
   const updateHostedSessionQuery = ({
     updatedHostedSession,
@@ -94,19 +94,19 @@ export const useHostedSession = (): UseHostedSessionHook => {
     }
   }, [data])
 
-  // useEffect(() => {
-  //   if (!isNil(onHostedSessionCompleted.data)) {
-  //     const { sessionCompleted } = onHostedSessionCompleted.data
-  //     updateHostedSessionQuery({ updatedHostedSession: sessionCompleted })
-  //   }
-  // }, [client, onHostedSessionCompleted.data])
+  useEffect(() => {
+    if (!isNil(onHostedSessionCompleted.data)) {
+      const { sessionCompleted } = onHostedSessionCompleted.data
+      updateHostedSessionQuery({ updatedHostedSession: sessionCompleted })
+    }
+  }, [client, onHostedSessionCompleted.data])
 
-  // useEffect(() => {
-  //   if (!isNil(onHostedSessionExpired.data)) {
-  //     const { sessionExpired } = onHostedSessionExpired.data
-  //     updateHostedSessionQuery({ updatedHostedSession: sessionExpired })
-  //   }
-  // }, [client, onHostedSessionExpired.data])
+  useEffect(() => {
+    if (!isNil(onHostedSessionExpired.data)) {
+      const { sessionExpired } = onHostedSessionExpired.data
+      updateHostedSessionQuery({ updatedHostedSession: sessionExpired })
+    }
+  }, [client, onHostedSessionExpired.data])
 
   if (loading) {
     return { loading: true }
