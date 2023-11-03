@@ -12,7 +12,7 @@ import { LoadingPage } from '../LoadingPage'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
 import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../ErrorPage'
-import { addSentryBreadcrumb } from '../../services/ErrorReporter'
+import { addSentryBreadcrumb, masker } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 import useLocalStorage from 'use-local-storage'
 import { useHostedSession } from '../../hooks/useHostedSession'
@@ -46,6 +46,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       category: BreadcrumbCategory.EVALUATE_FORM_RULES,
       data: {
         form_id: form?.id,
+        response: masker(response),
       },
     })
 
@@ -57,6 +58,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       category: BreadcrumbCategory.SUBMIT_FORM,
       data: {
         form_id: form?.id,
+        response: masker(response),
       },
     })
     await onSubmit(response)
