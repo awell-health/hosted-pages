@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { isNil, isEmpty } from 'lodash'
+import { isNil } from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
 import { Activity, ActivityStatus } from '../types'
 import { useSessionActivities } from '../../../hooks/useSessionActivities'
@@ -11,7 +11,7 @@ interface ActivityProviderProps {
   children?: React.ReactNode
 }
 /**
- * Provider to store ID of the current activity being shown to user
+ * Provider to store of the current activity being shown to user
  * and to determine the next activity from the activities list.
  */
 export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
@@ -20,36 +20,32 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const { activities, loading, error, refetch } = useSessionActivities()
 
   const findNextActiveActivity = (): Activity | undefined => {
-    return activities.find(
-      ({ status, id }) =>
-        status === ActivityStatus.Active && id !== currentActivity?.id
-    )
+    return activities.find(({ status }) => status === ActivityStatus.Active)
   }
-  const findCurrentActivity = (): Activity | undefined => {
-    if (isEmpty(activities) || isNil(currentActivity)) {
-      return undefined
-    }
-    return activities.find(({ id }) => id === currentActivity.id)
+
+  const hasPendingActivities = () => {
+    const pendingActivities = activities.filter(
+      ({ status }) => status === ActivityStatus.Active
+    )
+    return pendingActivities.length > 0
   }
 
   const handleSetCurrent = () => {
-    // refetching current activity because it might have changed in the activities list via useEffect
-    const current = findCurrentActivity()
-    // if current activity is still active, then do not move
-    // to the next activity unless it is marked as completed
-    if (current?.status === ActivityStatus.Active) {
-      return
-    }
-
-    const nextActivity = findNextActiveActivity()
-    if (!isNil(nextActivity)) {
-      setCurrentActivity(nextActivity)
+    if (isNil(currentActivity) && hasPendingActivities()) {
+      const nextActivity = findNextActiveActivity()
+      if (!isNil(nextActivity)) {
+        setCurrentActivity(nextActivity)
+      }
     }
   }
 
   useEffect(() => {
     handleSetCurrent()
   }, [activities])
+
+  useEffect(() => {
+    handleSetCurrent()
+  }, [currentActivity])
 
   if (loading) {
     return <LoadingPage title={t('activities.loading')} />
@@ -59,17 +55,20 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     return <ErrorPage title={t('activities.loading_error')} onRetry={refetch} />
   }
 
-  const pendingActivities = activities.filter(
-    (activity) => activity.status === ActivityStatus.Active
-  )
-
   const waitingForNewActivities =
-    isNil(currentActivity) || pendingActivities.length === 0
+    isNil(currentActivity) || !hasPendingActivities()
+
+  const unsetCurrentActivity = (activityId: string) => {
+    if (currentActivity?.id === activityId) {
+      setCurrentActivity(undefined)
+    }
+  }
 
   return (
     <ActivityContext.Provider
       value={{
         currentActivity,
+        unsetCurrentActivity,
         waitingForNewActivities,
       }}
     >

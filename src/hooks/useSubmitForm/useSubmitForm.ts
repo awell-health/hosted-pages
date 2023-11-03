@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import type { Activity, AnswerInput } from './types'
 import { useSubmitFormResponseMutation } from './types'
 import { captureException } from '@sentry/nextjs'
+import { useCurrentActivity } from '../../components/Activities'
 interface UseFormActivityHook {
   disabled: boolean
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
@@ -12,6 +13,7 @@ interface UseFormActivityHook {
 export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
   const { t } = useTranslation()
   const { id: activity_id } = activity
+  const { unsetCurrentActivity } = useCurrentActivity()
 
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,6 +29,7 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
 
     try {
       await submitFormResponse({ variables })
+      unsetCurrentActivity(activity.id)
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.form.saving_error'))

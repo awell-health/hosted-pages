@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-toastify'
 import { captureException } from '@sentry/nextjs'
-
+import { useCurrentActivity } from '../../components/Activities'
 import { type DataPoints, useCompleteExtensionActivityMutation } from './types'
 
 interface UseCompleteExtensionActivityHook {
@@ -15,6 +15,7 @@ export const useCompleteExtensionActivity =
     const { t } = useTranslation()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [completeExtensionActivity] = useCompleteExtensionActivityMutation()
+    const { unsetCurrentActivity } = useCurrentActivity()
 
     const onSubmit: UseCompleteExtensionActivityHook['onSubmit'] = useCallback(
       async (activity_id, data_points) => {
@@ -27,6 +28,7 @@ export const useCompleteExtensionActivity =
         }
         try {
           await completeExtensionActivity({ variables })
+          unsetCurrentActivity(activity_id)
         } catch (error) {
           toast.error(t('activities.checklist.saving_error'))
           captureException(error, {
