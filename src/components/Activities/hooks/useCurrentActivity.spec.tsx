@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react'
 import { activity_mocks, renderActivityHook } from '../../../../spec'
-import { useCurrentActivity } from './useCurrentActivity'
 import { ActivityStatus } from '../types'
+import { useCurrentActivity } from './useCurrentActivity'
 
 describe('useCurrentActivity', () => {
   describe('When no activities', () => {
@@ -21,7 +21,9 @@ describe('useCurrentActivity', () => {
         expect(result.current.currentActivity).toBeUndefined()
       })
     })
+  })
 
+  describe('With done and active activities', () =>
     it('should return waitingForNewActivities: false, and first active activity as currentActivity', async () => {
       const activities = [
         activity_mocks.activity({
@@ -48,6 +50,5 @@ describe('useCurrentActivity', () => {
         expect(result.current.waitingForNewActivities).toBeFalsy()
         expect(result.current.currentActivity!.id).toEqual(activities[1].id)
       })
-    })
-  })
+    }))
 })
