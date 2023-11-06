@@ -87,7 +87,7 @@ export const createClient = ({
   const link = wsLink ? split(isSubscription, wsLink, defaultLink) : defaultLink
 
   return new ApolloClient({
-    ssrMode: true,
+    ssrMode: typeof window === 'undefined',
     connectToDevTools: process.env.NODE_ENV !== 'production',
     cache: new InMemoryCache(cacheConfig),
     link,
