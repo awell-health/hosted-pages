@@ -7,7 +7,7 @@ import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
 import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
 interface UseFormActivityHook {
-  disabled: boolean
+  isSubmitting: boolean
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
 }
 
@@ -63,6 +63,6 @@ export const useSubmitForm = ({
 
   return {
     onSubmit,
-    disabled: isSubmitting,
+    isSubmitting,
   }
 }
