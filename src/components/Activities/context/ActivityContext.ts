@@ -4,7 +4,7 @@ import { Activity } from '../types'
 export interface ActivityContextInterface {
   currentActivity: Activity | undefined
   waitingForNewActivities: boolean
-  unsetCurrentActivity: (activityId: string) => void
+  unsetCurrentActivity: () => void
 }
 
 const initialContext: ActivityContextInterface = {

@@ -19,10 +19,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const [currentActivity, setCurrentActivity] = useState<Activity>()
   const { activities, loading, error, refetch } = useSessionActivities()
 
-  const findNextActiveActivity = (): Activity | undefined => {
-    return activities.find(({ status }) => status === ActivityStatus.Active)
-  }
-
   const hasPendingActivities = () => {
     const pendingActivities = activities.filter(
       ({ status }) => status === ActivityStatus.Active
@@ -32,11 +28,17 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   const handleSetCurrent = () => {
     if (isNil(currentActivity) && hasPendingActivities()) {
-      const nextActivity = findNextActiveActivity()
-      if (!isNil(nextActivity)) {
-        setCurrentActivity(nextActivity)
+      const firstActive = activities.find(
+        ({ status }) => status === ActivityStatus.Active
+      )
+      if (!isNil(firstActive)) {
+        setCurrentActivity(firstActive)
       }
     }
+  }
+
+  const unsetCurrentActivity = () => {
+    setCurrentActivity(undefined)
   }
 
   useEffect(() => {
@@ -57,12 +59,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   const waitingForNewActivities =
     isNil(currentActivity) || !hasPendingActivities()
-
-  const unsetCurrentActivity = (activityId: string) => {
-    if (currentActivity?.id === activityId) {
-      setCurrentActivity(undefined)
-    }
-  }
 
   return (
     <ActivityContext.Provider

@@ -52,7 +52,7 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
     }
     try {
       await markMessageAsRead({ variables: markMessageAsReadVariables })
-      unsetCurrentActivity(activity.id)
+      unsetCurrentActivity()
     } catch (err) {
       toast.error(t('activities.message.toast_mark_as_read_error'))
       captureException(err, {

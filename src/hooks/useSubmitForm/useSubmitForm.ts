@@ -29,7 +29,7 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
 
     try {
       await submitFormResponse({ variables })
-      unsetCurrentActivity(activity.id)
+      unsetCurrentActivity()
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.form.saving_error'))

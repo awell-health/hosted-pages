@@ -28,7 +28,7 @@ export const useCompleteExtensionActivity =
         }
         try {
           await completeExtensionActivity({ variables })
-          unsetCurrentActivity(activity_id)
+          unsetCurrentActivity()
         } catch (error) {
           toast.error(t('activities.checklist.saving_error'))
           captureException(error, {

@@ -27,7 +27,7 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
     }
     try {
       await submitChecklist({ variables })
-      unsetCurrentActivity(activity.id)
+      unsetCurrentActivity()
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.checklist.saving_error'))
