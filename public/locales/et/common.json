@@ -8,6 +8,7 @@
     "loading": "Tegevuse laadimine...",
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
     "waiting_for_new_activities": "Laeb",
+    "waiting_unexpected": "Waiting is taking longer than expected. Please wait...",
     "message": {
       "cta_mark_as_read": "Valmis",
       "open_video_attachment": "Ava video",

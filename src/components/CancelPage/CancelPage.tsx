@@ -1,4 +1,3 @@
-import { HorizontalSpinner, Text } from '@awell_health/ui-library'
 import classes from './cancelPage.module.css'
 import { useTranslation } from 'next-i18next'
 import { FC } from 'react'

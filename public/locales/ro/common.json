@@ -7,6 +7,7 @@
     "loading": "Se încarcă activitatea...",
     "activity_not_supported": "Tipul de activitate nu este suportat.",
     "waiting_for_new_activities": "Așteptăm activități noi.",
+    "waiting_unexpected": "Waiting is taking longer than expected. Please wait...",
     "message": {
       "cta_mark_as_read": "Terminat",
       "open_video_attachment": "Deschideți videoclipul",

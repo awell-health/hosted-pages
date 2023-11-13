@@ -10,7 +10,6 @@ import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 import classes from './startHostedActivitySessionFlow.module.css'
-import { redirect } from 'next/dist/server/api-utils'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -32,7 +31,7 @@ export const StartHostedActivitySessionFlow: FC<
   }
 
   useEffect(() => {
-    if (data !== undefined && !isNil(data?.sessionUrl)) {
+    if (!isNil(data) && !isNil(data?.sessionUrl)) {
       const { sessionUrl } = data
       window.location.href = sessionUrl
     }

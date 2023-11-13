@@ -1,6 +1,6 @@
 import { GetExtensionActivityDetailsQuery } from '../../types/generated/types-orchestration'
 
-export type { Activity } from '../../hooks/useSessionActivities'
+export type { Activity } from '../../types'
 export type ExtensionActivityRecord =
   GetExtensionActivityDetailsQuery['extensionActivityRecord']['record']
 

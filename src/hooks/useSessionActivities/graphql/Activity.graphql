@@ -1,14 +1,8 @@
 fragment Activity on Activity {
   id
-  stream_id
-  session_id
-  subject {
-    id
-    type
-    name
-  }
-  action
   date
+  status
+  form_display_mode
   object {
     id
     type
@@ -19,42 +13,4 @@ fragment Activity on Activity {
     type
     name
   }
-  status
-  resolution
-  reference_id
-  track {
-    id
-    title
-  }
-  container_name
-  label {
-    id
-    text
-    color
-  }
-  sub_activities {
-    id
-    date
-    action
-    error
-    subject {
-      id
-      type
-      name
-    }
-    object {
-      id
-      type
-      name
-    }
-  }
-  isUserActivity
-  context {
-    instance_id
-    pathway_id
-    track_id
-    step_id
-    action_id
-  }
-  form_display_mode
 }

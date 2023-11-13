@@ -1,9 +1,4 @@
-import {
-  ApolloCache,
-  FetchResult,
-  MutationResult,
-  MutationUpdaterFn,
-} from '@apollo/client'
+import { ApolloCache, FetchResult, MutationUpdaterFn } from '@apollo/client'
 import { DocumentNode } from 'graphql'
 import { mergeWith } from 'lodash'
 

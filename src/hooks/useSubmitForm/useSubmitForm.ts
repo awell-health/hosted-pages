@@ -3,23 +3,17 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
 import type { Activity, AnswerInput } from './types'
 import { useSubmitFormResponseMutation } from './types'
-import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
-import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
+import { useCurrentActivity } from '../../components/Activities'
 interface UseFormActivityHook {
   disabled: boolean
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
 }
 
-export const useSubmitForm = ({
-  activity,
-}: {
-  activity: Activity
-}): UseFormActivityHook => {
+export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
   const { t } = useTranslation()
   const { id: activity_id } = activity
-  const { handleNavigateToNextActivity } = useCurrentActivity()
-  const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
+  const { unsetCurrentActivity } = useCurrentActivity()
 
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -34,15 +28,8 @@ export const useSubmitForm = ({
     }
 
     try {
-      const submitFormMutationResult = await submitFormResponse({
-        variables,
-        refetchQueries: ['GetHostedSessionActivities'],
-      })
-      updateSessionActivitiesQuery({
-        updatedActivity:
-          submitFormMutationResult.data?.submitFormResponse.activity,
-      })
-      handleNavigateToNextActivity()
+      await submitFormResponse({ variables })
+      unsetCurrentActivity()
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.form.saving_error'))

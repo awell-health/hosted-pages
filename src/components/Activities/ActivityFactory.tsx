@@ -1,32 +1,25 @@
-import { FC } from 'react'
-import { Activity } from './types'
+import React from 'react'
+import { Activity, ActivityObjectType } from './types'
 import { useTranslation } from 'next-i18next'
 import { Form } from '../Form'
 import { Message } from '../Message'
 import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
 import { Extension } from '../Extension'
-import { ActivityObjectType } from '../../hooks/useSessionActivities'
 
-interface ActivityContentProps {
-  activity: Activity
-}
-
-export const ActivityDetails: FC<ActivityContentProps> = ({ activity }) => {
+export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
   const { t } = useTranslation()
 
   switch (activity?.object.type) {
     case ActivityObjectType.Form:
-      return <Form activity={activity} />
+      return <Form activity={activity} key={activity.id} />
     case ActivityObjectType.Message:
-      return <Message activity={activity} />
+      return <Message activity={activity} key={activity.id} />
     case ActivityObjectType.Checklist:
-      return <Checklist activity={activity} />
+      return <Checklist activity={activity} key={activity.id} />
     case ActivityObjectType.PluginAction:
-      return <Extension activity={activity} />
+      return <Extension activity={activity} key={activity.id} />
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />
   }
 }
-
-ActivityDetails.displayName = 'ActivityDetails'

@@ -7,6 +7,7 @@
     "loading": "Activiteit laden...",
     "activity_not_supported": "Dit type activiteit wordt nog niet ondersteunt.",
     "waiting_for_new_activities": "Wachten op nieuwe activiteit.",
+    "waiting_taking_to_long": "Waiting is taking longer than expected. Please wait...",
     "message": {
       "cta_mark_as_read": "Klaar",
       "open_video_attachment": "Open video",
