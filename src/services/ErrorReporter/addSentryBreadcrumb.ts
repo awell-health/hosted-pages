@@ -9,8 +9,9 @@ export enum BreadcrumbCategory {
   SESSION_CANCEL = 'SESSION_CANCEL',
   READ_MESSAGE = 'READ_MESSAGE',
   SUBMIT_CHECKLIST = 'SUBMIT_CHECKLIST',
-  GENERIC = 'generic',
-  NAVIGATION = 'navigation',
+  GENERIC = 'GENERIC',
+  NAVIGATION = 'NAVIGATION',
+  SLOW_REDIRECT = 'SLOW_REDIRECT',
 }
 
 const SentryBreadcrumbMessageDictionary = {
@@ -23,6 +24,7 @@ const SentryBreadcrumbMessageDictionary = {
   [BreadcrumbCategory.SUBMIT_CHECKLIST]: 'Submitting checklist',
   [BreadcrumbCategory.GENERIC]: 'Generic event',
   [BreadcrumbCategory.NAVIGATION]: 'Navigation',
+  [BreadcrumbCategory.SLOW_REDIRECT]: 'Slow redirect at session end',
 }
 
 export const addSentryBreadcrumb = ({

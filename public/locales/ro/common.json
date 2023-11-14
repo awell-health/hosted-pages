@@ -68,6 +68,7 @@
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "all_activities_completed": "Ai finalizat toate activitățile. Poți închide această pagină.",
     "session_canceled": "Sesiunea ta a fost anulata.",
+    "session_expired": "Sesiunea ta a expirat după o oră de inactivitate.",
     "try_again": "Încercați din nou",
     "close_modal": {
       "title": "Ești sigur că vrei să anulezi sesiunea ta?",

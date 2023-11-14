@@ -43,6 +43,22 @@ const Home: NextPageWithLayout = () => {
       removeAccessToken()
       router.push(url)
     }, 2000)
+
+    // add sentry breadcrumb if redirect takes more than 10 seconds
+    setTimeout(() => {
+      addSentryBreadcrumb({
+        category: BreadcrumbCategory.SLOW_REDIRECT,
+        data: { session, message: 'Redirect took at least 10 seconds' },
+      })
+    }, 10000)
+
+    // add sentry breadcrumb if redirect takes more than 15 seconds
+    setTimeout(() => {
+      addSentryBreadcrumb({
+        category: BreadcrumbCategory.SLOW_REDIRECT,
+        data: { session, message: 'Redirect took at least 15 seconds' },
+      })
+    }, 15001)
   }
 
   const onOpenCloseHostedSessionModal = () => {
@@ -113,7 +129,7 @@ const Home: NextPageWithLayout = () => {
 
   if (session && session?.status !== HostedSessionStatus.Active) {
     return (
-      <ThemeProvider accentColor={branding?.accent_color || undefined}>
+      <ThemeProvider accentColor={branding?.accent_color ?? undefined}>
         <HostedPageLayout
           logo={defaultTo(branding?.logo_url, awell_logo)}
           onCloseHostedPage={onOpenCloseHostedSessionModal}
@@ -124,7 +140,9 @@ const Home: NextPageWithLayout = () => {
 
           {/* Show static cancel page if cancel URL is not available */}
           {shouldRedirect === false &&
-            session.status === HostedSessionStatus.Expired && <CancelPage />}
+            session.status === HostedSessionStatus.Expired && (
+              <CancelPage message="session.session_expired" />
+            )}
 
           {/* Show 'redirecting' page if URL is available */}
           {shouldRedirect && (

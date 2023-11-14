@@ -93,6 +93,7 @@
     "redirecting_to_next_page": "Redirecting you in a moment...",
     "all_activities_completed": "You have completed all your activities. You can close this page now.",
     "session_canceled": "Your session has been cancelled.",
+    "session_expired": "Your session has expired after 1 hour of inactivity.",
     "try_again": "Try again",
     "close_modal": {
       "title": "Are you sure you want to cancel your session?",

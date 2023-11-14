@@ -69,6 +69,7 @@
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "all_activities_completed": "Oled lõpetanud oma tegevused. Võid selle akna nüüd sulgeda.",
     "session_canceled": "Teie sessioon on katkestatud.",
+    "session_expired": "Teie sessioon on aegunud pärast 1-tunnist tegevusetust.",
     "try_again": "Proovi uuesti",
     "close_modal": {
       "title": "Soovid pöördumise täitmise pooleli jätta?",

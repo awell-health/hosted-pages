@@ -93,6 +93,7 @@
     "redirecting_to_next_page": "Redirection dans un instant.",
     "all_activities_completed": "Vous avez terminé toutes vos activités. Vous pouvez maintenant fermer cette page.",
     "session_canceled": "Votre session a été annulée.",
+    "session_expired": "Votre session a expiré après 1 heure d'inactivité.",
     "try_again": "Réessayer",
     "close_modal": {
       "title": "Êtes-vous sûr de vouloir annuler votre session ?",

@@ -64,6 +64,7 @@
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "all_activities_completed": "Je hebt alle activiteiten voltooid. Je kan deze pagina nu sluiten.",
     "session_canceled": "Je sessie werd geannuleerd.",
+    "session_expired": "Je sessie is verlopen na 1 uur inactiviteit.",
     "try_again": "Opnieuw proberen",
     "close_modal": {
       "title": "Ben je zeker dat je de sessie wil afsluiten?",
