@@ -3,14 +3,13 @@ export type {
   Question,
   GetFormResponseQuery,
   GetFormQuery,
-  Activity,
 } from './../../types/generated/types-orchestration'
 
 export {
   QuestionType,
-  ActivityStatus,
   useGetFormQuery,
   GetFormDocument,
 } from './../../types/generated/types-orchestration'
 
+export type { Activity } from '../../types'
 export type Form = GetFormQuery['form']['form']

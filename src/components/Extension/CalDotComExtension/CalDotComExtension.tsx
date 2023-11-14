@@ -5,10 +5,9 @@ import { ErrorPage } from '../../ErrorPage'
 import { BookAppointmentAction } from './BookAppointmentAction'
 
 import { ActionKey } from './types'
-import type { Activity, ExtensionActivityRecord } from '../types'
+import type { ExtensionActivityRecord } from '../types'
 
 interface CalDotComExtensionProps {
-  activity: Activity
   activityDetails: ExtensionActivityRecord
 }
 

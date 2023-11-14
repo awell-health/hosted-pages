@@ -1,8 +1,11 @@
 #import 'Question'
 fragment Form on Form {
   id
+  key
   title
   trademark
+  definition_id
+  release_id
   questions {
     ...Question
   }

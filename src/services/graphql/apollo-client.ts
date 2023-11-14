@@ -36,6 +36,8 @@ export const createClient = ({
   })
 
   const authenticationLink = new ApolloLink((operation, forward) => {
+    // why do we need to use sessionStorage here? Can we not pass the token in to this
+    // function from the GraphqlWrapper component?
     const accessToken = sessionStorage.getItem('accessToken')
 
     operation.setContext({
@@ -85,7 +87,7 @@ export const createClient = ({
   const link = wsLink ? split(isSubscription, wsLink, defaultLink) : defaultLink
 
   return new ApolloClient({
-    ssrMode: true,
+    ssrMode: typeof window === 'undefined',
     connectToDevTools: process.env.NODE_ENV !== 'production',
     cache: new InMemoryCache(cacheConfig),
     link,
