@@ -7,7 +7,7 @@
     "loading": "Activiteit laden...",
     "activity_not_supported": "Dit type activiteit wordt nog niet ondersteunt.",
     "waiting_for_new_activities": "Wachten op nieuwe activiteit.",
-    "waiting_taking_to_long": "Waiting is taking longer than expected. Please wait...",
+    "waiting_unexpected": "Wachten duurt langer dan verwacht. Even geduld...",
     "message": {
       "cta_mark_as_read": "Klaar",
       "open_video_attachment": "Open video",
@@ -26,8 +26,8 @@
       "previous_question_label": "Vorige",
       "question_required_error": "Deze vraag is verplicht.",
       "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden.",
-      "invalid_phone_number": "Phone number is invalid.",
-      "form_has_errors": "Please fix the errors in the form before submitting",
+      "invalid_phone_number": "Telefoonnummer is ongeldig.",
+      "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
       "saving_error": "Vragenlijst kon niet verzonden worden.",
       "questions": {
         "yes_no": {

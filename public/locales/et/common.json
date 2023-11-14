@@ -8,7 +8,7 @@
     "loading": "Tegevuse laadimine...",
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
     "waiting_for_new_activities": "Laeb",
-    "waiting_unexpected": "Waiting is taking longer than expected. Please wait...",
+    "waiting_unexpected": "Ootamine võtab kauem aega kui oodatud. Palun oodake...",
     "message": {
       "cta_mark_as_read": "Valmis",
       "open_video_attachment": "Ava video",
@@ -28,7 +28,7 @@
       "question_required_error": "See küsimus on kohustuslik.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
       "invalid_phone_number": "Telefoninumber pole õige.",
-      "form_has_errors": "Please fix the errors in the form before submitting",
+      "form_has_errors": "Palun paranda vormis olevad vead enne esitamist.",
       "saving_error": "Vormi esitamine ebaõnnestus.",
       "questions": {
         "yes_no": {
