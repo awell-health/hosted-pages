@@ -8,7 +8,7 @@
     "loading": "Действие загружается...",
     "activity_not_supported": "Тип действия не поддерживается.",
     "waiting_for_new_activities": "Ожидание новых действий.",
-    "waiting_unexpected": "Waiting is taking longer than expected. Please wait...",
+    "waiting_unexpected": "Ожидание занимает больше времени, чем ожидалось. Пожалуйста, подождите...",
     "message": {
       "cta_mark_as_read": "Готово",
       "open_video_attachment": "Открыть видео",
@@ -28,7 +28,7 @@
       "question_required_error": "Ответ на этот вопрос обязателен.",
       "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ.",
       "invalid_phone_number": "Номер телефона недействительный.",
-      "form_has_errors": "Please fix the errors in the form before submitting",
+      "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
       "saving_error": "Не удалось подать форму.",
       "questions": {
         "yes_no": {
@@ -80,6 +80,7 @@
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "all_activities_completed": "Вы совершили все действия. Теперь Вы можете закрыть эту страницу.",
     "session_canceled": "Ваша сессия истекла.",
+    "session_expired": "Ваша сессия истекла.",
     "try_again": "Попробуйте снова",
     "close_modal": {
       "title": "Вы уверены, что хотите закрыть сессию?",
