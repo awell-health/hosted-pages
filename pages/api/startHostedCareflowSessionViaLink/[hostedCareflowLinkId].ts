@@ -44,8 +44,8 @@ export default async function handler(
       },
       body: JSON.stringify({
         query: `
-          mutation StartHostedPathwaySessionViaLink($input: StartHostedPathwaySessionViaLinkInput!) {
-            startHostedPathwaySessionViaLink(input: $input) {
+          mutation StartHostedCareflowSessionViaLink($input: StartHostedCareflowSessionViaLinkInput!) {
+            startHostedCareflowSessionViaLink(input: $input) {
               session_id
               session_url
             }
@@ -53,7 +53,7 @@ export default async function handler(
           `,
         variables: {
           input: {
-            hosted_pathway_link_id: hostedCareflowLinkId,
+            hosted_careflow_link_id: hostedCareflowLinkId,
           },
         },
       }),
@@ -62,7 +62,7 @@ export default async function handler(
     const session_response = await response.json()
 
     const { session_id, session_url } =
-      session_response?.data?.startHostedCareflowSessionViaHostedPagesLink
+      session_response?.data?.startHostedCareflowSessionViaLink
 
     res.status(200).json({ sessionId: session_id, sessionUrl: session_url })
   } catch (error) {
