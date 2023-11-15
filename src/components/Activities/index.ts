@@ -1,3 +1,2 @@
-export { Activities } from './Activities'
-export { ActivityDetails } from './ActivityDetails'
-export { ActivityContainer } from './ActivityContainer'
+export { ActivitiesContainer } from './ActivitiesContainer'
+export { useCurrentActivity } from './hooks'

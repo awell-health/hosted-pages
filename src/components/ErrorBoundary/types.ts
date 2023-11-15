@@ -8,7 +8,6 @@ export interface ErrorInfo {
 export interface ErrorBoundaryProps extends WithTranslation {
   onError?: (error: Error) => void
   children: React.ReactNode
-  pathwayId?: string
   style?: React.CSSProperties
 }
 

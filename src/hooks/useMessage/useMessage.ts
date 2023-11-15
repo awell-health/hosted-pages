@@ -2,10 +2,9 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
 import type { Activity, Message } from './types'
 import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
-import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
-import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
+import { useCurrentActivity } from '../../components/Activities'
 interface UseMessageActivityHook {
   loading: boolean
   message?: Message
@@ -14,20 +13,14 @@ interface UseMessageActivityHook {
   refetch?: () => void
 }
 
-export const useMessage = ({
-  activity,
-}: {
-  activity: Activity
-}): UseMessageActivityHook => {
+export const useMessage = (activity: Activity): UseMessageActivityHook => {
   const { t } = useTranslation()
   const {
     id: activity_id,
     object: { id: message_id },
   } = activity
-  const { handleNavigateToNextActivity } = useCurrentActivity()
-  const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
-
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
+  const { unsetCurrentActivity } = useCurrentActivity()
 
   const variables = { id: message_id }
   const { data, loading, error, refetch } = useGetMessageQuery({
@@ -58,15 +51,8 @@ export const useMessage = ({
       },
     }
     try {
-      const markMessageAsReadMutationResult = await markMessageAsRead({
-        variables: markMessageAsReadVariables,
-        refetchQueries: ['GetHostedSessionActivities'],
-      })
-      updateSessionActivitiesQuery({
-        updatedActivity:
-          markMessageAsReadMutationResult.data?.markMessageAsRead.activity,
-      })
-      handleNavigateToNextActivity()
+      await markMessageAsRead({ variables: markMessageAsReadVariables })
+      unsetCurrentActivity()
     } catch (err) {
       toast.error(t('activities.message.toast_mark_as_read_error'))
       captureException(err, {

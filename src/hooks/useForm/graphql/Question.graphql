@@ -1,5 +1,7 @@
 fragment Question on Question {
   id
+  definition_id
+  key
   title
   dataPointValueType
   options {
