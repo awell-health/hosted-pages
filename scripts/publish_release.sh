@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ECHOES_API_ENDPOINT="https://api.echoeshq.com/v1/signals/releases"
+ECHOES_API_ENDPOINT="https://api.echoeshq.com/v1/signals/deployments"
 API_KEY="${ECHOESHQ_API_KEY_RELEASES}"
 
 # get the 2 latest tags
@@ -19,7 +19,7 @@ commitsJSON=$(jq --compact-output --null-input '$ARGS.positional' --args "${comm
 
 deliverablesJSON='["hosted-pages"]'
 
-curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOINT} \
+response=$(curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOINT} \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer '"${API_KEY}"'' \
 --data-raw '{
@@ -29,5 +29,12 @@ curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOIN
     "deliverables": '"${deliverablesJSON}"',
     "commits": '"${commitsJSON}"',
     "url": "'"${url}"'"
+}')
+
+deploymentId=$(echo "${response}" | jq -r '.id')
+curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOINT}/${deploymentId}/status \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer '"${API_KEY}"'' \
+--data-raw '{
+    "status": "success"
 }'
-   
