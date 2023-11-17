@@ -31,8 +31,9 @@ response=$(curl --silent --show-error --fail --location --request POST ${ECHOES_
     "url": "'"${url}"'"
 }')
 
-deploymentId=$(echo "${response}" | jq -r '.id')
-curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOINT}/${deploymentId}/status \
+ECHOESHQ_DEPLOYMENT_ID=$(echo "${response}" | jq -r '.id')
+echo ::set-output name=deployment_id::$(echo "${ECHOESHQ_DEPLOYMENT_ID}")
+curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOINT}/${ECHOESHQ_DEPLOYMENT_ID}/status \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer '"${API_KEY}"'' \
 --data-raw '{
