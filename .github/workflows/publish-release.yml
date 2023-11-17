@@ -2,11 +2,19 @@ name: 📊 Publish release on Echoes
 
 on:
   workflow_dispatch:
+    inputs:
+      echoesAction:
+        description: 'Echoes Action'
+        required: true
+        options:
+          - 'publish-release'
+          - 'fail-release'
   release:
     types: [released]
 
 jobs:
   publish-release:
+    if: github.event.inputs.echoesAction == 'publish-release'
     runs-on: ubuntu-latest
     outputs:
       deployment_id: ${{ steps.publish-release.outputs.deployment_id }}
@@ -25,6 +33,7 @@ jobs:
           ECHOESHQ_API_KEY_RELEASES: ${{ secrets.ECHOESHQ_API_KEY_RELEASES }}
 
   fail-release:
+    if: github.event.inputs.echoesAction == 'fail-release'
     runs-on: ubuntu-latest
     needs: publish-release
     steps:
