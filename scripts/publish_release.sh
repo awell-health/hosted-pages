@@ -1,9 +1,7 @@
 #!/bin/bash
 
-ECHOES_API_ENDPOINT="https://api.echoeshq.com/v1/signals/deployments"
-API_KEY="${ECHOESHQ_API_KEY_RELEASES}"
-
-# get the 2 latest tags
+# We're not hitting the echoes endpoint anymore. Instead, we're sending these
+# calls to a proprietary platform endpoint, which is in turn sending to echoes.
 tags=( $(git describe --abbrev=0 --tags $(git rev-list --tags --max-count=2)) )
 
 tag=${tags[0]}
@@ -19,23 +17,21 @@ commitsJSON=$(jq --compact-output --null-input '$ARGS.positional' --args "${comm
 
 deliverablesJSON='["hosted-pages"]'
 
-response=$(curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOINT} \
+echo ${tag}
+echo ${isoDate}
+echo ${deliverablesJSON}
+echo ${commitsJSON}
+# We're updating the status of the deployment directly here, given this job
+# runs after a successful release
+curl --silent --show-error --fail --location --request POST ${PLATFORM_ENDPOINT} \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer '"${API_KEY}"'' \
+--header 'x-api-key: '"${PLATFORM_API_KEY}"'' \
 --data-raw '{
-    "name": "'"${tag}"'",
+    "name": "'"hosted-pages"'",
     "version": "'"${tag}"'",
     "date": "'"${isoDate}"'",
     "deliverables": '"${deliverablesJSON}"',
     "commits": '"${commitsJSON}"',
-    "url": "'"${url}"'"
-}')
-
-ECHOESHQ_DEPLOYMENT_ID=$(echo "${response}" | jq -r '.id')
-echo ::set-output name=deployment_id::$(echo "${ECHOESHQ_DEPLOYMENT_ID}")
-curl --silent --show-error --fail --location --request POST ${ECHOES_API_ENDPOINT}/${ECHOESHQ_DEPLOYMENT_ID}/status \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer '"${API_KEY}"'' \
---data-raw '{
-    "status": "success"
+    "url": "'"${url}"'",
+    "status": "'"success"'"
 }'
