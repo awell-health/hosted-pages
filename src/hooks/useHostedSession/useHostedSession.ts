@@ -15,11 +15,12 @@ import { useApolloClient } from '@apollo/client'
 import { updateQuery } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
+import { Maybe } from '../../types'
 
 interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
-  branding?: BrandingSettings
+  branding?: Maybe<BrandingSettings>
   error?: string
   refetch?: () => {}
 }
@@ -118,7 +119,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
   return {
     loading: false,
     session: data?.hostedSession?.session,
-    branding: data?.hostedSession?.branding as BrandingSettings,
+    branding: data?.hostedSession?.branding,
     refetch,
   }
 }

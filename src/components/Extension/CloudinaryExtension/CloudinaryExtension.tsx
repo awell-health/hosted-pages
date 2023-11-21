@@ -5,10 +5,9 @@ import { ErrorPage } from '../../ErrorPage'
 import { UploadFilesAction, UploadSingleFileAction } from './actions'
 
 import { ActionKey } from './types'
-import type { Activity, ExtensionActivityRecord } from '../types'
+import type { ExtensionActivityRecord } from '../types'
 
 interface CloudinaryExtensionProps {
-  activity: Activity
   activityDetails: ExtensionActivityRecord
 }
 

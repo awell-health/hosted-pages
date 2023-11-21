@@ -12,17 +12,18 @@ interface LayoutProps {
 export const HostedSessionLayout: FC<LayoutProps> = ({ children }) => {
   return (
     <>
+      {/* Manages JWT tokens */}
       <AuthenticationProvider>
+        {/* Authorization layer to handle auth errors */}
         <AuthGuard>
+          {/* Manages JWT tokens */}
           <GraphqlWrapper>
             <NoSSRComponent>
               {/* 
                 Styles need to be applied to the ErrorBoundary
                 to make sure layout is rendered correctly. 
               */}
-              <ErrorBoundary style={{ height: '100%', overflowY: 'auto' }}>
-                {children}
-              </ErrorBoundary>
+              <ErrorBoundary>{children}</ErrorBoundary>
             </NoSSRComponent>
           </GraphqlWrapper>
         </AuthGuard>

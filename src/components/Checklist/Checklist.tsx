@@ -14,12 +14,8 @@ interface ChecklistProps {
 
 export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   const { t } = useTranslation()
-  const { loading, items, title, error, refetch } = useChecklist({
-    activity,
-  })
-  const { onSubmit, isSubmitting } = useSubmitChecklist({
-    activity,
-  })
+  const { loading, items, title, error, refetch } = useChecklist(activity)
+  const { onSubmit, isSubmitting } = useSubmitChecklist(activity)
 
   if (loading) {
     return <LoadingPage title={t('activities.checklist.loading')} />

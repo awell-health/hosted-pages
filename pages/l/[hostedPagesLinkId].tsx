@@ -1,4 +1,3 @@
-import { isNil } from 'lodash'
 import type { GetStaticPaths, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { StartHostedActivitySessionFlow } from '../../src/components/StartHostedActivitySessionFlow'

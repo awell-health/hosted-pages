@@ -1,4 +1,5 @@
 import React from 'react'
+import classes from './error.module.css'
 import { ErrorPage } from '../ErrorPage'
 import { ErrorBoundaryProps, ErrorInfo, ErrorBoundaryState } from './types'
 import { reportErrorToSentry } from './reportErrorToSentry'
@@ -55,7 +56,11 @@ class ErrorBoundary extends React.Component<
     }
 
     return (
-      <div id="error-boundary" style={this.props.style}>
+      <div
+        id="error-boundary"
+        className={classes.error}
+        style={this.props.style}
+      >
         {children}
       </div>
     )
