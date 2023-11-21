@@ -1,7 +1,7 @@
 schema:
   - '../awell-next/packages/pathway-orchestration/orchestration-schema.graphql'
 
-documents: "./**/*.graphql"
+documents: './**/*.graphql'
 overwrite: true
 generates:
   ./src/types/generated/types-orchestration.tsx:

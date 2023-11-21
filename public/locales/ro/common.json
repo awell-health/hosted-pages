@@ -7,6 +7,7 @@
     "loading": "Se încarcă activitatea...",
     "activity_not_supported": "Tipul de activitate nu este suportat.",
     "waiting_for_new_activities": "Așteptăm activități noi.",
+    "waiting_unexpected": "Așteptarea durează mai mult decât era de așteptat. Vă rugăm să așteptați...",
     "message": {
       "cta_mark_as_read": "Terminat",
       "open_video_attachment": "Deschideți videoclipul",
@@ -26,7 +27,7 @@
       "question_required_error": "Această întrebare este obligatorie.",
       "slider_not_touched_error": "Vă rugam să mutați cursorul pentru a indica răspunsul dumneavoastră.",
       "invalid_phone_number": "Numărul de telefon este invalid.",
-      "form_has_errors": "Please fix the errors in the form before submitting",
+      "form_has_errors": "Vă rugăm să corectați erorile din formular înainte de a trimite",
       "saving_error": "Trimiterea formularului a eșuat.",
       "questions": {
         "yes_no": {
@@ -67,6 +68,7 @@
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "all_activities_completed": "Ai finalizat toate activitățile. Poți închide această pagină.",
     "session_canceled": "Sesiunea ta a fost anulata.",
+    "session_expired": "Sesiunea ta a expirat după o oră de inactivitate.",
     "try_again": "Încercați din nou",
     "close_modal": {
       "title": "Ești sigur că vrei să anulezi sesiunea ta?",

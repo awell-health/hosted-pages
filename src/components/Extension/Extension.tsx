@@ -36,40 +36,15 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
 
   switch (activity?.indirect_object?.id) {
     case ExtensionKey.CAL_DOT_COM:
-      return (
-        <CalDotComExtension
-          activity={activity}
-          activityDetails={extensionActivityDetails}
-        />
-      )
+      return <CalDotComExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.DROPBOXSIGN:
-      return (
-        <DropboxSignExtension
-          activity={activity}
-          activityDetails={extensionActivityDetails}
-        />
-      )
+      return <DropboxSignExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.CLOUDINARY:
-      return (
-        <CloudinaryExtension
-          activity={activity}
-          activityDetails={extensionActivityDetails}
-        />
-      )
+      return <CloudinaryExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.FORMSORT:
-      return (
-        <FormsortExtension
-          activity={activity}
-          activityDetails={extensionActivityDetails}
-        />
-      )
+      return <FormsortExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.DOCU_SIGN:
-      return (
-        <DocuSignExtension
-          activity={activity}
-          activityDetails={extensionActivityDetails}
-        />
-      )
+      return <DocuSignExtension activityDetails={extensionActivityDetails} />
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />
   }

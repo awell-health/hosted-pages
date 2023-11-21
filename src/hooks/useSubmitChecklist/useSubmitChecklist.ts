@@ -3,26 +3,20 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
-import { useCurrentActivity } from '../activityNavigation'
 import { captureException } from '@sentry/nextjs'
-import { useManuallyUpdateActivitiesCache } from '../useManuallyUpdateActvitiesCache'
+import { useCurrentActivity } from '../../components/Activities'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
   isSubmitting: boolean
 }
 
-export const useSubmitChecklist = ({
-  activity,
-}: {
-  activity: Activity
-}): UseChecklistHook => {
+export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
   const { t } = useTranslation()
   const { id: activity_id } = activity
-  const { handleNavigateToNextActivity } = useCurrentActivity()
   const [submitChecklist] = useSubmitChecklistMutation()
+  const { unsetCurrentActivity } = useCurrentActivity()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { updateSessionActivitiesQuery } = useManuallyUpdateActivitiesCache()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -32,15 +26,8 @@ export const useSubmitChecklist = ({
       },
     }
     try {
-      const submitChecklistMutationResult = await submitChecklist({
-        variables,
-        refetchQueries: ['GetHostedSessionActivities'],
-      })
-      updateSessionActivitiesQuery({
-        updatedActivity:
-          submitChecklistMutationResult.data?.submitChecklist.activity,
-      })
-      handleNavigateToNextActivity()
+      await submitChecklist({ variables })
+      unsetCurrentActivity()
     } catch (error) {
       setIsSubmitting(false)
       toast.error(t('activities.checklist.saving_error'))

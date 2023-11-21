@@ -12,6 +12,7 @@ import { ErrorLink, onError } from '@apollo/client/link/error'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient as createWebsocketClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { isNil } from 'lodash'
 
 export const createClient = ({
   httpUri,
@@ -35,6 +36,8 @@ export const createClient = ({
   })
 
   const authenticationLink = new ApolloLink((operation, forward) => {
+    // why do we need to use sessionStorage here? Can we not pass the token in to this
+    // function from the GraphqlWrapper component?
     const accessToken = sessionStorage.getItem('accessToken')
 
     operation.setContext({
@@ -45,17 +48,26 @@ export const createClient = ({
     return forward(operation)
   })
 
-  const wsLink =
-    typeof window !== 'undefined'
-      ? new GraphQLWsLink(
-          createWebsocketClient({
-            url: wsUri,
-            connectionParams: {
-              authToken: window.sessionStorage.getItem('accessToken'),
-            },
-          })
-        )
-      : null
+  const createWsLink = () => {
+    if (isNil(window?.sessionStorage.getItem('accessToken'))) {
+      return null
+    }
+    if (
+      window?.sessionStorage.getItem('TEST_DISABLE_SUBSCRIPTIONS') === 'true'
+    ) {
+      console.info('Disabling GraphQL subscriptions for testing purposes')
+      return null
+    }
+    return new GraphQLWsLink(
+      createWebsocketClient({
+        url: wsUri,
+        connectionParams: {
+          authToken: window.sessionStorage.getItem('accessToken'),
+        },
+      })
+    )
+  }
+  const wsLink = createWsLink()
 
   const isSubscription = ({ query }: { query: DocumentNode }) => {
     const definition = getMainDefinition(query)
@@ -75,7 +87,7 @@ export const createClient = ({
   const link = wsLink ? split(isSubscription, wsLink, defaultLink) : defaultLink
 
   return new ApolloClient({
-    ssrMode: true,
+    ssrMode: typeof window === 'undefined',
     connectToDevTools: process.env.NODE_ENV !== 'production',
     cache: new InMemoryCache(cacheConfig),
     link,

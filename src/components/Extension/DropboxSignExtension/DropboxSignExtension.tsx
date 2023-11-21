@@ -5,10 +5,9 @@ import { ErrorPage } from '../../ErrorPage'
 import { EmbeddedSigningAction } from './actions'
 
 import { ActionKey } from './types'
-import type { Activity, ExtensionActivityRecord } from '../types'
+import type { ExtensionActivityRecord } from '../types'
 
 interface DropboxSignExtensionProps {
-  activity: Activity
   activityDetails: ExtensionActivityRecord
 }
 
