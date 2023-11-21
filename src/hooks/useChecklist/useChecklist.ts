@@ -9,11 +9,7 @@ interface UseChecklistHook {
   refetch?: () => void
 }
 
-export const useChecklist = ({
-  activity,
-}: {
-  activity: Activity
-}): UseChecklistHook => {
+export const useChecklist = (activity: Activity): UseChecklistHook => {
   const {
     object: { id: checklist_id },
   } = activity

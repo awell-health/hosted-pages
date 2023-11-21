@@ -8,6 +8,7 @@
     "loading": "Chargement de l'activité...",
     "activity_not_supported": "Le type d'activité n'est pas pris en charge.",
     "waiting_for_new_activities": "En attente de nouvelles activités.",
+    "waiting_unexpected": "L'attente prend plus de temps que prévu. Veuillez patienter...",
     "message": {
       "cta_mark_as_read": "Terminé",
       "open_video_attachment": "Ouvrir la vidéo",
@@ -92,6 +93,7 @@
     "redirecting_to_next_page": "Redirection dans un instant.",
     "all_activities_completed": "Vous avez terminé toutes vos activités. Vous pouvez maintenant fermer cette page.",
     "session_canceled": "Votre session a été annulée.",
+    "session_expired": "Votre session a expiré après 1 heure d'inactivité.",
     "try_again": "Réessayer",
     "close_modal": {
       "title": "Êtes-vous sûr de vouloir annuler votre session ?",

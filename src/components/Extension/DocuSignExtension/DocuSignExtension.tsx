@@ -3,10 +3,9 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage } from '../../ErrorPage'
 import { EmbeddedSigningAction } from './actions'
 import { ActionKey } from './types'
-import type { Activity, ExtensionActivityRecord } from '../types'
+import type { ExtensionActivityRecord } from '../types'
 
 interface DocuSignExtensionProps {
-  activity: Activity
   activityDetails: ExtensionActivityRecord
 }
 

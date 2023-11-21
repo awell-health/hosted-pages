@@ -43,3 +43,6 @@ yalc.lock
 
 # jetbrains
 .idea
+
+# alternate file
+.projections.json

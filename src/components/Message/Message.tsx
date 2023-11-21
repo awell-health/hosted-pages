@@ -14,9 +14,7 @@ interface MessageProps {
 
 export const Message = ({ activity }: MessageProps): JSX.Element => {
   const { t } = useTranslation()
-  const { loading, message, error, onRead, refetch } = useMessage({
-    activity,
-  })
+  const { loading, message, error, onRead, refetch } = useMessage(activity)
 
   if (loading) {
     return <LoadingPage title={t('activities.message.loading')} />
