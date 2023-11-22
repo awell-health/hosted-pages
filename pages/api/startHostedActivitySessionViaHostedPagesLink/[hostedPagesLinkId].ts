@@ -22,7 +22,7 @@ export default async function handler(
   const token = jwt.sign(
     {
       username: environment.apiGatewayConsumerName,
-      feature: 'hosted-pages-link',
+      feature: 'hosted-activities-link',
     },
     environment.jwtAuthSecret,
     {
@@ -30,6 +30,7 @@ export default async function handler(
       subject: hostedPagesLinkId,
     }
   )
+
   try {
     const session = await fetch(environment.orchestrationApiUrl, {
       method: 'POST',
