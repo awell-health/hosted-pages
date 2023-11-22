@@ -4,8 +4,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { ThemeProvider } from '@awell_health/ui-library'
 import { AWELL_BRAND_COLOR } from '../../src/config'
 import { NoSSRComponent } from '../../src/components/NoSSR'
-import { StartHostedCareflowSessionParams } from '../api/startHostedCareflowSessionViaLink/[hostedCareflowLinkId]'
-import { StartHostedCareflowSessionFlow } from '../../src/components/StartHostedCareflowSessionFlow'
+import { StartHostedCareflowSessionParams } from '../api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
+import { StartHostedCareflowSessionFlow } from '../../src/components/StartHostedPathwaySessionFlow'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'hosted-pages.awellhealth.com/c/<hostedCareflowLinkId>'
@@ -13,15 +13,12 @@ import { StartHostedCareflowSessionFlow } from '../../src/components/StartHosted
 const HostedCareflowLink: NextPage = () => {
   const router = useRouter()
 
-  const { hostedCareflowLinkId } =
-    router.query as StartHostedCareflowSessionParams
+  const { hostedPagesLinkId } = router.query as StartHostedCareflowSessionParams
 
   return (
     <NoSSRComponent>
       <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
-        <StartHostedCareflowSessionFlow
-          hostedCareflowLinkId={hostedCareflowLinkId}
-        />
+        <StartHostedCareflowSessionFlow hostedPagesLinkId={hostedPagesLinkId} />
       </ThemeProvider>
     </NoSSRComponent>
   )

@@ -4,11 +4,10 @@ import jwt from 'jsonwebtoken'
 import { environment } from '../../../types'
 
 export type StartHostedCareflowSessionParams = {
-  hostedCareflowLinkId: string
+  hostedPagesLinkId: string
 }
 
 export type StartHostedCareflowSessionPayload = {
-  sessionId: string
   sessionUrl: string
 }
 
@@ -22,19 +21,20 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { hostedCareflowLinkId } = req.query as StartHostedCareflowSessionParams
+  const { hostedPagesLinkId } = req.query as StartHostedCareflowSessionParams
 
   const token = jwt.sign(
     {
       username: environment.apiGatewayConsumerName,
-      feature: 'hosted-careflow-link',
+      feature: 'hosted-pathway-link',
     },
     environment.jwtAuthSecret,
     {
       issuer: environment.jwtAuthKey,
-      subject: hostedCareflowLinkId,
+      subject: hostedPagesLinkId,
     }
   )
+
   try {
     const response = await fetch(environment.orchestrationApiUrl, {
       method: 'POST',
@@ -44,28 +44,27 @@ export default async function handler(
       },
       body: JSON.stringify({
         query: `
-          mutation StartHostedCareflowSessionViaLink($input: StartHostedCareflowSessionViaLinkInput!) {
-            startHostedCareflowSessionViaLink(input: $input) {
-              session_id
+          mutation StartHostedPathwaySessionFromLink($input: StartHostedPathwaySessionFromLinkInput!) {
+            startHostedPathwaySessionFromLink(input: $input) {
               session_url
             }
           }
-          `,
+        `,
         variables: {
           input: {
-            hosted_careflow_link_id: hostedCareflowLinkId,
+            id: hostedPagesLinkId,
           },
         },
       }),
     })
-
     const session_response = await response.json()
 
-    const { session_id, session_url } =
-      session_response?.data?.startHostedCareflowSessionViaLink
+    const { session_url } =
+      session_response?.data?.startHostedPathwaySessionFromLink
 
-    res.status(200).json({ sessionId: session_id, sessionUrl: session_url })
+    res.status(200).json({ sessionUrl: session_url })
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error })
   }
 }

@@ -5,11 +5,11 @@ import useSWR from 'swr'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
-import classes from './StartHostedCareflowSessionFlow.module.css'
+import classes from './StartHostedPathwaySessionFlow.module.css'
 import {
   StartHostedCareflowSessionParams,
   StartHostedCareflowSessionPayload,
-} from '../../../pages/api/startHostedCareflowSessionViaLink/[hostedCareflowLinkId]'
+} from '../../../pages/api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -17,12 +17,12 @@ type StartHostedCareflowSessionFlowProps = StartHostedCareflowSessionParams
 
 export const StartHostedCareflowSessionFlow: FC<
   StartHostedCareflowSessionFlowProps
-> = ({ hostedCareflowLinkId }): JSX.Element => {
+> = ({ hostedPagesLinkId }): JSX.Element => {
   const router = useRouter()
   const { t } = useTranslation()
 
   const { data, error } = useSWR<StartHostedCareflowSessionPayload>(
-    `/api/startHostedCareflowSessionViaLink/${hostedCareflowLinkId}`,
+    `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}`,
     fetcher
   )
 
