@@ -41,6 +41,7 @@ const defaultOptions = {} as const;
       "MarkMessageAsReadPayload",
       "MessagePayload",
       "OrchestrationFactsPayload",
+      "OrchestrationFactsPromptPayload",
       "PathwayDataPointDefinitionsPayload",
       "PathwayPayload",
       "PathwaysPayload",
@@ -57,6 +58,7 @@ const defaultOptions = {} as const;
       "SearchPatientsPayload",
       "StakeholdersPayload",
       "StartHostedActivitySessionPayload",
+      "StartHostedPathwaySessionFromLinkPayload",
       "StartHostedPathwaySessionPayload",
       "StartPathwayPayload",
       "StopTrackPayload",
@@ -383,9 +385,9 @@ export enum BooleanOperator {
 export type BrandingSettings = {
   __typename?: 'BrandingSettings';
   accent_color?: Maybe<Scalars['String']>;
-  /** Auto progress to the next question when using the conversational display mode in Awell Hosted Pages. */
+  /** Auto progress to the next question when using the conversational display mode in Hosted Pages. */
   hosted_page_auto_progress?: Maybe<Scalars['Boolean']>;
-  /** Automatically save question answers locally in Awell Hosted Pages */
+  /** Automatically save question answers locally in Hosted Pages */
   hosted_page_autosave?: Maybe<Scalars['Boolean']>;
   hosted_page_title?: Maybe<Scalars['String']>;
   logo_url?: Maybe<Scalars['String']>;
@@ -934,6 +936,7 @@ export type Mutation = {
   startHostedActivitySession: StartHostedActivitySessionPayload;
   startHostedActivitySessionViaHostedPagesLink: StartHostedActivitySessionPayload;
   startHostedPathwaySession: StartHostedPathwaySessionPayload;
+  startHostedPathwaySessionFromLink: StartHostedPathwaySessionFromLinkPayload;
   startPathway: StartPathwayPayload;
   stopPathway: EmptyPayload;
   stopTrack: StopTrackPayload;
@@ -1059,6 +1062,11 @@ export type MutationStartHostedPathwaySessionArgs = {
 };
 
 
+export type MutationStartHostedPathwaySessionFromLinkArgs = {
+  input: StartHostedPathwaySessionFromLinkInput;
+};
+
+
 export type MutationStartPathwayArgs = {
   input: StartPathwayInput;
 };
@@ -1143,6 +1151,13 @@ export type OrchestrationFactsPayload = Payload & {
   facts: Array<OrchestrationFact>;
   pagination?: Maybe<PaginationOutput>;
   sorting?: Maybe<SortingOutput>;
+  success: Scalars['Boolean'];
+};
+
+export type OrchestrationFactsPromptPayload = Payload & {
+  __typename?: 'OrchestrationFactsPromptPayload';
+  code: Scalars['String'];
+  response: Scalars['String'];
   success: Scalars['Boolean'];
 };
 
@@ -1406,6 +1421,7 @@ export type Query = {
   form: FormPayload;
   formResponse: FormResponsePayload;
   forms: FormsPayload;
+  getOrchestrationFactsFromPrompt: OrchestrationFactsPromptPayload;
   getStatusForPublishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
   hostedSession: HostedSessionPayload;
   hostedSessionActivities: HostedSessionActivitiesPayload;
@@ -1525,6 +1541,12 @@ export type QueryFormResponseArgs = {
 export type QueryFormsArgs = {
   pathway_definition_id: Scalars['String'];
   release_id?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetOrchestrationFactsFromPromptArgs = {
+  pathway_id: Scalars['String'];
+  prompt: Scalars['String'];
 };
 
 
@@ -1905,6 +1927,17 @@ export type StartHostedActivitySessionPayload = Payload & {
 
 export type StartHostedActivitySessionViaHostedPagesLinkInput = {
   hosted_pages_link_id: Scalars['String'];
+};
+
+export type StartHostedPathwaySessionFromLinkInput = {
+  id: Scalars['String'];
+};
+
+export type StartHostedPathwaySessionFromLinkPayload = Payload & {
+  __typename?: 'StartHostedPathwaySessionFromLinkPayload';
+  code: Scalars['String'];
+  session_url: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type StartHostedPathwaySessionInput = {
