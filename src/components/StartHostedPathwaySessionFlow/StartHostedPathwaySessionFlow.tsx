@@ -50,7 +50,7 @@ export const StartHostedCareflowSessionFlow: FC<
     })
     return (
       <div className={classes.container}>
-        <ErrorPage title={data.error} />
+        <ErrorPage title={`${t('link_page.loading_error')} ${data.error}`} />
       </div>
     )
   }

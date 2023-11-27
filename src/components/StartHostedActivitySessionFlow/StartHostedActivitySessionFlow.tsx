@@ -55,7 +55,10 @@ export const StartHostedActivitySessionFlow: FC<
 
     return (
       <div className={classes.container}>
-        <ErrorPage title={t('link_page.loading_error')} onRetry={retry} />
+        <ErrorPage
+          title={`${t('link_page.loading_error')} ${data.error}`}
+          onRetry={retry}
+        />
       </div>
     )
   }
