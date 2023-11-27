@@ -10,6 +10,8 @@ import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
 import classes from './startHostedActivitySessionFlow.module.css'
+import { addSentryBreadcrumb } from '../../services/ErrorReporter'
+import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -21,7 +23,7 @@ export const StartHostedActivitySessionFlow: FC<
   const router = useRouter()
   const { t } = useTranslation()
 
-  const { data, error } = useSWR<StartHostedActivitySessionPayload>(
+  const { data } = useSWR<StartHostedActivitySessionPayload>(
     `/api/startHostedActivitySessionViaHostedPagesLink/${hostedPagesLinkId}`,
     fetcher
   )
@@ -32,12 +34,25 @@ export const StartHostedActivitySessionFlow: FC<
 
   useEffect(() => {
     if (!isNil(data) && !isNil(data?.sessionUrl)) {
+      addSentryBreadcrumb({
+        category: BreadcrumbCategory.NAVIGATION,
+        data: {
+          hostedPagesLinkId,
+          sessionUrl: data?.sessionUrl,
+          message: 'Redirecting to hosted session',
+        },
+      })
       const { sessionUrl } = data
       window.location.href = sessionUrl
     }
   }, [data, router])
 
-  if (error) {
+  if (data?.error) {
+    addSentryBreadcrumb({
+      category: BreadcrumbCategory.HOSTED_ACTIVITY_ERROR,
+      data: { hostedPagesLinkId },
+    })
+
     return (
       <div className={classes.container}>
         <ErrorPage title={t('link_page.loading_error')} onRetry={retry} />

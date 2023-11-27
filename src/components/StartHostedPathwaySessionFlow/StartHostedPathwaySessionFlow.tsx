@@ -1,6 +1,6 @@
 import { isNil } from 'lodash'
 import { useRouter } from 'next/router'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import useSWR from 'swr'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
@@ -10,6 +10,8 @@ import {
   StartHostedCareflowSessionParams,
   StartHostedCareflowSessionPayload,
 } from '../../../pages/api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
+import { addSentryBreadcrumb } from '../../services/ErrorReporter'
+import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -28,12 +30,24 @@ export const StartHostedCareflowSessionFlow: FC<
 
   useEffect(() => {
     if (!isNil(data) && !isNil(data?.sessionUrl)) {
+      addSentryBreadcrumb({
+        category: BreadcrumbCategory.NAVIGATION,
+        data: {
+          hostedPagesLinkId,
+          sessionUrl: data?.sessionUrl,
+          message: 'Redirecting to hosted session',
+        },
+      })
       const { sessionUrl } = data
       window.location.href = sessionUrl
     }
   }, [data, router])
 
   if (data?.error) {
+    addSentryBreadcrumb({
+      category: BreadcrumbCategory.HOSTED_PAGES_LINK_ERROR,
+      data: { hostedPagesLinkId, message: data.error },
+    })
     return (
       <div className={classes.container}>
         <ErrorPage title={data.error} />

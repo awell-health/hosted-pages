@@ -60,7 +60,10 @@ export default async function handler(
   })
   const { data, errors } = await response.json()
   if (!isNil(errors) && errors.length > 0) {
-    res.status(200).json({ error: errors[0].extensions?.data.message })
+    res
+      .status(200)
+      .json({ error: errors[0].extensions?.data?.message ?? errors[0].message })
+    return
   }
 
   const sessionUrl = data?.startHostedPathwaySessionFromLink.session_url
