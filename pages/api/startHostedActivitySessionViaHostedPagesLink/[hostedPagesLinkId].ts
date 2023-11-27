@@ -6,6 +6,7 @@ import {
   StartHostedActivitySessionParams,
   StartHostedActivitySessionPayload,
 } from '../../../types'
+import { isNil } from 'lodash'
 
 type Data =
   | StartHostedActivitySessionPayload
@@ -31,15 +32,14 @@ export default async function handler(
     }
   )
 
-  try {
-    const session = await fetch(environment.orchestrationApiUrl, {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `
+  const response = await fetch(environment.orchestrationApiUrl, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
           mutation StartHostedActivitySessionViaHostedPagesLink($input: StartHostedActivitySessionViaHostedPagesLinkInput!) {
             startHostedActivitySessionViaHostedPagesLink(input: $input) {
               session_id
@@ -47,21 +47,24 @@ export default async function handler(
             }
           }
           `,
-        variables: {
-          input: {
-            hosted_pages_link_id: hostedPagesLinkId,
-          },
+      variables: {
+        input: {
+          hosted_pages_link_id: hostedPagesLinkId,
         },
-      }),
-    })
+      },
+    }),
+  })
 
-    const session_response = await session.json()
-
-    const { session_id, session_url } =
-      session_response?.data?.startHostedActivitySessionViaHostedPagesLink
-
-    res.status(200).json({ sessionId: session_id, sessionUrl: session_url })
-  } catch (error) {
-    res.status(500).json({ error })
+  const { data, errors } = await response.json()
+  if (!isNil(errors) && errors.length > 0) {
+    res
+      .status(200)
+      .json({ error: errors[0].extensions?.data?.message ?? errors[0].message })
+    return
   }
+
+  const { session_id, session_url } =
+    data?.startHostedActivitySessionViaHostedPagesLink
+
+  res.status(200).json({ sessionId: session_id, sessionUrl: session_url })
 }
