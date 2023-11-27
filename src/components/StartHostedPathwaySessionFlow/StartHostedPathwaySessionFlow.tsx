@@ -1,6 +1,6 @@
 import { isNil } from 'lodash'
 import { useRouter } from 'next/router'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
@@ -21,14 +21,10 @@ export const StartHostedCareflowSessionFlow: FC<
   const router = useRouter()
   const { t } = useTranslation()
 
-  const { data, error } = useSWR<StartHostedCareflowSessionPayload>(
+  const { data } = useSWR<StartHostedCareflowSessionPayload>(
     `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}`,
     fetcher
   )
-
-  const retry = () => {
-    window.location.reload()
-  }
 
   useEffect(() => {
     if (!isNil(data) && !isNil(data?.sessionUrl)) {
@@ -37,10 +33,10 @@ export const StartHostedCareflowSessionFlow: FC<
     }
   }, [data, router])
 
-  if (error) {
+  if (data?.error) {
     return (
       <div className={classes.container}>
-        <ErrorPage title={t('link_page.loading_error')} onRetry={retry} />
+        <ErrorPage title={data.error} />
       </div>
     )
   }
