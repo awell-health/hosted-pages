@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { environment } from '../../../types'
+import { isNil } from 'lodash'
 
 export type StartHostedCareflowSessionParams = {
   hostedPagesLinkId: string
@@ -9,6 +10,7 @@ export type StartHostedCareflowSessionParams = {
 
 export type StartHostedCareflowSessionPayload = {
   sessionUrl: string
+  error?: string
 }
 
 type Data =
@@ -35,36 +37,35 @@ export default async function handler(
     }
   )
 
-  try {
-    const response = await fetch(environment.orchestrationApiUrl, {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `
+  const response = await fetch(environment.orchestrationApiUrl, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
           mutation StartHostedPathwaySessionFromLink($input: StartHostedPathwaySessionFromLinkInput!) {
             startHostedPathwaySessionFromLink(input: $input) {
               session_url
             }
           }
         `,
-        variables: {
-          input: {
-            id: hostedPagesLinkId,
-          },
+      variables: {
+        input: {
+          id: hostedPagesLinkId,
         },
-      }),
-    })
-    const session_response = await response.json()
-
-    const { session_url } =
-      session_response?.data?.startHostedPathwaySessionFromLink
-
-    res.status(200).json({ sessionUrl: session_url })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ error })
+      },
+    }),
+  })
+  const { data, errors } = await response.json()
+  if (!isNil(errors) && errors.length > 0) {
+    res
+      .status(200)
+      .json({ error: errors[0].extensions?.data?.message ?? errors[0].message })
+    return
   }
+
+  const sessionUrl = data?.startHostedPathwaySessionFromLink.session_url
+  res.status(200).json({ sessionUrl })
 }
