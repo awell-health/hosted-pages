@@ -12,6 +12,8 @@ export enum BreadcrumbCategory {
   GENERIC = 'GENERIC',
   NAVIGATION = 'NAVIGATION',
   SLOW_REDIRECT = 'SLOW_REDIRECT',
+  HOSTED_PAGES_LINK_ERROR = 'HOSTED_PAGES_LINK_ERROR',
+  HOSTED_ACTIVITY_ERROR = 'HOSTED_ACTIVITY_ERROR',
 }
 
 const SentryBreadcrumbMessageDictionary = {
@@ -25,6 +27,8 @@ const SentryBreadcrumbMessageDictionary = {
   [BreadcrumbCategory.GENERIC]: 'Generic event',
   [BreadcrumbCategory.NAVIGATION]: 'Navigation',
   [BreadcrumbCategory.SLOW_REDIRECT]: 'Slow redirect at session end',
+  [BreadcrumbCategory.HOSTED_PAGES_LINK_ERROR]: 'Error with hosted pages link',
+  [BreadcrumbCategory.HOSTED_ACTIVITY_ERROR]: 'Error with hosted activity link',
 }
 
 export const addSentryBreadcrumb = ({
