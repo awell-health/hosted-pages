@@ -74,7 +74,7 @@ const Home: NextPageWithLayout = () => {
       category: BreadcrumbCategory.SESSION_CANCEL,
       data: session,
     })
-    router.push(session?.cancel_url || 'https://awell.health')
+    router.push(session?.cancel_url ?? 'https://awell.health')
   }
 
   const shouldRedirect =
@@ -84,7 +84,18 @@ const Home: NextPageWithLayout = () => {
       !isNil(session?.cancel_url))
 
   useEffect(() => {
-    if (isNil(session?.status) || typeof window === 'undefined') {
+    if (isNil(session?.status)) {
+      addSentryBreadcrumb({
+        category: BreadcrumbCategory.GENERIC,
+        data: { session, message: 'Session status is null' },
+      })
+      return
+    }
+    if (typeof window === 'undefined') {
+      addSentryBreadcrumb({
+        category: BreadcrumbCategory.GENERIC,
+        data: { session, message: 'Window is undefined' },
+      })
       return
     }
 
