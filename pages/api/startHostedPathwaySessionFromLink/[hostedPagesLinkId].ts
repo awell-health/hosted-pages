@@ -1,15 +1,20 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
-import {
-  environment,
-  StartHostedActivitySessionParams,
-  StartHostedActivitySessionPayload,
-} from '../../../types'
+import { environment } from '../../../types'
 import { isNil } from 'lodash'
 
+export type StartHostedCareflowSessionParams = {
+  hostedPagesLinkId: string
+}
+
+export type StartHostedCareflowSessionPayload = {
+  sessionUrl: string
+  error?: string
+}
+
 type Data =
-  | StartHostedActivitySessionPayload
+  | StartHostedCareflowSessionPayload
   | {
       error: any
     }
@@ -18,12 +23,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { hostedPagesLinkId } = req.query as StartHostedActivitySessionParams
+  const { hostedPagesLinkId } = req.query as StartHostedCareflowSessionParams
 
   const token = jwt.sign(
     {
       username: environment.apiGatewayConsumerName,
-      feature: 'hosted-activities-link',
+      feature: 'hosted-pathway-link',
     },
     environment.jwtAuthSecret,
     {
@@ -40,21 +45,19 @@ export default async function handler(
     },
     body: JSON.stringify({
       query: `
-          mutation StartHostedActivitySessionViaHostedPagesLink($input: StartHostedActivitySessionViaHostedPagesLinkInput!) {
-            startHostedActivitySessionViaHostedPagesLink(input: $input) {
-              session_id
+          mutation StartHostedPathwaySessionFromLink($input: StartHostedPathwaySessionFromLinkInput!) {
+            startHostedPathwaySessionFromLink(input: $input) {
               session_url
             }
           }
-          `,
+        `,
       variables: {
         input: {
-          hosted_pages_link_id: hostedPagesLinkId,
+          id: hostedPagesLinkId,
         },
       },
     }),
   })
-
   const { data, errors } = await response.json()
   if (!isNil(errors) && errors.length > 0) {
     res
@@ -63,8 +66,6 @@ export default async function handler(
     return
   }
 
-  const { session_id, session_url } =
-    data?.startHostedActivitySessionViaHostedPagesLink
-
-  res.status(200).json({ sessionId: session_id, sessionUrl: session_url })
+  const sessionUrl = data?.startHostedPathwaySessionFromLink.session_url
+  res.status(200).json({ sessionUrl })
 }

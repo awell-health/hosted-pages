@@ -15,9 +15,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install packages
-        run: sudo apt-get install -y libdatetime-perl
+        run: sudo apt-get install -y libdatetime-perl git jq curl
 
       - name: Publish release
         run: ./scripts/publish_release.sh
         env:
-          ECHOESHQ_API_KEY_RELEASES: ${{ secrets.ECHOESHQ_API_KEY_RELEASES }}
+          PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+          PLATFORM_ENDPOINT: ${{ secrets.PLATFORM_ENDPOINT }}
