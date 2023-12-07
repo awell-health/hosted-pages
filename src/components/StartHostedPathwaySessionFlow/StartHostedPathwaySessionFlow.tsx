@@ -39,8 +39,7 @@ export const StartHostedCareflowSessionFlow: FC<
         },
       })
       const { sessionUrl } = data
-      const url = new URL(sessionUrl)
-      window.location.href = `${window.location.href}/${url.pathname}`
+      window.location.href = sessionUrl
     }
   }, [data, router])
 
