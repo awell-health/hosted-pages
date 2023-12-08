@@ -1,4 +1,4 @@
-import { Modal, Button } from '@awell_health/ui-library'
+import { Modal, Button } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import { FC } from 'react'
 

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { StartHostedActivitySessionFlow } from '../../src/components/StartHostedActivitySessionFlow'
 import { StartHostedActivitySessionParams } from '../../types'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { ThemeProvider } from '@awell_health/ui-library'
+import { ThemeProvider } from '@awell-health/ui-library'
 import { AWELL_BRAND_COLOR } from '../../src/config'
 import { NoSSRComponent } from '../../src/components/NoSSR'
 

@@ -5,7 +5,7 @@ import {
   ThemeProvider,
   HostedPageLayout,
   Message as MessageViewer,
-} from '@awell_health/ui-library'
+} from '@awell-health/ui-library'
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
 import Head from 'next/head'
