@@ -1,6 +1,6 @@
 import classes from './errorPage.module.css'
 import { FC, ReactNode } from 'react'
-import { Button } from '@awell_health/ui-library'
+import { Button } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 
 export const ErrorPage: FC<{

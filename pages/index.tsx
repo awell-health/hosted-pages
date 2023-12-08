@@ -9,7 +9,7 @@ import {
   CloseHostedSessionModal,
   ActivitiesContainer,
 } from '../src/components'
-import { ThemeProvider, HostedPageLayout } from '@awell_health/ui-library'
+import { ThemeProvider, HostedPageLayout } from '@awell-health/ui-library'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'

@@ -1,6 +1,6 @@
 import React, { ComponentProps, FC, useCallback, useMemo } from 'react'
 import Image from 'next/image'
-import { CloudinarySingleFileUpload } from '@awell_health/ui-library'
+import { CloudinarySingleFileUpload } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
 import { useCompleteSingleUploadFileAction } from './hooks/useCompleteSingleUploadFileAction'
