@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { useTranslation } from 'next-i18next'
-import { Button } from '@awell_health/ui-library'
+import { Button } from '@awell-health/ui-library'
 import classes from './embeddedSigning.module.css'
 import { LoadingPage } from '../../../../LoadingPage'
 
