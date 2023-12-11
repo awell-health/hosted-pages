@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useTranslation } from 'next-i18next'
-import { Button } from '@awell_health/ui-library'
+import { Button } from '@awell-health/ui-library'
 import { DocuSignEvent } from '../../types'
 import { LoadingPage } from '../../../../LoadingPage'
 

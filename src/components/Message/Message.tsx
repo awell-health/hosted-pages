@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { Message as MessageViewer } from '@awell_health/ui-library'
+import { Message as MessageViewer } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import { useMessage, Activity } from '../../hooks/useMessage'
 import { LoadingPage } from '../LoadingPage'
