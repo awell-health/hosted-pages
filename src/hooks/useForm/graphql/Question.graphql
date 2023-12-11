@@ -25,5 +25,9 @@ fragment Question on Question {
       is_value_tooltip_on
       show_min_max_values
     }
+    phone {
+      default_country
+      available_countries
+    }
   }
 }

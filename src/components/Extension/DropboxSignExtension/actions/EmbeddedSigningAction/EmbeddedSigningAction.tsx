@@ -4,7 +4,7 @@ import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
 import { type EmbeddedSigningFields, validateSettings } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useCompleteEmbeddedSigningAction } from './hooks/useCompleteEmbeddedSigningAction'
-import { Button } from '@awell_health/ui-library'
+import { Button } from '@awell-health/ui-library'
 import { isAfter } from 'date-fns'
 import he from 'he'
 interface EmbeddedSigningActionActionProps {
