@@ -1,5 +1,5 @@
 import { ComponentProps } from 'react'
-import { CalDotComScheduling } from '@awell_health/ui-library'
+import { CalDotComScheduling } from '@awell-health/ui-library'
 export {
   type DataPoints,
   useCompleteExtensionActivity,

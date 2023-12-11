@@ -1355,6 +1355,12 @@ export type Payload = {
   success: Scalars['Boolean'];
 };
 
+export type PhoneConfig = {
+  __typename?: 'PhoneConfig';
+  available_countries?: Maybe<Array<Scalars['String']>>;
+  default_country?: Maybe<Scalars['String']>;
+};
+
 export type PluginActionSettingsProperty = {
   __typename?: 'PluginActionSettingsProperty';
   key: Scalars['String'];
@@ -1699,6 +1705,7 @@ export type Question = {
 export type QuestionConfig = {
   __typename?: 'QuestionConfig';
   mandatory: Scalars['Boolean'];
+  phone?: Maybe<PhoneConfig>;
   recode_enabled?: Maybe<Scalars['Boolean']>;
   slider?: Maybe<SliderConfig>;
   use_select?: Maybe<Scalars['Boolean']>;
@@ -1897,7 +1904,7 @@ export enum StakeholderClinicalAppRole {
 
 export type StakeholderLabel = {
   __typename?: 'StakeholderLabel';
-  en?: Maybe<Scalars['String']>;
+  en: Scalars['String'];
 };
 
 export type StakeholdersPayload = Payload & {
@@ -2390,14 +2397,14 @@ export type GetExtensionActivityDetailsQueryVariables = Exact<{
 
 export type GetExtensionActivityDetailsQuery = { __typename?: 'Query', extensionActivityRecord: { __typename?: 'ExtensionActivityRecordPayload', record: { __typename?: 'ExtensionActivityRecord', id: string, activity_id: string, pathway_id: string, plugin_key: string, plugin_action_key: string, date: string, data_points: Array<{ __typename?: 'ExtensionDataPoint', label: string, value: string }>, fields: Array<{ __typename?: 'ExtensionActionField', id: string, type: ExtensionActionFieldType, label: string, value: string }>, settings?: Array<{ __typename?: 'PluginActionSettingsProperty', value: string, label: string, key: string }> | null } } };
 
-export type FormFragment = { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> };
+export type FormFragment = { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null } | null }> };
 
 export type GetFormQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', form: { __typename?: 'FormPayload', form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null }> } | null } };
+export type GetFormQuery = { __typename?: 'Query', form: { __typename?: 'FormPayload', form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null } | null }> } | null } };
 
 export type GetFormResponseQueryVariables = Exact<{
   pathway_id: Scalars['String'];
@@ -2407,7 +2414,7 @@ export type GetFormResponseQueryVariables = Exact<{
 
 export type GetFormResponseQuery = { __typename?: 'Query', formResponse: { __typename?: 'FormResponsePayload', response: { __typename?: 'FormResponse', answers: Array<{ __typename?: 'Answer', question_id: string, value: string, value_type: DataPointValueType }> } } };
 
-export type QuestionFragment = { __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null } | null };
+export type QuestionFragment = { __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null } | null };
 
 export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
 
@@ -2511,6 +2518,10 @@ export const QuestionFragmentDoc = gql`
       max_label
       is_value_tooltip_on
       show_min_max_values
+    }
+    phone {
+      default_country
+      available_countries
     }
   }
 }

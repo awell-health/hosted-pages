@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Checklist as ChecklistComponent } from '@awell_health/ui-library'
+import { Checklist as ChecklistComponent } from '@awell-health/ui-library'
 import { Activity, useChecklist } from '../../hooks/useChecklist'
 import { useSubmitChecklist } from '../../hooks/useSubmitChecklist'
 import { LoadingPage } from '../LoadingPage'
