@@ -1,4 +1,4 @@
-import { ConversationalForm, TraditionalForm } from '@awell_health/ui-library'
+import { ConversationalForm, TraditionalForm } from '@awell-health/ui-library'
 import React, { FC } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'

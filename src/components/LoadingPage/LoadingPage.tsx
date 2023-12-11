@@ -1,4 +1,4 @@
-import { HorizontalSpinner } from '@awell_health/ui-library'
+import { HorizontalSpinner } from '@awell-health/ui-library'
 import classes from './loadingPage.module.css'
 import { FC } from 'react'
 

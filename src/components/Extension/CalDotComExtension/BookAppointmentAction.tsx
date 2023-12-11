@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react'
-import { CalDotComScheduling } from '@awell_health/ui-library'
+import { CalDotComScheduling } from '@awell-health/ui-library'
 import { mapActionFieldsToObject } from '../utils'
 import { useCompleteBookAppointment } from './useCompleteBookAppointment'
 
