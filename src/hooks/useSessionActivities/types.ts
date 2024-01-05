@@ -3,6 +3,7 @@ import { GetHostedSessionActivitiesQuery } from '../../types/generated/types-orc
 export {
   useOnSessionActivityCompletedSubscription,
   useOnSessionActivityCreatedSubscription,
+  useOnSessionActivityExpiredSubscription,
   useGetHostedSessionActivitiesQuery,
   ActivityObjectType,
   ActivityStatus,
