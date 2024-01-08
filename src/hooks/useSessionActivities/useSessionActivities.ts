@@ -7,6 +7,7 @@ import {
   Activity,
   useOnSessionActivityCompletedSubscription,
   useOnSessionActivityCreatedSubscription,
+  useOnSessionActivityExpiredSubscription,
   useGetHostedSessionActivitiesQuery,
   GetHostedSessionActivitiesDocument,
   GetHostedSessionActivitiesQuery,
@@ -53,6 +54,7 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
    * which means the `activities` array will also be automatically updated.
    */
   useOnSessionActivityCompletedSubscription({ variables })
+  useOnSessionActivityExpiredSubscription({ variables })
 
   const sortActivitiesByDate = (activities: Activity[]): Activity[] => {
     if (isNil(activities) || isEmpty(activities)) {
