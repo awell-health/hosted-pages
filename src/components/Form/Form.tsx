@@ -80,6 +80,9 @@ export const Form: FC<FormProps> = ({ activity }) => {
       ),
       no_options: t('activities.form.questions.select.no_options'),
     },
+    slider: {
+      tooltip_guide: t('activities.form.questions.slider.tooltip_guide'),
+    },
   }
 
   const button_labels = {

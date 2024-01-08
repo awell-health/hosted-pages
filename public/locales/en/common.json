@@ -38,6 +38,9 @@
         "select": {
           "search_placeholder": "Search for an option",
           "no_options": "No options found"
+        },
+        "slider": {
+          "tooltip_guide": "Touch to indicate your answer"
         }
       }
     },
