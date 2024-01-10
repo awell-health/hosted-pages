@@ -1,76 +1,109 @@
 {
-  "errors": {
-    "app_error": "Oeps, er is iets misgelopen. Probeer het opnieuw."
-  },
   "activities": {
-    "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
-    "loading": "Activiteit laden...",
     "activity_not_supported": "Dit type activiteit wordt nog niet ondersteunt.",
-    "waiting_for_new_activities": "Wachten op nieuwe activiteit.",
-    "waiting_unexpected": "Wachten duurt langer dan verwacht. Even geduld...",
-    "message": {
-      "cta_mark_as_read": "Klaar",
-      "open_video_attachment": "Open video",
-      "open_link_attachment": "Open link",
-      "download_file_attachment": "Download",
-      "loading": "Bericht laden...",
-      "loading_error": "Er is iets misgelopen bij het ophalen van het bericht.",
-      "toast_mark_as_read_error": "Er is iets misgelopen bij het lezen van het bericht."
-    },
-    "form": {
-      "cta_start_form": "Vragenlijst starten",
-      "cta_submit": "Verzenden",
-      "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
-      "loading": "Vragenlijst laden...",
-      "next_question_label": "Volgende",
-      "previous_question_label": "Vorige",
-      "question_required_error": "Deze vraag is verplicht.",
-      "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden.",
-      "invalid_phone_number": "Telefoonnummer is ongeldig.",
-      "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
-      "saving_error": "Vragenlijst kon niet verzonden worden.",
-      "questions": {
-        "yes_no": {
-          "yes_answer": "Ja",
-          "no_answer": "Nee"
-        }
-      }
-    },
     "checklist": {
       "cta_submit": "Klaar",
       "loading": "Checklist laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van de checklist.",
       "saving_error": "Checklist kon niet verzonden worden."
-    }
+    },
+    "cloudinary": {
+      "cta_upload_files": "Upload files",
+      "file_attachment": "View file",
+      "file_count_one": "You have uploaded 1 file.",
+      "file_count_other": "You have uploaded {{count}} files.",
+      "file_count_zero": "You have not uploaded any files yet.",
+      "link_attachment": "Open link",
+      "no_files": "You have not uploaded any files yet.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Upload file",
+        "file_uploaded": "You have successfully uploaded a file.",
+        "no_file_uploaded": "You have not uploaded a file yet.",
+        "subject_single_file_upload": "Upload file"
+      },
+      "subject": "Upload files",
+      "video_attachment": "Open video"
+    },
+    "cta_done": "Done",
+    "docu_sign": {
+      "cta_sign_document": "Sign document",
+      "expired_sign_document": "Signing link has expired.",
+      "failed_sign_document": "Signing link has failed.",
+      "finished_sign_document": "Wrapping up",
+      "loading_sign_document": "Loading the document"
+    },
+    "form": {
+      "cta_start_form": "Vragenlijst starten",
+      "cta_submit": "Verzenden",
+      "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
+      "invalid_phone_number": "Telefoonnummer is ongeldig.",
+      "loading": "Vragenlijst laden...",
+      "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
+      "next_question_label": "Volgende",
+      "previous_question_label": "Vorige",
+      "question_required_error": "Deze vraag is verplicht.",
+      "questions": {
+        "select": {
+          "no_options": "No options found",
+          "search_placeholder": "Search for an option",
+          "type_to_search": "Start typing to search"
+        },
+        "slider": {
+          "tooltip_guide": "Touch to indicate your answer"
+        },
+        "yes_no": {
+          "no_answer": "Nee",
+          "yes_answer": "Ja"
+        }
+      },
+      "saving_error": "Vragenlijst kon niet verzonden worden.",
+      "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden."
+    },
+    "loading": "Activiteit laden...",
+    "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
+    "message": {
+      "cta_mark_as_read": "Klaar",
+      "download_file_attachment": "Download",
+      "loading": "Bericht laden...",
+      "loading_error": "Er is iets misgelopen bij het ophalen van het bericht.",
+      "open_link_attachment": "Open link",
+      "open_video_attachment": "Open video",
+      "toast_mark_as_read_error": "Er is iets misgelopen bij het lezen van het bericht."
+    },
+    "waiting_for_new_activities": "Wachten op nieuwe activiteit.",
+    "waiting_unexpected": "Wachten duurt langer dan verwacht. Even geduld..."
   },
-  "preview": {
-    "cta": "Probeer het uit"
-  },
-  "seo": {
-    "loading_title": "Laden...",
-    "title": "Awell Activiteiten",
-    "description": "Voltooi activiteiten in uw zorgpad met Awell hosted pages."
+  "errors": {
+    "app_error": "Oeps, er is iets misgelopen. Probeer het opnieuw."
   },
   "link_page": {
     "loading": "Even geduld, we starten voor jouw een sessie.",
     "loading_error": "Oeps, er is iets misgelopen tijdens het laden van jouw sessie.",
     "try_again": "Opnieuw proberen"
   },
+  "preview": {
+    "cta": "Probeer het uit"
+  },
+  "seo": {
+    "description": "Voltooi activiteiten in uw zorgpad met Awell hosted pages.",
+    "loading_title": "Laden...",
+    "title": "Awell Activiteiten"
+  },
   "session": {
-    "authentication_loading": "Authenticeren, even geduld.",
-    "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
-    "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
-    "loading": "Sessie laden...",
-    "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "all_activities_completed": "Je hebt alle activiteiten voltooid. Je kan deze pagina nu sluiten.",
+    "authentication_loading": "Authenticeren, even geduld.",
+    "close_modal": {
+      "cancel_button_label": "Nee, ga door",
+      "confirm_button_label": "Ja, sluit sessie af",
+      "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
+      "title": "Ben je zeker dat je de sessie wil afsluiten?"
+    },
+    "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
+    "loading": "Sessie laden...",
+    "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
+    "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
     "session_expired": "Je sessie is verlopen na 1 uur inactiviteit.",
-    "try_again": "Opnieuw proberen",
-    "close_modal": {
-      "title": "Ben je zeker dat je de sessie wil afsluiten?",
-      "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
-      "cancel_button_label": "Nee, ga door",
-      "confirm_button_label": "Ja, sluit sessie af"
-    }
+    "try_again": "Opnieuw proberen"
   }
 }

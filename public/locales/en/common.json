@@ -37,7 +37,8 @@
         },
         "select": {
           "search_placeholder": "Search for an option",
-          "no_options": "No options found"
+          "no_options": "No options found",
+          "type_to_search": "Start typing to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"

@@ -1,46 +1,6 @@
 {
-  "errors": {
-    "app_error": "Oups, quelque chose s'est mal passé. Veuillez réessayer."
-  },
   "activities": {
-    "cta_done": "Terminé",
-    "loading_error": "Quelque chose s'est mal passé lors du chargement des activités.",
-    "loading": "Chargement de l'activité...",
     "activity_not_supported": "Le type d'activité n'est pas pris en charge.",
-    "waiting_for_new_activities": "En attente de nouvelles activités.",
-    "waiting_unexpected": "L'attente prend plus de temps que prévu. Veuillez patienter...",
-    "message": {
-      "cta_mark_as_read": "Terminé",
-      "open_video_attachment": "Ouvrir la vidéo",
-      "open_link_attachment": "Ouvrir le lien",
-      "download_file_attachment": "Télécharger",
-      "loading": "Chargement du message...",
-      "loading_error": "Quelque chose s'est mal passé lors du chargement du message.",
-      "toast_mark_as_read_error": "Erreur lors que le message est marqué comme lu"
-    },
-    "form": {
-      "cta_start_form": "Démarrer le formulaire",
-      "cta_submit": "Soumettre",
-      "loading_error": "Quelque chose s'est mal passé lors du chargement du formulaire.",
-      "loading": "Chargement du formulaire...",
-      "next_question_label": "Suivant",
-      "previous_question_label": "Précédent",
-      "question_required_error": "Cette question est obligatoire.",
-      "slider_not_touched_error": "Veuillez déplacer le curseur pour indiquer votre réponse.",
-      "invalid_phone_number": "Numéro de téléphone invalide.",
-      "form_has_errors": "Veuillez corriger les erreurs dans le formulaire avant de soumettre",
-      "saving_error": "Échec de la soumission du formulaire.",
-      "questions": {
-        "yes_no": {
-          "yes_answer": "Oui",
-          "no_answer": "Non"
-        },
-        "select": {
-          "search_placeholder": "Rechercher une option",
-          "no_options": "Aucune option trouvée"
-        }
-      }
-    },
     "checklist": {
       "cta_submit": "Soumettre",
       "loading": "Chargement de la liste de contrôle",
@@ -48,58 +8,102 @@
       "saving_error": "Échec de la soumission de la liste de contrôle."
     },
     "cloudinary": {
-      "single_file_upload_action": {
-        "subject_single_file_upload": "Télécharger le fichier",
-        "cta_upload_file": "Télécharger le fichier",
-        "no_file_uploaded": "Vous n'avez pas encore téléchargé de fichier.",
-        "file_uploaded": "Vous avez téléchargé un fichier avec succès."
-      },
       "cta_upload_files": "Télécharger des fichiers",
-      "subject": "Télécharger des fichiers",
-      "no_files": "Vous n'avez pas encore téléchargé de fichiers.",
-      "video_attachment": "Ouvrir la vidéo",
-      "link_attachment": "Ouvrir le lien",
       "file_attachment": "Voir le fichier",
-      "file_count_zero": "Vous n'avez pas encore téléchargé de fichiers.",
       "file_count_one": "Vous avez téléchargé 1 fichier.",
-      "file_count_other": "Vous avez téléchargé {{count}} fichiers."
+      "file_count_other": "Vous avez téléchargé {{count}} fichiers.",
+      "file_count_zero": "Vous n'avez pas encore téléchargé de fichiers.",
+      "link_attachment": "Ouvrir le lien",
+      "no_files": "Vous n'avez pas encore téléchargé de fichiers.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Télécharger le fichier",
+        "file_uploaded": "Vous avez téléchargé un fichier avec succès.",
+        "no_file_uploaded": "Vous n'avez pas encore téléchargé de fichier.",
+        "subject_single_file_upload": "Télécharger le fichier"
+      },
+      "subject": "Télécharger des fichiers",
+      "video_attachment": "Ouvrir la vidéo"
     },
+    "cta_done": "Terminé",
     "docu_sign": {
       "cta_sign_document": "Signer le document",
-      "loading_sign_document": "Chargement du document",
-      "finished_sign_document": "Finalisation",
       "expired_sign_document": "Le lien de signature a expiré.",
-      "failed_sign_document": "Échec du lien de signature."
-    }
+      "failed_sign_document": "Échec du lien de signature.",
+      "finished_sign_document": "Finalisation",
+      "loading_sign_document": "Chargement du document"
+    },
+    "form": {
+      "cta_start_form": "Démarrer le formulaire",
+      "cta_submit": "Soumettre",
+      "form_has_errors": "Veuillez corriger les erreurs dans le formulaire avant de soumettre",
+      "invalid_phone_number": "Numéro de téléphone invalide.",
+      "loading": "Chargement du formulaire...",
+      "loading_error": "Quelque chose s'est mal passé lors du chargement du formulaire.",
+      "next_question_label": "Suivant",
+      "previous_question_label": "Précédent",
+      "question_required_error": "Cette question est obligatoire.",
+      "questions": {
+        "select": {
+          "no_options": "Aucune option trouvée",
+          "search_placeholder": "Rechercher une option",
+          "type_to_search": "Start typing to search"
+        },
+        "slider": {
+          "tooltip_guide": "Touch to indicate your answer"
+        },
+        "yes_no": {
+          "no_answer": "Non",
+          "yes_answer": "Oui"
+        }
+      },
+      "saving_error": "Échec de la soumission du formulaire.",
+      "slider_not_touched_error": "Veuillez déplacer le curseur pour indiquer votre réponse."
+    },
+    "loading": "Chargement de l'activité...",
+    "loading_error": "Quelque chose s'est mal passé lors du chargement des activités.",
+    "message": {
+      "cta_mark_as_read": "Terminé",
+      "download_file_attachment": "Télécharger",
+      "loading": "Chargement du message...",
+      "loading_error": "Quelque chose s'est mal passé lors du chargement du message.",
+      "open_link_attachment": "Ouvrir le lien",
+      "open_video_attachment": "Ouvrir la vidéo",
+      "toast_mark_as_read_error": "Erreur lors que le message est marqué comme lu"
+    },
+    "waiting_for_new_activities": "En attente de nouvelles activités.",
+    "waiting_unexpected": "L'attente prend plus de temps que prévu. Veuillez patienter..."
   },
-  "preview": {
-    "cta": "Essayez-le"
-  },
-  "seo": {
-    "loading_title": "Chargement...",
-    "title": "Awell Activités",
-    "description": "Complétez des activités dans votre itinéraire clinique avec des pages hébergées par Awell."
+  "errors": {
+    "app_error": "Oups, quelque chose s'est mal passé. Veuillez réessayer."
   },
   "link_page": {
     "loading": "Attendez, nous lançons votre session.",
     "loading_error": "Oups, nous n'avons pas pu démarrer une session pour vous.",
     "try_again": "Réessayer"
   },
+  "preview": {
+    "cta": "Essayez-le"
+  },
+  "seo": {
+    "description": "Complétez des activités dans votre itinéraire clinique avec des pages hébergées par Awell.",
+    "loading_title": "Chargement...",
+    "title": "Awell Activités"
+  },
   "session": {
-    "authentication_loading": "Authentification en cours, veuillez patienter.",
-    "invalid_url": "URL invalide : l'URL doit contenir le paramètre `sessionId`.",
-    "loading_error": "Quelque chose s'est mal passé lors du chargement de la session.",
-    "loading": "Chargement de la session...",
-    "redirecting_to_next_page": "Redirection dans un instant.",
     "all_activities_completed": "Vous avez terminé toutes vos activités. Vous pouvez maintenant fermer cette page.",
+    "authentication_loading": "Authentification en cours, veuillez patienter.",
+    "close_modal": {
+      "cancel_button_label": "Non",
+      "confirm_button_label": "Oui, annuler la session",
+      "description": "Il vous reste encore quelques activités à compléter. Si vous annulez votre session, vous risquez de perdre les données que vous n'avez pas encore soumises.",
+      "title": "Êtes-vous sûr de vouloir annuler votre session ?"
+    },
+    "invalid_url": "URL invalide : l'URL doit contenir le paramètre `sessionId`.",
+    "loading": "Chargement de la session...",
+    "loading_error": "Quelque chose s'est mal passé lors du chargement de la session.",
+    "redirecting_to_next_page": "Redirection dans un instant.",
     "session_canceled": "Votre session a été annulée.",
     "session_expired": "Votre session a expiré après 1 heure d'inactivité.",
-    "try_again": "Réessayer",
-    "close_modal": {
-      "title": "Êtes-vous sûr de vouloir annuler votre session ?",
-      "description": "Il vous reste encore quelques activités à compléter. Si vous annulez votre session, vous risquez de perdre les données que vous n'avez pas encore soumises.",
-      "cancel_button_label": "Non",
-      "confirm_button_label": "Oui, annuler la session"
-    }
+    "try_again": "Réessayer"
   }
 }
