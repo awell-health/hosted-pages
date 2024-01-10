@@ -1,0 +1,1 @@
+export { CollectDataExtension } from './CollectDataExtension'
