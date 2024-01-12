@@ -84,10 +84,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell-health/ui-library@0.1.38":
-  version "0.1.38"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.38.tgz#2994c38bf7f80bee412724638a1cce44618cf9f4"
-  integrity sha512-Kw/fjgJKtWaNccmPINhoG8GWWIwcHiYjusTVflERD0sNPnNyTSpD21u7gQn6IJQS7DX8v9bASG/87yYk+ExshA==
+"@awell-health/ui-library@0.1.41":
+  version "0.1.41"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.41.tgz#bfe42801dfe0f8a4d84ffae6e2c75bacc6e0c129"
+  integrity sha512-Y5Gu/J+nMyi8eY0by8W5UypBqVDV9e/lianCqmCEOrbdFrV1R+Km3QSU5Q/pIBglR/5Toj8Zcb6Me+9noj0ByA==
   dependencies:
     "@calcom/embed-react" "^1.0.10"
     "@heroicons/react" "^2.0.13"
@@ -102,6 +102,7 @@
     react-hook-form "^7.33.1"
     react-international-phone "^1.8.8"
     react-markdown "^9.0.0"
+    react-window "^1.8.10"
     remark-gfm "^4.0.0"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.18.6":
@@ -5473,6 +5474,11 @@ mdast-util-to-string@^4.0.0:
   dependencies:
     "@types/mdast" "^4.0.0"
 
+"memoize-one@>=3.1.1 <6":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
+  integrity sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==
+
 merge-class-names@^1.1.1:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/merge-class-names/-/merge-class-names-1.4.2.tgz#78d6d95ab259e7e647252a7988fd25a27d5a8835"
@@ -6625,6 +6631,14 @@ react-toastify@^9.0.8:
   integrity sha512-EwM+teWt49HSHx+67qI08yLAW1zAsBxCXLCsUfxHYv1W7/R3ZLhrqKalh7j+kjgPna1h5LQMSMwns4tB4ww2yQ==
   dependencies:
     clsx "^1.1.1"
+
+react-window@^1.8.10:
+  version "1.8.10"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.10.tgz#9e6b08548316814b443f7002b1cf8fd3a1bdde03"
+  integrity sha512-Y0Cx+dnU6NLa5/EvoHukUD0BklJ8qITCtVEPY1C/nL8wwoZ0b5aEw8Ff1dOVHw7fCzMt55XfJDd8S8W8LCaUCg==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    memoize-one ">=3.1.1 <6"
 
 react@18.2.0:
   version "18.2.0"

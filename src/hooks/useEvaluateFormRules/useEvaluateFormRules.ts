@@ -40,7 +40,6 @@ export const useEvaluateFormRules = (
         }
         return data.evaluateFormRules.results
       } catch (error) {
-        console.error(error)
         return []
       }
     },
