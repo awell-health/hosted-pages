@@ -22,8 +22,6 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
   const { loading, extensionActivityDetails, error, refetch } =
     useExtensionActivity(activity.object.id)
 
-  console.log('extensionActivityDetails', extensionActivityDetails)
-
   if (loading) {
     return <LoadingPage title={t('activities.checklist.loading')} />
   }

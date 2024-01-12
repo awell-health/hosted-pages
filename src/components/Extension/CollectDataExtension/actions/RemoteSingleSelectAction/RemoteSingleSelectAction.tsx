@@ -23,6 +23,13 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
   const [options, setOptions] = useState<Array<Option>>([])
   const [error, setError] = useState<unknown>()
   const [searchText, setSearchText] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const generateUrl = (url: string, queryParam: string, search = '') => {
+    return !isNil(queryParam) && search !== ''
+      ? `${url}?${queryParam}=${search}`
+      : url
+  }
 
   const handleFetchOptions = async (
     url: string,
@@ -32,24 +39,26 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
     onError?: (error: unknown) => void
   ) => {
     try {
-      const response = await fetch(
-        `${url}/${queryParam && search ? '?' + queryParam + '=' + search : ''}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'yes',
-            ...JSON.parse(headers),
-          },
-        }
-      )
+      setLoading(true)
+      const response = await fetch(generateUrl(url, queryParam, search), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'yes',
+          ...JSON.parse(headers),
+        },
+      })
       const options = await response.json()
+      if (!isNil(onError)) {
+        onError(undefined)
+      }
       return options
     } catch (error) {
-      console.error(error)
       if (!isNil(onError)) {
         onError(error)
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -58,13 +67,13 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
     url,
     label,
     headers = '{}',
-    mandatory = false,
+    mandatory,
   } = useMemo(
     () => mapActionFieldsToObject<RemoteSingleSelectActionFields>(fields),
     [fields]
   )
 
-  const fetchOptions = debounce(async () => {
+  const fetchOptionsDebounced = debounce(async () => {
     const options = await handleFetchOptions(
       url,
       queryParam,
@@ -73,7 +82,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
       setError
     )
     setOptions(options)
-  }, 1000)
+  }, 500)
 
   const handleSubmit = () => {
     if (isNil(selectedOption) || isNil(selectedOption.value)) {
@@ -87,12 +96,8 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
     })
   }
 
-  console.log(mandatory)
-
   useEffect(() => {
-    if (searchText.length > 3) {
-      fetchOptions()
-    }
+    fetchOptionsDebounced()
   }, [searchText])
 
   if (!activityDetails || !activityDetails.fields || !options) {
@@ -107,16 +112,16 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
           labels={{
             questionLabel: label,
             noOptions: t('activities.form.questions.select.no_options'),
-            searchPlaceholder: t(
-              'activities.form.questions.select.type_to_search'
-            ),
+            placeholder: t('activities.form.questions.select.type_to_search'),
+            loading: t('activities.form.questions.select.loading'),
           }}
+          loading={loading}
           options={options}
-          onSearch={(value) => {
+          onSearch={(value: string) => {
             setSearchText(value)
           }}
           type="single"
-          value={selectedOption?.value}
+          value={selectedOption?.value ?? ''}
           onChange={(value) => {
             const selectedOption = options.find(
               (option) => option.value.toString() === value.toString()
@@ -126,7 +131,6 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
           mandatory={mandatory === 'true'}
           filtering
         />
-
         {!isNil(error) && (
           <div className={classes.error}>{String(error) as string}</div>
         )}
