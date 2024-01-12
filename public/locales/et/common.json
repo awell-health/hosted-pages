@@ -1,81 +1,109 @@
 {
-  "errors": {
-    "app_error": "Oih, midagi läks valesti. Palun proovi uuesti."
-  },
   "activities": {
-    "cta_done": "Valmis",
-    "loading_error": "Midagi läks tegevuste laadimisel valesti.",
-    "loading": "Tegevuse laadimine...",
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
-    "waiting_for_new_activities": "Laeb",
-    "waiting_unexpected": "Ootamine võtab kauem aega kui oodatud. Palun oodake...",
-    "message": {
-      "cta_mark_as_read": "Valmis",
-      "open_video_attachment": "Ava video",
-      "open_link_attachment": "Ava link",
-      "download_file_attachment": "Lae alla",
-      "loading": "Sõnumi laadimine...",
-      "loading_error": "Midagi läks sõnumi laadimisel valesti.",
-      "toast_mark_as_read_error": "Viga sõnumi loetuks märkimisel."
-    },
-    "form": {
-      "cta_start_form": "Alusta teekonnaga",
-      "cta_submit": "Esita vastused",
-      "loading_error": "Vormi laadimisel läks midagi valesti.",
-      "loading": "Vormi laadimine...",
-      "next_question_label": "Järgmine",
-      "previous_question_label": "Eelmine",
-      "question_required_error": "See küsimus on kohustuslik.",
-      "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
-      "invalid_phone_number": "Telefoninumber pole õige.",
-      "form_has_errors": "Palun paranda vormis olevad vead enne esitamist.",
-      "saving_error": "Vormi esitamine ebaõnnestus.",
-      "questions": {
-        "yes_no": {
-          "yes_answer": "Jah",
-          "no_answer": "Ei"
-        },
-        "select": {
-          "search_placeholder": "Otsi valikut",
-          "no_options": "Valikuid ei leidnud"
-        }
-      }
-    },
     "checklist": {
       "cta_submit": "Esita vastused",
       "loading": "Laadimine...",
       "loading_error": "Midagi läks nimekirja laadimisel valesti.",
       "saving_error": "Nimekirja esitamine ebaõnnestus."
-    }
+    },
+    "cloudinary": {
+      "cta_upload_files": "Upload files",
+      "file_attachment": "View file",
+      "file_count_one": "You have uploaded 1 file.",
+      "file_count_other": "You have uploaded {{count}} files.",
+      "file_count_zero": "You have not uploaded any files yet.",
+      "link_attachment": "Open link",
+      "no_files": "You have not uploaded any files yet.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Upload file",
+        "file_uploaded": "You have successfully uploaded a file.",
+        "no_file_uploaded": "You have not uploaded a file yet.",
+        "subject_single_file_upload": "Upload file"
+      },
+      "subject": "Upload files",
+      "video_attachment": "Open video"
+    },
+    "cta_done": "Valmis",
+    "docu_sign": {
+      "cta_sign_document": "Sign document",
+      "expired_sign_document": "Signing link has expired.",
+      "failed_sign_document": "Signing link has failed.",
+      "finished_sign_document": "Wrapping up",
+      "loading_sign_document": "Loading the document"
+    },
+    "form": {
+      "cta_start_form": "Alusta teekonnaga",
+      "cta_submit": "Esita vastused",
+      "form_has_errors": "Palun paranda vormis olevad vead enne esitamist.",
+      "invalid_phone_number": "Telefoninumber pole õige.",
+      "loading": "Vormi laadimine...",
+      "loading_error": "Vormi laadimisel läks midagi valesti.",
+      "next_question_label": "Järgmine",
+      "previous_question_label": "Eelmine",
+      "question_required_error": "See küsimus on kohustuslik.",
+      "questions": {
+        "select": {
+          "no_options": "Valikuid ei leidnud",
+          "search_placeholder": "Otsi valikut",
+          "type_to_search": "Start typing to search"
+        },
+        "slider": {
+          "tooltip_guide": "Touch to indicate your answer"
+        },
+        "yes_no": {
+          "no_answer": "Ei",
+          "yes_answer": "Jah"
+        }
+      },
+      "saving_error": "Vormi esitamine ebaõnnestus.",
+      "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit."
+    },
+    "loading": "Tegevuse laadimine...",
+    "loading_error": "Midagi läks tegevuste laadimisel valesti.",
+    "message": {
+      "cta_mark_as_read": "Valmis",
+      "download_file_attachment": "Lae alla",
+      "loading": "Sõnumi laadimine...",
+      "loading_error": "Midagi läks sõnumi laadimisel valesti.",
+      "open_link_attachment": "Ava link",
+      "open_video_attachment": "Ava video",
+      "toast_mark_as_read_error": "Viga sõnumi loetuks märkimisel."
+    },
+    "waiting_for_new_activities": "Laeb",
+    "waiting_unexpected": "Ootamine võtab kauem aega kui oodatud. Palun oodake..."
   },
-  "preview": {
-    "cta": "Proovi"
-  },
-  "seo": {
-    "loading_title": "Laadimine...",
-    "title": "Awelli tegevused",
-    "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega."
+  "errors": {
+    "app_error": "Oih, midagi läks valesti. Palun proovi uuesti."
   },
   "link_page": {
     "loading": "Palun oodake, alustame sessiooni.",
     "loading_error": "Oih, meil ei õnnestunud sessiooni alustada.",
     "try_again": "Proovi uuesti"
   },
+  "preview": {
+    "cta": "Proovi"
+  },
+  "seo": {
+    "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega.",
+    "loading_title": "Laadimine...",
+    "title": "Awelli tegevused"
+  },
   "session": {
-    "authentication_loading": "Autentimine, palun oodake.",
-    "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
-    "loading_error": "Midagi läks seansi laadimisel valesti.",
-    "loading": "Seansi laadimine...",
-    "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "all_activities_completed": "Oled lõpetanud oma tegevused. Võid selle akna nüüd sulgeda.",
+    "authentication_loading": "Autentimine, palun oodake.",
+    "close_modal": {
+      "cancel_button_label": "Jätkan täitmist",
+      "confirm_button_label": "Jätan pooleli",
+      "description": "Kui täitmise katkestad, siis arstikeskus sinu pöördumist kätte ei saa.",
+      "title": "Soovid pöördumise täitmise pooleli jätta?"
+    },
+    "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
+    "loading": "Seansi laadimine...",
+    "loading_error": "Midagi läks seansi laadimisel valesti.",
+    "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "session_canceled": "Teie sessioon on katkestatud.",
     "session_expired": "Teie sessioon on aegunud pärast 1-tunnist tegevusetust.",
-    "try_again": "Proovi uuesti",
-    "close_modal": {
-      "title": "Soovid pöördumise täitmise pooleli jätta?",
-      "description": "Kui täitmise katkestad, siis arstikeskus sinu pöördumist kätte ei saa.",
-      "cancel_button_label": "Jätkan täitmist",
-      "confirm_button_label": "Jätan pooleli"
-    }
+    "try_again": "Proovi uuesti"
   }
 }
