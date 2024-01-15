@@ -1,46 +1,6 @@
 {
-  "errors": {
-    "app_error": "Упс, что-то пошло не так, попробуйте еще раз."
-  },
   "activities": {
-    "cta_done": "Готово",
-    "loading_error": "Во время загрузки действия что-то пошло не так.",
-    "loading": "Действие загружается...",
     "activity_not_supported": "Тип действия не поддерживается.",
-    "waiting_for_new_activities": "Ожидание новых действий.",
-    "waiting_unexpected": "Ожидание занимает больше времени, чем ожидалось. Пожалуйста, подождите...",
-    "message": {
-      "cta_mark_as_read": "Готово",
-      "open_video_attachment": "Открыть видео",
-      "open_link_attachment": "Открыть ссылку",
-      "download_file_attachment": "Загрузить",
-      "loading": "Сообщение загружается...",
-      "loading_error": "Во время загрузки сообщения что-то пошло не так.",
-      "toast_mark_as_read_error": "Ошибка во время отмечания сообщения как прочитанного."
-    },
-    "form": {
-      "cta_start_form": "Начать заполнение формы",
-      "cta_submit": "Подать",
-      "loading_error": "Во время загрузки формы что-то пошло не так.",
-      "loading": "Форма загружается...",
-      "next_question_label": "Следующий",
-      "previous_question_label": "Предыдущий",
-      "question_required_error": "Ответ на этот вопрос обязателен.",
-      "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ.",
-      "invalid_phone_number": "Номер телефона недействительный.",
-      "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
-      "saving_error": "Не удалось подать форму.",
-      "questions": {
-        "yes_no": {
-          "yes_answer": "Да",
-          "no_answer": "Нет"
-        },
-        "select": {
-          "search_placeholder": "Поиск опции",
-          "no_options": "Опции не найдены"
-        }
-      }
-    },
     "checklist": {
       "cta_submit": "Подать",
       "loading": "Чек-лист загружается...",
@@ -49,44 +9,101 @@
     },
     "cloudinary": {
       "cta_upload_files": "Загрузить файлы",
-      "subject": "Загрузить файлы",
-      "no_files": "Вы ещё не загрузили ни один файл.",
-      "video_attachment": "Открыть видео",
-      "link_attachment": "Открыть ссылку",
       "file_attachment": "Обзор файла",
-      "file_count_zero": "Вы ещё не загрузили ни один файл.",
       "file_count_one": "Вы загрузили 1 файл.",
-      "file_count_other": "Вы загрузили {{count}} файлов."
-    }
+      "file_count_other": "Вы загрузили {{count}} файлов.",
+      "file_count_zero": "Вы ещё не загрузили ни один файл.",
+      "link_attachment": "Открыть ссылку",
+      "no_files": "Вы ещё не загрузили ни один файл.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Upload file",
+        "file_uploaded": "You have successfully uploaded a file.",
+        "no_file_uploaded": "You have not uploaded a file yet.",
+        "subject_single_file_upload": "Upload file"
+      },
+      "subject": "Загрузить файлы",
+      "video_attachment": "Открыть видео"
+    },
+    "cta_done": "Готово",
+    "docu_sign": {
+      "cta_sign_document": "Sign document",
+      "expired_sign_document": "Signing link has expired.",
+      "failed_sign_document": "Signing link has failed.",
+      "finished_sign_document": "Wrapping up",
+      "loading_sign_document": "Loading the document"
+    },
+    "form": {
+      "cta_start_form": "Начать заполнение формы",
+      "cta_submit": "Подать",
+      "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
+      "invalid_phone_number": "Номер телефона недействительный.",
+      "loading": "Форма загружается...",
+      "loading_error": "Во время загрузки формы что-то пошло не так.",
+      "next_question_label": "Следующий",
+      "previous_question_label": "Предыдущий",
+      "question_required_error": "Ответ на этот вопрос обязателен.",
+      "questions": {
+        "select": {
+          "no_options": "Опции не найдены",
+          "search_placeholder": "Поиск опции",
+          "type_to_search": "Start typing to search"
+        },
+        "slider": {
+          "tooltip_guide": "Touch to indicate your answer"
+        },
+        "yes_no": {
+          "no_answer": "Нет",
+          "yes_answer": "Да"
+        }
+      },
+      "saving_error": "Не удалось подать форму.",
+      "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ."
+    },
+    "loading": "Действие загружается...",
+    "loading_error": "Во время загрузки действия что-то пошло не так.",
+    "message": {
+      "cta_mark_as_read": "Готово",
+      "download_file_attachment": "Загрузить",
+      "loading": "Сообщение загружается...",
+      "loading_error": "Во время загрузки сообщения что-то пошло не так.",
+      "open_link_attachment": "Открыть ссылку",
+      "open_video_attachment": "Открыть видео",
+      "toast_mark_as_read_error": "Ошибка во время отмечания сообщения как прочитанного."
+    },
+    "waiting_for_new_activities": "Ожидание новых действий.",
+    "waiting_unexpected": "Ожидание занимает больше времени, чем ожидалось. Пожалуйста, подождите..."
   },
-  "preview": {
-    "cta": "Попробуйте"
-  },
-  "seo": {
-    "loading_title": "Загружается",
-    "title": "Awell деятельность",
-    "description": "Выполните действия в потоках ухода Awell"
+  "errors": {
+    "app_error": "Упс, что-то пошло не так, попробуйте еще раз."
   },
   "link_page": {
     "loading": "Подождите немного, мы начинаем Вашу сессию.",
     "loading_error": "Упс, мы не можем начать сессию для Вас.",
     "try_again": "Попробуйте снова"
   },
+  "preview": {
+    "cta": "Попробуйте"
+  },
+  "seo": {
+    "description": "Выполните действия в потоках ухода Awell",
+    "loading_title": "Загружается",
+    "title": "Awell деятельность"
+  },
   "session": {
-    "authentication_loading": "Аутентификация. Пожалуйста, подождите.",
-    "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId”.",
-    "loading_error": "Что-то пошло не так при загрузке сессии.",
-    "loading": "Загрузка сессии...",
-    "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "all_activities_completed": "Вы совершили все действия. Теперь Вы можете закрыть эту страницу.",
+    "authentication_loading": "Аутентификация. Пожалуйста, подождите.",
+    "close_modal": {
+      "cancel_button_label": "Нет, продолжить",
+      "confirm_button_label": "Да, закрыть сессию",
+      "description": "Некоторые действия остались незавершенными. Если Вы закроете сессию, Вы можете потерять данные, которые Вы ещё не подали.",
+      "title": "Вы уверены, что хотите закрыть сессию?"
+    },
+    "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId”.",
+    "loading": "Загрузка сессии...",
+    "loading_error": "Что-то пошло не так при загрузке сессии.",
+    "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "session_canceled": "Ваша сессия истекла.",
     "session_expired": "Ваша сессия истекла.",
-    "try_again": "Попробуйте снова",
-    "close_modal": {
-      "title": "Вы уверены, что хотите закрыть сессию?",
-      "description": "Некоторые действия остались незавершенными. Если Вы закроете сессию, Вы можете потерять данные, которые Вы ещё не подали.",
-      "cancel_button_label": "Нет, продолжить",
-      "confirm_button_label": "Да, закрыть сессию"
-    }
+    "try_again": "Попробуйте снова"
   }
 }
