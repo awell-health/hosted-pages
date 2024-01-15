@@ -63,10 +63,12 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }
 
   useEffect(() => {
-    Sentry.setTags({
-      session: router.query.sessionId as string,
-      api_endpoint: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API,
-    })
+    if (!isNil(router)) {
+      Sentry.setTags({
+        session: router.query.sessionId as string,
+        api_endpoint: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API,
+      })
+    }
   })
 
   useEffect(() => {

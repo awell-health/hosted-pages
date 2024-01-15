@@ -41,7 +41,6 @@ export const CompleteFlowAction: FC<CompleteFlowActionActionProps> = ({
           },
         }}
         onFlowFinalized={(answers) => {
-          console.log(answers)
           onSubmit(activity_id)
         }}
       />

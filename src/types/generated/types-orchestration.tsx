@@ -153,6 +153,7 @@ export enum ActivityAction {
   Delegated = 'DELEGATED',
   Deliver = 'DELIVER',
   Discarded = 'DISCARDED',
+  Expired = 'EXPIRED',
   Failed = 'FAILED',
   FailedToSend = 'FAILED_TO_SEND',
   Generated = 'GENERATED',
@@ -213,6 +214,7 @@ export enum ActivityObjectType {
 }
 
 export enum ActivityResolution {
+  Expired = 'EXPIRED',
   Failure = 'FAILURE',
   Success = 'SUCCESS'
 }
@@ -221,6 +223,7 @@ export enum ActivityStatus {
   Active = 'ACTIVE',
   Canceled = 'CANCELED',
   Done = 'DONE',
+  Expired = 'EXPIRED',
   Failed = 'FAILED'
 }
 
@@ -754,10 +757,16 @@ export type Form = {
   id: Scalars['ID'];
   key: Scalars['String'];
   metadata?: Maybe<Scalars['String']>;
+  previous_answers?: Maybe<Array<PreviousAnswers>>;
   questions: Array<Question>;
   release_id: Scalars['String'];
   title: Scalars['String'];
   trademark?: Maybe<Scalars['String']>;
+};
+
+
+export type FormPrevious_AnswersArgs = {
+  pathway_id: Scalars['String'];
 };
 
 export enum FormDisplayMode {
@@ -1366,6 +1375,13 @@ export type PluginActionSettingsProperty = {
   key: Scalars['String'];
   label: Scalars['String'];
   value: Scalars['String'];
+};
+
+export type PreviousAnswers = {
+  __typename?: 'PreviousAnswers';
+  activity_id: Scalars['ID'];
+  answers: Array<Answer>;
+  date: Scalars['String'];
 };
 
 export type PublishedPathwayDefinition = {
@@ -2041,6 +2057,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   activityCompleted: Activity;
   activityCreated: Activity;
+  activityExpired: Activity;
   activityUpdated: Activity;
   apiCallCreated: ApiCall;
   apiCallUpdated: ApiCall;
@@ -2050,6 +2067,7 @@ export type Subscription = {
   pathwayUpdated: Pathway;
   sessionActivityCompleted: Activity;
   sessionActivityCreated: Activity;
+  sessionActivityExpired: Activity;
   sessionActivityUpdated: Activity;
   sessionCompleted: HostedSession;
   sessionExpired: HostedSession;
@@ -2065,6 +2083,12 @@ export type SubscriptionActivityCompletedArgs = {
 
 
 export type SubscriptionActivityCreatedArgs = {
+  only_patient_activities?: InputMaybe<Scalars['Boolean']>;
+  pathway_id?: InputMaybe<Scalars['String']>;
+};
+
+
+export type SubscriptionActivityExpiredArgs = {
   only_patient_activities?: InputMaybe<Scalars['Boolean']>;
   pathway_id?: InputMaybe<Scalars['String']>;
 };
@@ -2115,6 +2139,11 @@ export type SubscriptionSessionActivityCompletedArgs = {
 
 
 export type SubscriptionSessionActivityCreatedArgs = {
+  only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type SubscriptionSessionActivityExpiredArgs = {
   only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -2469,6 +2498,13 @@ export type OnSessionActivityCreatedSubscriptionVariables = Exact<{
 
 
 export type OnSessionActivityCreatedSubscription = { __typename?: 'Subscription', sessionActivityCreated: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } };
+
+export type OnSessionActivityExpiredSubscriptionVariables = Exact<{
+  only_stakeholder_activities: Scalars['Boolean'];
+}>;
+
+
+export type OnSessionActivityExpiredSubscription = { __typename?: 'Subscription', sessionActivityExpired: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null } };
 
 export type OnSessionActivityUpdatedSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
@@ -3103,6 +3139,38 @@ export function useOnSessionActivityCreatedSubscription(baseOptions: Apollo.Subs
       }
 export type OnSessionActivityCreatedSubscriptionHookResult = ReturnType<typeof useOnSessionActivityCreatedSubscription>;
 export type OnSessionActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<OnSessionActivityCreatedSubscription>;
+export const OnSessionActivityExpiredDocument = gql`
+    subscription OnSessionActivityExpired($only_stakeholder_activities: Boolean!) {
+  sessionActivityExpired(
+    only_stakeholder_activities: $only_stakeholder_activities
+  ) {
+    ...Activity
+  }
+}
+    ${ActivityFragmentDoc}`;
+
+/**
+ * __useOnSessionActivityExpiredSubscription__
+ *
+ * To run a query within a React component, call `useOnSessionActivityExpiredSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnSessionActivityExpiredSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnSessionActivityExpiredSubscription({
+ *   variables: {
+ *      only_stakeholder_activities: // value for 'only_stakeholder_activities'
+ *   },
+ * });
+ */
+export function useOnSessionActivityExpiredSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnSessionActivityExpiredSubscription, OnSessionActivityExpiredSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<OnSessionActivityExpiredSubscription, OnSessionActivityExpiredSubscriptionVariables>(OnSessionActivityExpiredDocument, options);
+      }
+export type OnSessionActivityExpiredSubscriptionHookResult = ReturnType<typeof useOnSessionActivityExpiredSubscription>;
+export type OnSessionActivityExpiredSubscriptionResult = Apollo.SubscriptionResult<OnSessionActivityExpiredSubscription>;
 export const OnSessionActivityUpdatedDocument = gql`
     subscription OnSessionActivityUpdated($only_stakeholder_activities: Boolean!) {
   sessionActivityUpdated(
