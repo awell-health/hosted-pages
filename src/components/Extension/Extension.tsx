@@ -11,6 +11,7 @@ import { FormsortExtension } from './FormsortExtension'
 import { DropboxSignExtension } from './DropboxSignExtension'
 import { CloudinaryExtension } from './CloudinaryExtension'
 import { DocuSignExtension } from './DocuSignExtension'
+import { CollectDataExtension } from './CollectDataExtension'
 
 interface ExtensionProps {
   activity: Activity
@@ -45,6 +46,8 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
       return <FormsortExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.DOCU_SIGN:
       return <DocuSignExtension activityDetails={extensionActivityDetails} />
+    case ExtensionKey.COLLECT_DATA:
+      return <CollectDataExtension activityDetails={extensionActivityDetails} />
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />
   }
