@@ -144,6 +144,11 @@ const Home: NextPageWithLayout = () => {
         <HostedPageLayout
           logo={defaultTo(branding?.logo_url, awell_logo)}
           onCloseHostedPage={onOpenCloseHostedSessionModal}
+          hideCloseButton={
+            (session.status === HostedSessionStatus.Completed ||
+              session.status === HostedSessionStatus.Expired) &&
+            shouldRedirect === false
+          }
         >
           {/* Show static success page if success URL is not available */}
           {shouldRedirect === false &&

@@ -13,4 +13,5 @@ export enum ExtensionKey {
   DROPBOXSIGN = 'dropboxSign',
   CLOUDINARY = 'cloudinary',
   DOCU_SIGN = 'docuSign',
+  COLLECT_DATA = 'collectData',
 }

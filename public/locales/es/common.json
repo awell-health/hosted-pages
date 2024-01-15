@@ -1,0 +1,109 @@
+{
+  "activities": {
+    "activity_not_supported": "No se admite el tipo de actividad.",
+    "checklist": {
+      "cta_submit": "Enviar",
+      "loading": "Cargando lista de verificación...",
+      "loading_error": "Se ha producido un error al cargar la lista de verificación.",
+      "saving_error": "No se pudo enviar la lista de verificación."
+    },
+    "cloudinary": {
+      "cta_upload_files": "Subir archivos",
+      "file_attachment": "Ver archivo",
+      "file_count_one": "Has subido 1 archivo.",
+      "file_count_other": "Has subido {{count}} archivos.",
+      "file_count_zero": "Aún no has subido ningún archivo.",
+      "link_attachment": "Abrir enlace",
+      "no_files": "Aún no has subido ningún archivo.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Cargar archivo",
+        "file_uploaded": "Has subido un archivo correctamente.",
+        "no_file_uploaded": "Aún no has subido ningún archivo.",
+        "subject_single_file_upload": "Cargar archivo"
+      },
+      "subject": "Subir archivos",
+      "video_attachment": "Abrir vídeo"
+    },
+    "cta_done": "Listo",
+    "docu_sign": {
+      "cta_sign_document": "Firmar documento",
+      "expired_sign_document": "El enlace de firma ha caducado.",
+      "failed_sign_document": "No se pudo firmar el enlace.",
+      "finished_sign_document": "A punto de completar…",
+      "loading_sign_document": "Cargando documento..."
+    },
+    "form": {
+      "cta_start_form": "Formulario de inicio",
+      "cta_submit": "Enviar",
+      "form_has_errors": "Corrija los errores del formulario antes de enviarlo",
+      "invalid_phone_number": "El número de teléfono no es válido.",
+      "loading": "Cargando Formulario",
+      "loading_error": "Se ha producido un error al cargar el formulario.",
+      "next_question_label": "Siguiente",
+      "previous_question_label": "Anterior",
+      "question_required_error": "Esta pregunta es obligatoria.",
+      "questions": {
+        "select": {
+          "no_options": "No se encontraron opciones",
+          "search_placeholder": "Busca una opción",
+          "type_to_search": "Empezar a escribir para buscar"
+        },
+        "slider": {
+          "tooltip_guide": "Toca para indicar tu respuesta"
+        },
+        "yes_no": {
+          "no_answer": "No",
+          "yes_answer": "Sí"
+        }
+      },
+      "saving_error": "No se pudo enviar el formulario.",
+      "slider_not_touched_error": "Mueva el control deslizante para indicar su respuesta."
+    },
+    "loading": "Cargando actividad...",
+    "loading_error": "Se ha producido un error al cargar tus actividades.",
+    "message": {
+      "cta_mark_as_read": "Listo",
+      "download_file_attachment": "Descargar",
+      "loading": "Cargando mensaje...",
+      "loading_error": "Se ha producido un error al cargar el mensaje.",
+      "open_link_attachment": "Abrir enlace",
+      "open_video_attachment": "Abrir vídeo",
+      "toast_mark_as_read_error": "Error al marcar el mensaje como leído."
+    },
+    "waiting_for_new_activities": "Esperando nuevas actividades.",
+    "waiting_unexpected": "La espera está tardando más de lo esperado. Espere, por favor..."
+  },
+  "errors": {
+    "app_error": "¡Uy! Algo salió mal. Vuelve a intentarlo."
+  },
+  "link_page": {
+    "loading": "Espera, estamos empezando tu sesión.",
+    "loading_error": "Vaya, no hemos podido iniciar una sesión por ti.",
+    "try_again": "Intentar de nuevo"
+  },
+  "preview": {
+    "cta": "Pruébalo"
+  },
+  "seo": {
+    "description": "Complete las actividades de su flujo de atención con las páginas alojadas en Awell.",
+    "loading_title": "Cargando…",
+    "title": "Actividades de Awell"
+  },
+  "session": {
+    "all_activities_completed": "Has completado todas tus actividades. Puede cerrar esta página ahora.",
+    "authentication_loading": "Autenticando, espere.",
+    "close_modal": {
+      "cancel_button_label": "No, continúa",
+      "confirm_button_label": "Sí, cancela sesión",
+      "description": "Aún quedan algunas actividades por completar. Si cancelas la sesión, es posible que pierdas los datos que aún no has enviado.",
+      "title": "¿Está seguro de que desea cancelar la sesión?"
+    },
+    "invalid_url": "URL no válida: la URL debe contener el parámetro `SessionId`.",
+    "loading": "Cargando sesión...",
+    "loading_error": "Se ha producido un error al cargar la sesión.",
+    "redirecting_to_next_page": "Te redirigiré en un momento...",
+    "session_canceled": "Se ha cancelado tu sesión.",
+    "session_expired": "Su sesión ha caducado tras 1 hora de inactividad.",
+    "try_again": "Intentar de nuevo"
+  }
+}
