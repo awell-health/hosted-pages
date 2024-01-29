@@ -17,6 +17,7 @@ import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadc
 import useLocalStorage from 'use-local-storage'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { isNil } from 'lodash'
+import { Option } from '../../types/generated/types-orchestration'
 
 interface FormProps {
   activity: Activity
@@ -38,6 +39,24 @@ export const Form: FC<FormProps> = ({ activity }) => {
     return (
       <ErrorPage title={t('activities.form.loading_error')} onRetry={refetch} />
     )
+  }
+
+  const modifiedQuestions = form?.questions.map((question) => {
+    return {
+      ...question,
+      options: question?.options?.map((option) => {
+        // @ts-expect-error - TODO: deprecate `value` and replace it with `value_string` completely.
+        return {
+          ...option,
+          value: option?.value_string,
+        } as Option
+      }),
+    }
+  })
+
+  const modifiedForm = {
+    ...form,
+    questions: modifiedQuestions,
   }
 
   const handleEvaluateFormRules = async (
@@ -107,7 +126,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     <>
       {renderTraditionalForm && (
         <TraditionalForm
-          form={form}
+          form={modifiedForm}
           questionLabels={labels}
           buttonLabels={button_labels}
           errorLabels={error_labels}
@@ -120,7 +139,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       )}
       {!renderTraditionalForm && (
         <ConversationalForm
-          form={form}
+          form={modifiedForm}
           questionLabels={labels}
           buttonLabels={button_labels}
           errorLabels={error_labels}
