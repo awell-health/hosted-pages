@@ -6,6 +6,7 @@ fragment Question on Question {
   dataPointValueType
   options {
     id
+    value_string
     value
     label
   }
