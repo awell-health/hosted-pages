@@ -42,6 +42,7 @@
       "next_question_label": "Volgende",
       "previous_question_label": "Vorige",
       "question_required_error": "Deze vraag is verplicht.",
+      "submitting": "Vragenlijst verzenden...",
       "questions": {
         "select": {
           "no_options": "No options found",
