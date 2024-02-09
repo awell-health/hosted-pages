@@ -42,6 +42,7 @@
       "next_question_label": "Suivant",
       "previous_question_label": "Précédent",
       "question_required_error": "Cette question est obligatoire.",
+      "submitting": "Soumission du formulaire...",
       "questions": {
         "select": {
           "no_options": "Aucune option trouvée",
