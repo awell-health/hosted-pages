@@ -42,6 +42,7 @@
       "next_question_label": "Mai departe",
       "previous_question_label": "Înapoi",
       "question_required_error": "Această întrebare este obligatorie.",
+      "submitting": "Se trimite formularul...",
       "questions": {
         "select": {
           "no_options": "Nu s-au găsit opțiuni",

@@ -6,8 +6,8 @@ import { useSubmitFormResponseMutation } from './types'
 import { captureException } from '@sentry/nextjs'
 import { useCurrentActivity } from '../../components/Activities'
 interface UseFormActivityHook {
-  disabled: boolean
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
+  isSubmitting: boolean
 }
 
 export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
@@ -50,6 +50,6 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
 
   return {
     onSubmit,
-    disabled: isSubmitting,
+    isSubmitting,
   }
 }
