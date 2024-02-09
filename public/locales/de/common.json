@@ -42,6 +42,7 @@
       "next_question_label": "Weiter",
       "previous_question_label": "Vorheriger",
       "question_required_error": "Diese Frage ist erforderlich.",
+      "submitting": "Formular wird abgesendet...",
       "questions": {
         "select": {
           "no_options": "Keine Optionen gefunden",
