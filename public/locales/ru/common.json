@@ -42,6 +42,7 @@
       "next_question_label": "Следующий",
       "previous_question_label": "Предыдущий",
       "question_required_error": "Ответ на этот вопрос обязателен.",
+      "submitting": "Подача формы...",
       "questions": {
         "select": {
           "no_options": "Опции не найдены",

@@ -24,21 +24,24 @@ interface FormProps {
 }
 
 export const Form: FC<FormProps> = ({ activity }) => {
-  const { loading, form, error, refetch } = useForm(activity)
+  const { loading: isFetching, form, error, refetch } = useForm(activity)
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
-  const { onSubmit } = useSubmitForm(activity)
+  const { onSubmit, isSubmitting } = useSubmitForm(activity)
   const { branding } = useHostedSession()
 
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
-  if (loading) {
+  if (isFetching) {
     return <LoadingPage title={t('activities.form.loading')} />
   }
   if (error || isNil(form)) {
     return (
       <ErrorPage title={t('activities.form.loading_error')} onRetry={refetch} />
     )
+  }
+  if (isSubmitting) {
+    return <LoadingPage title={t('activities.form.submitting')} />
   }
 
   const modifiedQuestions = form?.questions.map((question) => {
