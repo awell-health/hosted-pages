@@ -58,7 +58,7 @@ export default async function handler(
           id: hostedPagesLinkId,
           ...(isNil(identifier) || identifier === 'undefined'
             ? {}
-            : { careflow_patient_identifier: identifier }),
+            : { careflow_patient_identifier: decodeURIComponent(identifier) }),
         },
       },
     }),
