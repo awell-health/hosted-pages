@@ -23,9 +23,14 @@ export const RequestVideoVisit: FC<RequestVideoVisitProps> = ({
   )
 
   return (
-    <div className={classes.container}>
-      <Button onClick={() => onClick(false)}>Continue</Button>
-      <Button onClick={() => onClick(true)}>Request video visit</Button>
+    <div>
+      <div className={classes.container}>
+        <p>Whatever content we want here and full control over UI</p>
+      </div>
+      <div className={classes.container}>
+        <Button onClick={() => onClick(false)}>Continue</Button>
+        <Button onClick={() => onClick(true)}>Request video visit</Button>
+      </div>
     </div>
   )
 }
