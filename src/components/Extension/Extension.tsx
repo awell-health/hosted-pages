@@ -12,6 +12,7 @@ import { DropboxSignExtension } from './DropboxSignExtension'
 import { CloudinaryExtension } from './CloudinaryExtension'
 import { DocuSignExtension } from './DocuSignExtension'
 import { CollectDataExtension } from './CollectDataExtension'
+import { ExperimentalExtension } from './ExperimentalExtension'
 
 interface ExtensionProps {
   activity: Activity
@@ -48,6 +49,10 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
       return <DocuSignExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.COLLECT_DATA:
       return <CollectDataExtension activityDetails={extensionActivityDetails} />
+    case ExtensionKey.EXPERIMENTAL:
+      return (
+        <ExperimentalExtension activityDetails={extensionActivityDetails} />
+      )
     default:
       return <ErrorPage title={t('activities.activity_not_supported')} />
   }
