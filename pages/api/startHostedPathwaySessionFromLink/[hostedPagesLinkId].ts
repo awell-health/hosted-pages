@@ -6,7 +6,7 @@ import { isNil } from 'lodash'
 
 export type StartHostedCareflowSessionParams = {
   hostedPagesLinkId: string
-  identifier?: string
+  patientIdentifier?: string
 }
 
 export type StartHostedCareflowSessionPayload = {
@@ -24,7 +24,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { hostedPagesLinkId, identifier } =
+  const { hostedPagesLinkId, patientIdentifier } =
     req.query as StartHostedCareflowSessionParams
 
   const token = jwt.sign(
@@ -56,9 +56,11 @@ export default async function handler(
       variables: {
         input: {
           id: hostedPagesLinkId,
-          ...(isNil(identifier) || identifier === 'undefined'
+          ...(isNil(patientIdentifier) || patientIdentifier === 'undefined'
             ? {}
-            : { careflow_patient_identifier: decodeURIComponent(identifier) }),
+            : {
+                patient_identifier: decodeURIComponent(patientIdentifier),
+              }),
         },
       },
     }),
