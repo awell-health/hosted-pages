@@ -14,4 +14,5 @@ export enum ExtensionKey {
   CLOUDINARY = 'cloudinary',
   DOCU_SIGN = 'docuSign',
   COLLECT_DATA = 'collectData',
+  EXPERIMENTAL = 'experimental',
 }
