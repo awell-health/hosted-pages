@@ -1,0 +1,48 @@
+.container {
+  max-width: 95%;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 850px;
+  }
+}
+
+.groupMedsListContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 12px;
+}
+
+.singleMedsListContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: left;
+  width: 100%;
+  gap: 12px;
+}
+
+.singleMedsListContainer:not(:first-child) label {
+  display: none;
+}
+
+.singleMedsListContainer > div {
+  width: 100%;
+}
+
+.addMedsButton {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.submitButton {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
