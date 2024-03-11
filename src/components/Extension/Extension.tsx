@@ -6,13 +6,14 @@ import { CalDotComExtension } from './CalDotComExtension'
 import { useExtensionActivity } from '../../hooks/useExtensionActivity'
 import { LoadingPage } from '../LoadingPage'
 
-import { type Activity, ExtensionKey } from './types'
+import { type Activity, ExtensionKey, AnonymousActionKeys } from './types'
 import { FormsortExtension } from './FormsortExtension'
 import { DropboxSignExtension } from './DropboxSignExtension'
 import { CloudinaryExtension } from './CloudinaryExtension'
 import { DocuSignExtension } from './DocuSignExtension'
 import { CollectDataExtension } from './CollectDataExtension'
 import { ExperimentalExtension } from './ExperimentalExtension'
+import { EnterMedication } from './ExperimentalExtension/actions'
 
 interface ExtensionProps {
   activity: Activity
@@ -36,6 +37,15 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     )
   }
 
+  const getDefaultReturnValue = () => {
+    switch (extensionActivityDetails.plugin_action_key) {
+      case AnonymousActionKeys.COLLECT_MEDICATION:
+        return <EnterMedication activityDetails={extensionActivityDetails} />
+      default:
+        return <ErrorPage title={t('activities.activity_not_supported')} />
+    }
+  }
+
   switch (activity?.indirect_object?.id) {
     case ExtensionKey.CAL_DOT_COM:
       return <CalDotComExtension activityDetails={extensionActivityDetails} />
@@ -54,7 +64,7 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
         <ExperimentalExtension activityDetails={extensionActivityDetails} />
       )
     default:
-      return <ErrorPage title={t('activities.activity_not_supported')} />
+      return getDefaultReturnValue()
   }
 }
 
