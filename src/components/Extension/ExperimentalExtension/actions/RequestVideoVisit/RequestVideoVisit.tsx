@@ -43,8 +43,12 @@ export const RequestVideoVisit: FC<RequestVideoVisitProps> = ({
           <a
             href="awelltestapp://careflows"
             title="Deep link to Awell test app"
-          ></a>
-          <a href="messages://" title="Deep link to messages app"></a>
+          >
+            Deep link to Awell test app
+          </a>
+          <a href="messages://" title="Deep link to messages app">
+            Deep link to messages app
+          </a>
         </div>
       </div>
       <div className={classes.container}>
