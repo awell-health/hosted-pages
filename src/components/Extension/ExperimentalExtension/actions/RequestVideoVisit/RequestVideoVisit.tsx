@@ -35,20 +35,33 @@ export const RequestVideoVisit: FC<RequestVideoVisitProps> = ({
       <div className={classes.container}>
         <div>
           <p>Whatever content we want here and full control over UI</p>
-          {!isEmpty(deepLink) && (
-            <a href={deepLink} title="Deep link">
-              Test deep link
-            </a>
-          )}
-          <a
-            href="awelltestapp://careflows"
-            title="Deep link to Awell test app"
-          >
-            Deep link to Awell test app
-          </a>
-          <a href="messages://" title="Deep link to messages app">
-            Deep link to messages app
-          </a>
+          <ul>
+            {!isEmpty(deepLink) && (
+              <li>
+                <a href={deepLink} title="Deep link">
+                  Test deep link
+                </a>
+              </li>
+            )}
+            <li>
+              <a href="https://awellhealth.com" title="Link to Awell website">
+                Link to Awell website
+              </a>
+            </li>
+            <li>
+              <a
+                href="awelltestapp://careflows"
+                title="Deep link to Awell test app"
+              >
+                Deep link to Awell test app
+              </a>
+            </li>
+            <li>
+              <a href="messages://" title="Deep link to messages app">
+                Deep link to messages app
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
       <div className={classes.container}>
