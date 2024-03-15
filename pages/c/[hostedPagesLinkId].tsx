@@ -8,12 +8,12 @@ import { StartHostedCareflowSessionParams } from '../api/startHostedPathwaySessi
 import { StartHostedCareflowSessionFlow } from '../../src/components/StartHostedPathwaySessionFlow'
 
 /**
- * Purpose of this page is to support shortened URLs i.e. 'goto.awell.health/c/<hostedCareflowLinkId>?patientIdentifier=system|id'
+ * Purpose of this page is to support shortened URLs i.e. 'goto.awell.health/c/<hostedCareflowLinkId>?patient_identifier=system|id'
  */
 const HostedCareflowLink: NextPage = () => {
   const router = useRouter()
 
-  const { hostedPagesLinkId, patientIdentifier } =
+  const { hostedPagesLinkId, patient_identifier } =
     router.query as StartHostedCareflowSessionParams
 
   return (
@@ -21,7 +21,7 @@ const HostedCareflowLink: NextPage = () => {
       <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
         <StartHostedCareflowSessionFlow
           hostedPagesLinkId={hostedPagesLinkId}
-          patientIdentifier={patientIdentifier}
+          patient_identifier={patient_identifier}
         />
       </ThemeProvider>
     </NoSSRComponent>
