@@ -19,12 +19,16 @@ type StartHostedCareflowSessionFlowProps = StartHostedCareflowSessionParams
 
 export const StartHostedCareflowSessionFlow: FC<
   StartHostedCareflowSessionFlowProps
-> = ({ hostedPagesLinkId }): JSX.Element => {
+> = ({ hostedPagesLinkId, patient_identifier }): JSX.Element => {
   const router = useRouter()
   const { t } = useTranslation()
 
   const { data } = useSWR<StartHostedCareflowSessionPayload>(
-    `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}`,
+    `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}${
+      isNil(patient_identifier)
+        ? ''
+        : `?patient_identifier=${patient_identifier}`
+    }`,
     fetcher
   )
 
