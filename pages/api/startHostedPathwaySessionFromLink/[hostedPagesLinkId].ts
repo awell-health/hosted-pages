@@ -39,6 +39,15 @@ export default async function handler(
     }
   )
 
+  const getPatientIdentifier = (
+    patientIdentifier: string
+  ): { system: string; value: string } => {
+    const decodedPatientIdentifier = decodeURIComponent(patientIdentifier)
+    const system = decodedPatientIdentifier.split('|')[0]
+    const value = decodedPatientIdentifier.split('|')[1]
+    return { system, value }
+  }
+
   const response = await fetch(environment.orchestrationApiUrl, {
     method: 'POST',
     headers: {
@@ -59,7 +68,7 @@ export default async function handler(
           ...(isNil(patientIdentifier) || patientIdentifier === 'undefined'
             ? {}
             : {
-                patient_identifier: decodeURIComponent(patientIdentifier),
+                patient_identifier: getPatientIdentifier(patientIdentifier),
               }),
         },
       },
