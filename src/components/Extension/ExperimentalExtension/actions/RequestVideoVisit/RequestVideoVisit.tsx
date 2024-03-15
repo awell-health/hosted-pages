@@ -43,18 +43,6 @@ export const RequestVideoVisit: FC<RequestVideoVisitProps> = ({
                     Test deep link
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    onClick={() => {
-                      window.location.href = deepLink || '#'
-                      return false
-                    }}
-                    title="Deep link to messages app"
-                  >
-                    Deep link with window.location.href
-                  </a>
-                </li>
               </>
             )}
           </ul>
