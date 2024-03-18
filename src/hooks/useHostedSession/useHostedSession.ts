@@ -16,11 +16,16 @@ import { updateQuery } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
 import { Maybe } from '../../types'
+import {
+  CustomThemeApiField,
+  CustomThemeFieldsType,
+} from './branding/validation.zod'
 
 interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
   branding?: Maybe<BrandingSettings>
+  customTheme: CustomThemeFieldsType
   error?: string
   refetch?: () => {}
 }
@@ -111,17 +116,26 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }, [client, onHostedSessionExpired.data])
 
   if (loading) {
-    return { loading: true }
+    return { loading: true, customTheme: CustomThemeApiField.parse({}) }
   }
 
   if (error) {
-    return { loading: false, error: error.message, refetch }
+    return {
+      loading: false,
+      error: error.message,
+      refetch,
+      customTheme: CustomThemeApiField.parse({}),
+    }
   }
 
   return {
     loading: false,
     session: data?.hostedSession?.session,
     branding: data?.hostedSession?.branding,
+    customTheme: CustomThemeApiField.parse(
+      //@ts-expect-error TO REMOVE WHEN INTEGRATING THE BACK-END
+      data?.hostedSession?.branding?.custom_theme
+    ),
     refetch,
   }
 }
