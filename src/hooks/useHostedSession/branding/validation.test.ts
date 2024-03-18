@@ -13,6 +13,18 @@ describe('Custom theme branding', () => {
     })
   })
 
+  test('When custom theme is invalid JSON string, the default theme is set', () => {
+    const customTheme = 'no valid json'
+    const outcome = CustomThemeApiField.parse(customTheme)
+
+    expect(outcome).toStrictEqual({
+      layout: { showCloseButton: true, showLogo: true },
+      form: {
+        showAsterisksForRequiredQuestions: true,
+      },
+    })
+  })
+
   test('When custom theme is undefined, the default theme is set', () => {
     const customTheme = undefined
     const outcome = CustomThemeApiField.parse(customTheme)
