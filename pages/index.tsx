@@ -185,8 +185,13 @@ const Home: NextPageWithLayout = () => {
       </Head>
       <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
         <HostedPageLayout
-          logo={defaultTo(branding?.logo_url, awell_logo)}
+          logo={
+            theme.layout.showLogo
+              ? defaultTo(branding?.logo_url, awell_logo)
+              : undefined
+          }
           onCloseHostedPage={onOpenCloseHostedSessionModal}
+          hideCloseButton={theme.layout.showCloseButton}
         >
           {session && <ActivitiesContainer />}
           {error && (
