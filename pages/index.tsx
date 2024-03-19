@@ -144,7 +144,7 @@ const Home: NextPageWithLayout = () => {
       ((session.status === HostedSessionStatus.Completed ||
         session.status === HostedSessionStatus.Expired) &&
         shouldRedirect === false) ||
-      theme.layout.showCloseButton === false
+      theme.layout.showCloseButton === true
 
     return (
       <ThemeProvider accentColor={branding?.accent_color ?? undefined}>
