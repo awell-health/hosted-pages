@@ -11,3 +11,7 @@ export enum ActionKey {
 export type RequestVideoVisitActionFields = {
   deepLink?: string
 }
+
+export type EnterMedicationActionFields = {
+  questionLabel?: string
+}
