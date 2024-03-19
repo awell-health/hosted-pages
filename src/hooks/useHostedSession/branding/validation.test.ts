@@ -86,4 +86,20 @@ describe('Custom theme branding', () => {
       },
     })
   })
+
+  test('When custom theme is partially defined then it should be parsed correctly and merged with defaut', () => {
+    const customTheme = JSON.stringify({
+      layout: {
+        showLogo: false,
+      },
+    })
+    const outcome = CustomThemeApiField.parse(customTheme)
+
+    expect(outcome).toStrictEqual({
+      layout: { showCloseButton: true, showLogo: false },
+      form: {
+        showAsterisksForRequiredQuestions: true,
+      },
+    })
+  })
 })

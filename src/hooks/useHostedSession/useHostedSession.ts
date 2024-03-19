@@ -25,7 +25,7 @@ interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
   branding?: Maybe<BrandingSettings>
-  customTheme: CustomThemeFieldsType
+  theme: CustomThemeFieldsType
   error?: string
   refetch?: () => {}
 }
@@ -33,6 +33,7 @@ interface UseHostedSessionHook {
 const POLLING_DELAY_MS = 2000
 
 export const useHostedSession = (): UseHostedSessionHook => {
+  const defaultTheme = CustomThemeApiField.parse({})
   const { data, loading, error, refetch } = useGetHostedSessionQuery({
     pollInterval: POLLING_DELAY_MS,
     onError: (error) => {
@@ -116,7 +117,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }, [client, onHostedSessionExpired.data])
 
   if (loading) {
-    return { loading: true, customTheme: CustomThemeApiField.parse({}) }
+    return { loading: true, theme: defaultTheme }
   }
 
   if (error) {
@@ -124,7 +125,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
       loading: false,
       error: error.message,
       refetch,
-      customTheme: CustomThemeApiField.parse({}),
+      theme: defaultTheme,
     }
   }
 
@@ -132,8 +133,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
     loading: false,
     session: data?.hostedSession?.session,
     branding: data?.hostedSession?.branding,
-    customTheme: CustomThemeApiField.parse(
-      //@ts-expect-error TO REMOVE WHEN INTEGRATING THE BACK-END
+    theme: CustomThemeApiField.parse(
       data?.hostedSession?.branding?.custom_theme
     ),
     refetch,

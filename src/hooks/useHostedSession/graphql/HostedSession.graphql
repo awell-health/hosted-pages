@@ -1,12 +1,12 @@
 fragment HostedSession on HostedSession {
+  id
+  pathway_id
+  status
+  success_url
+  cancel_url
+  stakeholder {
     id
-    pathway_id
-    status
-    success_url
-    cancel_url
-    stakeholder {
-      id
-      type
-      name
-    }
+    type
+    name
+  }
 }
