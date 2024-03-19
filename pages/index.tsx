@@ -191,7 +191,7 @@ const Home: NextPageWithLayout = () => {
               : undefined
           }
           onCloseHostedPage={onOpenCloseHostedSessionModal}
-          hideCloseButton={theme.layout.showCloseButton}
+          hideCloseButton={!theme.layout.showCloseButton}
         >
           {session && <ActivitiesContainer />}
           {error && (
