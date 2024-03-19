@@ -30,7 +30,8 @@ import { AWELL_BRAND_COLOR } from '../src/config'
 // i.e. https://goto.awell.health/en?sessionId=e-Dmjxm3E5AW
 const Home: NextPageWithLayout = () => {
   const { t } = useTranslation()
-  const { loading, session, branding, error, refetch } = useHostedSession()
+  const { loading, session, branding, theme, error, refetch } =
+    useHostedSession()
   const { removeItem: removeAccessToken } = useSessionStorage('accessToken', '')
   const router = useRouter()
 
@@ -139,16 +140,22 @@ const Home: NextPageWithLayout = () => {
   }
 
   if (session && session?.status !== HostedSessionStatus.Active) {
+    const hideCloseButton =
+      ((session.status === HostedSessionStatus.Completed ||
+        session.status === HostedSessionStatus.Expired) &&
+        shouldRedirect === false) ||
+      theme.layout.showCloseButton === false
+
     return (
       <ThemeProvider accentColor={branding?.accent_color ?? undefined}>
         <HostedPageLayout
-          logo={defaultTo(branding?.logo_url, awell_logo)}
-          onCloseHostedPage={onOpenCloseHostedSessionModal}
-          hideCloseButton={
-            (session.status === HostedSessionStatus.Completed ||
-              session.status === HostedSessionStatus.Expired) &&
-            shouldRedirect === false
+          logo={
+            theme.layout.showLogo
+              ? defaultTo(branding?.logo_url, awell_logo)
+              : undefined
           }
+          onCloseHostedPage={onOpenCloseHostedSessionModal}
+          hideCloseButton={hideCloseButton}
         >
           {/* Show static success page if success URL is not available */}
           {shouldRedirect === false &&
