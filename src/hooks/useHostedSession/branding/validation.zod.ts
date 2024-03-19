@@ -26,10 +26,24 @@ const CustomFormBranding = z
   })
   .default({})
 
+/**
+ * Set default to empty string
+ */
+const CustomLocales = z
+  .object({
+    form: z
+      .object({
+        cta_submit: z.string().default(''),
+      })
+      .default({}),
+  })
+  .default({})
+
 const CustomThemeFields = z
   .object({
     layout: CustomLayoutBranding,
     form: CustomFormBranding,
+    locales: CustomLocales,
   })
   .default({})
 
