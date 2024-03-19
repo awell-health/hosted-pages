@@ -10,6 +10,11 @@ describe('Custom theme branding', () => {
       form: {
         showAsterisksForRequiredQuestions: true,
       },
+      locales: {
+        form: {
+          cta_submit: '',
+        },
+      },
     })
   })
 
@@ -21,6 +26,11 @@ describe('Custom theme branding', () => {
       layout: { showCloseButton: true, showLogo: true },
       form: {
         showAsterisksForRequiredQuestions: true,
+      },
+      locales: {
+        form: {
+          cta_submit: '',
+        },
       },
     })
   })
@@ -34,6 +44,11 @@ describe('Custom theme branding', () => {
       form: {
         showAsterisksForRequiredQuestions: true,
       },
+      locales: {
+        form: {
+          cta_submit: '',
+        },
+      },
     })
   })
 
@@ -45,6 +60,11 @@ describe('Custom theme branding', () => {
       layout: { showCloseButton: true, showLogo: true },
       form: {
         showAsterisksForRequiredQuestions: true,
+      },
+      locales: {
+        form: {
+          cta_submit: '',
+        },
       },
     })
   })
@@ -64,6 +84,11 @@ describe('Custom theme branding', () => {
       form: {
         showAsterisksForRequiredQuestions: true,
       },
+      locales: {
+        form: {
+          cta_submit: '',
+        },
+      },
     })
   })
 
@@ -76,6 +101,11 @@ describe('Custom theme branding', () => {
       form: {
         showAsterisksForRequiredQuestions: false,
       },
+      locales: {
+        form: {
+          cta_submit: 'Custom copy',
+        },
+      },
     })
     const outcome = CustomThemeApiField.parse(customTheme)
 
@@ -83,6 +113,11 @@ describe('Custom theme branding', () => {
       layout: { showCloseButton: false, showLogo: false },
       form: {
         showAsterisksForRequiredQuestions: false,
+      },
+      locales: {
+        form: {
+          cta_submit: 'Custom copy',
+        },
       },
     })
   })
@@ -99,6 +134,11 @@ describe('Custom theme branding', () => {
       layout: { showCloseButton: true, showLogo: false },
       form: {
         showAsterisksForRequiredQuestions: true,
+      },
+      locales: {
+        form: {
+          cta_submit: '',
+        },
       },
     })
   })

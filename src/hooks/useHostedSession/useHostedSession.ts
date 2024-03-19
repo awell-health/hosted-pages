@@ -33,7 +33,7 @@ interface UseHostedSessionHook {
 const POLLING_DELAY_MS = 2000
 
 export const useHostedSession = (): UseHostedSessionHook => {
-  const defaultTheme = CustomThemeApiField.parse({})
+  const defaultTheme = CustomThemeApiField.parse(JSON.stringify({}))
   const { data, loading, error, refetch } = useGetHostedSessionQuery({
     pollInterval: POLLING_DELAY_MS,
     onError: (error) => {
