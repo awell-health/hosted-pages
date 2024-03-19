@@ -10,6 +10,7 @@ query GetHostedSession {
       accent_color
       hosted_page_auto_progress
       hosted_page_autosave
+      custom_theme
     }
   }
 }
