@@ -16,7 +16,7 @@ import { addSentryBreadcrumb, masker } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 import useLocalStorage from 'use-local-storage'
 import { useHostedSession } from '../../hooks/useHostedSession'
-import { isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { Option } from '../../types/generated/types-orchestration'
 
 interface FormProps {
@@ -28,7 +28,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit, isSubmitting } = useSubmitForm(activity)
-  const { branding } = useHostedSession()
+  const { branding, theme } = useHostedSession()
 
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
@@ -110,7 +110,9 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const button_labels = {
     prev: t('activities.form.previous_question_label'),
     next: t('activities.form.next_question_label'),
-    submit: t('activities.form.cta_submit'),
+    submit: isEmpty(theme.locales.form.cta_submit)
+      ? t('activities.form.cta_submit')
+      : theme.locales.form.cta_submit,
     start_form: t('activities.form.cta_start_form'),
   }
 
