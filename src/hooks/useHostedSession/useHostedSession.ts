@@ -34,6 +34,7 @@ const POLLING_DELAY_MS = 2000
 
 export const useHostedSession = (): UseHostedSessionHook => {
   const defaultTheme = CustomThemeApiField.parse(JSON.stringify({}))
+  console.log({ defaultTheme })
   const { data, loading, error, refetch } = useGetHostedSessionQuery({
     pollInterval: POLLING_DELAY_MS,
     onError: (error) => {
@@ -134,7 +135,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
     session: data?.hostedSession?.session,
     branding: data?.hostedSession?.branding,
     theme: CustomThemeApiField.parse(
-      data?.hostedSession?.branding?.custom_theme
+      data?.hostedSession?.branding?.custom_theme ?? JSON.stringify({})
     ),
     refetch,
   }
