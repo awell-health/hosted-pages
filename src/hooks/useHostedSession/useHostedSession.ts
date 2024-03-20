@@ -135,7 +135,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
     session: data?.hostedSession?.session,
     branding: data?.hostedSession?.branding,
     theme: CustomThemeApiField.parse(
-      data?.hostedSession?.branding?.custom_theme ?? JSON.stringify('')
+      data?.hostedSession?.branding?.custom_theme ?? JSON.stringify({})
     ),
     refetch,
   }
