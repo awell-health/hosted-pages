@@ -6,7 +6,7 @@
 }
 
 .expired_icon {
-  padding: 32px;
+  padding: var(--awell-spacing-9);
 }
 .expired_text_title {
   margin-top: var(--awell-spacing-4);

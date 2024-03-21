@@ -6,7 +6,7 @@
 }
 
 .error_icon_container {
-  padding: 32px;
+  padding: var(--awell-spacing-9);
 }
 
 .error_icon_shadow {

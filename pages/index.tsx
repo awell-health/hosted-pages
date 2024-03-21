@@ -86,7 +86,7 @@ const Home: NextPageWithLayout = () => {
 
   const hideCloseButton =
     (session?.status !== HostedSessionStatus.Active && !shouldRedirect) ||
-    theme.layout.showCloseButton
+    !theme.layout.showCloseButton
 
   useEffect(() => {
     if (isNil(session?.status)) {
@@ -162,7 +162,7 @@ const Home: NextPageWithLayout = () => {
               : undefined
           }
           onCloseHostedPage={onOpenCloseHostedSessionModal}
-          hideCloseButton={!theme.layout.showCloseButton ?? hideCloseButton}
+          hideCloseButton={hideCloseButton}
         >
           {renderSessionContent()}
           {error && (

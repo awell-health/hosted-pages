@@ -6,7 +6,7 @@
 }
 
 .success_icon {
-  padding: 32px;
+  padding: var(--awell-spacing-9);
 }
 
 .success_text_title {
