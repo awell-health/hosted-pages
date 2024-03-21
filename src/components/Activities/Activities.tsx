@@ -40,7 +40,7 @@ export const Activities: FC = () => {
   }, [waitingForNewActivities])
 
   if (waitingForNewActivities) {
-    return <LoadingPage title={message} />
+    return <LoadingPage />
   }
 
   return <ActivityFactory activity={currentActivity} />

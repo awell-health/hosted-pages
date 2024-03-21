@@ -29,7 +29,8 @@ describe('ActivityProvider', () => {
         },
       },
     })
-    await screen.findByText('activities.loading')
+    // Use findByTestId to check for the presence of the loading page
+    await screen.findByTestId('loading-page')
   })
 
   it('should display child component', async () => {

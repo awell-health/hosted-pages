@@ -9,7 +9,6 @@ import {
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
-import classes from './startHostedActivitySessionFlow.module.css'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 
@@ -54,18 +53,12 @@ export const StartHostedActivitySessionFlow: FC<
     })
 
     return (
-      <div className={classes.container}>
-        <ErrorPage
-          title={`${t('link_page.loading_error')} ${data.error}`}
-          onRetry={retry}
-        />
-      </div>
+      <ErrorPage
+        title={`${t('link_page.loading_error')} ${data.error}`}
+        onRetry={retry}
+      />
     )
   }
 
-  return (
-    <div className={classes.container}>
-      <LoadingPage title={t('link_page.loading')} />
-    </div>
-  )
+  return <LoadingPage showLogoBox={true} />
 }
