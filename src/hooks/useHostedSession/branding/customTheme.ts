@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { Maybe } from '../../../types'
 import { stringToJSONSchema } from './stringToJson'
 
 const DEFAULTS = {
@@ -47,6 +48,11 @@ const CustomThemeFields = z
   })
   .default({})
 
-export const CustomThemeApiField = stringToJSONSchema.pipe(CustomThemeFields)
+const CustomThemeSchema = stringToJSONSchema.pipe(CustomThemeFields)
 
-export type CustomThemeFieldsType = z.infer<typeof CustomThemeApiField>
+export type CustomTheme = z.infer<typeof CustomThemeSchema>
+
+export const getTheme = (customThemeJsonStr?: Maybe<string>): CustomTheme => {
+  const customTheme = customThemeJsonStr ?? ''
+  return CustomThemeSchema.parse(customTheme)
+}
