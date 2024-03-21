@@ -20,18 +20,6 @@ describe('ActivityProvider', () => {
     await screen.findByText('activities.loading_error')
   })
 
-  it('should display loading page', async () => {
-    render(<ActivityProvider />, {
-      mocks: {
-        Query: {
-          hostedSessionActivities: () =>
-            new Promise((resolve) => setTimeout(() => resolve([]), 1000)),
-        },
-      },
-    })
-    await screen.findByText('activities.loading')
-  })
-
   it('should display child component', async () => {
     render(
       <ActivityProvider>

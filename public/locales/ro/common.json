@@ -3,7 +3,6 @@
     "activity_not_supported": "Tipul de activitate nu este suportat.",
     "checklist": {
       "cta_submit": "Trimiteți",
-      "loading": "Se încarcă lista de verificare...",
       "loading_error": "Ceva nu a mers bine în timpul încărcării listei de verificare.",
       "saving_error": "Trimiterea listei de verificare a eșuat."
     },
@@ -28,21 +27,17 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed.",
-      "finished_sign_document": "Wrapping up",
-      "loading_sign_document": "Loading the document"
+      "failed_sign_document": "Signing link has failed."
     },
     "form": {
       "cta_start_form": "Începeți formularul",
       "cta_submit": "Trimiteți",
       "form_has_errors": "Vă rugăm să corectați erorile din formular înainte de a trimite",
       "invalid_phone_number": "Numărul de telefon este invalid.",
-      "loading": "Se încarcă formularul...",
       "loading_error": "Ceva nu a mers bine în timpul încărcării formularului.",
       "next_question_label": "Mai departe",
       "previous_question_label": "Înapoi",
       "question_required_error": "Această întrebare este obligatorie.",
-      "submitting": "Se trimite formularul...",
       "questions": {
         "select": {
           "no_options": "Nu s-au găsit opțiuni",
@@ -65,7 +60,6 @@
     "message": {
       "cta_mark_as_read": "Terminat",
       "download_file_attachment": "Descărcați",
-      "loading": "Se încarcă mesajul...",
       "loading_error": "Ceva nu a mers bine în timpul încărcării mesajului.",
       "open_link_attachment": "Deschideți link",
       "open_video_attachment": "Deschideți videoclipul",
@@ -78,7 +72,6 @@
     "app_error": "Oops, ceva nu a mers bine. Te rog să încerci din nou."
   },
   "link_page": {
-    "loading": "Așteptați puțin, începem sesiunea dvs.",
     "loading_error": "Oops, nu am putut porni o sesiune pentru dumneavoastră.",
     "try_again": "Încercați din nou"
   },
@@ -87,7 +80,6 @@
   },
   "seo": {
     "description": "Finalizați activitățile din fluxul dvs. de îngrijire cu paginile găzduite Awell.",
-    "loading_title": "Se încarcă",
     "title": "Activități Awell"
   },
   "session": {
@@ -106,7 +98,6 @@
     "loading_error": "A apărut o problemă in timpul încărcării sesiunii tale.",
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "session_canceled": "Sesiunea ta a fost anulata.",
-    "session_expired": "Sesiunea ta a expirat după o oră de inactivitate.",
     "try_again": "Încercați din nou"
   }
 }

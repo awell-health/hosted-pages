@@ -3,7 +3,6 @@
     "activity_not_supported": "Der Aktivitätstyp wird nicht unterstützt.",
     "checklist": {
       "cta_submit": "Absenden",
-      "loading": "Checkliste wird geladen...",
       "loading_error": "Beim Laden der Checkliste ist etwas schief gelaufen.",
       "saving_error": "Die Einreichung der Checkliste ist fehlgeschlagen."
     },
@@ -28,21 +27,17 @@
     "docu_sign": {
       "cta_sign_document": "Dokument signieren",
       "expired_sign_document": "Der Link zum Signieren ist abgelaufen.",
-      "failed_sign_document": "Der Link zum Signieren ist fehlgeschlagen.",
-      "finished_sign_document": "Fast fertig…",
-      "loading_sign_document": "Dokument wird geladen..."
+      "failed_sign_document": "Der Link zum Signieren ist fehlgeschlagen."
     },
     "form": {
       "cta_start_form": "Formular starten",
       "cta_submit": "Absenden",
       "form_has_errors": "Bitte korrigieren Sie die Fehler im Formular vor dem Absenden",
       "invalid_phone_number": "Telefonnummer ist ungültig",
-      "loading": "Formular wird geladen...",
       "loading_error": "Beim Laden des Formulars ist etwas schief gelaufen.",
       "next_question_label": "Weiter",
       "previous_question_label": "Vorheriger",
       "question_required_error": "Diese Frage ist erforderlich.",
-      "submitting": "Formular wird abgesendet...",
       "questions": {
         "select": {
           "no_options": "Keine Optionen gefunden",
@@ -65,7 +60,6 @@
     "message": {
       "cta_mark_as_read": "Fertig",
       "download_file_attachment": "Herunterladen",
-      "loading": "Nachricht laden...",
       "loading_error": "Beim Laden der Nachricht ist ein Fehler aufgetreten.",
       "open_link_attachment": "Link öffnen",
       "open_video_attachment": "Video öffnen",
@@ -78,7 +72,6 @@
     "app_error": "Hoppla... Etwas ist schief gelaufen. Bitte versuche es erneut."
   },
   "link_page": {
-    "loading": "Warte, wir beginnen deine Sitzung.",
     "loading_error": "Ups, wir konnten keine Sitzung für dich starten.",
     "try_again": "Erneut versuchen"
   },
@@ -87,7 +80,6 @@
   },
   "seo": {
     "description": "Erledigen Sie alle Aktivitäten in Ihrem Pflegeablauf mit von Awell gehosteten Seiten.",
-    "loading_title": "Wird geladen…",
     "title": "Awell Aktivitäten"
   },
   "session": {
@@ -106,7 +98,6 @@
     "loading_error": "Beim Laden Ihrer Sitzung ist ein Fehler aufgetreten.",
     "redirecting_to_next_page": "Ich werde dich gleich umleiten...",
     "session_canceled": "Ihre Sitzung wurde abgesagt.",
-    "session_expired": "Ihre Sitzung ist nach 1 Stunde Inaktivität abgelaufen.",
     "try_again": "Erneut versuchen"
   }
 }

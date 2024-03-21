@@ -3,7 +3,6 @@
     "activity_not_supported": "Dit type activiteit wordt nog niet ondersteunt.",
     "checklist": {
       "cta_submit": "Klaar",
-      "loading": "Checklist laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van de checklist.",
       "saving_error": "Checklist kon niet verzonden worden."
     },
@@ -28,21 +27,17 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed.",
-      "finished_sign_document": "Wrapping up",
-      "loading_sign_document": "Loading the document"
+      "failed_sign_document": "Signing link has failed."
     },
     "form": {
       "cta_start_form": "Vragenlijst starten",
       "cta_submit": "Verzenden",
       "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
       "invalid_phone_number": "Telefoonnummer is ongeldig.",
-      "loading": "Vragenlijst laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
       "next_question_label": "Volgende",
       "previous_question_label": "Vorige",
       "question_required_error": "Deze vraag is verplicht.",
-      "submitting": "Vragenlijst verzenden...",
       "questions": {
         "select": {
           "no_options": "No options found",
@@ -65,7 +60,6 @@
     "message": {
       "cta_mark_as_read": "Klaar",
       "download_file_attachment": "Download",
-      "loading": "Bericht laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van het bericht.",
       "open_link_attachment": "Open link",
       "open_video_attachment": "Open video",
@@ -78,7 +72,6 @@
     "app_error": "Oeps, er is iets misgelopen. Probeer het opnieuw."
   },
   "link_page": {
-    "loading": "Even geduld, we starten voor jouw een sessie.",
     "loading_error": "Oeps, er is iets misgelopen tijdens het laden van jouw sessie.",
     "try_again": "Opnieuw proberen"
   },
@@ -87,7 +80,6 @@
   },
   "seo": {
     "description": "Voltooi activiteiten in uw zorgpad met Awell hosted pages.",
-    "loading_title": "Laden...",
     "title": "Awell Activiteiten"
   },
   "session": {
@@ -106,7 +98,6 @@
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
-    "session_expired": "Je sessie is verlopen na 1 uur inactiviteit.",
     "try_again": "Opnieuw proberen"
   }
 }
