@@ -18,6 +18,7 @@ import useLocalStorage from 'use-local-storage'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { isEmpty, isNil } from 'lodash'
 import { Option } from '../../types/generated/types-orchestration'
+import { ErrorLabels } from '@awell-health/ui-library/dist/types/hooks/useForm/types'
 
 interface FormProps {
   activity: Activity
@@ -116,11 +117,14 @@ export const Form: FC<FormProps> = ({ activity }) => {
     start_form: t('activities.form.cta_start_form'),
   }
 
-  const error_labels = {
+  const error_labels: ErrorLabels = {
     required: t('activities.form.question_required_error'),
     sliderNotTouched: t('activities.form.slider_not_touched_error'),
     invalidPhoneNumber: t('activities.form.invalid_phone_number'),
     formHasErrors: t('activities.form.form_has_errors'),
+    dateCannotBeInTheFuture: t('activities.form.date_cannot_be_in_the_future'),
+    dateCannotBeInThePast: t('activities.form.date_cannot_be_in_the_past'),
+    dateCannotBeToday: t('activities.form.date_cannot_be_today'),
   }
 
   const renderTraditionalForm =
