@@ -8,7 +8,7 @@ export const LoadingPage: FC<LoadingPageProps> = ({
   showLogoBox = false,
 }): JSX.Element => {
   return (
-    <div className={classes.loading_container}>
+    <div className={classes.loading_container} data-testid="loading-page">
       {showLogoBox && (
         <div className={classes.logo_box}>
           <div className={classes.logo_shadow}></div>
