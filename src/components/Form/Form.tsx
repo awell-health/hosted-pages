@@ -33,7 +33,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
   if (isFetching) {
-    return <LoadingPage title={t('activities.form.loading')} />
+    return <LoadingPage />
   }
   if (error || isNil(form)) {
     return (
@@ -41,7 +41,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     )
   }
   if (isSubmitting) {
-    return <LoadingPage title={t('activities.form.submitting')} />
+    return <LoadingPage />
   }
 
   const modifiedQuestions = form?.questions.map((question) => {

@@ -91,8 +91,10 @@
     "title": "Awelli tegevused"
   },
   "session": {
-    "all_activities_completed": "Oled lõpetanud oma tegevused. Võid selle akna nüüd sulgeda.",
-    "authentication_loading": "Autentimine, palun oodake.",
+    "all_activities_completed_title": "Sa oled kõik tehtud!",
+    "all_activities_completed_subtitle": "Võid selle akna nüüd sulgeda.",
+    "expired_title": "Sessioon on aegunud",
+    "expired_subtitle": "Teie sessioon on aegunud inaktiivsuse tõttu.",
     "close_modal": {
       "cancel_button_label": "Jätkan täitmist",
       "confirm_button_label": "Jätan pooleli",

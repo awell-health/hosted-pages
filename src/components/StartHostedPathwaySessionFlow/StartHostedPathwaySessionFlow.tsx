@@ -5,7 +5,6 @@ import useSWR from 'swr'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
-import classes from './StartHostedPathwaySessionFlow.module.css'
 import {
   StartHostedCareflowSessionParams,
   StartHostedCareflowSessionPayload,
@@ -52,16 +51,8 @@ export const StartHostedCareflowSessionFlow: FC<
       category: BreadcrumbCategory.HOSTED_PAGES_LINK_ERROR,
       data: { hostedPagesLinkId, message: data.error },
     })
-    return (
-      <div className={classes.container}>
-        <ErrorPage title={`${t('link_page.loading_error')} ${data.error}`} />
-      </div>
-    )
+    return <ErrorPage title={`${t('link_page.loading_error')} ${data.error}`} />
   }
 
-  return (
-    <div className={classes.container}>
-      <LoadingPage title={t('link_page.loading')} />
-    </div>
-  )
+  return <LoadingPage showLogoBox={true} />
 }

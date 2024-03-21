@@ -21,9 +21,7 @@ export const FinishedMessage: FC<FinishedMessage> = ({
 
   switch (event) {
     case DocuSignEvent.SIGNING_COMPLETE:
-      return (
-        <LoadingPage title={t('activities.docu_sign.finished_sign_document')} />
-      )
+      return <LoadingPage />
     case DocuSignEvent.TTL_EXPIRED:
       return (
         <>

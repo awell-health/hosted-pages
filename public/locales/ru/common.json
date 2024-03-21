@@ -91,8 +91,10 @@
     "title": "Awell деятельность"
   },
   "session": {
-    "all_activities_completed": "Вы совершили все действия. Теперь Вы можете закрыть эту страницу.",
-    "authentication_loading": "Аутентификация. Пожалуйста, подождите.",
+    "all_activities_completed_title": "Ты все сделал!",
+    "all_activities_completed_subtitle": "Теперь Вы можете закрыть эту страницу.",
+    "expired_title": "Сессия истекла",
+    "expired_subtitle": "Ваша сессия истекла из-за бездействия.",
     "close_modal": {
       "cancel_button_label": "Нет, продолжить",
       "confirm_button_label": "Да, закрыть сессию",

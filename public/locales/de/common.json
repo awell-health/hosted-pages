@@ -91,8 +91,10 @@
     "title": "Awell Aktivitäten"
   },
   "session": {
-    "all_activities_completed": "Sie haben alle Ihre Aktivitäten abgeschlossen. Sie können diese Seite jetzt schließen.",
-    "authentication_loading": "Authentifizierung, bitte warten.",
+    "all_activities_completed_title": "Du bist fertig!",
+    "all_activities_completed_subtitle": "Sie können diese Seite jetzt schließen.",
+    "expired_title": "Sitzung abgelaufen",
+    "expired_subtitle": "Ihre Sitzung ist aufgrund von Inaktivität abgelaufen.",
     "close_modal": {
       "cancel_button_label": "Nein, weiter",
       "confirm_button_label": "Ja, Sitzung stornieren",

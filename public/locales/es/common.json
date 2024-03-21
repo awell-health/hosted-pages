@@ -91,8 +91,10 @@
     "title": "Actividades de Awell"
   },
   "session": {
-    "all_activities_completed": "Has completado todas tus actividades. Puede cerrar esta página ahora.",
-    "authentication_loading": "Autenticando, espere.",
+    "all_activities_completed_title": "¡Has terminado todo!",
+    "all_activities_completed_subtitle": "Puede cerrar esta página ahora.",
+    "expired_title": "Sesión expirada",
+    "expired_subtitle": "Tu sesión ha expirado debido a inactividad",
     "close_modal": {
       "cancel_button_label": "No, continúa",
       "confirm_button_label": "Sí, cancela sesión",

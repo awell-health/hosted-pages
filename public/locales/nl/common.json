@@ -91,8 +91,10 @@
     "title": "Awell Activiteiten"
   },
   "session": {
-    "all_activities_completed": "Je hebt alle activiteiten voltooid. Je kan deze pagina nu sluiten.",
-    "authentication_loading": "Authenticeren, even geduld.",
+    "all_activities_completed_title": "Je bent helemaal klaar!",
+    "all_activities_completed_subtitle": "Je kan deze pagina nu sluiten.",
+    "expired_title": "Sessie verlopen",
+    "expired_subtitle": "Uw sessie is verlopen vanwege inactiviteit.",
     "close_modal": {
       "cancel_button_label": "Nee, ga door",
       "confirm_button_label": "Ja, sluit sessie af",

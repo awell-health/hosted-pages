@@ -1,14 +1,15 @@
 .error_page {
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  overflow-y: auto;
 }
 
 .error_icon_container {
+  padding: 32px;
+}
+
+.error_icon_shadow {
   background: var(--awell-secondary-color);
   color: var(--awell-accent-color);
   padding: var(--awell-spacing-4);

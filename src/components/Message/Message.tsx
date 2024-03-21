@@ -17,7 +17,7 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
   const { loading, message, error, onRead, refetch } = useMessage(activity)
 
   if (loading) {
-    return <LoadingPage title={t('activities.message.loading')} />
+    return <LoadingPage />
   }
 
   if (error || !message) {
