@@ -16,16 +16,13 @@ import { updateQuery } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
 import { Maybe } from '../../types'
-import {
-  CustomThemeApiField,
-  CustomThemeFieldsType,
-} from './branding/validation.zod'
+import { type CustomTheme, getTheme } from './branding'
 
 interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
   branding?: Maybe<BrandingSettings>
-  theme: CustomThemeFieldsType
+  theme: CustomTheme
   error?: string
   refetch?: () => {}
 }
@@ -33,7 +30,7 @@ interface UseHostedSessionHook {
 const POLLING_DELAY_MS = 2000
 
 export const useHostedSession = (): UseHostedSessionHook => {
-  const defaultTheme = CustomThemeApiField.parse(JSON.stringify({}))
+  const defaultTheme = getTheme()
   const { data, loading, error, refetch } = useGetHostedSessionQuery({
     pollInterval: POLLING_DELAY_MS,
     onError: (error) => {
@@ -133,9 +130,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
     loading: false,
     session: data?.hostedSession?.session,
     branding: data?.hostedSession?.branding,
-    theme: CustomThemeApiField.parse(
-      data?.hostedSession?.branding?.custom_theme ?? JSON.stringify({})
-    ),
+    theme: getTheme(data?.hostedSession?.branding?.custom_theme),
     refetch,
   }
 }
