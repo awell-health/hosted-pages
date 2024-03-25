@@ -1,5 +1,5 @@
-import React, { FC, useCallback, useMemo } from 'react'
-import { CalDotComScheduling } from '@awell-health/ui-library'
+import React, { FC, useCallback, useEffect, useMemo } from 'react'
+import { CalDotComScheduling, useTheme } from '@awell-health/ui-library'
 import { mapActionFieldsToObject } from '../utils'
 import { useCompleteBookAppointment } from './useCompleteBookAppointment'
 
@@ -13,6 +13,7 @@ interface BookAppointmentActionProps {
 export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   activityDetails,
 }) => {
+  const { updateLayoutMode, resetLayoutMode } = useTheme()
   const { activity_id, fields, pathway_id } = activityDetails
   const { onSubmit } = useCompleteBookAppointment()
 
@@ -27,6 +28,15 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
     },
     [activity_id, onSubmit]
   )
+
+  useEffect(() => {
+    updateLayoutMode('flexible')
+
+    return () => {
+      // Reset to default mode on unmount
+      resetLayoutMode()
+    }
+  }, [])
 
   return (
     <CalDotComScheduling
