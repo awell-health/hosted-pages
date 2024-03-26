@@ -50,7 +50,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   }, [currentActivity])
 
   if (loading) {
-    return <LoadingPage title={t('activities.loading')} />
+    return <LoadingPage />
   }
 
   if (error) {

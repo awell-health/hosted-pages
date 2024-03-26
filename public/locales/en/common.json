@@ -14,7 +14,6 @@
       "open_video_attachment": "Open video",
       "open_link_attachment": "Open link",
       "download_file_attachment": "Download",
-      "loading": "Loading message...",
       "loading_error": "Something went wrong while loading the message.",
       "toast_mark_as_read_error": "Error while marking message as read."
     },
@@ -22,7 +21,6 @@
       "cta_start_form": "Start form",
       "cta_submit": "Submit",
       "loading_error": "Something went wrong while loading the form.",
-      "loading": "Loading form...",
       "next_question_label": "Next",
       "previous_question_label": "Prev",
       "question_required_error": "This question is required.",
@@ -30,7 +28,6 @@
       "invalid_phone_number": "Phone number is invalid.",
       "form_has_errors": "Please fix the errors in the form before submitting",
       "saving_error": "Form submission failed.",
-      "submitting": "Submitting form...",
       "questions": {
         "yes_no": {
           "yes_answer": "Yes",
@@ -49,7 +46,6 @@
     },
     "checklist": {
       "cta_submit": "Submit",
-      "loading": "Loading checklist...",
       "loading_error": "Something went wrong while loading the checklist.",
       "saving_error": "Checklist submission failed."
     },
@@ -72,8 +68,6 @@
     },
     "docu_sign": {
       "cta_sign_document": "Sign document",
-      "loading_sign_document": "Loading the document",
-      "finished_sign_document": "Wrapping up",
       "expired_sign_document": "Signing link has expired.",
       "failed_sign_document": "Signing link has failed."
     }
@@ -82,24 +76,23 @@
     "cta": "Try it out"
   },
   "seo": {
-    "loading_title": "Loading",
     "title": "Awell Activities",
     "description": "Complete activities in your care flow with Awell hosted pages."
   },
   "link_page": {
-    "loading": "Hang on, we are starting your session.",
     "loading_error": "Oops, we could not start a session for you.",
     "try_again": "Try again"
   },
   "session": {
-    "authentication_loading": "Authenticating, please wait.",
     "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
     "loading_error": "Something went wrong while loading your session.",
     "loading": "Loading session...",
     "redirecting_to_next_page": "Redirecting you in a moment...",
-    "all_activities_completed": "You have completed all your activities. You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "expired_title": "Session expired",
+    "expired_subtitle": "Your session has expired due to inactivity.",
     "session_canceled": "Your session has been cancelled.",
-    "session_expired": "Your session has expired after 1 hour of inactivity.",
     "try_again": "Try again",
     "close_modal": {
       "title": "Are you sure you want to cancel your session?",

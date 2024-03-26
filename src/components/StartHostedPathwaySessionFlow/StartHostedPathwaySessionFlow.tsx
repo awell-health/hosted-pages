@@ -1,11 +1,9 @@
 import { isNil } from 'lodash'
-import { useRouter } from 'next/router'
 import { FC, useEffect } from 'react'
 import useSWR from 'swr'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
-import classes from './StartHostedPathwaySessionFlow.module.css'
 import {
   StartHostedCareflowSessionParams,
   StartHostedCareflowSessionPayload,
@@ -20,17 +18,13 @@ type StartHostedCareflowSessionFlowProps = StartHostedCareflowSessionParams
 export const StartHostedCareflowSessionFlow: FC<
   StartHostedCareflowSessionFlowProps
 > = ({ hostedPagesLinkId, patient_identifier }): JSX.Element => {
-  const router = useRouter()
   const { t } = useTranslation()
-
-  const { data } = useSWR<StartHostedCareflowSessionPayload>(
-    `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}${
-      isNil(patient_identifier)
-        ? ''
-        : `?patient_identifier=${patient_identifier}`
-    }`,
-    fetcher
-  )
+  const startSessionUrl = `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}`
+  const queryParams = isNil(patient_identifier)
+    ? ''
+    : `?patient_identifier=${patient_identifier}`
+  const key = `${startSessionUrl}${queryParams}`
+  const { data } = useSWR<StartHostedCareflowSessionPayload>(key, fetcher)
 
   useEffect(() => {
     if (!isNil(data) && !isNil(data?.sessionUrl)) {
@@ -45,23 +39,15 @@ export const StartHostedCareflowSessionFlow: FC<
       const { sessionUrl } = data
       window.location.href = sessionUrl
     }
-  }, [data, router])
+  }, [data])
 
   if (data?.error) {
     addSentryBreadcrumb({
       category: BreadcrumbCategory.HOSTED_PAGES_LINK_ERROR,
       data: { hostedPagesLinkId, message: data.error },
     })
-    return (
-      <div className={classes.container}>
-        <ErrorPage title={`${t('link_page.loading_error')} ${data.error}`} />
-      </div>
-    )
+    return <ErrorPage title={`${t('link_page.loading_error')} ${data.error}`} />
   }
 
-  return (
-    <div className={classes.container}>
-      <LoadingPage title={t('link_page.loading')} />
-    </div>
-  )
+  return <LoadingPage showLogoBox={true} />
 }
