@@ -20,6 +20,15 @@ type Data =
       error: any
     }
 
+const decodePatientIdentifier = (
+  patientIdentifier: string
+): { system: string; value: string } => {
+  const decodedPatientIdentifier = decodeURIComponent(patientIdentifier)
+  const system = decodedPatientIdentifier.split('|')[0]
+  const value = decodedPatientIdentifier.split('|')[1]
+  return { system, value }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -39,14 +48,14 @@ export default async function handler(
     }
   )
 
-  const getPatientIdentifier = (
-    patientIdentifier: string
-  ): { system: string; value: string } => {
-    const decodedPatientIdentifier = decodeURIComponent(patientIdentifier)
-    const system = decodedPatientIdentifier.split('|')[0]
-    const value = decodedPatientIdentifier.split('|')[1]
-    return { system, value }
-  }
+  const hasPatientIdentifier =
+    !isNil(patient_identifier) && patient_identifier !== 'undefined'
+  const input = hasPatientIdentifier
+    ? {
+        id: hostedPagesLinkId,
+        patient_identifier: decodePatientIdentifier(patient_identifier),
+      }
+    : { id: hostedPagesLinkId }
 
   const response = await fetch(environment.orchestrationApiUrl, {
     method: 'POST',
@@ -62,16 +71,7 @@ export default async function handler(
             }
           }
         `,
-      variables: {
-        input: {
-          id: hostedPagesLinkId,
-          ...(isNil(patient_identifier) || patient_identifier === 'undefined'
-            ? {}
-            : {
-                patient_identifier: getPatientIdentifier(patient_identifier),
-              }),
-        },
-      },
+      variables: { input },
     }),
   })
   const { data, errors } = await response.json()
