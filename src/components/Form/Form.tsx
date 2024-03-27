@@ -125,6 +125,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
     dateCannotBeInTheFuture: t('activities.form.date_cannot_be_in_the_future'),
     dateCannotBeInThePast: t('activities.form.date_cannot_be_in_the_past'),
     dateCannotBeToday: t('activities.form.date_cannot_be_today'),
+    notANumber: t('activities.form.not_a_number'),
+    numberOutOfRange: t('activities.form.number_out_of_range'),
   }
 
   const renderTraditionalForm =

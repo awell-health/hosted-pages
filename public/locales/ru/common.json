@@ -53,7 +53,12 @@
         }
       },
       "saving_error": "Не удалось подать форму.",
-      "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ."
+      "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ.",
+      "date_cannot_be_in_the_future": "Date cannot be in the future.",
+      "date_cannot_be_in_the_past": "Date cannot be in the past.",
+      "date_cannot_be_today": "Date cannot be today.",
+      "not_a_number": "Please enter a number.",
+      "number_out_of_range": "Number is out of range."
     },
     "loading": "Действие загружается...",
     "loading_error": "Во время загрузки действия что-то пошло не так.",

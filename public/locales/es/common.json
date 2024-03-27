@@ -53,7 +53,13 @@
         }
       },
       "saving_error": "No se pudo enviar el formulario.",
-      "slider_not_touched_error": "Mueva el control deslizante para indicar su respuesta."
+      "slider_not_touched_error": "Mueva el control deslizante para indicar su respuesta.",
+
+      "date_cannot_be_in_the_future": "La fecha no puede ser en el futuro.",
+      "date_cannot_be_in_the_past": "La fecha no puede ser en el pasado.",
+      "date_cannot_be_today": "La fecha no puede ser hoy.",
+      "not_a_number": "Por favor, ingrese un número.",
+      "number_out_of_range": "El número está fuera del rango."
     },
     "loading": "Cargando actividad...",
     "loading_error": "Se ha producido un error al cargar tus actividades.",

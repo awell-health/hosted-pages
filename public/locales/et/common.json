@@ -53,7 +53,12 @@
         }
       },
       "saving_error": "Vormi esitamine ebaõnnestus.",
-      "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit."
+      "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit.",
+      "date_cannot_be_in_the_future": "Date cannot be in the future.",
+      "date_cannot_be_in_the_past": "Date cannot be in the past.",
+      "date_cannot_be_today": "Date cannot be today.",
+      "not_a_number": "Please enter a number.",
+      "number_out_of_range": "Number is out of range."
     },
     "loading": "Tegevuse laadimine...",
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",

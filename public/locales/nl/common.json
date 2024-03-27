@@ -53,7 +53,12 @@
         }
       },
       "saving_error": "Vragenlijst kon niet verzonden worden.",
-      "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden."
+      "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden.",
+      "date_cannot_be_in_the_future": "Date cannot be in the future.",
+      "date_cannot_be_in_the_past": "Date cannot be in the past.",
+      "date_cannot_be_today": "Date cannot be today.",
+      "not_a_number": "Please enter a number.",
+      "number_out_of_range": "Number is out of range."
     },
     "loading": "Activiteit laden...",
     "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
