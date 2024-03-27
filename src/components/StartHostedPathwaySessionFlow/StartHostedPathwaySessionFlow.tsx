@@ -1,5 +1,4 @@
 import { isNil } from 'lodash'
-import { useRouter } from 'next/router'
 import { FC, useEffect } from 'react'
 import useSWR from 'swr'
 import { ErrorPage } from '../ErrorPage'
@@ -19,17 +18,13 @@ type StartHostedCareflowSessionFlowProps = StartHostedCareflowSessionParams
 export const StartHostedCareflowSessionFlow: FC<
   StartHostedCareflowSessionFlowProps
 > = ({ hostedPagesLinkId, patient_identifier }): JSX.Element => {
-  const router = useRouter()
   const { t } = useTranslation()
-
-  const { data } = useSWR<StartHostedCareflowSessionPayload>(
-    `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}${
-      isNil(patient_identifier)
-        ? ''
-        : `?patient_identifier=${patient_identifier}`
-    }`,
-    fetcher
-  )
+  const startSessionUrl = `/api/startHostedPathwaySessionFromLink/${hostedPagesLinkId}`
+  const queryParams = isNil(patient_identifier)
+    ? ''
+    : `?patient_identifier=${patient_identifier}`
+  const key = `${startSessionUrl}${queryParams}`
+  const { data } = useSWR<StartHostedCareflowSessionPayload>(key, fetcher)
 
   useEffect(() => {
     if (!isNil(data) && !isNil(data?.sessionUrl)) {
@@ -44,7 +39,7 @@ export const StartHostedCareflowSessionFlow: FC<
       const { sessionUrl } = data
       window.location.href = sessionUrl
     }
-  }, [data, router])
+  }, [data])
 
   if (data?.error) {
     addSentryBreadcrumb({

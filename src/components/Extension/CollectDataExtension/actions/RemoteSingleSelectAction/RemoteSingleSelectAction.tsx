@@ -44,7 +44,6 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'yes',
           ...JSON.parse(headers),
         },
       })
