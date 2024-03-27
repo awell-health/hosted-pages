@@ -3,6 +3,7 @@
     "activity_not_supported": "Le type d'activité n'est pas pris en charge.",
     "checklist": {
       "cta_submit": "Soumettre",
+      "loading": "Chargement de la liste de contrôle",
       "loading_error": "Quelque chose s'est mal passé lors du chargement de la liste de contrôle.",
       "saving_error": "Échec de la soumission de la liste de contrôle."
     },
@@ -27,22 +28,31 @@
     "docu_sign": {
       "cta_sign_document": "Signer le document",
       "expired_sign_document": "Le lien de signature a expiré.",
-      "failed_sign_document": "Échec du lien de signature."
+      "failed_sign_document": "Échec du lien de signature.",
+      "finished_sign_document": "Finalisation",
+      "loading_sign_document": "Chargement du document"
     },
     "form": {
       "cta_start_form": "Démarrer le formulaire",
       "cta_submit": "Soumettre",
+      "date_cannot_be_in_the_future": "La date ne peut pas être dans le futur.",
+      "date_cannot_be_in_the_past": "La date ne peut pas être dans le passé.",
+      "date_cannot_be_today": "La date ne peut pas être aujourd'hui.",
       "form_has_errors": "Veuillez corriger les erreurs dans le formulaire avant de soumettre",
       "invalid_phone_number": "Numéro de téléphone invalide.",
+      "loading": "Chargement du formulaire...",
       "loading_error": "Quelque chose s'est mal passé lors du chargement du formulaire.",
       "next_question_label": "Suivant",
+      "not_a_number": "Veuillez saisir un chiffre.",
+      "number_out_of_range": "Le nombre est hors limites.",
       "previous_question_label": "Précédent",
       "question_required_error": "Cette question est obligatoire.",
       "questions": {
         "select": {
+          "loading": "Loading...",
           "no_options": "Aucune option trouvée",
           "search_placeholder": "Rechercher une option",
-          "type_to_search": "Start typing to search"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -53,18 +63,14 @@
         }
       },
       "saving_error": "Échec de la soumission du formulaire.",
-      "slider_not_touched_error": "Veuillez déplacer le curseur pour indiquer votre réponse.",
-      "date_cannot_be_in_the_future": "Date cannot be in the future.",
-      "date_cannot_be_in_the_past": "Date cannot be in the past.",
-      "date_cannot_be_today": "Date cannot be today.",
-      "not_a_number": "Please enter a number.",
-      "number_out_of_range": "Number is out of range."
+      "slider_not_touched_error": "Veuillez déplacer le curseur pour indiquer votre réponse."
     },
     "loading": "Chargement de l'activité...",
     "loading_error": "Quelque chose s'est mal passé lors du chargement des activités.",
     "message": {
       "cta_mark_as_read": "Terminé",
       "download_file_attachment": "Télécharger",
+      "loading": "Chargement du message...",
       "loading_error": "Quelque chose s'est mal passé lors du chargement du message.",
       "open_link_attachment": "Ouvrir le lien",
       "open_video_attachment": "Ouvrir la vidéo",
@@ -77,6 +83,7 @@
     "app_error": "Oups, quelque chose s'est mal passé. Veuillez réessayer."
   },
   "link_page": {
+    "loading": "Attendez, nous lançons votre session.",
     "loading_error": "Oups, nous n'avons pas pu démarrer une session pour vous.",
     "try_again": "Réessayer"
   },
@@ -85,24 +92,28 @@
   },
   "seo": {
     "description": "Complétez des activités dans votre itinéraire clinique avec des pages hébergées par Awell.",
+    "loading_title": "Chargement...",
     "title": "Awell Activités"
   },
   "session": {
-    "all_activities_completed_title": "Tu as tout terminé!",
-    "all_activities_completed_subtitle": "Vous pouvez maintenant fermer cette page.",
-    "expired_title": "Session expirée",
-    "expired_subtitle": "Votre session a expiré en raison d'une inactivité",
+    "all_activities_completed": "Vous avez terminé toutes vos activités. Vous pouvez maintenant fermer cette page.",
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "Vous avez terminé !",
+    "authentication_loading": "Authentification en cours, veuillez patienter.",
     "close_modal": {
       "cancel_button_label": "Non",
       "confirm_button_label": "Oui, annuler la session",
       "description": "Il vous reste encore quelques activités à compléter. Si vous annulez votre session, vous risquez de perdre les données que vous n'avez pas encore soumises.",
       "title": "Êtes-vous sûr de vouloir annuler votre session ?"
     },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
     "invalid_url": "URL invalide : l'URL doit contenir le paramètre `sessionId`.",
     "loading": "Chargement de la session...",
     "loading_error": "Quelque chose s'est mal passé lors du chargement de la session.",
     "redirecting_to_next_page": "Redirection dans un instant.",
     "session_canceled": "Votre session a été annulée.",
+    "session_expired": "Votre session a expiré après 1 heure d'inactivité.",
     "try_again": "Réessayer"
   }
 }

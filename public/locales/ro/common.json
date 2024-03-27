@@ -3,6 +3,7 @@
     "activity_not_supported": "Tipul de activitate nu este suportat.",
     "checklist": {
       "cta_submit": "Trimiteți",
+      "loading": "Se încarcă lista de verificare...",
       "loading_error": "Ceva nu a mers bine în timpul încărcării listei de verificare.",
       "saving_error": "Trimiterea listei de verificare a eșuat."
     },
@@ -27,22 +28,31 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "failed_sign_document": "Signing link has failed.",
+      "finished_sign_document": "Wrapping up",
+      "loading_sign_document": "Loading the document"
     },
     "form": {
       "cta_start_form": "Începeți formularul",
       "cta_submit": "Trimiteți",
+      "date_cannot_be_in_the_future": "Data nu poate fi în viitor.",
+      "date_cannot_be_in_the_past": "Data nu poate fi în trecut.",
+      "date_cannot_be_today": "Data nu poate fi astăzi.",
       "form_has_errors": "Vă rugăm să corectați erorile din formular înainte de a trimite",
       "invalid_phone_number": "Numărul de telefon este invalid.",
+      "loading": "Se încarcă formularul...",
       "loading_error": "Ceva nu a mers bine în timpul încărcării formularului.",
       "next_question_label": "Mai departe",
+      "not_a_number": "Vă rugăm să introduceți un număr.",
+      "number_out_of_range": "Numărul este în afara razei de acțiune.",
       "previous_question_label": "Înapoi",
       "question_required_error": "Această întrebare este obligatorie.",
       "questions": {
         "select": {
+          "loading": "Loading...",
           "no_options": "Nu s-au găsit opțiuni",
           "search_placeholder": "Căutați o opțiune",
-          "type_to_search": "Start typing to search"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -53,18 +63,14 @@
         }
       },
       "saving_error": "Trimiterea formularului a eșuat.",
-      "slider_not_touched_error": "Vă rugam să mutați cursorul pentru a indica răspunsul dumneavoastră.",
-      "date_cannot_be_in_the_future": "Date cannot be in the future.",
-      "date_cannot_be_in_the_past": "Date cannot be in the past.",
-      "date_cannot_be_today": "Date cannot be today.",
-      "not_a_number": "Please enter a number.",
-      "number_out_of_range": "Number is out of range."
+      "slider_not_touched_error": "Vă rugam să mutați cursorul pentru a indica răspunsul dumneavoastră."
     },
     "loading": "Se încarcă activitatea...",
     "loading_error": "Ceva nu a mers bine în timp ce încărcam activitățile tale.",
     "message": {
       "cta_mark_as_read": "Terminat",
       "download_file_attachment": "Descărcați",
+      "loading": "Se încarcă mesajul...",
       "loading_error": "Ceva nu a mers bine în timpul încărcării mesajului.",
       "open_link_attachment": "Deschideți link",
       "open_video_attachment": "Deschideți videoclipul",
@@ -77,6 +83,7 @@
     "app_error": "Oops, ceva nu a mers bine. Te rog să încerci din nou."
   },
   "link_page": {
+    "loading": "Așteptați puțin, începem sesiunea dvs.",
     "loading_error": "Oops, nu am putut porni o sesiune pentru dumneavoastră.",
     "try_again": "Încercați din nou"
   },
@@ -85,24 +92,28 @@
   },
   "seo": {
     "description": "Finalizați activitățile din fluxul dvs. de îngrijire cu paginile găzduite Awell.",
+    "loading_title": "Se încarcă",
     "title": "Activități Awell"
   },
   "session": {
-    "all_activities_completed_title": "Ai terminat totul!",
-    "all_activities_completed_subtitle": "Poți închide această pagină.",
-    "expired_title": "Sesiune expirată",
-    "expired_subtitle": "Sesiunea dvs. a expirat din cauza inactivității.",
+    "all_activities_completed": "Ai finalizat toate activitățile. Poți închide această pagină.",
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
+    "authentication_loading": "În curs de autentificare, vă rugăm să așteptați.",
     "close_modal": {
       "cancel_button_label": "Nu, continuă",
       "confirm_button_label": "Da, anulează sesiunea.",
       "description": "Mai sunt câteva activități pe care trebuie să le finalizezi. Dacă anulezi sesiunea, s-ar putea să pierzi date pe care nu le-ai trimis încă.",
       "title": "Ești sigur că vrei să anulezi sesiunea ta?"
     },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
     "invalid_url": "URL invalid: URL-ul trebuie să conțină parametrul `sessionId`.",
     "loading": "Se incarca sesiunea...",
     "loading_error": "A apărut o problemă in timpul încărcării sesiunii tale.",
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "session_canceled": "Sesiunea ta a fost anulata.",
+    "session_expired": "Sesiunea ta a expirat după o oră de inactivitate.",
     "try_again": "Încercați din nou"
   }
 }

@@ -3,6 +3,7 @@
     "activity_not_supported": "No se admite el tipo de actividad.",
     "checklist": {
       "cta_submit": "Enviar",
+      "loading": "Cargando lista de verificación...",
       "loading_error": "Se ha producido un error al cargar la lista de verificación.",
       "saving_error": "No se pudo enviar la lista de verificación."
     },
@@ -27,22 +28,31 @@
     "docu_sign": {
       "cta_sign_document": "Firmar documento",
       "expired_sign_document": "El enlace de firma ha caducado.",
-      "failed_sign_document": "No se pudo firmar el enlace."
+      "failed_sign_document": "No se pudo firmar el enlace.",
+      "finished_sign_document": "A punto de completar…",
+      "loading_sign_document": "Cargando documento..."
     },
     "form": {
       "cta_start_form": "Formulario de inicio",
       "cta_submit": "Enviar",
+      "date_cannot_be_in_the_future": "La fecha no puede estar en el futuro.",
+      "date_cannot_be_in_the_past": "La fecha no puede estar en el pasado.",
+      "date_cannot_be_today": "La fecha no puede ser hoy.",
       "form_has_errors": "Corrija los errores del formulario antes de enviarlo",
       "invalid_phone_number": "El número de teléfono no es válido.",
+      "loading": "Cargando Formulario",
       "loading_error": "Se ha producido un error al cargar el formulario.",
       "next_question_label": "Siguiente",
+      "not_a_number": "Ingresa un número.",
+      "number_out_of_range": "El número está fuera de rango.",
       "previous_question_label": "Anterior",
       "question_required_error": "Esta pregunta es obligatoria.",
       "questions": {
         "select": {
-          "no_options": "No se encontraron opciones",
+          "loading": "Cargando…",
+          "no_options": "No se encontraron coincidencias",
           "search_placeholder": "Busca una opción",
-          "type_to_search": "Empezar a escribir para buscar"
+          "type_to_search": "Escriba para buscar"
         },
         "slider": {
           "tooltip_guide": "Toca para indicar tu respuesta"
@@ -53,19 +63,14 @@
         }
       },
       "saving_error": "No se pudo enviar el formulario.",
-      "slider_not_touched_error": "Mueva el control deslizante para indicar su respuesta.",
-
-      "date_cannot_be_in_the_future": "La fecha no puede ser en el futuro.",
-      "date_cannot_be_in_the_past": "La fecha no puede ser en el pasado.",
-      "date_cannot_be_today": "La fecha no puede ser hoy.",
-      "not_a_number": "Por favor, ingrese un número.",
-      "number_out_of_range": "El número está fuera del rango."
+      "slider_not_touched_error": "Mueva el control deslizante para indicar su respuesta."
     },
     "loading": "Cargando actividad...",
     "loading_error": "Se ha producido un error al cargar tus actividades.",
     "message": {
       "cta_mark_as_read": "Listo",
       "download_file_attachment": "Descargar",
+      "loading": "Cargando mensaje...",
       "loading_error": "Se ha producido un error al cargar el mensaje.",
       "open_link_attachment": "Abrir enlace",
       "open_video_attachment": "Abrir vídeo",
@@ -78,6 +83,7 @@
     "app_error": "¡Uy! Algo salió mal. Vuelve a intentarlo."
   },
   "link_page": {
+    "loading": "Espera, estamos empezando tu sesión.",
     "loading_error": "Vaya, no hemos podido iniciar una sesión por ti.",
     "try_again": "Intentar de nuevo"
   },
@@ -86,24 +92,28 @@
   },
   "seo": {
     "description": "Complete las actividades de su flujo de atención con las páginas alojadas en Awell.",
+    "loading_title": "Cargando…",
     "title": "Actividades de Awell"
   },
   "session": {
-    "all_activities_completed_title": "¡Has terminado todo!",
-    "all_activities_completed_subtitle": "Puede cerrar esta página ahora.",
-    "expired_title": "Sesión expirada",
-    "expired_subtitle": "Tu sesión ha expirado debido a inactividad",
+    "all_activities_completed": "Has completado todas tus actividades. Puede cerrar esta página ahora.",
+    "all_activities_completed_subtitle": "Puedes cerrar esta página ahora.",
+    "all_activities_completed_title": "¡Ya terminaste!",
+    "authentication_loading": "Autenticando, espere.",
     "close_modal": {
       "cancel_button_label": "No, continúa",
       "confirm_button_label": "Sí, cancela sesión",
       "description": "Aún quedan algunas actividades por completar. Si cancelas la sesión, es posible que pierdas los datos que aún no has enviado.",
       "title": "¿Está seguro de que desea cancelar la sesión?"
     },
+    "expired_subtitle": "Su sesión ha caducado por inactividad.",
+    "expired_title": "La sesión ha caducado",
     "invalid_url": "URL no válida: la URL debe contener el parámetro `SessionId`.",
     "loading": "Cargando sesión...",
     "loading_error": "Se ha producido un error al cargar la sesión.",
     "redirecting_to_next_page": "Te redirigiré en un momento...",
     "session_canceled": "Se ha cancelado tu sesión.",
+    "session_expired": "Su sesión ha caducado tras 1 hora de inactividad.",
     "try_again": "Intentar de nuevo"
   }
 }
