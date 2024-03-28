@@ -3,6 +3,7 @@
     "activity_not_supported": "Тип действия не поддерживается.",
     "checklist": {
       "cta_submit": "Подать",
+      "loading": "Чек-лист загружается...",
       "loading_error": "Во время загрузки чек-листа что-то пошло не так.",
       "saving_error": "Не удалось подать чек-лист."
     },
@@ -27,22 +28,31 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "failed_sign_document": "Signing link has failed.",
+      "finished_sign_document": "Wrapping up",
+      "loading_sign_document": "Loading the document"
     },
     "form": {
       "cta_start_form": "Начать заполнение формы",
       "cta_submit": "Подать",
+      "date_cannot_be_in_the_future": "Дата не может быть в будущем.",
+      "date_cannot_be_in_the_past": "Дата не может быть в прошлом.",
+      "date_cannot_be_today": "Дата не может быть сегодняшней.",
       "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
       "invalid_phone_number": "Номер телефона недействительный.",
+      "loading": "Форма загружается...",
       "loading_error": "Во время загрузки формы что-то пошло не так.",
       "next_question_label": "Следующий",
+      "not_a_number": "Введите номер.",
+      "number_out_of_range": "Номер выходит за пределы допустимого диапазона.",
       "previous_question_label": "Предыдущий",
       "question_required_error": "Ответ на этот вопрос обязателен.",
       "questions": {
         "select": {
+          "loading": "Loading...",
           "no_options": "Опции не найдены",
           "search_placeholder": "Поиск опции",
-          "type_to_search": "Start typing to search"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -60,6 +70,7 @@
     "message": {
       "cta_mark_as_read": "Готово",
       "download_file_attachment": "Загрузить",
+      "loading": "Сообщение загружается...",
       "loading_error": "Во время загрузки сообщения что-то пошло не так.",
       "open_link_attachment": "Открыть ссылку",
       "open_video_attachment": "Открыть видео",
@@ -72,6 +83,7 @@
     "app_error": "Упс, что-то пошло не так, попробуйте еще раз."
   },
   "link_page": {
+    "loading": "Подождите немного, мы начинаем Вашу сессию.",
     "loading_error": "Упс, мы не можем начать сессию для Вас.",
     "try_again": "Попробуйте снова"
   },
@@ -80,24 +92,28 @@
   },
   "seo": {
     "description": "Выполните действия в потоках ухода Awell",
+    "loading_title": "Загружается",
     "title": "Awell деятельность"
   },
   "session": {
-    "all_activities_completed_title": "Ты все сделал!",
-    "all_activities_completed_subtitle": "Теперь Вы можете закрыть эту страницу.",
-    "expired_title": "Сессия истекла",
-    "expired_subtitle": "Ваша сессия истекла из-за бездействия.",
+    "all_activities_completed": "Вы совершили все действия. Теперь Вы можете закрыть эту страницу.",
+    "all_activities_completed_subtitle": "Теперь вы можете закрыть эту страницу.",
+    "all_activities_completed_title": "Все готово!",
+    "authentication_loading": "Аутентификация. Пожалуйста, подождите.",
     "close_modal": {
       "cancel_button_label": "Нет, продолжить",
       "confirm_button_label": "Да, закрыть сессию",
       "description": "Некоторые действия остались незавершенными. Если Вы закроете сессию, Вы можете потерять данные, которые Вы ещё не подали.",
       "title": "Вы уверены, что хотите закрыть сессию?"
     },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Срок действия сеанса истек",
     "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId”.",
     "loading": "Загрузка сессии...",
     "loading_error": "Что-то пошло не так при загрузке сессии.",
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "session_canceled": "Ваша сессия истекла.",
+    "session_expired": "Ваша сессия истекла.",
     "try_again": "Попробуйте снова"
   }
 }
