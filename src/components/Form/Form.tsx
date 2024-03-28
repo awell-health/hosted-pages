@@ -16,8 +16,9 @@ import { addSentryBreadcrumb, masker } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
 import useLocalStorage from 'use-local-storage'
 import { useHostedSession } from '../../hooks/useHostedSession'
-import { isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { Option } from '../../types/generated/types-orchestration'
+import { ErrorLabels } from '@awell-health/ui-library/dist/types/hooks/useForm/types'
 
 interface FormProps {
   activity: Activity
@@ -28,12 +29,12 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { t } = useTranslation()
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit, isSubmitting } = useSubmitForm(activity)
-  const { branding } = useHostedSession()
+  const { branding, theme } = useHostedSession()
 
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
   if (isFetching) {
-    return <LoadingPage title={t('activities.form.loading')} />
+    return <LoadingPage />
   }
   if (error || isNil(form)) {
     return (
@@ -41,7 +42,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     )
   }
   if (isSubmitting) {
-    return <LoadingPage title={t('activities.form.submitting')} />
+    return <LoadingPage />
   }
 
   const modifiedQuestions = form?.questions.map((question) => {
@@ -110,15 +111,22 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const button_labels = {
     prev: t('activities.form.previous_question_label'),
     next: t('activities.form.next_question_label'),
-    submit: t('activities.form.cta_submit'),
+    submit: isEmpty(theme.locales.form.cta_submit)
+      ? t('activities.form.cta_submit')
+      : theme.locales.form.cta_submit,
     start_form: t('activities.form.cta_start_form'),
   }
 
-  const error_labels = {
+  const error_labels: ErrorLabels = {
     required: t('activities.form.question_required_error'),
     sliderNotTouched: t('activities.form.slider_not_touched_error'),
     invalidPhoneNumber: t('activities.form.invalid_phone_number'),
     formHasErrors: t('activities.form.form_has_errors'),
+    dateCannotBeInTheFuture: t('activities.form.date_cannot_be_in_the_future'),
+    dateCannotBeInThePast: t('activities.form.date_cannot_be_in_the_past'),
+    dateCannotBeToday: t('activities.form.date_cannot_be_today'),
+    notANumber: t('activities.form.not_a_number'),
+    numberOutOfRange: t('activities.form.number_out_of_range'),
   }
 
   const renderTraditionalForm =

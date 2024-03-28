@@ -25,7 +25,7 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     useExtensionActivity(activity.object.id)
 
   if (loading) {
-    return <LoadingPage title={t('activities.checklist.loading')} />
+    return <LoadingPage />
   }
 
   if (error || !extensionActivityDetails) {

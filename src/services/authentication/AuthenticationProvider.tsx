@@ -79,7 +79,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
         sessionId: router.query.sessionId,
       },
     })
-    return <LoadingPage title={t('session.authentication_loading')} />
+    return <LoadingPage showLogoBox={true} />
   }
 
   return (

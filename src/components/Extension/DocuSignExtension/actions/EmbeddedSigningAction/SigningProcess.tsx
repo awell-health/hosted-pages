@@ -26,11 +26,7 @@ export const SigningProcess: FC<SigningProcess> = ({
   if (isSignProcess) {
     return (
       <>
-        {!isIframeLoaded && (
-          <LoadingPage
-            title={t('activities.docu_sign.loading_sign_document')}
-          />
-        )}
+        {!isIframeLoaded && <LoadingPage />}
         <iframe
           className={
             isIframeLoaded

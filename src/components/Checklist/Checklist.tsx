@@ -18,7 +18,7 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   const { onSubmit, isSubmitting } = useSubmitChecklist(activity)
 
   if (loading) {
-    return <LoadingPage title={t('activities.checklist.loading')} />
+    return <LoadingPage />
   }
 
   if (error) {
