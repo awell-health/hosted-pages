@@ -1,15 +1,14 @@
-.success_page {
+.expired_page {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-.success_icon {
+.expired_icon {
   padding: var(--awell-spacing-9);
 }
-
-.success_text_title {
+.expired_text_title {
   margin-top: var(--awell-spacing-4);
   text-align: center;
   font-size: var(--awell-font-size-2xl);
@@ -19,7 +18,7 @@
   max-width: 320px;
 }
 
-.success_text_subtitle {
+.expired_text_subtitle {
   margin-top: var(--awell-spacing-4);
   text-align: center;
   font-size: var(--awell-font-size-lg);

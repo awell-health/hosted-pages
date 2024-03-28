@@ -30,5 +30,27 @@ fragment Question on Question {
       default_country
       available_countries
     }
+    number {
+      range {
+        min
+        max
+        enabled
+      }
+    }
+    multiple_select {
+      range {
+        min
+        max
+        enabled
+      }
+      exclusive_option {
+        option_id
+        enabled
+      }
+    }
+    date {
+      allowed_dates
+      include_date_of_response
+    }
   }
 }

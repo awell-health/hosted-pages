@@ -35,19 +35,24 @@
     "form": {
       "cta_start_form": "Începeți formularul",
       "cta_submit": "Trimiteți",
+      "date_cannot_be_in_the_future": "Data nu poate fi în viitor.",
+      "date_cannot_be_in_the_past": "Data nu poate fi în trecut.",
+      "date_cannot_be_today": "Data nu poate fi astăzi.",
       "form_has_errors": "Vă rugăm să corectați erorile din formular înainte de a trimite",
       "invalid_phone_number": "Numărul de telefon este invalid.",
       "loading": "Se încarcă formularul...",
       "loading_error": "Ceva nu a mers bine în timpul încărcării formularului.",
       "next_question_label": "Mai departe",
+      "not_a_number": "Vă rugăm să introduceți un număr.",
+      "number_out_of_range": "Numărul este în afara razei de acțiune.",
       "previous_question_label": "Înapoi",
       "question_required_error": "Această întrebare este obligatorie.",
-      "submitting": "Se trimite formularul...",
       "questions": {
         "select": {
+          "loading": "Loading...",
           "no_options": "Nu s-au găsit opțiuni",
           "search_placeholder": "Căutați o opțiune",
-          "type_to_search": "Start typing to search"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -92,6 +97,8 @@
   },
   "session": {
     "all_activities_completed": "Ai finalizat toate activitățile. Poți închide această pagină.",
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
     "authentication_loading": "În curs de autentificare, vă rugăm să așteptați.",
     "close_modal": {
       "cancel_button_label": "Nu, continuă",
@@ -99,6 +106,8 @@
       "description": "Mai sunt câteva activități pe care trebuie să le finalizezi. Dacă anulezi sesiunea, s-ar putea să pierzi date pe care nu le-ai trimis încă.",
       "title": "Ești sigur că vrei să anulezi sesiunea ta?"
     },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
     "invalid_url": "URL invalid: URL-ul trebuie să conțină parametrul `sessionId`.",
     "loading": "Se incarca sesiunea...",
     "loading_error": "A apărut o problemă in timpul încărcării sesiunii tale.",

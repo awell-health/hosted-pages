@@ -6,19 +6,27 @@ import { AWELL_BRAND_COLOR } from '../../src/config'
 import { NoSSRComponent } from '../../src/components/NoSSR'
 import { StartHostedCareflowSessionParams } from '../api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
 import { StartHostedCareflowSessionFlow } from '../../src/components/StartHostedPathwaySessionFlow'
+import { LoadingPage } from '../../src/components'
 
 /**
- * Purpose of this page is to support shortened URLs i.e. 'hosted-pages.awellhealth.com/c/<hostedCareflowLinkId>'
+ * Purpose of this page is to support shortened URLs i.e. 'goto.awell.health/c/<hostedCareflowLinkId>?patient_identifier=system|id'
  */
 const HostedCareflowLink: NextPage = () => {
-  const router = useRouter()
+  const { query, isReady } = useRouter()
 
-  const { hostedPagesLinkId } = router.query as StartHostedCareflowSessionParams
+  const { hostedPagesLinkId, patient_identifier } =
+    query as StartHostedCareflowSessionParams
 
   return (
     <NoSSRComponent>
       <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
-        <StartHostedCareflowSessionFlow hostedPagesLinkId={hostedPagesLinkId} />
+        {isReady && (
+          <StartHostedCareflowSessionFlow
+            hostedPagesLinkId={hostedPagesLinkId}
+            patient_identifier={patient_identifier}
+          />
+        )}
+        {!isReady && <LoadingPage showLogoBox />}
       </ThemeProvider>
     </NoSSRComponent>
   )

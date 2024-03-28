@@ -35,16 +35,21 @@
     "form": {
       "cta_start_form": "Formular starten",
       "cta_submit": "Absenden",
+      "date_cannot_be_in_the_future": "Date cannot be in the future.",
+      "date_cannot_be_in_the_past": "Date cannot be in the past.",
+      "date_cannot_be_today": "Date cannot be today.",
       "form_has_errors": "Bitte korrigieren Sie die Fehler im Formular vor dem Absenden",
       "invalid_phone_number": "Telefonnummer ist ungültig",
       "loading": "Formular wird geladen...",
       "loading_error": "Beim Laden des Formulars ist etwas schief gelaufen.",
       "next_question_label": "Weiter",
+      "not_a_number": "Please enter a number.",
+      "number_out_of_range": "Number is out of range.",
       "previous_question_label": "Vorheriger",
       "question_required_error": "Diese Frage ist erforderlich.",
-      "submitting": "Formular wird abgesendet...",
       "questions": {
         "select": {
+          "loading": "Loading...",
           "no_options": "Keine Optionen gefunden",
           "search_placeholder": "Suche nach einer Option",
           "type_to_search": "Beginnen Sie mit der Eingabe zur Suche"
@@ -92,6 +97,8 @@
   },
   "session": {
     "all_activities_completed": "Sie haben alle Ihre Aktivitäten abgeschlossen. Sie können diese Seite jetzt schließen.",
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
     "authentication_loading": "Authentifizierung, bitte warten.",
     "close_modal": {
       "cancel_button_label": "Nein, weiter",
@@ -99,6 +106,8 @@
       "description": "Es gibt noch einige Aktivitäten, die Sie abschließen müssen. Wenn Sie Ihre Sitzung stornieren, verlieren Sie möglicherweise Daten, die Sie noch nicht übermittelt haben.",
       "title": "Bist du sicher, dass du deine Sitzung stornieren möchtest?"
     },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
     "invalid_url": "Ungültige URL: Die URL muss den Parameter `sessionID` enthalten.",
     "loading": "Sitzung wird geladen...",
     "loading_error": "Beim Laden Ihrer Sitzung ist ein Fehler aufgetreten.",

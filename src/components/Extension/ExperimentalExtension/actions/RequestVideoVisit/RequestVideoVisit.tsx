@@ -33,12 +33,20 @@ export const RequestVideoVisit: FC<RequestVideoVisitProps> = ({
   return (
     <div>
       <div className={classes.container}>
-        <p>Whatever content we want here and full control over UI</p>
-        {!isEmpty(deepLink) && (
-          <a href={deepLink} title="Deep link">
-            Test deep link
-          </a>
-        )}
+        <div>
+          <p>Whatever content we want here and full control over UI</p>
+          <ul>
+            {!isEmpty(deepLink) && (
+              <>
+                <li>
+                  <a href={deepLink || '#'} title="Deep link">
+                    Test deep link
+                  </a>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
       </div>
       <div className={classes.container}>
         <Button onClick={() => onClick(false)}>Continue</Button>
