@@ -3,6 +3,7 @@
     "activity_not_supported": "Dit type activiteit wordt nog niet ondersteunt.",
     "checklist": {
       "cta_submit": "Klaar",
+      "loading": "Checklist laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van de checklist.",
       "saving_error": "Checklist kon niet verzonden worden."
     },
@@ -27,22 +28,31 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "failed_sign_document": "Signing link has failed.",
+      "finished_sign_document": "Wrapping up",
+      "loading_sign_document": "Loading the document"
     },
     "form": {
       "cta_start_form": "Vragenlijst starten",
       "cta_submit": "Verzenden",
+      "date_cannot_be_in_the_future": "De datum kan niet in de toekomst liggen.",
+      "date_cannot_be_in_the_past": "De datum mag niet in het verleden liggen.",
+      "date_cannot_be_today": "De datum kan niet vandaag zijn.",
       "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
       "invalid_phone_number": "Telefoonnummer is ongeldig.",
+      "loading": "Vragenlijst laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
       "next_question_label": "Volgende",
+      "not_a_number": "Voer een nummer in.",
+      "number_out_of_range": "Het nummer is buiten bereik.",
       "previous_question_label": "Vorige",
       "question_required_error": "Deze vraag is verplicht.",
       "questions": {
         "select": {
-          "no_options": "No options found",
+          "loading": "Loading...",
+          "no_options": "No matches found",
           "search_placeholder": "Search for an option",
-          "type_to_search": "Start typing to search"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -60,6 +70,7 @@
     "message": {
       "cta_mark_as_read": "Klaar",
       "download_file_attachment": "Download",
+      "loading": "Bericht laden...",
       "loading_error": "Er is iets misgelopen bij het ophalen van het bericht.",
       "open_link_attachment": "Open link",
       "open_video_attachment": "Open video",
@@ -72,6 +83,7 @@
     "app_error": "Oeps, er is iets misgelopen. Probeer het opnieuw."
   },
   "link_page": {
+    "loading": "Even geduld, we starten voor jouw een sessie.",
     "loading_error": "Oeps, er is iets misgelopen tijdens het laden van jouw sessie.",
     "try_again": "Opnieuw proberen"
   },
@@ -80,24 +92,28 @@
   },
   "seo": {
     "description": "Voltooi activiteiten in uw zorgpad met Awell hosted pages.",
+    "loading_title": "Laden...",
     "title": "Awell Activiteiten"
   },
   "session": {
-    "all_activities_completed_title": "Je bent helemaal klaar!",
-    "all_activities_completed_subtitle": "Je kan deze pagina nu sluiten.",
-    "expired_title": "Sessie verlopen",
-    "expired_subtitle": "Uw sessie is verlopen vanwege inactiviteit.",
+    "all_activities_completed": "Je hebt alle activiteiten voltooid. Je kan deze pagina nu sluiten.",
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
+    "authentication_loading": "Authenticeren, even geduld.",
     "close_modal": {
       "cancel_button_label": "Nee, ga door",
       "confirm_button_label": "Ja, sluit sessie af",
       "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
       "title": "Ben je zeker dat je de sessie wil afsluiten?"
     },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
     "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
     "loading": "Sessie laden...",
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
+    "session_expired": "Je sessie is verlopen na 1 uur inactiviteit.",
     "try_again": "Opnieuw proberen"
   }
 }

@@ -3,6 +3,7 @@
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
     "checklist": {
       "cta_submit": "Esita vastused",
+      "loading": "Laadimine...",
       "loading_error": "Midagi läks nimekirja laadimisel valesti.",
       "saving_error": "Nimekirja esitamine ebaõnnestus."
     },
@@ -26,23 +27,32 @@
     "cta_done": "Valmis",
     "docu_sign": {
       "cta_sign_document": "Sign document",
-      "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "expired_sign_document": "Allkirjastamise link on aegunud.",
+      "failed_sign_document": "Allkirjastamise link ebaõnnestus.",
+      "finished_sign_document": "Wrapping up",
+      "loading_sign_document": "Loading the document"
     },
     "form": {
       "cta_start_form": "Alusta teekonnaga",
       "cta_submit": "Esita vastused",
+      "date_cannot_be_in_the_future": "Kuupäev ei saa olla tulevikus.",
+      "date_cannot_be_in_the_past": "Kuupäev ei saa olla minevikus.",
+      "date_cannot_be_today": "Kuupäev ei saa olla täna.",
       "form_has_errors": "Palun paranda vormis olevad vead enne esitamist.",
       "invalid_phone_number": "Telefoninumber pole õige.",
+      "loading": "Vormi laadimine...",
       "loading_error": "Vormi laadimisel läks midagi valesti.",
       "next_question_label": "Järgmine",
+      "not_a_number": "Palun sisestage number.",
+      "number_out_of_range": "Arv on vahemikust väljas.",
       "previous_question_label": "Eelmine",
       "question_required_error": "See küsimus on kohustuslik.",
       "questions": {
         "select": {
-          "no_options": "Valikuid ei leidnud",
+          "loading": "Laadimine...",
+          "no_options": "Vasteid ei leitud",
           "search_placeholder": "Otsi valikut",
-          "type_to_search": "Start typing to search"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -60,6 +70,7 @@
     "message": {
       "cta_mark_as_read": "Valmis",
       "download_file_attachment": "Lae alla",
+      "loading": "Sõnumi laadimine...",
       "loading_error": "Midagi läks sõnumi laadimisel valesti.",
       "open_link_attachment": "Ava link",
       "open_video_attachment": "Ava video",
@@ -72,6 +83,7 @@
     "app_error": "Oih, midagi läks valesti. Palun proovi uuesti."
   },
   "link_page": {
+    "loading": "Palun oodake, alustame sessiooni.",
     "loading_error": "Oih, meil ei õnnestunud sessiooni alustada.",
     "try_again": "Proovi uuesti"
   },
@@ -80,24 +92,28 @@
   },
   "seo": {
     "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega.",
+    "loading_title": "Laadimine...",
     "title": "Awelli tegevused"
   },
   "session": {
-    "all_activities_completed_title": "Sa oled kõik tehtud!",
-    "all_activities_completed_subtitle": "Võid selle akna nüüd sulgeda.",
-    "expired_title": "Sessioon on aegunud",
-    "expired_subtitle": "Teie sessioon on aegunud inaktiivsuse tõttu.",
+    "all_activities_completed": "Oled lõpetanud oma tegevused. Võid selle akna nüüd sulgeda.",
+    "all_activities_completed_subtitle": "Saate selle lehe nüüd sulgeda.",
+    "all_activities_completed_title": "Olete kõik valmis!",
+    "authentication_loading": "Autentimine, palun oodake.",
     "close_modal": {
       "cancel_button_label": "Jätkan täitmist",
       "confirm_button_label": "Jätan pooleli",
       "description": "Kui täitmise katkestad, siis arstikeskus sinu pöördumist kätte ei saa.",
       "title": "Soovid pöördumise täitmise pooleli jätta?"
     },
+    "expired_subtitle": "Teie seanss on tegevusetuse tõttu aegunud.",
+    "expired_title": "Seanss lõppes",
     "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
     "loading": "Seansi laadimine...",
     "loading_error": "Midagi läks seansi laadimisel valesti.",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "session_canceled": "Teie sessioon on katkestatud.",
+    "session_expired": "Teie sessioon on aegunud pärast 1-tunnist tegevusetust.",
     "try_again": "Proovi uuesti"
   }
 }
