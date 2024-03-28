@@ -35,19 +35,24 @@
     "form": {
       "cta_start_form": "Formulario de inicio",
       "cta_submit": "Enviar",
+      "date_cannot_be_in_the_future": "La fecha no puede estar en el futuro.",
+      "date_cannot_be_in_the_past": "La fecha no puede estar en el pasado.",
+      "date_cannot_be_today": "La fecha no puede ser hoy.",
       "form_has_errors": "Corrija los errores del formulario antes de enviarlo",
       "invalid_phone_number": "El número de teléfono no es válido.",
       "loading": "Cargando Formulario",
       "loading_error": "Se ha producido un error al cargar el formulario.",
       "next_question_label": "Siguiente",
+      "not_a_number": "Ingresa un número.",
+      "number_out_of_range": "El número está fuera de rango.",
       "previous_question_label": "Anterior",
       "question_required_error": "Esta pregunta es obligatoria.",
-      "submitting": "Enviando formulario...",
       "questions": {
         "select": {
-          "no_options": "No se encontraron opciones",
+          "loading": "Cargando…",
+          "no_options": "No se encontraron coincidencias",
           "search_placeholder": "Busca una opción",
-          "type_to_search": "Empezar a escribir para buscar"
+          "type_to_search": "Escriba para buscar"
         },
         "slider": {
           "tooltip_guide": "Toca para indicar tu respuesta"
@@ -92,6 +97,8 @@
   },
   "session": {
     "all_activities_completed": "Has completado todas tus actividades. Puede cerrar esta página ahora.",
+    "all_activities_completed_subtitle": "Puedes cerrar esta página ahora.",
+    "all_activities_completed_title": "¡Ya terminaste!",
     "authentication_loading": "Autenticando, espere.",
     "close_modal": {
       "cancel_button_label": "No, continúa",
@@ -99,6 +106,8 @@
       "description": "Aún quedan algunas actividades por completar. Si cancelas la sesión, es posible que pierdas los datos que aún no has enviado.",
       "title": "¿Está seguro de que desea cancelar la sesión?"
     },
+    "expired_subtitle": "Su sesión ha caducado por inactividad.",
+    "expired_title": "La sesión ha caducado",
     "invalid_url": "URL no válida: la URL debe contener el parámetro `SessionId`.",
     "loading": "Cargando sesión...",
     "loading_error": "Se ha producido un error al cargar la sesión.",

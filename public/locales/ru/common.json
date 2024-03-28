@@ -35,19 +35,24 @@
     "form": {
       "cta_start_form": "Начать заполнение формы",
       "cta_submit": "Подать",
+      "date_cannot_be_in_the_future": "Дата не может быть в будущем.",
+      "date_cannot_be_in_the_past": "Дата не может быть в прошлом.",
+      "date_cannot_be_today": "Дата не может быть сегодняшней.",
       "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
       "invalid_phone_number": "Номер телефона недействительный.",
       "loading": "Форма загружается...",
       "loading_error": "Во время загрузки формы что-то пошло не так.",
       "next_question_label": "Следующий",
+      "not_a_number": "Введите номер.",
+      "number_out_of_range": "Номер выходит за пределы допустимого диапазона.",
       "previous_question_label": "Предыдущий",
       "question_required_error": "Ответ на этот вопрос обязателен.",
-      "submitting": "Подача формы...",
       "questions": {
         "select": {
+          "loading": "Loading...",
           "no_options": "Опции не найдены",
           "search_placeholder": "Поиск опции",
-          "type_to_search": "Start typing to search"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -92,6 +97,8 @@
   },
   "session": {
     "all_activities_completed": "Вы совершили все действия. Теперь Вы можете закрыть эту страницу.",
+    "all_activities_completed_subtitle": "Теперь вы можете закрыть эту страницу.",
+    "all_activities_completed_title": "Все готово!",
     "authentication_loading": "Аутентификация. Пожалуйста, подождите.",
     "close_modal": {
       "cancel_button_label": "Нет, продолжить",
@@ -99,6 +106,8 @@
       "description": "Некоторые действия остались незавершенными. Если Вы закроете сессию, Вы можете потерять данные, которые Вы ещё не подали.",
       "title": "Вы уверены, что хотите закрыть сессию?"
     },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Срок действия сеанса истек",
     "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId”.",
     "loading": "Загрузка сессии...",
     "loading_error": "Что-то пошло не так при загрузке сессии.",

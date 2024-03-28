@@ -6,6 +6,7 @@ import { isNil } from 'lodash'
 
 export type StartHostedCareflowSessionParams = {
   hostedPagesLinkId: string
+  patient_identifier?: string
 }
 
 export type StartHostedCareflowSessionPayload = {
@@ -19,11 +20,21 @@ type Data =
       error: any
     }
 
+const decodePatientIdentifier = (
+  patientIdentifier: string
+): { system: string; value: string } => {
+  const decodedPatientIdentifier = decodeURIComponent(patientIdentifier)
+  const system = decodedPatientIdentifier.split('|')[0]
+  const value = decodedPatientIdentifier.split('|')[1]
+  return { system, value }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { hostedPagesLinkId } = req.query as StartHostedCareflowSessionParams
+  const { hostedPagesLinkId, patient_identifier } =
+    req.query as StartHostedCareflowSessionParams
 
   const token = jwt.sign(
     {
@@ -36,6 +47,15 @@ export default async function handler(
       subject: hostedPagesLinkId,
     }
   )
+
+  const hasPatientIdentifier =
+    !isNil(patient_identifier) && patient_identifier !== 'undefined'
+  const input = hasPatientIdentifier
+    ? {
+        id: hostedPagesLinkId,
+        patient_identifier: decodePatientIdentifier(patient_identifier),
+      }
+    : { id: hostedPagesLinkId }
 
   const response = await fetch(environment.orchestrationApiUrl, {
     method: 'POST',
@@ -51,11 +71,7 @@ export default async function handler(
             }
           }
         `,
-      variables: {
-        input: {
-          id: hostedPagesLinkId,
-        },
-      },
+      variables: { input },
     }),
   })
   const { data, errors } = await response.json()

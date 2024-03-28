@@ -10,6 +10,7 @@
     "Payload": [
       "ActionPayload",
       "ActivitiesPayload",
+      "AddIdentifierToPatientPayload",
       "AddTrackPayload",
       "ApiCallPayload",
       "ApiCallsPayload",
@@ -20,6 +21,7 @@
       "ClinicalNotePayload",
       "CompleteExtensionActivityPayload",
       "CreatePatientPayload",
+      "CurrentUserPayload",
       "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",
@@ -54,6 +56,7 @@
       "StartHostedPathwaySessionFromLinkPayload",
       "StartHostedPathwaySessionPayload",
       "StartPathwayPayload",
+      "StartPathwayWithPatientIdentifierPayload",
       "StopTrackPayload",
       "SubmitChecklistPayload",
       "SubmitFormResponsePayload",
@@ -61,7 +64,6 @@
       "UpdatePatientDemographicsQueryPayload",
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
-      "UserPayload",
       "WebhookCallPayload",
       "WebhookCallsPayload"
     ]
