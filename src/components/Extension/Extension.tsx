@@ -13,7 +13,11 @@ import { CloudinaryExtension } from './CloudinaryExtension'
 import { DocuSignExtension } from './DocuSignExtension'
 import { CollectDataExtension } from './CollectDataExtension'
 import { ExperimentalExtension } from './ExperimentalExtension'
-import { EnterMedication } from './ExperimentalExtension/actions'
+import {
+  EnterMedication as PrivateEnterMedication,
+  PatientRecommendation as PrivatePatientRecommendation,
+  Redirect as PrivateRedirect,
+} from './PrivateExtensions/actions'
 
 interface ExtensionProps {
   activity: Activity
@@ -37,10 +41,23 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     )
   }
 
+  /**
+   * FOR PRIVATE EXTENSIONS
+   */
   const getDefaultReturnValue = () => {
     switch (extensionActivityDetails.plugin_action_key) {
       case AnonymousActionKeys.COLLECT_MEDICATION:
-        return <EnterMedication activityDetails={extensionActivityDetails} />
+        return (
+          <PrivateEnterMedication activityDetails={extensionActivityDetails} />
+        )
+      case AnonymousActionKeys.PATIENT_RECOMMENDATION:
+        return (
+          <PrivatePatientRecommendation
+            activityDetails={extensionActivityDetails}
+          />
+        )
+      case AnonymousActionKeys.REDIRECT:
+        return <PrivateRedirect activityDetails={extensionActivityDetails} />
       default:
         return <ErrorPage title={t('activities.activity_not_supported')} />
     }
