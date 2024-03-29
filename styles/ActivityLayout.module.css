@@ -1,0 +1,32 @@
+.main_content {
+  flex: auto;
+  overflow-y: auto;
+  margin-bottom: 44px;
+  padding: var(--awell-spacing-4);
+
+  @media (min-width: 640px) {
+    margin-bottom: 55px;
+  }
+
+  @media (max-height: 500px) {
+    margin-bottom: var(--awell-spacing-4);
+  }
+}
+
+.container {
+  max-width: var(--awell-activity-max-width);
+  padding: var(--awell-activity-padding);
+  margin: 0 auto;
+}
+
+.content {
+  width: 100%;
+}
+
+.button_wrapper {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  align-items: center;
+  width: 100%;
+}

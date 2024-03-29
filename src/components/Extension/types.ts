@@ -23,4 +23,6 @@ export enum ExtensionKey {
  */
 export enum AnonymousActionKeys {
   COLLECT_MEDICATION = 'collectMedication',
+  PATIENT_RECOMMENDATION = 'patientRecommendation',
+  REDIRECT = 'redirect',
 }
