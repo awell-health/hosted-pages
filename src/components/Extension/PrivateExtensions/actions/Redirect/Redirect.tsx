@@ -29,7 +29,8 @@ export const Redirect: FC<RedirectProps> = ({ activityDetails }) => {
 
   useEffect(() => {
     // If redirectMessage is empty, redirect immediately.
-    if (isEmpty(redirectMessage)) {
+    const emptyHtml = `<p class=\"slate-p\"></p>`
+    if (isEmpty(redirectMessage) || redirectMessage === emptyHtml) {
       handleCompletion()
     } else {
       const SECONDS_BEFORE_REDIRECT = 2
@@ -57,5 +58,3 @@ export const Redirect: FC<RedirectProps> = ({ activityDetails }) => {
     </>
   )
 }
-
-Redirect.displayName = 'Redirect'
