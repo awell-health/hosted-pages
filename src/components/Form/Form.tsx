@@ -160,6 +160,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
           onAnswersChange={handleOnAnswersChange}
           autoProgress={branding?.hosted_page_auto_progress ?? false}
           autosaveAnswers={branding?.hosted_page_autosave ?? true}
+          showProgressBar={theme.form.showProgressBar}
         />
       )}
     </>

@@ -8,6 +8,7 @@ const DEFAULTS = {
     showLogo: true,
   },
   form: {
+    showProgressBar: true,
     showAsterisksForRequiredQuestions: true,
   },
 }
@@ -21,6 +22,7 @@ const CustomLayoutBranding = z
 
 const CustomFormBranding = z
   .object({
+    showProgressBar: z.boolean().default(DEFAULTS.form.showProgressBar),
     showAsterisksForRequiredQuestions: z
       .boolean()
       .default(DEFAULTS.form.showAsterisksForRequiredQuestions),
