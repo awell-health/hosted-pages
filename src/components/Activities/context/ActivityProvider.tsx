@@ -7,6 +7,8 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage, LoadingPage } from '../../'
 import { ActivityContext } from './ActivityContext'
 
+const POLLING_DELAY = 5000 // 5 seconds
+
 interface ActivityProviderProps {
   children?: React.ReactNode
 }
@@ -17,31 +19,38 @@ interface ActivityProviderProps {
 export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const { t } = useTranslation()
   const [currentActivity, setCurrentActivity] = useState<Activity>()
-  const { activities, loading, error, refetch } = useSessionActivities()
+  const { activities, loading, error, refetch, startPolling, stopPolling } =
+    useSessionActivities()
 
-  const hasPendingActivities = () => {
-    const pendingActivities = activities.filter(
-      ({ status }) => status === ActivityStatus.Active
-    )
-    return pendingActivities.length > 0
+  // determine if we have current activity set and does it have active status
+  // if so, we a waiting for stakeholder to complete the activity
+  const isCurrentActive = () => {
+    const current = activities.find(({ id }) => id === currentActivity?.id)
+    return !isNil(current) && current.status === ActivityStatus.Active
   }
 
-  const handleSetCurrent = () => {
-    if (isNil(currentActivity) && hasPendingActivities()) {
+  const onActivitiesChange = () => {
+    // we don't have current activity or current is no longer active
+    if (!isCurrentActive()) {
       const firstActive = activities.find(
         ({ status }) => status === ActivityStatus.Active
       )
-      if (!isNil(firstActive)) {
-        setCurrentActivity(firstActive)
+      if (isNil(firstActive)) {
+        // nothing to activate, start polling for new activities so we don't rely on subscriptions
+        startPolling(POLLING_DELAY)
+      } else {
+        // we have something to activate, stop polling, no need for it
+        stopPolling()
       }
+      // set to the first active activity or undefined if none found,
+      // undefined will result in loading page with reload timer
+      setCurrentActivity(firstActive)
     }
   }
 
-
   useEffect(() => {
-    handleSetCurrent()
+    onActivitiesChange()
   }, [activities])
-
 
   if (loading) {
     return <LoadingPage />
@@ -51,8 +60,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     return <ErrorPage title={t('activities.loading_error')} onRetry={refetch} />
   }
 
-  const waitingForNewActivities =
-    isNil(currentActivity) || !hasPendingActivities()
+  const waitingForNewActivities = isNil(currentActivity)
 
   return (
     <ActivityContext.Provider
