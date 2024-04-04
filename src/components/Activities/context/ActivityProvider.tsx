@@ -37,17 +37,11 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     }
   }
 
-  const unsetCurrentActivity = () => {
-    setCurrentActivity(undefined)
-  }
 
   useEffect(() => {
     handleSetCurrent()
   }, [activities])
 
-  useEffect(() => {
-    handleSetCurrent()
-  }, [currentActivity])
 
   if (loading) {
     return <LoadingPage />
@@ -62,11 +56,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   return (
     <ActivityContext.Provider
-      value={{
-        currentActivity,
-        unsetCurrentActivity,
-        waitingForNewActivities,
-      }}
+      value={{ currentActivity, waitingForNewActivities }}
     >
       {children}
     </ActivityContext.Provider>
