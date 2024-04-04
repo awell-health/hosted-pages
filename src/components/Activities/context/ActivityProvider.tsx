@@ -48,6 +48,9 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     }
   }
 
+  // activities list changes as we get new activities from the server or as we complete activities
+  // this useEffect drives whole AHP logic, only by activities being changed in apollo cache
+  // and base on their status do we determine what to show to the user
   useEffect(() => {
     onActivitiesChange()
   }, [activities])
