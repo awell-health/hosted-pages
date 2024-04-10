@@ -3,7 +3,6 @@
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
     "checklist": {
       "cta_submit": "Esita vastused",
-      "loading": "Laadimine...",
       "loading_error": "Midagi läks nimekirja laadimisel valesti.",
       "saving_error": "Nimekirja esitamine ebaõnnestus."
     },
@@ -28,9 +27,7 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Allkirjastamise link on aegunud.",
-      "failed_sign_document": "Allkirjastamise link ebaõnnestus.",
-      "finished_sign_document": "Wrapping up",
-      "loading_sign_document": "Loading the document"
+      "failed_sign_document": "Allkirjastamise link ebaõnnestus."
     },
     "form": {
       "cta_start_form": "Alusta teekonnaga",
@@ -40,7 +37,6 @@
       "date_cannot_be_today": "Kuupäev ei saa olla täna.",
       "form_has_errors": "Palun paranda vormis olevad vead enne esitamist.",
       "invalid_phone_number": "Telefoninumber pole õige.",
-      "loading": "Vormi laadimine...",
       "loading_error": "Vormi laadimisel läks midagi valesti.",
       "next_question_label": "Järgmine",
       "not_a_number": "Palun sisestage number.",
@@ -65,25 +61,20 @@
       "saving_error": "Vormi esitamine ebaõnnestus.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit."
     },
-    "loading": "Tegevuse laadimine...",
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "message": {
       "cta_mark_as_read": "Valmis",
       "download_file_attachment": "Lae alla",
-      "loading": "Sõnumi laadimine...",
       "loading_error": "Midagi läks sõnumi laadimisel valesti.",
       "open_link_attachment": "Ava link",
       "open_video_attachment": "Ava video",
       "toast_mark_as_read_error": "Viga sõnumi loetuks märkimisel."
-    },
-    "waiting_for_new_activities": "Laeb",
-    "waiting_unexpected": "Ootamine võtab kauem aega kui oodatud. Palun oodake..."
+    }
   },
   "errors": {
     "app_error": "Oih, midagi läks valesti. Palun proovi uuesti."
   },
   "link_page": {
-    "loading": "Palun oodake, alustame sessiooni.",
     "loading_error": "Oih, meil ei õnnestunud sessiooni alustada.",
     "try_again": "Proovi uuesti"
   },
@@ -92,14 +83,11 @@
   },
   "seo": {
     "description": "Viige oma raviteekonna tegevused lõpule Awelli hostitud lehtedega.",
-    "loading_title": "Laadimine...",
     "title": "Awelli tegevused"
   },
   "session": {
-    "all_activities_completed": "Oled lõpetanud oma tegevused. Võid selle akna nüüd sulgeda.",
     "all_activities_completed_subtitle": "Saate selle lehe nüüd sulgeda.",
     "all_activities_completed_title": "Olete kõik valmis!",
-    "authentication_loading": "Autentimine, palun oodake.",
     "close_modal": {
       "cancel_button_label": "Jätkan täitmist",
       "confirm_button_label": "Jätan pooleli",
@@ -109,11 +97,9 @@
     "expired_subtitle": "Teie seanss on tegevusetuse tõttu aegunud.",
     "expired_title": "Seanss lõppes",
     "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
-    "loading": "Seansi laadimine...",
     "loading_error": "Midagi läks seansi laadimisel valesti.",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "session_canceled": "Teie sessioon on katkestatud.",
-    "session_expired": "Teie sessioon on aegunud pärast 1-tunnist tegevusetust.",
     "try_again": "Proovi uuesti"
   }
 }

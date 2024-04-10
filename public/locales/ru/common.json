@@ -3,7 +3,6 @@
     "activity_not_supported": "Тип действия не поддерживается.",
     "checklist": {
       "cta_submit": "Подать",
-      "loading": "Чек-лист загружается...",
       "loading_error": "Во время загрузки чек-листа что-то пошло не так.",
       "saving_error": "Не удалось подать чек-лист."
     },
@@ -28,9 +27,7 @@
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed.",
-      "finished_sign_document": "Wrapping up",
-      "loading_sign_document": "Loading the document"
+      "failed_sign_document": "Signing link has failed."
     },
     "form": {
       "cta_start_form": "Начать заполнение формы",
@@ -40,7 +37,6 @@
       "date_cannot_be_today": "Дата не может быть сегодняшней.",
       "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
       "invalid_phone_number": "Номер телефона недействительный.",
-      "loading": "Форма загружается...",
       "loading_error": "Во время загрузки формы что-то пошло не так.",
       "next_question_label": "Следующий",
       "not_a_number": "Введите номер.",
@@ -65,25 +61,20 @@
       "saving_error": "Не удалось подать форму.",
       "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ."
     },
-    "loading": "Действие загружается...",
     "loading_error": "Во время загрузки действия что-то пошло не так.",
     "message": {
       "cta_mark_as_read": "Готово",
       "download_file_attachment": "Загрузить",
-      "loading": "Сообщение загружается...",
       "loading_error": "Во время загрузки сообщения что-то пошло не так.",
       "open_link_attachment": "Открыть ссылку",
       "open_video_attachment": "Открыть видео",
       "toast_mark_as_read_error": "Ошибка во время отмечания сообщения как прочитанного."
-    },
-    "waiting_for_new_activities": "Ожидание новых действий.",
-    "waiting_unexpected": "Ожидание занимает больше времени, чем ожидалось. Пожалуйста, подождите..."
+    }
   },
   "errors": {
     "app_error": "Упс, что-то пошло не так, попробуйте еще раз."
   },
   "link_page": {
-    "loading": "Подождите немного, мы начинаем Вашу сессию.",
     "loading_error": "Упс, мы не можем начать сессию для Вас.",
     "try_again": "Попробуйте снова"
   },
@@ -92,14 +83,11 @@
   },
   "seo": {
     "description": "Выполните действия в потоках ухода Awell",
-    "loading_title": "Загружается",
     "title": "Awell деятельность"
   },
   "session": {
-    "all_activities_completed": "Вы совершили все действия. Теперь Вы можете закрыть эту страницу.",
     "all_activities_completed_subtitle": "Теперь вы можете закрыть эту страницу.",
     "all_activities_completed_title": "Все готово!",
-    "authentication_loading": "Аутентификация. Пожалуйста, подождите.",
     "close_modal": {
       "cancel_button_label": "Нет, продолжить",
       "confirm_button_label": "Да, закрыть сессию",
@@ -109,11 +97,9 @@
     "expired_subtitle": "Your session has expired due to inactivity.",
     "expired_title": "Срок действия сеанса истек",
     "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId”.",
-    "loading": "Загрузка сессии...",
     "loading_error": "Что-то пошло не так при загрузке сессии.",
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "session_canceled": "Ваша сессия истекла.",
-    "session_expired": "Ваша сессия истекла.",
     "try_again": "Попробуйте снова"
   }
 }
