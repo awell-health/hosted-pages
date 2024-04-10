@@ -1,11 +1,11 @@
-name: 🌐 Download translations and create PR
+name: 🌐 Download Localazy translations
 
 on:
   workflow_dispatch: # This allows the workflow to be triggered manually
 
 jobs:
   localazy-download-test:
-    name: Download strings from Localazy and commit to main
+    name: Download translations and create PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,13 +19,13 @@ jobs:
 
       - name: Generate branch name
         id: branch-name
-        run: echo "BRANCH_NAME=translation-update-$(date --utc +%Y-%m-%dT%H:%M:%S)" >> $GITHUB_ENV
+        run: echo "BRANCH_NAME=translation-update-$(date --utc +%Y-%m-%dT%H-%M-%S)" >> $GITHUB_ENV
 
       - name: Create and checkout new branch
         run: |
           git checkout -b ${{ env.BRANCH_NAME }}
 
-      - name: Commit changes
+      - name: Commit changes to branch
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Action"
