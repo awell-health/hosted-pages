@@ -15,5 +15,12 @@ jobs:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
           write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
       - run: |
-          # Test that localized files were downloaded by listing the content of locales folder.
+          # List the common.json files to ensure they are downloaded
           ls public/locales/*/common.json
+          # Loop through each common.json file, extract the language name, and display its content
+          for file in public/locales/*/common.json; do
+            lang=$(basename $(dirname "$file")) 
+            echo "Contents of $file (Language: $lang):"
+            cat "$file"
+            echo ""
+          done
