@@ -1,6 +1,0 @@
-# The source language is English
-# For all other locales, the latest version is on Localazy. 
-# So we don’t need those files to be committed to the repository.
-# They get pulled in during with the CI/CD pipeline
-!en/common.json
-*/common.json
