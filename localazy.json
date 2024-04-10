@@ -1,0 +1,12 @@
+{
+  "upload": {
+    "type": "json",
+    "files": "public/locales/en/common.json",
+    "deprecate": "project"
+  },
+  "download": {
+    "files": "public/locales/${languageCode}/common.json"
+  },
+  "conversion": {},
+  "transformations": []
+}
