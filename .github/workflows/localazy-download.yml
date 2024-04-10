@@ -1,4 +1,4 @@
-name: 🌐 Download and update translations
+name: 🌐 Download translations and create PR
 
 on:
   workflow_dispatch: # This allows the workflow to be triggered manually
@@ -17,19 +17,28 @@ jobs:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
           write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
 
-      - name: List and log translation files
-        run: |
-          for file in public/locales/*/common.json; do
-            lang=$(basename $(dirname "$file"))
-            echo "Contents of $file (Language: $lang):"
-            cat "$file"
-            echo ""
-          done
+      - name: Generate branch name
+        id: branch-name
+        run: echo "BRANCH_NAME=translation-update-$(date --utc +%Y-%m-%dT%H:%M:%S)" >> $GITHUB_ENV
 
-      - name: Commit and push updates
+      - name: Create and checkout new branch
+        run: |
+          git checkout -b ${{ env.BRANCH_NAME }}
+
+      - name: Commit changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.name "GitHub Action"
           git add public/locales/
-          git commit -m "Update translation files (pull from Localazy)" -a || echo "No changes to commit"
-          git push origin HEAD:main # This pushes the commit to the main branch
+          git commit -m "Update translation files" -a || echo "No changes to commit"
+
+      - name: Push changes and create a pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: ${{ env.BRANCH_NAME }}
+          commit-message: Update translation files
+          title: '[AUTO] Update translation files'
+          body: 'Automated pull request to update translation files by pulling them from Localazy.'
+          delete-branch: true
+          base: main
+          assignees: ${{ github.actor }}
