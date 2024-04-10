@@ -1,3 +1,105 @@
 {
-  "note": "Translations are managed in Localazy. This file is just here to prevent build errors."
+  "activities": {
+    "activity_not_supported": "Tipul de activitate nu este suportat.",
+    "checklist": {
+      "cta_submit": "Trimiteți",
+      "loading_error": "Ceva nu a mers bine în timpul încărcării listei de verificare.",
+      "saving_error": "Trimiterea listei de verificare a eșuat."
+    },
+    "cloudinary": {
+      "cta_upload_files": "Upload files",
+      "file_attachment": "View file",
+      "file_count_one": "You have uploaded 1 file.",
+      "file_count_other": "You have uploaded {{count}} files.",
+      "file_count_zero": "You have not uploaded any files yet.",
+      "link_attachment": "Open link",
+      "no_files": "You have not uploaded any files yet.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Upload file",
+        "file_uploaded": "You have successfully uploaded a file.",
+        "no_file_uploaded": "You have not uploaded a file yet.",
+        "subject_single_file_upload": "Upload file"
+      },
+      "subject": "Upload files",
+      "video_attachment": "Open video"
+    },
+    "cta_done": "Done",
+    "docu_sign": {
+      "cta_sign_document": "Sign document",
+      "expired_sign_document": "Signing link has expired.",
+      "failed_sign_document": "Signing link has failed."
+    },
+    "form": {
+      "cta_start_form": "Începeți formularul",
+      "cta_submit": "Trimiteți",
+      "date_cannot_be_in_the_future": "Data nu poate fi în viitor.",
+      "date_cannot_be_in_the_past": "Data nu poate fi în trecut.",
+      "date_cannot_be_today": "Data nu poate fi astăzi.",
+      "form_has_errors": "Vă rugăm să corectați erorile din formular înainte de a trimite",
+      "invalid_phone_number": "Numărul de telefon este invalid.",
+      "loading_error": "Ceva nu a mers bine în timpul încărcării formularului.",
+      "next_question_label": "Mai departe",
+      "not_a_number": "Vă rugăm să introduceți un număr.",
+      "number_out_of_range": "Numărul este în afara razei de acțiune.",
+      "previous_question_label": "Înapoi",
+      "question_required_error": "Această întrebare este obligatorie.",
+      "questions": {
+        "select": {
+          "loading": "Loading...",
+          "no_options": "Nu s-au găsit opțiuni",
+          "search_placeholder": "Căutați o opțiune",
+          "type_to_search": "Type to search"
+        },
+        "slider": {
+          "tooltip_guide": "Touch to indicate your answer"
+        },
+        "yes_no": {
+          "no_answer": "Nu",
+          "yes_answer": "Da"
+        }
+      },
+      "saving_error": "Trimiterea formularului a eșuat.",
+      "slider_not_touched_error": "Vă rugam să mutați cursorul pentru a indica răspunsul dumneavoastră."
+    },
+    "loading_error": "Ceva nu a mers bine în timp ce încărcam activitățile tale.",
+    "message": {
+      "cta_mark_as_read": "Terminat",
+      "download_file_attachment": "Descărcați",
+      "loading_error": "Ceva nu a mers bine în timpul încărcării mesajului.",
+      "open_link_attachment": "Deschideți link",
+      "open_video_attachment": "Deschideți videoclipul",
+      "toast_mark_as_read_error": "Eroare la marcarea mesajului ca fiind citit."
+    }
+  },
+  "errors": {
+    "app_error": "Oops, ceva nu a mers bine. Te rog să încerci din nou."
+  },
+  "link_page": {
+    "loading_error": "Oops, nu am putut porni o sesiune pentru dumneavoastră.",
+    "try_again": "Încercați din nou"
+  },
+  "preview": {
+    "cta": "Încercați-l"
+  },
+  "seo": {
+    "description": "Finalizați activitățile din fluxul dvs. de îngrijire cu paginile găzduite Awell.",
+    "title": "Activități Awell"
+  },
+  "session": {
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
+    "close_modal": {
+      "cancel_button_label": "Nu, continuă",
+      "confirm_button_label": "Da, anulează sesiunea.",
+      "description": "Mai sunt câteva activități pe care trebuie să le finalizezi. Dacă anulezi sesiunea, s-ar putea să pierzi date pe care nu le-ai trimis încă.",
+      "title": "Ești sigur că vrei să anulezi sesiunea ta?"
+    },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
+    "invalid_url": "URL invalid: URL-ul trebuie să conțină parametrul `sessionId`.",
+    "loading_error": "A apărut o problemă in timpul încărcării sesiunii tale.",
+    "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
+    "session_canceled": "Sesiunea ta a fost anulata.",
+    "try_again": "Încercați din nou"
+  }
 }
