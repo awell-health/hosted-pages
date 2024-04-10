@@ -1,26 +1,35 @@
-name: Download translations from Localazy
+name: 🌐 Download and update translations
+
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch: # This allows the workflow to be triggered manually
 
 jobs:
   localazy-download-test:
-    name: Download strings from Localazy
+    name: Download strings from Localazy and commit to main
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: localazy/download@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download translations from Localazy
+        uses: localazy/download@v1
         with:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
           write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
-      - run: |
-          # List the common.json files to ensure they are downloaded
-          ls public/locales/*/common.json
-          # Loop through each common.json file, extract the language name, and display its content
+
+      - name: List and log translation files
+        run: |
           for file in public/locales/*/common.json; do
-            lang=$(basename $(dirname "$file")) 
+            lang=$(basename $(dirname "$file"))
             echo "Contents of $file (Language: $lang):"
             cat "$file"
             echo ""
           done
+
+      - name: Commit and push updates
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/locales/
+          git commit -m "Update translation files (pull from Localazy)" -a || echo "No changes to commit"
+          git push origin HEAD:main # This pushes the commit to the main branch

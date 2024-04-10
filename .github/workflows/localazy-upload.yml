@@ -1,4 +1,4 @@
-name: Upload source language (English) to Localazy
+name: 🌐 Upload source language (English) to Localazy
 on:
   push:
     paths:
