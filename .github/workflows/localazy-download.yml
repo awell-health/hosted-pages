@@ -20,8 +20,7 @@ jobs:
       - name: Check for updated translations
         id: check-changes
         run: |
-          git fetch origin main:main
-          git diff --exit-code origin/main || echo "changes_detected=true" >> $GITHUB_OUTPUT
+          git diff --exit-code || echo "changes_detected=true" >> $GITHUB_OUTPUT
 
       - name: Exit if no updated translations
         if: steps.check-changes.outputs.changes_detected != 'true'
