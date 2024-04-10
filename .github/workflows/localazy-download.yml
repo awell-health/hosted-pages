@@ -1,8 +1,8 @@
 name: Download translations from Localazy
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 jobs:
   localazy-download-test:
