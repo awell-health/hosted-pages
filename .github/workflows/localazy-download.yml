@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Download translations from Localazy
         uses: localazy/download@v1
@@ -20,7 +20,8 @@ jobs:
       - name: Check for updated translations
         id: check-changes
         run: |
-          git diff --exit-code || echo "::set-output name=changes_detected::true"
+          git fetch origin main:main
+          git diff --exit-code origin/main || echo "changes_detected=true" >> $GITHUB_OUTPUT
 
       - name: Exit if no updated translations
         if: steps.check-changes.outputs.changes_detected != 'true'
@@ -31,28 +32,17 @@ jobs:
       - name: Generate branch name
         run: echo "BRANCH_NAME=translation-update-$(date --utc +%Y-%m-%dT%H-%M-%S)" >> $GITHUB_ENV
 
-      - name: Create and checkout new branch
-        run: |
-          git checkout -b ${{ env.BRANCH_NAME }}
-
-      - name: Commit changes to branch
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "GitHub Action"
-          git add public/locales/
-          git commit -m "Update translation files"
-
-      - name: Push changes to remote
-        run: |
-          git push -u origin ${{ env.BRANCH_NAME }}
-
-      - name: Push changes and create a pull request
-        uses: peter-evans/create-pull-request@v3
+      - name: Create a pull request
+        uses: peter-evans/create-pull-request@v6
         with:
           branch: ${{ env.BRANCH_NAME }}
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           commit-message: Update translation files
           title: '[AUTO] Update translation files'
           body: 'Automated pull request to update translation files by pulling them from Localazy.'
-          delete-branch: true
           base: main
+          labels: |
+            localazy
+            automated pr
           assignees: ${{ github.actor }}
