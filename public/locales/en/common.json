@@ -5,10 +5,7 @@
   "activities": {
     "cta_done": "Done",
     "loading_error": "Something went wrong while loading your activities.",
-    "loading": "Loading activity...",
     "activity_not_supported": "Activity type is not supported.",
-    "waiting_for_new_activities": "Waiting for new activities.",
-    "waiting_unexpected": "Waiting is taking longer than expected. Please wait...",
     "message": {
       "cta_mark_as_read": "Done",
       "open_video_attachment": "Open video",
@@ -91,7 +88,6 @@
   "session": {
     "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
     "loading_error": "Something went wrong while loading your session.",
-    "loading": "Loading session...",
     "redirecting_to_next_page": "Redirecting you in a moment...",
     "all_activities_completed_title": "You're all done!",
     "all_activities_completed_subtitle": "You can close this page now.",
