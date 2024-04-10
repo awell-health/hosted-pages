@@ -29,9 +29,11 @@ jobs:
           exit 0
 
       - name: Generate branch name
+        if: steps.check-changes.outputs.changes_detected == 'true'
         run: echo "BRANCH_NAME=translation-update-$(date --utc +%Y-%m-%dT%H-%M-%S)" >> $GITHUB_ENV
 
       - name: Create a pull request
+        if: steps.check-changes.outputs.changes_detected == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           branch: ${{ env.BRANCH_NAME }}
