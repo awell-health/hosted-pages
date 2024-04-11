@@ -36,14 +36,13 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       const firstActive = activities.find(isActive)
       if (isNil(firstActive)) {
         // nothing to activate, start polling for new activities so we don't rely on subscriptions
+        setCurrentActivity(undefined)
         startPolling(POLLING_DELAY)
       } else {
         // we have something to activate, stop polling, no need for it
+        setCurrentActivity(firstActive)
         stopPolling()
       }
-      // set to the first active activity or undefined if none found,
-      // undefined will result in loading page with reload timer
-      setCurrentActivity(firstActive)
     }
   }, [activities])
 
