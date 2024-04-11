@@ -19,29 +19,29 @@ interface UsePathwayActivitiesHook {
   activities: Array<Activity>
   error?: string
   refetch?: () => {}
+  startPolling: (pollInterval: number) => void
+  stopPolling: () => void
 }
-
-const POLLING_DELAY = 5000 // 5 seconds
 
 export const useSessionActivities = (): UsePathwayActivitiesHook => {
   const variables = {
     only_stakeholder_activities: true,
   }
   const client = useApolloClient()
-  const { data, error, loading, refetch } = useGetHostedSessionActivitiesQuery({
-    variables,
-    pollInterval: POLLING_DELAY,
-    onError: (error) => {
-      captureException(error, {
-        contexts: {
-          graphql: {
-            query: 'GetHostedSessionActivities',
-            variables: JSON.stringify(variables),
+  const { data, error, loading, refetch, startPolling, stopPolling } =
+    useGetHostedSessionActivitiesQuery({
+      variables,
+      onError: (error) => {
+        captureException(error, {
+          contexts: {
+            graphql: {
+              query: 'GetHostedSessionActivities',
+              variables: JSON.stringify(variables),
+            },
           },
-        },
-      })
-    },
-  })
+        })
+      },
+    })
 
   const onActivityCreated = useOnSessionActivityCreatedSubscription({
     variables,
@@ -65,10 +65,9 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     })
   }
 
-  const activities =
-    sortActivitiesByDate(
-      data?.hostedSessionActivities.activities as Activity[]
-    ) ?? []
+  const activities = sortActivitiesByDate(
+    data?.hostedSessionActivities.activities ?? []
+  )
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
@@ -95,5 +94,12 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     }
   }, [onActivityCreated.data])
 
-  return { activities, loading, error: error?.message, refetch }
+  return {
+    activities,
+    loading,
+    error: error?.message,
+    refetch,
+    startPolling,
+    stopPolling,
+  }
 }
