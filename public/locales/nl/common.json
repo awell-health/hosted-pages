@@ -1,3 +1,105 @@
 {
-  "note": "Translations are managed in Localazy. This file is just here to prevent build errors."
+  "activities": {
+    "activity_not_supported": "Dit type activiteit wordt nog niet ondersteunt.",
+    "checklist": {
+      "cta_submit": "Klaar",
+      "loading_error": "Er is iets misgelopen bij het ophalen van de checklist.",
+      "saving_error": "Checklist kon niet verzonden worden."
+    },
+    "cloudinary": {
+      "cta_upload_files": "Bestanden uploaden",
+      "file_attachment": "Bestand bekijken",
+      "file_count_one": "Je hebt één bestand geupload.",
+      "file_count_other": "Je hebt {{count}} bestanden geupload.",
+      "file_count_zero": "Je hebt nog geen bestanden geupload",
+      "link_attachment": "Open link",
+      "no_files": "Je hebt nog geen bestanden geupload.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Bestand uploaden",
+        "file_uploaded": "Je hebt succesvol een bestand geupload.",
+        "no_file_uploaded": "Je hebt nog geen bestand geupload.",
+        "subject_single_file_upload": "Bestand uploaden"
+      },
+      "subject": "Bestanden uploaden",
+      "video_attachment": "Open video"
+    },
+    "cta_done": "Klaar",
+    "docu_sign": {
+      "cta_sign_document": "Document ondertekenen",
+      "expired_sign_document": "Het document is vervallen, je kan het niet meer ondertekenen.",
+      "failed_sign_document": "Er is iets misgelopen met het te ondertekenen bestand."
+    },
+    "form": {
+      "cta_start_form": "Vragenlijst starten",
+      "cta_submit": "Verzenden",
+      "date_cannot_be_in_the_future": "De datum kan niet in de toekomst liggen.",
+      "date_cannot_be_in_the_past": "De datum mag niet in het verleden liggen.",
+      "date_cannot_be_today": "De datum kan niet vandaag zijn.",
+      "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
+      "invalid_phone_number": "Telefoonnummer is ongeldig.",
+      "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
+      "next_question_label": "Volgende",
+      "not_a_number": "Voer een nummer in.",
+      "number_out_of_range": "Het nummer is buiten bereik.",
+      "previous_question_label": "Vorige",
+      "question_required_error": "Deze vraag is verplicht.",
+      "questions": {
+        "select": {
+          "loading": "Laden...",
+          "no_options": "Geen matches gevonden",
+          "search_placeholder": "Zoek een optie",
+          "type_to_search": "Typ om te zoeken"
+        },
+        "slider": {
+          "tooltip_guide": "Klik om antwoord aan te duiden"
+        },
+        "yes_no": {
+          "no_answer": "Nee",
+          "yes_answer": "Ja"
+        }
+      },
+      "saving_error": "Vragenlijst kon niet verzonden worden.",
+      "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden."
+    },
+    "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
+    "message": {
+      "cta_mark_as_read": "Klaar",
+      "download_file_attachment": "Download",
+      "loading_error": "Er is iets misgelopen bij het ophalen van het bericht.",
+      "open_link_attachment": "Open link",
+      "open_video_attachment": "Open video",
+      "toast_mark_as_read_error": "Er is iets misgelopen bij het lezen van het bericht."
+    }
+  },
+  "errors": {
+    "app_error": "Oeps, er is iets misgelopen. Probeer het opnieuw."
+  },
+  "link_page": {
+    "loading_error": "Oeps, er is iets misgelopen tijdens het laden van jouw sessie.",
+    "try_again": "Opnieuw proberen"
+  },
+  "preview": {
+    "cta": "Probeer het uit"
+  },
+  "seo": {
+    "description": "Voltooi activiteiten in uw zorgpad met Awell hosted pages.",
+    "title": "Awell Activiteiten"
+  },
+  "session": {
+    "all_activities_completed_subtitle": "Je kan deze pagina nu sluiten.",
+    "all_activities_completed_title": "Je bent helemaal klaar!",
+    "close_modal": {
+      "cancel_button_label": "Nee, ga door",
+      "confirm_button_label": "Ja, sluit sessie af",
+      "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
+      "title": "Ben je zeker dat je de sessie wil afsluiten?"
+    },
+    "expired_subtitle": "Je sessie is vervallen door inactiviteit.",
+    "expired_title": "Sessie vervallen",
+    "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
+    "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
+    "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
+    "session_canceled": "Je sessie werd geannuleerd.",
+    "try_again": "Opnieuw proberen"
+  }
 }

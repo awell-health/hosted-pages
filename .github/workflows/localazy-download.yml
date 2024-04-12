@@ -1,26 +1,49 @@
-name: Download translations from Localazy
+name: 🌐 Download Localazy translations
+
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch: # This allows the workflow to be triggered manually
 
 jobs:
   localazy-download-test:
-    name: Download strings from Localazy
+    name: Download translations and create PR
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: localazy/download@v1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download translations from Localazy
+        uses: localazy/download@v1
         with:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
           write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
-      - run: |
-          # List the common.json files to ensure they are downloaded
-          ls public/locales/*/common.json
-          # Loop through each common.json file, extract the language name, and display its content
-          for file in public/locales/*/common.json; do
-            lang=$(basename $(dirname "$file")) 
-            echo "Contents of $file (Language: $lang):"
-            cat "$file"
-            echo ""
-          done
+
+      - name: Check for updated translations
+        id: check-changes
+        run: |
+          git diff --exit-code || echo "changes_detected=true" >> $GITHUB_OUTPUT
+
+      - name: Exit if no updated translations
+        if: steps.check-changes.outputs.changes_detected != 'true'
+        run: |
+          echo "No changes to commit. Exiting workflow."
+          exit 0
+
+      - name: Generate branch name
+        if: steps.check-changes.outputs.changes_detected == 'true'
+        run: echo "BRANCH_NAME=translation-update-$(date --utc +%Y-%m-%dT%H-%M-%S)" >> $GITHUB_ENV
+
+      - name: Create a pull request
+        if: steps.check-changes.outputs.changes_detected == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ${{ env.BRANCH_NAME }}
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github>
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          commit-message: Update translation files
+          title: '[AUTO] Update translation files'
+          body: 'Automated pull request to update translation files by pulling them from Localazy.'
+          base: main
+          labels: |
+            localazy
+            automated pr
+          assignees: ${{ github.actor }}

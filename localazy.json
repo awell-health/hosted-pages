@@ -5,7 +5,8 @@
     "deprecate": "project"
   },
   "download": {
-    "files": "public/locales/${languageCode}/common.json"
+    "files": "public/locales/${languageCode}/common.json",
+    "includeSourceLang": true
   },
   "conversion": {},
   "transformations": []
