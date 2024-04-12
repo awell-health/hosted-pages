@@ -15,7 +15,7 @@
       "link_attachment": "Open link",
       "no_files": "You have not uploaded any files yet.",
       "single_file_upload_action": {
-        "cta_upload_file": "Upload file",
+        "cta_upload_file": "Bestand uploaden",
         "file_uploaded": "You have successfully uploaded a file.",
         "no_file_uploaded": "You have not uploaded a file yet.",
         "subject_single_file_upload": "Upload file"
