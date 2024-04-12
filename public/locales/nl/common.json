@@ -7,27 +7,27 @@
       "saving_error": "Checklist kon niet verzonden worden."
     },
     "cloudinary": {
-      "cta_upload_files": "Upload files",
-      "file_attachment": "View file",
-      "file_count_one": "You have uploaded 1 file.",
-      "file_count_other": "You have uploaded {{count}} files.",
-      "file_count_zero": "You have not uploaded any files yet.",
+      "cta_upload_files": "Bestanden uploaden",
+      "file_attachment": "Bestand bekijken",
+      "file_count_one": "Je hebt één bestand geupload.",
+      "file_count_other": "Je hebt {{count}} bestanden geupload.",
+      "file_count_zero": "Je hebt nog geen bestanden geupload",
       "link_attachment": "Open link",
-      "no_files": "You have not uploaded any files yet.",
+      "no_files": "Je hebt nog geen bestanden geupload.",
       "single_file_upload_action": {
         "cta_upload_file": "Bestand uploaden",
-        "file_uploaded": "You have successfully uploaded a file.",
-        "no_file_uploaded": "You have not uploaded a file yet.",
-        "subject_single_file_upload": "Upload file"
+        "file_uploaded": "Je hebt succesvol een bestand geupload.",
+        "no_file_uploaded": "Je hebt nog geen bestand geupload.",
+        "subject_single_file_upload": "Bestand uploaden"
       },
-      "subject": "Upload files",
+      "subject": "Bestanden uploaden",
       "video_attachment": "Open video"
     },
-    "cta_done": "Done",
+    "cta_done": "Klaar",
     "docu_sign": {
-      "cta_sign_document": "Sign document",
-      "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "cta_sign_document": "Document ondertekenen",
+      "expired_sign_document": "Het document is vervallen, je kan het niet meer ondertekenen.",
+      "failed_sign_document": "Er is iets misgelopen met het te ondertekenen bestand."
     },
     "form": {
       "cta_start_form": "Vragenlijst starten",
@@ -45,13 +45,13 @@
       "question_required_error": "Deze vraag is verplicht.",
       "questions": {
         "select": {
-          "loading": "Loading...",
-          "no_options": "No matches found",
-          "search_placeholder": "Search for an option",
-          "type_to_search": "Type to search"
+          "loading": "Laden...",
+          "no_options": "Geen matches gevonden",
+          "search_placeholder": "Zoek een optie",
+          "type_to_search": "Typ om te zoeken"
         },
         "slider": {
-          "tooltip_guide": "Touch to indicate your answer"
+          "tooltip_guide": "Klik om antwoord aan te duiden"
         },
         "yes_no": {
           "no_answer": "Nee",
@@ -86,16 +86,16 @@
     "title": "Awell Activiteiten"
   },
   "session": {
-    "all_activities_completed_subtitle": "You can close this page now.",
-    "all_activities_completed_title": "You're all done!",
+    "all_activities_completed_subtitle": "Je kan deze pagina nu sluiten.",
+    "all_activities_completed_title": "Je bent helemaal klaar!",
     "close_modal": {
       "cancel_button_label": "Nee, ga door",
       "confirm_button_label": "Ja, sluit sessie af",
       "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
       "title": "Ben je zeker dat je de sessie wil afsluiten?"
     },
-    "expired_subtitle": "Your session has expired due to inactivity.",
-    "expired_title": "Session expired",
+    "expired_subtitle": "Je sessie is vervallen door inactiviteit.",
+    "expired_title": "Sessie vervallen",
     "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
