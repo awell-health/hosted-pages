@@ -8,6 +8,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: true, showLogo: true },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: true,
       },
       locales: {
@@ -25,6 +26,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: true, showLogo: true },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: true,
       },
       locales: {
@@ -42,6 +44,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: true, showLogo: true },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: true,
       },
       locales: {
@@ -58,6 +61,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: true, showLogo: true },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: true,
       },
       locales: {
@@ -75,6 +79,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: true, showLogo: true },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: true,
       },
       locales: {
@@ -98,6 +103,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: false, showLogo: true },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: true,
       },
       locales: {
@@ -115,6 +121,7 @@ describe('Custom theme branding', () => {
         showLogo: false,
       },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: false,
       },
       locales: {
@@ -128,6 +135,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: false, showLogo: false },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: false,
       },
       locales: {
@@ -149,6 +157,7 @@ describe('Custom theme branding', () => {
     expect(outcome).toStrictEqual({
       layout: { showCloseButton: true, showLogo: false },
       form: {
+        showProgressBar: true,
         showAsterisksForRequiredQuestions: true,
       },
       locales: {
