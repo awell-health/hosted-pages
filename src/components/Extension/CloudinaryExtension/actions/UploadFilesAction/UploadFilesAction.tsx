@@ -79,8 +79,14 @@ export const UploadFilesAction: FC<UploadFilesActionProps> = ({
           video: t('activities.cloudinary.video_attachment'),
           link: t('activities.cloudinary.link_attachment'),
         },
-        fileCountHeader: (count) =>
-          t('activities.cloudinary.file_count', { count }),
+        fileCountHeader: (count) => {
+          if (count === 1) return t('activities.cloudinary.file_count_one')
+
+          if (count > 1)
+            return t('activities.cloudinary.file_count_other', { count })
+
+          return t('activities.cloudinary.file_count_zero')
+        },
         buttonLabels: {
           upload: t('activities.cloudinary.cta_upload_files'),
           done: t('activities.cta_done'),
