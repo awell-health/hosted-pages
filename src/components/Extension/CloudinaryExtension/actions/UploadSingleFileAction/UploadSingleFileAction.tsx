@@ -80,11 +80,9 @@ export const UploadSingleFileAction: FC<UploadSingleFileActionProps> = ({
         },
         fileCountHeader: (fileUploaded) =>
           fileUploaded
-            ? t(
-                'activities.cloudinary.single_file_upload_action.no_file_uploaded'
-              )
+            ? t('activities.cloudinary.single_file_upload_action.file_uploaded')
             : t(
-                'activities.cloudinary.single_file_upload_action.file_uploaded'
+                'activities.cloudinary.single_file_upload_action.no_file_uploaded'
               ),
         buttonLabels: {
           upload: t(
