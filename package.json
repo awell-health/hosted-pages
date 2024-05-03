@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.6",
-    "@awell-health/ui-library": "0.1.59",
+    "@awell-health/ui-library": "0.1.60",
     "@formsort/react-embed": "^3.1.1",
     "@localazy/cli": "^1.7.5",
     "@sentry/nextjs": "^7.59.3",
