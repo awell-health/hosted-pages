@@ -15,6 +15,7 @@ export enum ExtensionKey {
   DOCU_SIGN = 'docuSign',
   COLLECT_DATA = 'collectData',
   EXPERIMENTAL = 'experimental',
+  STRIPE = 'stripe',
 }
 
 /**

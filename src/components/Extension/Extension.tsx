@@ -18,6 +18,7 @@ import {
   PatientRecommendation as PrivatePatientRecommendation,
   Redirect as PrivateRedirect,
 } from './PrivateExtensions/actions'
+import { StripeExtension } from './StripeExtension'
 
 interface ExtensionProps {
   activity: Activity
@@ -76,6 +77,8 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
       return <DocuSignExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.COLLECT_DATA:
       return <CollectDataExtension activityDetails={extensionActivityDetails} />
+    case ExtensionKey.STRIPE:
+      return <StripeExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.EXPERIMENTAL:
       return (
         <ExperimentalExtension activityDetails={extensionActivityDetails} />
