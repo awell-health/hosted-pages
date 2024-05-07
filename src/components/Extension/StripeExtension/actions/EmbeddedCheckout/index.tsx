@@ -1,0 +1,1 @@
+export { EmbeddedCheckout } from './EmbeddedCheckout'
