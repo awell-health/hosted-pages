@@ -54,6 +54,7 @@ export const EmbeddedCheckout: FC<EmbeddedCheckoutProps> = ({
       },
       body: JSON.stringify({
         hostedPagesSessionId: router.query.sessionId,
+        stripeMode,
         mode,
         item,
         hostedPagesEnvironmentVariable,
@@ -89,7 +90,7 @@ export const EmbeddedCheckout: FC<EmbeddedCheckoutProps> = ({
 
     if (stripeSessionId) {
       fetch(
-        `/api/stripe/session?stripeSessionId=${stripeSessionId}&hostedPagesEnvironmentVariable=${hostedPagesEnvironmentVariable}`,
+        `/api/stripe/session?stripeSessionId=${stripeSessionId}&hostedPagesEnvironmentVariable=${hostedPagesEnvironmentVariable}&stripeMode=${stripeMode}`,
         {
           method: 'GET',
         }

@@ -1,3 +1,4 @@
+import { toUpper } from 'lodash'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Stripe from 'stripe'
 
@@ -10,6 +11,7 @@ export default async function handler(
       try {
         const {
           hostedPagesSessionId,
+          stripeMode,
           mode,
           item,
           hostedPagesEnvironmentVariable,
@@ -19,7 +21,10 @@ export default async function handler(
          * This is hacky but it works.
          * Ideally we can fetch obfuscated settings here from Orchestration
          */
-        const stripeSecret = process.env[hostedPagesEnvironmentVariable]
+        const stripeSecret =
+          process.env[
+            `${hostedPagesEnvironmentVariable}_${toUpper(stripeMode)}_MODE`
+          ]
 
         if (!stripeSecret) {
           res.status(500).json('Missing environment variable for Stripe secret')
@@ -49,7 +54,8 @@ export default async function handler(
       break
     case 'GET':
       try {
-        const { stripeSessionId, hostedPagesEnvironmentVariable } = req.query
+        const { stripeSessionId, hostedPagesEnvironmentVariable, stripeMode } =
+          req.query
 
         if (!stripeSessionId) {
           res.status(404).json('Missing Stripe session ID')
@@ -61,7 +67,11 @@ export default async function handler(
          * Ideally we can fetch obfuscated settings here from Orchestration
          */
         const stripeSecret =
-          process.env[String(hostedPagesEnvironmentVariable)] ?? ''
+          process.env[
+            `${hostedPagesEnvironmentVariable}_${toUpper(
+              String(stripeMode)
+            )}_MODE`
+          ]
 
         if (!stripeSecret) {
           res
