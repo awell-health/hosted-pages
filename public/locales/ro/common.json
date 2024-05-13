@@ -23,6 +23,13 @@
       "subject": "Upload files",
       "video_attachment": "Open video"
     },
+    "collect_medication": {
+      "add_medication_button": "Add medication",
+      "medication_dose": "Dose",
+      "medication_instructions": "Instructions",
+      "medication_name": "Name",
+      "submit_button": "Submit"
+    },
     "cta_done": "Done",
     "docu_sign": {
       "cta_sign_document": "Sign document",
