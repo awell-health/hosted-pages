@@ -23,6 +23,13 @@
       "subject": "Загрузить файлы",
       "video_attachment": "Открыть видео"
     },
+    "collect_medication": {
+      "add_medication_button": "Add medication",
+      "medication_dose": "Dose",
+      "medication_instructions": "Instructions",
+      "medication_name": "Name",
+      "submit_button": "Submit"
+    },
     "cta_done": "Готово",
     "docu_sign": {
       "cta_sign_document": "Sign document",
