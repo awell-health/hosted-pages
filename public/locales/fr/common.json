@@ -23,6 +23,13 @@
       "subject": "Télécharger des fichiers",
       "video_attachment": "Ouvrir la vidéo"
     },
+    "collect_medication": {
+      "add_medication_button": "Ajouter médicament",
+      "medication_dose": "Dosage",
+      "medication_instructions": "Moment/heure de prise",
+      "medication_name": "Nom",
+      "submit_button": "Soumettre"
+    },
     "cta_done": "Terminé",
     "docu_sign": {
       "cta_sign_document": "Signer le document",
