@@ -1,0 +1,1 @@
+export { StripeExtension } from './StripeExtension'
