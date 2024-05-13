@@ -5,6 +5,7 @@ export {
 
 export enum ActionKey {
   REMOTE_SINGLE_SELECT = 'remoteSingleSelect',
+  COLLECT_MEDICATION = 'collectMedication',
 }
 
 export type RemoteSingleSelectActionFields = {
