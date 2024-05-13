@@ -23,14 +23,14 @@
       "subject": "Upload files",
       "video_attachment": "Open video"
     },
-    "cta_done": "Done",
     "collect_medication": {
-      "medication_name": "Name",
+      "add_medication_button": "Add medication",
       "medication_dose": "Dose",
       "medication_instructions": "Instructions",
-      "add_medication_button": "Add medication",
+      "medication_name": "Name",
       "submit_button": "Submit"
     },
+    "cta_done": "Done",
     "docu_sign": {
       "cta_sign_document": "Sign document",
       "expired_sign_document": "Signing link has expired.",
