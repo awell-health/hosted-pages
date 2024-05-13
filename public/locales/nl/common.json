@@ -23,6 +23,13 @@
       "subject": "Bestanden uploaden",
       "video_attachment": "Open video"
     },
+    "collect_medication": {
+      "add_medication_button": "Geneesmiddel toevoegen",
+      "medication_dose": "Dosis",
+      "medication_instructions": "Tijdstip van inname",
+      "medication_name": "Naam",
+      "submit_button": "Indienen"
+    },
     "cta_done": "Klaar",
     "docu_sign": {
       "cta_sign_document": "Document ondertekenen",
