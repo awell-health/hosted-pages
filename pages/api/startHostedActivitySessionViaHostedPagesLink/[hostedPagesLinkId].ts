@@ -7,6 +7,7 @@ import {
   StartHostedActivitySessionPayload,
 } from '../../../types'
 import { isNil } from 'lodash'
+import { info, warning, error } from '../../../src/utils/logging'
 
 type Data =
   | StartHostedActivitySessionPayload
@@ -19,6 +20,14 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { hostedPagesLinkId } = req.query as StartHostedActivitySessionParams
+  info({ message: 'Some nice text', batatas: 'nice' })
+  warning({ message: 'Some nice text', batatas: 'nice' })
+  error(
+    { message: 'Some nice text', batatas: 'nice' },
+    'Some horrible error message'
+  )
+
+  console.log('Going via here')
 
   const token = jwt.sign(
     {
@@ -54,6 +63,8 @@ export default async function handler(
       },
     }),
   })
+
+  console.log(response)
 
   const { data, errors } = await response.json()
   if (!isNil(errors) && errors.length > 0) {
