@@ -5,11 +5,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log('Received log request', req)
+
   switch (req.method) {
     case 'POST':
-      const { message, severity, error } = req.body
-      log(message, severity, error)
-      res.status(200)
+      const { params, severity, error } = req.body
+      log(params, severity, error)
+      res.status(200).json({ success: true })
       break
     default:
       res.setHeader('Allow', req.method ?? '')
