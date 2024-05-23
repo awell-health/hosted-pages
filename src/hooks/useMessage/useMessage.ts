@@ -4,6 +4,7 @@ import type { Activity, Message } from './types'
 import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
 import { captureException } from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
+import { useLogging } from '../useLogging'
 interface UseMessageActivityHook {
   loading: boolean
   message?: Message
@@ -19,6 +20,7 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
     object: { id: message_id },
   } = activity
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
+  const { infoLog, errorLog } = useLogging()
 
   const variables = { id: message_id }
   const { data, loading, error, refetch } = useGetMessageQuery({
@@ -48,11 +50,15 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
         activity_id,
       },
     }
+
+    infoLog({ msg: 'Trying to mark message as read', activity })
     try {
       await markMessageAsRead({ variables: markMessageAsReadVariables })
-    } catch (err) {
+      infoLog({ msg: 'Message marked as read successfully', activity })
+    } catch (error: any) {
+      errorLog({ msg: 'Failed to mark message as read', activity }, error)
       toast.error(t('activities.message.toast_mark_as_read_error'))
-      captureException(err, {
+      captureException(error, {
         contexts: {
           graphql: {
             query: 'MarkMessageAsRead',

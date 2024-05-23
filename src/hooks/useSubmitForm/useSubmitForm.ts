@@ -27,12 +27,13 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       },
     }
 
-    infoLog({ msg: 'Submit Form Response', response, activity })
+    infoLog({ msg: 'Trying to submit a form response', response, activity })
     try {
       await submitFormResponse({ variables })
+      infoLog({ msg: 'Form response submitted', response, activity })
     } catch (error: any) {
       errorLog(
-        { msg: 'Failed to submit Form Response', response, activity },
+        { msg: 'Failed to submit form response', response, activity },
         error
       )
       setIsSubmitting(false)

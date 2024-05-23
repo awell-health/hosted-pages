@@ -5,8 +5,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('Received log request', req)
-
   switch (req.method) {
     case 'POST':
       const { params, severity, error } = req.body
