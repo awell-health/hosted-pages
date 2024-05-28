@@ -1,6 +1,5 @@
 import { Logging } from '@google-cloud/logging'
 
-// TODO replace with the correct environment variable
 const logging = new Logging({
   projectId: 'awell-development',
 })
