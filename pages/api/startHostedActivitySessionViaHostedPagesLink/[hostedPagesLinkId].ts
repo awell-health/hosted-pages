@@ -55,8 +55,6 @@ export default async function handler(
     }),
   })
 
-  console.log(response)
-
   const { data, errors } = await response.json()
   if (!isNil(errors) && errors.length > 0) {
     res

@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { ErrorPage, LoadingPage } from '../../'
 import { ActivityContext } from './ActivityContext'
 import { useLogging } from '../../../hooks/useLogging'
+import { LogEvent } from '../../../hooks/useLogging/types'
 
 const POLLING_DELAY = 5000 // 5 seconds
 
@@ -47,12 +48,15 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
           stopPolling()
         }
       }
-      infoLog({
-        msg: 'Fetched activities for session',
-        activities,
-        current,
-        numberOfActivities: activities.length,
-      })
+      infoLog(
+        {
+          msg: 'Fetched activities for session',
+          activities,
+          current,
+          numberOfActivities: activities.length,
+        },
+        LogEvent.ACTIVITIES_FETCH
+      )
     }
   }, [activities, loading])
 
@@ -61,7 +65,11 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   }
 
   if (error) {
-    errorLog({ msg: 'Failed to load activities' }, error)
+    errorLog(
+      { msg: 'Failed to load activities' },
+      error,
+      LogEvent.ACTIVITIES_FETCH_FAILED
+    )
     return <ErrorPage title={t('activities.loading_error')} onRetry={refetch} />
   }
 

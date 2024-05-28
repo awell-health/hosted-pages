@@ -16,12 +16,7 @@ export function log(params: {}, severity: string, error: string | {}) {
     { ...metadata, severity: severity },
     { params, error }
   )
-  logger
-    .write(entry)
-    .then(() => {
-      console.log(`Logged: ${JSON.stringify(entry)}`)
-    })
-    .catch((err) => {
-      console.error('Error logging:', err)
-    })
+  logger.write(entry).catch((err) => {
+    console.error(`Error logging: ${JSON.stringify(entry)}`, err)
+  })
 }

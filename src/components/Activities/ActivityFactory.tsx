@@ -7,13 +7,17 @@ import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
 import { Extension } from '../Extension'
 import { useLogging } from '../../hooks/useLogging'
+import { LogEvent } from '../../hooks/useLogging/types'
 
 export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
   const { t } = useTranslation()
   const { infoLog } = useLogging()
 
   useEffect(() => {
-    infoLog({ msg: 'Loading new activity', activity })
+    infoLog(
+      { msg: 'Loading new activity', activity },
+      LogEvent.ACTIVITY_LOADING
+    )
   }, [])
 
   switch (activity?.object.type) {
