@@ -1,9 +1,15 @@
 import { Logging } from '@google-cloud/logging'
+import path from 'path'
+import os from 'os'
+import fs from 'fs'
 
-const logging = new Logging({
-  projectId: 'awell-development',
-})
+const tempKeyFilePath = path.join(os.tmpdir(), 'temp-service-account-key.json')
+fs.writeFileSync(
+  tempKeyFilePath,
+  process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY ?? ''
+)
 
+const logging = new Logging({ keyFilename: tempKeyFilePath })
 const logger = logging.log('hosted-sessions')
 
 const metadata = {
@@ -15,7 +21,12 @@ export function log(params: {}, severity: string, error: string | {}) {
     { ...metadata, severity: severity },
     { params, error }
   )
-  logger.write(entry).catch((err) => {
-    console.error(`Error logging: ${JSON.stringify(entry)}`, err)
-  })
+
+  if (process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY) {
+    logger.write(entry).catch((err) => {
+      console.error(`Error logging: ${JSON.stringify(entry)}`, err)
+    })
+  } else {
+    console.log(JSON.stringify(entry))
+  }
 }
