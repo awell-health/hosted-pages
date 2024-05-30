@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next'
 import type { Activity, AnswerInput } from './types'
 import { useSubmitFormResponseMutation } from './types'
 import { captureException } from '@sentry/nextjs'
+import { useLogging } from '../useLogging'
+import { LogEvent } from '../useLogging/types'
 interface UseFormActivityHook {
   onSubmit: (response: Array<AnswerInput>) => Promise<void>
   isSubmitting: boolean
@@ -15,6 +17,7 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
 
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { infoLog, errorLog } = useLogging()
 
   const onSubmit = async (response: Array<AnswerInput>) => {
     setIsSubmitting(true)
@@ -25,9 +28,30 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       },
     }
 
+    infoLog(
+      {
+        msg: 'Trying to submit a form response',
+        activity,
+      },
+      LogEvent.FORM_UPDATED_LOCAL_STORAGE
+    )
     try {
       await submitFormResponse({ variables })
-    } catch (error) {
+      infoLog(
+        { msg: 'Form response submitted', activity },
+        LogEvent.FORM_SUBMITTED
+      )
+      setIsSubmitting(false)
+    } catch (error: any) {
+      errorLog(
+        {
+          msg: 'Failed to submit form response',
+          response,
+          activity,
+        },
+        error,
+        LogEvent.FORM_SUBMISSION_FAILED
+      )
       setIsSubmitting(false)
       toast.error(t('activities.form.saving_error'))
       captureException(error, {
