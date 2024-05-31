@@ -20,4 +20,7 @@ const nextPlugins = [
   (nextConfig) => withSentryConfig(nextConfig, sentryWebpackPluginOptions),
 ]
 
-module.exports = withPlugins(nextPlugins, nextConfig)
+module.exports = async (phase) => {
+  const config = withPlugins(nextPlugins, nextConfig)(phase, {})
+  return config
+}
