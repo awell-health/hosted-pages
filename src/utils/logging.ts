@@ -1,32 +1,50 @@
-import { Logging } from '@google-cloud/logging'
+import { Log, Logging } from '@google-cloud/logging'
 import path from 'path'
-import os from 'os'
 import fs from 'fs'
-
-const tempKeyFilePath = path.join(os.tmpdir(), 'temp-service-account-key.json')
-fs.writeFileSync(
-  tempKeyFilePath,
-  process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY ?? ''
-)
-
-const logging = new Logging({ keyFilename: tempKeyFilePath })
-const logger = logging.log('hosted-sessions')
+import os from 'os'
 
 const metadata = {
   resource: { type: 'global' },
 }
 
-export function log(params: {}, severity: string, error: string | {}) {
-  const entry = logger.entry(
-    { ...metadata, severity: severity },
-    { params, error }
-  )
+let loggerInstance: Log | undefined = undefined
 
-  if (process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY) {
-    logger.write(entry).catch((err) => {
-      console.error(`Error logging: ${JSON.stringify(entry)}`, err)
-    })
+const getLogger = (): Log | undefined => {
+  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY) {
+    console.error(
+      'Environment variable GOOGLE_APPLICATION_CREDENTIALS_KEY is not set'
+    )
+    return undefined
+  }
+
+  if (loggerInstance === undefined) {
+    console.log('Initializing logger')
+    const keyFile = path.join(os.tmpdir(), 'logging-sa-key.json')
+    fs.writeFileSync(
+      keyFile,
+      process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY ?? ''
+    )
+    const gcpLoggingClient = new Logging({ keyFile })
+    loggerInstance = gcpLoggingClient.log('hosted-sessions')
+  }
+
+  return loggerInstance
+}
+
+export function log(params: {}, severity: string, error: string | {}) {
+  const logger = getLogger()
+  if (logger === undefined) {
+    console.log('GCP log entry:', JSON.stringify({ params, severity, error }))
   } else {
-    console.log(JSON.stringify(entry))
+    logger
+      .write(
+        logger.entry({ ...metadata, severity: severity }, { params, error })
+      )
+      .catch((err) => {
+        console.error(
+          'GCP log error:',
+          JSON.stringify({ err, params, severity, error })
+        )
+      })
   }
 }
