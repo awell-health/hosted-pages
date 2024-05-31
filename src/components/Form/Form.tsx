@@ -19,6 +19,8 @@ import { useHostedSession } from '../../hooks/useHostedSession'
 import { isEmpty, isNil } from 'lodash'
 import { Option } from '../../types/generated/types-orchestration'
 import { ErrorLabels } from '@awell-health/ui-library/dist/types/hooks/useForm/types'
+import { useLogging } from '../../hooks/useLogging'
+import { LogEvent } from '../../hooks/useLogging/types'
 
 interface FormProps {
   activity: Activity
@@ -30,18 +32,41 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const [evaluateFormRules] = useEvaluateFormRules(activity.object.id)
   const { onSubmit, isSubmitting } = useSubmitForm(activity)
   const { branding, theme } = useHostedSession()
+  const { infoLog, errorLog } = useLogging()
 
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
   if (isFetching) {
+    infoLog(
+      {
+        activity,
+        formProgress,
+      },
+      LogEvent.FORM_WAITING_FOR_FETCH
+    )
     return <LoadingPage />
   }
   if (error || isNil(form)) {
+    errorLog(
+      {
+        activity,
+        form,
+      },
+      error ? error : 'Form is null',
+      LogEvent.FORM_FETCH_FAILED
+    )
     return (
       <ErrorPage title={t('activities.form.loading_error')} onRetry={refetch} />
     )
   }
   if (isSubmitting) {
+    infoLog(
+      {
+        activity,
+        form,
+      },
+      LogEvent.FORM_WAITING_FOR_SUBMISSION
+    )
     return <LoadingPage />
   }
 
@@ -90,6 +115,14 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   const handleOnAnswersChange = (response: string): void => {
     if (response !== formProgress) {
+      infoLog(
+        {
+          activity,
+          form,
+          containsStoredAnswers: formProgress !== undefined,
+        },
+        LogEvent.FORM_UPDATED_LOCAL_STORAGE
+      )
       setFormProgress(response)
     }
   }
