@@ -24,11 +24,11 @@
       "video_attachment": "Abrir vídeo"
     },
     "collect_medication": {
-      "add_medication_button": "Add medication",
-      "medication_dose": "Dose",
-      "medication_instructions": "Instructions",
-      "medication_name": "Name",
-      "submit_button": "Submit"
+      "add_medication_button": "Agregar medicamento",
+      "medication_dose": "Dosis",
+      "medication_instructions": "Instrucciones",
+      "medication_name": "Nombre",
+      "submit_button": "Enviar"
     },
     "cta_done": "Listo",
     "docu_sign": {
