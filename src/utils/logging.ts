@@ -1,5 +1,4 @@
 import { Log, Logging } from '@google-cloud/logging'
-import Container from 'typedi'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
