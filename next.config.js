@@ -26,16 +26,22 @@ const nextPlugins = [
 ]
 
 const initialiseLogger = () => {
-  if (process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY) {
-    const keyFile = path.join(os.tmpdir(), 'logging-sa-key.json')
-    fs.writeFileSync(
-      keyFile,
-      process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY ?? ''
+  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY) {
+    console.error(
+      'Environment variable GOOGLE_APPLICATION_CREDENTIALS_KEY is not set'
     )
-    const gcpLoggingClient = new Logging({ keyFile })
-    const logger = gcpLoggingClient.log('hosted-sessions')
-    typedi.Container.set({ id: 'gcpLogger', value: logger })
+    return
   }
+
+  console.log('Initializing logger')
+  const keyFile = path.join(os.tmpdir(), 'logging-sa-key.json')
+  fs.writeFileSync(
+    keyFile,
+    process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY ?? ''
+  )
+  const gcpLoggingClient = new Logging({ keyFile })
+  const logger = gcpLoggingClient.log('hosted-sessions')
+  typedi.Container.set({ id: 'gcpLogger', value: logger })
 }
 
 module.exports = async (phase) => {

@@ -6,10 +6,10 @@ const metadata = {
 }
 
 export function log(params: {}, severity: string, error: string | {}) {
-  const logger = Container.get<Log>('gcpLogger')
-  if (logger === undefined) {
+  if (!Container.has('gcpLogger')) {
     console.log('GCP log entry:', JSON.stringify({ params, severity, error }))
   } else {
+    const logger = Container.get<Log>('gcpLogger')
     logger
       .write(
         logger.entry({ ...metadata, severity: severity }, { params, error })
