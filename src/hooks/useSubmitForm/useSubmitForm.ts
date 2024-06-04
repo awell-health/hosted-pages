@@ -33,7 +33,7 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
         msg: 'Trying to submit a form response',
         activity,
       },
-      LogEvent.FORM_UPDATED_LOCAL_STORAGE
+      LogEvent.FORM_SUBMITTING
     )
     try {
       await submitFormResponse({ variables })

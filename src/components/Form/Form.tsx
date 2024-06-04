@@ -115,14 +115,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   const handleOnAnswersChange = (response: string): void => {
     if (response !== formProgress) {
-      infoLog(
-        {
-          activity,
-          form,
-          containsStoredAnswers: formProgress !== undefined,
-        },
-        LogEvent.FORM_UPDATED_LOCAL_STORAGE
-      )
       setFormProgress(response)
     }
   }
