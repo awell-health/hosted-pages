@@ -7,9 +7,15 @@
       }
       const result: PossibleTypesResultData = {
   "possibleTypes": {
+    "PaginationAndSortingPayload": [
+      "ActivitiesPayload",
+      "OrchestrationFactsPayload",
+      "PathwaysPayload",
+      "PatientsPayload",
+      "PublishedPathwayDefinitionsPayload"
+    ],
     "Payload": [
       "ActionPayload",
-      "ActivitiesPayload",
       "AddIdentifierToPatientPayload",
       "AddTrackPayload",
       "ApiCallPayload",
@@ -35,16 +41,12 @@
       "HostedSessionPayload",
       "MarkMessageAsReadPayload",
       "MessagePayload",
-      "OrchestrationFactsPayload",
       "OrchestrationFactsPromptPayload",
       "PathwayDataPointDefinitionsPayload",
       "PathwayPayload",
-      "PathwaysPayload",
       "PatientDemographicsPayload",
       "PatientPathwaysPayload",
       "PatientPayload",
-      "PatientsPayload",
-      "PublishedPathwayDefinitionsPayload",
       "RetryApiCallPayload",
       "RetryWebhookCallPayload",
       "ScheduleTrackPayload",
