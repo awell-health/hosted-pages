@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useEffect, useMemo } from 'react'
 import classes from './Redirect.module.css'
-import activityClasses from '../../../../../../styles/ActivityLayout.module.css'
+import activityClasses from '../../../../../styles/ActivityLayout.module.css'
 
-import type { ExtensionActivityRecord } from '../../../types'
+import type { ExtensionActivityRecord } from '../../types'
 import { useRedirect } from './hooks/useRedirect'
-import { mapActionFieldsToObject } from '../../../utils'
+import { mapActionFieldsToObject } from '../../utils'
 import { ActionFields } from './types'
 import { isEmpty } from 'lodash'
 import { RichTextViewer } from '@awell-health/ui-library'

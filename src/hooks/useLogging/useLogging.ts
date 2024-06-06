@@ -11,7 +11,7 @@ interface UseLoggingHook {
 
 export const useLogging = (): UseLoggingHook => {
   const authContext = useAuthentication()
-  const { session } = useHostedSession()
+  const { session, metadata } = useHostedSession()
 
   const log = async (
     params: {},
@@ -25,7 +25,7 @@ export const useLogging = (): UseLoggingHook => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        params: { ...params, authContext, session, event },
+        params: { ...params, authContext, session, metadata, event },
         severity,
         error,
       }),

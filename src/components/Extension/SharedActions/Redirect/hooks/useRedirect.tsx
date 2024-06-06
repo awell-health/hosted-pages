@@ -1,8 +1,5 @@
 import { useCallback } from 'react'
-import {
-  DataPoints,
-  useCompleteExtensionActivity,
-} from '../../EnterMedication/types'
+import { DataPoints, useCompleteExtensionActivity } from '../types'
 
 export const useRedirect = () => {
   const { isSubmitting, onSubmit: _onSubmit } = useCompleteExtensionActivity()

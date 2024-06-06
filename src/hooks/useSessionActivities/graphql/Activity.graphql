@@ -13,4 +13,9 @@ fragment Activity on Activity {
     type
     name
   }
+  action_component {
+    definition_id
+    release_id
+    title
+  }
 }
