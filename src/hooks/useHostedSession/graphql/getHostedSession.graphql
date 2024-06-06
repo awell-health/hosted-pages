@@ -12,5 +12,9 @@ query GetHostedSession {
       hosted_page_autosave
       custom_theme
     }
+    metadata {
+      pathway_definition_id
+      tenant_id
+    }
   }
 }
