@@ -1,10 +1,17 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import classes from './EnterMedication.module.css'
 
 import type { ExtensionActivityRecord } from '../../../types'
 import { useEnterMedication } from './hooks/useEnterMedication'
-import { Button, InputField, useTheme } from '@awell-health/ui-library'
+import {
+  Button,
+  InputField,
+  QuestionLabel,
+  useTheme,
+} from '@awell-health/ui-library'
 import { isEmpty } from 'lodash'
+import { mapActionFieldsToObject } from '../../../utils'
+import { EnterMedicationActionFields } from '../../types'
 
 interface EnterMedicationProps {
   activityDetails: ExtensionActivityRecord
@@ -20,9 +27,14 @@ export const EnterMedication: FC<EnterMedicationProps> = ({
   activityDetails,
 }) => {
   const [medications, setMedications] = useState<Medication[]>([])
-  const { activity_id } = activityDetails
+  const { activity_id, fields } = activityDetails
   const { updateLayoutMode, resetLayoutMode } = useTheme()
   const { onSubmit } = useEnterMedication()
+
+  const { label } = useMemo(
+    () => mapActionFieldsToObject<EnterMedicationActionFields>(fields),
+    [fields]
+  )
 
   useEffect(() => {
     updateLayoutMode('flexible')
@@ -44,7 +56,7 @@ export const EnterMedication: FC<EnterMedicationProps> = ({
 
     onSubmit({
       activityId: activity_id,
-      stringifiedMedication: JSON.stringify(filteredMedications),
+      medicationData: JSON.stringify(filteredMedications),
     })
   }, [activity_id, onSubmit, medications])
 
@@ -68,6 +80,11 @@ export const EnterMedication: FC<EnterMedicationProps> = ({
 
   return (
     <div>
+      {!isEmpty(label) && (
+        <div className={`${classes.container} ${classes.label}`}>
+          <QuestionLabel label={label ?? ''} />
+        </div>
+      )}
       <div className={`${classes.container} ${classes.groupMedsListContainer}`}>
         {medications.map((medication, index) => (
           <div className={classes.singleMedsListContainer} key={index}>
