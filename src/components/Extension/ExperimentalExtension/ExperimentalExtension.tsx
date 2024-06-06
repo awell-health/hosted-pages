@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { useTranslation } from 'next-i18next'
 
 import { ErrorPage } from '../../ErrorPage'
-import { EnterMedication, RequestVideoVisit } from './actions'
+import { RequestVideoVisit } from './actions'
 import { Redirect } from '../SharedActions'
 
 import { ActionKey } from './types'
@@ -20,8 +20,6 @@ export const ExperimentalExtension: FC<ExperimentalExtensionProps> = ({
   switch (activityDetails.plugin_action_key) {
     case ActionKey.REQUEST_VIDEO_VISIT:
       return <RequestVideoVisit activityDetails={activityDetails} />
-    case ActionKey.ENTER_MEDICATION:
-      return <EnterMedication activityDetails={activityDetails} />
     case ActionKey.REDIRECT:
       return <Redirect activityDetails={activityDetails} />
     default:

@@ -15,3 +15,7 @@ export type RemoteSingleSelectActionFields = {
   queryParam: string
   mandatory?: string
 }
+
+export type CollectMedicationActionFields = {
+  label?: string
+}
