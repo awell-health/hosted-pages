@@ -17,10 +17,12 @@ import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
 import { Maybe } from '../../types'
 import { type CustomTheme, getTheme } from './branding'
+import { SessionMetadata } from '../../types/generated/types-orchestration'
 
 interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
+  metadata?: SessionMetadata | null
   branding?: Maybe<BrandingSettings>
   theme: CustomTheme
   error?: string
@@ -129,6 +131,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
   return {
     loading: false,
     session: data?.hostedSession?.session,
+    metadata: data?.hostedSession?.metadata,
     branding: data?.hostedSession?.branding,
     theme: getTheme(data?.hostedSession?.branding?.custom_theme),
     refetch,
