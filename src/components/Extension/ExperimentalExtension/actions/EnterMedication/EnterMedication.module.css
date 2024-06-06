@@ -9,6 +9,10 @@
   }
 }
 
+.label {
+  margin-bottom: var(--awell-spacing-4)
+}
+
 .groupMedsListContainer {
   display: flex;
   align-items: center;
