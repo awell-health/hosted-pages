@@ -1,3 +1,3 @@
 export { PatientRecommendation } from './PatientRecommendation'
 export { EnterMedication } from './EnterMedication'
-export { Redirect } from './Redirect'
+export { Redirect } from '../../SharedActions/Redirect'

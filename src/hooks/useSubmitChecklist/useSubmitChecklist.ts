@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
 import { captureException } from '@sentry/nextjs'
+import { useLogging } from '../useLogging'
+import { LogEvent } from '../useLogging/types'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -15,6 +17,7 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
   const { id: activity_id } = activity
   const [submitChecklist] = useSubmitChecklistMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { infoLog, errorLog } = useLogging()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -23,9 +26,30 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
         activity_id: activity_id,
       },
     }
+    infoLog(
+      {
+        activity,
+        variables,
+      },
+      LogEvent.CHECKLIST_SUBMITTING
+    )
     try {
       await submitChecklist({ variables })
-    } catch (error) {
+      infoLog(
+        {
+          activity,
+        },
+        LogEvent.CHECKLIST_SUBMITTED
+      )
+    } catch (error: any) {
+      errorLog(
+        {
+          activity,
+          variables,
+        },
+        error,
+        LogEvent.CHECKLIST_SUBMITTING_FAILED
+      )
       setIsSubmitting(false)
       toast.error(t('activities.checklist.saving_error'))
       captureException(error, {
