@@ -78,11 +78,9 @@ export const EnterMedication: FC<EnterMedicationProps> = ({
     setMedications(medications.filter((_, i) => i !== index))
   }
 
-  const EMPTY_LABEL_HTML = `<p class=\"slate-p\"></p>`
-
   return (
     <div>
-      {!isEmpty(label) && label !== EMPTY_LABEL_HTML && (
+      {!isEmpty(label) && (
         <div className={`${classes.container} ${classes.label}`}>
           <QuestionLabel label={label ?? ''} />
         </div>
