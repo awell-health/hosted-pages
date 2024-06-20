@@ -29,7 +29,7 @@ export const CollectMedication: FC<CollectMedicationProps> = ({
     (medications) => {
       onSubmit({
         activityId: activity_id,
-        medicationDataAsJson: JSON.stringify(medications),
+        medicationData: JSON.stringify(medications),
       })
     },
     [activity_id, onSubmit]
