@@ -7,13 +7,14 @@ export const useCollectMedication = () => {
   const onSubmit = useCallback(
     async ({
       activityId,
-      medicationDataAsJson,
+      medicationData,
     }: {
       activityId: string
-      medicationDataAsJson: string
+      medicationData: string
     }) => {
       const dataPoints: DataPoints = [
-        { key: 'medicationData', value: medicationDataAsJson },
+        { key: 'medicationData', value: medicationData }, // JSON data point value type
+        { key: 'medicationDataString', value: medicationData }, // String data point value type
       ]
 
       return _onSubmit(activityId, dataPoints)
