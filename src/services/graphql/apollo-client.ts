@@ -9,10 +9,11 @@ import {
   split,
 } from '@apollo/client'
 import { ErrorLink, onError } from '@apollo/client/link/error'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient as createWebsocketClient } from 'graphql-ws'
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { isNil } from 'lodash'
+import { LogEvent } from '../../hooks/useLogging/types'
 
 export const createClient = ({
   httpUri,
@@ -20,12 +21,16 @@ export const createClient = ({
   onNetworkError = () => undefined,
   extraLinks = [],
   cacheConfig,
+  infoLog,
+  errorLog,
 }: {
   httpUri: string
   wsUri: string
   onNetworkError?: ErrorLink.ErrorHandler
   extraLinks?: Array<ApolloLink>
   cacheConfig: InMemoryCacheConfig
+  infoLog: (message: {}, event: LogEvent) => void
+  errorLog: (message: {}, error: string | {}, event: LogEvent) => void
 }): ApolloClient<NormalizedCacheObject> => {
   const httpLink = createHttpLink({ uri: httpUri })
 
@@ -63,6 +68,27 @@ export const createClient = ({
         url: wsUri,
         connectionParams: {
           authToken: window.sessionStorage.getItem('accessToken'),
+        },
+        on: {
+          connected: () => {
+            infoLog(
+              { msg: 'GraphQL WebSocket connected' },
+              LogEvent.GRAPHQL_WS_CONNECTED
+            )
+          },
+          error: (error) => {
+            errorLog(
+              { msg: 'GraphQL WebSocket error', error },
+              JSON.stringify(error),
+              LogEvent.GRAPHQL_WS_ERROR
+            )
+          },
+          closed: () => {
+            infoLog(
+              { msg: 'GraphQL WebSocket disconnected' },
+              LogEvent.GRAPHQL_WS_DISCONNECTED
+            )
+          },
         },
       })
     )
