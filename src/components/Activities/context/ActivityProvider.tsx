@@ -17,6 +17,12 @@ interface ActivityProviderProps {
 
 const isActive = (activity: Activity | undefined) =>
   activity?.status === ActivityStatus.Active
+
+/**
+ * TODO: Remove the granular logs once we have successfully diagnosed the issue with the
+ * same activities being loaded multiple times.
+ */
+
 /**
  * Provider to store of the current activity being shown to user
  * and to determine the next activity from the activities list.
@@ -35,6 +41,18 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     if (!loading) {
       // get current from the list, it may be updated
       const current = activities.find(({ id }) => id === currentActivity?.id)
+
+      infoLog(
+        {
+          msg: 'Activities list changed',
+          activities,
+          prevCurrentActivity: currentActivity,
+          nextCurrentActivity: current,
+          numberOfActivities: activities.length,
+        },
+        LogEvent.ACTIVITIES_LIST_CHANGED
+      )
+
       // try and change current activity if it's not active
       if (!isActive(current)) {
         const firstActive = activities.find(isActive)
@@ -42,11 +60,26 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
           // nothing to activate, start polling for new activities so we don't rely on subscriptions
           setCurrentActivity(undefined)
           startPolling(POLLING_DELAY)
+
+          infoLog(
+            { msg: 'No active activity found, starting polling' },
+            LogEvent.ACTIVITIES_START_POLLING
+          )
         } else {
           // we have something to activate, stop polling, no need for it
           setCurrentActivity(firstActive)
           stopPolling()
+
+          infoLog(
+            { msg: 'Active activity found, stopping polling', firstActive },
+            LogEvent.ACTIVITIES_STOP_POLLING
+          )
         }
+      } else {
+        infoLog(
+          { msg: 'Current activity is active', current },
+          LogEvent.ACTIVITY_IS_ACTIVE
+        )
       }
       infoLog(
         {
