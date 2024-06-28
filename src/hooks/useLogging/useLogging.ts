@@ -26,6 +26,7 @@ export const useLogging = (): UseLoggingHook => {
       },
       body: JSON.stringify({
         params: { ...params, authContext, session, metadata, event },
+        client_timestamp: new Date().toISOString(),
         severity,
         error,
       }),
