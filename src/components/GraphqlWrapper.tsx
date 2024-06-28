@@ -4,6 +4,7 @@ import { createClient } from '../services/graphql'
 import React, { FC } from 'react'
 import fragmentTypes from '../types/generated/fragment-types'
 import * as Sentry from '@sentry/nextjs'
+import { useLogging } from '../hooks/useLogging'
 
 const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
   if (networkError) {
@@ -33,6 +34,8 @@ const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
 export const GraphqlWrapper: FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
+  const { infoLog, errorLog } = useLogging()
+
   const client = createClient({
     httpUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API as string,
     wsUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API_WS as string,
@@ -40,6 +43,8 @@ export const GraphqlWrapper: FC<{ children?: React.ReactNode }> = ({
     cacheConfig: {
       possibleTypes: fragmentTypes.possibleTypes,
     },
+    infoLog,
+    errorLog,
   })
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>
