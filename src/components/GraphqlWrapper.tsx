@@ -34,7 +34,7 @@ const onError: ErrorLink.ErrorHandler = ({ operation, networkError }) => {
 export const GraphqlWrapper: FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  const { infoLog, errorLog } = useLogging()
+  // const { infoLog, errorLog } = useLogging()
 
   const client = createClient({
     httpUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API as string,
@@ -43,8 +43,8 @@ export const GraphqlWrapper: FC<{ children?: React.ReactNode }> = ({
     cacheConfig: {
       possibleTypes: fragmentTypes.possibleTypes,
     },
-    infoLog,
-    errorLog,
+    // infoLog,
+    // errorLog,
   })
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>
