@@ -21,16 +21,16 @@ export const createClient = ({
   onNetworkError = () => undefined,
   extraLinks = [],
   cacheConfig,
-  infoLog,
-  errorLog,
-}: {
+}: //infoLog,
+//errorLog,
+{
   httpUri: string
   wsUri: string
   onNetworkError?: ErrorLink.ErrorHandler
   extraLinks?: Array<ApolloLink>
   cacheConfig: InMemoryCacheConfig
-  infoLog: (message: {}, event: LogEvent) => void
-  errorLog: (message: {}, error: string | {}, event: LogEvent) => void
+  //infoLog: (message: {}, event: LogEvent) => void
+  //errorLog: (message: {}, error: string | {}, event: LogEvent) => void
 }): ApolloClient<NormalizedCacheObject> => {
   const httpLink = createHttpLink({ uri: httpUri })
 
@@ -69,6 +69,7 @@ export const createClient = ({
         connectionParams: {
           authToken: window.sessionStorage.getItem('accessToken'),
         },
+        /*
         on: {
           connected: () => {
             infoLog(
@@ -90,6 +91,7 @@ export const createClient = ({
             )
           },
         },
+        */
       })
     )
   }
