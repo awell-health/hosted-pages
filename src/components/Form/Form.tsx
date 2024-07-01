@@ -109,8 +109,12 @@ export const Form: FC<FormProps> = ({ activity }) => {
         response: masker(response),
       },
     })
-    setFormProgress(undefined)
-    await onSubmit(response)
+
+    const result = await onSubmit(response)
+
+    if (result) {
+      setFormProgress(undefined)
+    }
   }
 
   const handleOnAnswersChange = (response: string): void => {

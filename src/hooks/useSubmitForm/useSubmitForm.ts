@@ -6,8 +6,9 @@ import { useSubmitFormResponseMutation } from './types'
 import { captureException } from '@sentry/nextjs'
 import { useLogging } from '../useLogging'
 import { LogEvent } from '../useLogging/types'
+import { isNil } from 'lodash'
 interface UseFormActivityHook {
-  onSubmit: (response: Array<AnswerInput>) => Promise<void>
+  onSubmit: (response: Array<AnswerInput>) => Promise<boolean>
   isSubmitting: boolean
 }
 
@@ -19,7 +20,12 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { infoLog, errorLog } = useLogging()
 
-  const onSubmit = async (response: Array<AnswerInput>) => {
+  /**
+   *
+   * @param response Form response
+   * @returns true if the form response was successfully submitted
+   */
+  const onSubmit = async (response: Array<AnswerInput>): Promise<boolean> => {
     setIsSubmitting(true)
     const variables = {
       input: {
@@ -36,12 +42,22 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       LogEvent.FORM_SUBMITTING
     )
     try {
-      await submitFormResponse({ variables })
+      const { errors } = await submitFormResponse({ variables })
+
+      if (!isNil(errors) && errors.length > 0) {
+        throw new Error(
+          errors[0].message ??
+            'Something went wrong while submitting the form response'
+        )
+      }
+
       infoLog(
         { msg: 'Form response submitted', activity },
         LogEvent.FORM_SUBMITTED
       )
       setIsSubmitting(false)
+
+      return true
     } catch (error: any) {
       errorLog(
         {
@@ -66,6 +82,7 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
           },
         },
       })
+      return false
     }
   }
 
