@@ -110,9 +110,9 @@ export const Form: FC<FormProps> = ({ activity }) => {
       },
     })
 
-    const result = await onSubmit(response)
+    const isSubmitted = await onSubmit(response)
 
-    if (result) {
+    if (isSubmitted) {
       setFormProgress(undefined)
     }
   }
