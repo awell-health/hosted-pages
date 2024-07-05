@@ -7,6 +7,7 @@ import { captureException } from '@sentry/nextjs'
 import { useLogging } from '../useLogging'
 import { LogEvent } from '../useLogging/types'
 import { isNil } from 'lodash'
+import { getErrorMessage } from './utils'
 interface UseFormActivityHook {
   onSubmit: (response: Array<AnswerInput>) => Promise<boolean>
   isSubmitting: boolean
@@ -69,7 +70,11 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
         LogEvent.FORM_SUBMISSION_FAILED
       )
       setIsSubmitting(false)
-      toast.error(t('activities.form.saving_error'))
+      const errorText = getErrorMessage(
+        error,
+        t('activities.form.saving_error')
+      )
+      toast.error(errorText)
       captureException(error, {
         contexts: {
           activity,
