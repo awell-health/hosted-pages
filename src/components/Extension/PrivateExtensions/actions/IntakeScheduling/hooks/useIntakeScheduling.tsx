@@ -8,11 +8,19 @@ export const useIntakeScheduling = () => {
     async ({
       activityId,
       eventId,
+      date,
     }: {
       activityId: string
       eventId: string
+      date: Date
     }) => {
-      const dataPoints: DataPoints = [{ key: 'eventId', value: eventId }]
+      const dataPoints: DataPoints = [
+        { key: 'eventId', value: eventId },
+        {
+          key: 'date',
+          value: date.toISOString(),
+        },
+      ]
 
       return _onSubmit(activityId, dataPoints)
     },

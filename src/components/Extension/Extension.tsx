@@ -81,8 +81,7 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     case ExtensionKey.COLLECT_DATA:
       return <CollectDataExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.STRIPE:
-      // UNDO THIS!!!!
-      return <IntakeScheduling activityDetails={extensionActivityDetails} />
+      return <StripeExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.EXPERIMENTAL:
       return (
         <ExperimentalExtension activityDetails={extensionActivityDetails} />
