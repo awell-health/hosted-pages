@@ -26,4 +26,5 @@ export enum AnonymousActionKeys {
   COLLECT_MEDICATION = 'collectMedication',
   PATIENT_RECOMMENDATION = 'patientRecommendation',
   REDIRECT = 'redirect',
+  INTAKE_SCHEDULING = 'intakeScheduling',
 }

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../../src/utils'
+import { BookAppointmentInputSchema } from '@awell-health/sol-scheduling'
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,20 +19,23 @@ export default async function handler(
       resource: process.env.SOL_RESOURCE ?? '',
     })
 
+    const bodyValidation = BookAppointmentInputSchema.safeParse(req.body)
+
+    if (!bodyValidation.success) {
+      const { errors } = bodyValidation.error
+
+      return res.status(400).json({
+        error: { message: 'Invalid request', errors },
+      })
+    }
+
     const response = await fetch(process.env.SOL_BOOKING_ENDPOINT ?? '', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      // body: JSON.stringify(req.body),
-      body: JSON.stringify({
-        eventId: 'event_2',
-        userInfo: {
-          userName: 'Nick Hellemans',
-          userEmail: 'nick@awellhealth.com',
-        },
-      }),
+      body: JSON.stringify(bodyValidation.data),
     })
 
     if (!response.ok) {

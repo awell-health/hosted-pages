@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../../../src/utils'
+import { GetProvidersInputSchema } from '@awell-health/sol-scheduling'
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,26 +19,23 @@ export default async function handler(
       resource: process.env.SOL_RESOURCE ?? '',
     })
 
+    const bodyValidation = GetProvidersInputSchema.safeParse(req.body)
+
+    if (!bodyValidation.success) {
+      const { errors } = bodyValidation.error
+
+      return res.status(400).json({
+        error: { message: 'Invalid request', errors },
+      })
+    }
+
     const response = await fetch(process.env.SOL_PROVIDERS_ENDPOINT ?? '', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      // body: JSON.stringify(req.body),
-      body: JSON.stringify({
-        agePreference: '18-25',
-        gender: 'M',
-        ethnicity: 'Hispanic',
-        language: 'en',
-        therapeuticModality: 'Psychiatry',
-        clinicalFocus: ['Panic Disorder', 'Acute Stress'],
-        deliveryMethod: 'Virtual',
-        location: {
-          facility: 'f1',
-          state: 'Broomfield',
-        },
-      }),
+      body: JSON.stringify(bodyValidation.data),
     })
 
     if (!response.ok) {

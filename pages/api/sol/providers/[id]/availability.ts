@@ -1,5 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../../../../src/utils'
+import {
+  type GetAvailabilitiesResponseType,
+  GetAvailabilitiesInputSchema,
+} from '@awell-health/sol-scheduling'
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,16 +22,23 @@ export default async function handler(
       resource: process.env.SOL_RESOURCE ?? '',
     })
 
+    const bodyValidation = GetAvailabilitiesInputSchema.safeParse(req.body)
+
+    if (!bodyValidation.success) {
+      const { errors } = bodyValidation.error
+
+      return res.status(400).json({
+        error: { message: 'Invalid request', errors },
+      })
+    }
+
     const response = await fetch(process.env.SOL_AVAILABILITY_ENDPOINT ?? '', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      // body: JSON.stringify(req.body),
-      body: JSON.stringify({
-        providerId: ['6113'],
-      }),
+      body: JSON.stringify(bodyValidation.data),
     })
 
     if (!response.ok) {
@@ -38,7 +49,7 @@ export default async function handler(
       })
     }
 
-    const jsonRes = await response.json()
+    const jsonRes: GetAvailabilitiesResponseType = await response.json()
     return res.status(200).json({ success: true, data: jsonRes })
   } catch (error) {
     return res.status(500).json({
