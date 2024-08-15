@@ -37,17 +37,15 @@ export default async function handler(
 
     if (!response.ok) {
       return res.status(response.status).json({
-        success: false,
         error: `Request failed with status ${response.status}`,
         errorCode: String(response.status),
       })
     }
 
     const jsonRes: GetAvailabilitiesResponseType = await response.json()
-    return res.status(200).json({ success: true, data: jsonRes })
+    return res.status(200).json(jsonRes)
   } catch (error) {
     return res.status(500).json({
-      success: false,
       error: 'Internal Server Error',
       errorCode: '500',
     })

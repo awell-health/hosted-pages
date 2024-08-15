@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../../../src/utils'
-import { GetProvidersInputSchema } from '@awell-health/sol-scheduling'
+import {
+  GetProvidersInputSchema,
+  GetProvidersResponseType,
+} from '@awell-health/sol-scheduling'
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,17 +43,15 @@ export default async function handler(
 
     if (!response.ok) {
       return res.status(response.status).json({
-        success: false,
         error: `Request failed with status ${response.status}`,
         errorCode: String(response.status),
       })
     }
 
-    const jsonRes = await response.json()
-    return res.status(200).json({ success: true, data: jsonRes })
+    const jsonRes: GetProvidersResponseType = await response.json()
+    return res.status(200).json(jsonRes)
   } catch (error) {
     return res.status(500).json({
-      success: false,
       error: 'Internal Server Error',
       errorCode: '500',
     })

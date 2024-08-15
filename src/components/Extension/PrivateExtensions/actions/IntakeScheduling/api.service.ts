@@ -13,6 +13,9 @@ export const fetchProviders = async (
   try {
     const response = await fetch('/api/sol/providers', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(input),
     })
     if (!response.ok) {
@@ -72,6 +75,9 @@ export const bookAppointment = async (
   try {
     const response = await fetch(`/api/sol/appointments`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(input),
     })
     if (!response.ok) {

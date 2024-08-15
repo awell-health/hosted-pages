@@ -14,6 +14,7 @@ import {
   fetchProviders,
 } from './api.service'
 import { useTheme } from '@awell-health/ui-library'
+import '@awell-health/sol-scheduling/style.css'
 
 interface IntakeSchedulingProps {
   activityDetails: ExtensionActivityRecord
@@ -67,24 +68,44 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         ethnicity: ethnicityPreference,
         language: languagePreference,
         therapeuticModality: therapeuticModalityPreference,
-        clinicalFocus: clinicalFocusPreference,
+        /**
+         * Although it's an array of strings,
+         * we receive it as comma-separated string in hosted pages
+         */
+        clinicalFocus: clinicalFocusPreference.split(',') as (
+          | 'Panic Disorder'
+          | 'Acute Stress'
+          | 'Generalized Anxiety'
+        )[],
         deliveryMethod: deliveryMethodPreference,
         location: {
           facility: locationFacilityPreference,
           state: locationStatePreference,
         },
       }),
-    []
+    [
+      patientName,
+      patientEmail,
+      agePreference,
+      genderPreference,
+      languagePreference,
+      ethnicityPreference,
+      clinicalFocusPreference,
+      deliveryMethodPreference,
+      locationStatePreference,
+      locationFacilityPreference,
+      therapeuticModalityPreference,
+    ]
   )
 
   const fetchAvailabilityFn = useCallback(() => {
     if (!provider)
-      throw new Error('No provider seleted to fetch availabilities for')
+      throw new Error('No provider selected to fetch availabilities for')
 
     return fetchAvailability({
       providerId: [provider],
     })
-  }, [])
+  }, [provider])
 
   const bookAppointmentFn = useCallback(() => {
     if (!slot) throw new Error('No slot was selected')
@@ -96,7 +117,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         userEmail: patientEmail,
       },
     })
-  }, [])
+  }, [slot, patientName, patientEmail])
 
   const completeActivity = useCallback(() => {
     if (!slot) throw new Error('No slot was selected')
@@ -106,13 +127,13 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       eventId: slot.eventId,
       date: slot.startDate,
     })
-  }, [activity_id, onSubmit])
+  }, [activity_id, onSubmit, slot, activity_id])
 
   return (
     <SchedulingActivity
-      onProviderSelect={setProvider}
-      onDateSelect={setDate}
-      onSlotSelect={setSlot}
+      onProviderSelect={(id) => setProvider(id)}
+      onDateSelect={(date) => setDate(date)}
+      onSlotSelect={(slot) => setSlot(slot)}
       onBooking={bookAppointmentFn}
       fetchProviders={fetchProvidersFn}
       fetchAvailability={fetchAvailabilityFn}
