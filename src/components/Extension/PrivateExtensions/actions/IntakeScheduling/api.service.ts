@@ -27,8 +27,8 @@ export const fetchProviders = async (
     /**
      * Logging it the console for during the bootcamp
      */
-    console.log('response', response)
-    console.log('json response', jsonRes)
+    console.log('[fetch providers] response', response)
+    console.log('[fetch providers] json response', jsonRes)
 
     return jsonRes
   } catch (error) {
@@ -56,8 +56,8 @@ export const fetchAvailability = async (
     /**
      * Logging it the console for during the bootcamp
      */
-    console.log('response', response)
-    console.log('json response', jsonRes)
+    console.log('[fetch availability] response', response)
+    console.log('[fetch availability] json response', jsonRes)
 
     return jsonRes
   } catch (error) {
@@ -89,8 +89,8 @@ export const bookAppointment = async (
     /**
      * Logging it the console for during the bootcamp
      */
-    console.log('response', response)
-    console.log('json response', jsonRes)
+    console.log('[book appt] response', response)
+    console.log('[book appt] json response', jsonRes)
 
     return jsonRes
   } catch (error) {

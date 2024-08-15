@@ -98,26 +98,21 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     ]
   )
 
-  const fetchAvailabilityFn = useCallback(() => {
-    if (!provider)
-      throw new Error('No provider selected to fetch availabilities for')
-
+  const fetchAvailabilityFn = useCallback((_providerId: string) => {
     return fetchAvailability({
-      providerId: [provider],
+      providerId: [_providerId],
     })
-  }, [provider])
+  }, [])
 
-  const bookAppointmentFn = useCallback(() => {
-    if (!slot) throw new Error('No slot was selected')
-
+  const bookAppointmentFn = useCallback((_slot: SlotType) => {
     return bookAppointment({
-      eventId: slot.eventId,
+      eventId: _slot.eventId,
       userInfo: {
         userName: patientName,
         userEmail: patientEmail,
       },
     })
-  }, [slot, patientName, patientEmail])
+  }, [])
 
   const completeActivity = useCallback(() => {
     if (!slot) throw new Error('No slot was selected')
@@ -127,7 +122,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       eventId: slot.eventId,
       date: slot.startDate,
     })
-  }, [activity_id, onSubmit, slot, activity_id])
+  }, [activity_id, onSubmit, slot])
 
   return (
     <SchedulingActivity
@@ -138,6 +133,14 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       fetchProviders={fetchProvidersFn}
       fetchAvailability={fetchAvailabilityFn}
       onCompleteActivity={completeActivity}
+      opts={{
+        /**
+         * This should be set to false soon but current API response returns
+         * fixed availabilities that are in the past so to unblock e2e testing
+         * I'm allowing it for now
+         */
+        allowSchedulingInThePast: true,
+      }}
     />
   )
 }
