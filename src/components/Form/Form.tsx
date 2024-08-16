@@ -166,7 +166,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
     <>
       {renderTraditionalForm && (
         <TraditionalForm
-          // @ts-ignore FIX THIS
           form={modifiedForm}
           questionLabels={labels}
           buttonLabels={button_labels}
@@ -180,7 +179,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
       )}
       {!renderTraditionalForm && (
         <ConversationalForm
-          // @ts-ignore FIX THIS
           form={modifiedForm}
           questionLabels={labels}
           buttonLabels={button_labels}

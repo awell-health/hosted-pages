@@ -17,11 +17,21 @@ export default async function handler(
   try {
     const { id } = req.query
 
+    if (
+      !process.env.SOL_AUTH_URL ||
+      !process.env.SOL_CLIENT_ID ||
+      !process.env.SOL_CLIENT_SECRET ||
+      !process.env.SOL_RESOURCE
+    )
+      throw new Error(
+        'Missing environment variables for connection to the SOL API'
+      )
+
     const accessToken = await getAccessToken({
-      authUrl: process.env.SOL_AUTH_URL ?? '',
-      clientId: process.env.SOL_CLIENT_ID ?? '',
-      clientSecret: process.env.SOL_CLIENT_SECRET ?? '',
-      resource: process.env.SOL_RESOURCE ?? '',
+      authUrl: process.env.SOL_AUTH_URL,
+      clientId: process.env.SOL_CLIENT_ID,
+      clientSecret: process.env.SOL_CLIENT_SECRET,
+      resource: process.env.SOL_RESOURCE,
     })
 
     const response = await fetch(process.env.SOL_AVAILABILITY_ENDPOINT ?? '', {
