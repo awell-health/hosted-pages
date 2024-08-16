@@ -352,8 +352,11 @@ export type ApiCallRequest = {
 };
 
 export enum ApiCallRequestMethod {
+  Delete = 'DELETE',
   Get = 'GET',
-  Post = 'POST'
+  Patch = 'PATCH',
+  Post = 'POST',
+  Put = 'PUT'
 }
 
 export type ApiCallResponse = {
