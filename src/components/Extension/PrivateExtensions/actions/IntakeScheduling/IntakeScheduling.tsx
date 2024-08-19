@@ -4,10 +4,7 @@ import type { ExtensionActivityRecord } from '../../../types'
 import { useIntakeScheduling } from './hooks/useIntakeScheduling'
 import { mapActionFieldsToObject } from '../../../utils'
 import { ActionFields } from './types'
-import {
-  GetAvailabilitiesResponseType,
-  SchedulingActivity,
-} from '@awell-health/sol-scheduling'
+import { type SlotType, SchedulingActivity } from '@awell-health/sol-scheduling'
 import {
   bookAppointment,
   fetchAvailability,
@@ -20,10 +17,7 @@ interface IntakeSchedulingProps {
   activityDetails: ExtensionActivityRecord
 }
 
-type SlotType = Pick<
-  GetAvailabilitiesResponseType['data'][0],
-  'startDate' | 'eventId' | 'duration'
->
+const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   activityDetails,
@@ -107,9 +101,9 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const bookAppointmentFn = useCallback((_slot: SlotType) => {
     return bookAppointment({
       eventId: _slot.eventId,
+      providerId: _slot.providerId,
       userInfo: {
         userName: patientName,
-        userEmail: patientEmail,
       },
     })
   }, [])
@@ -120,12 +114,13 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     onSubmit({
       activityId: activity_id,
       eventId: slot.eventId,
-      date: slot.startDate,
+      date: slot.slotstart,
     })
   }, [activity_id, onSubmit, slot])
 
   return (
     <SchedulingActivity
+      timeZone={timeZone}
       onProviderSelect={(id) => setProvider(id)}
       onDateSelect={(date) => setDate(date)}
       onSlotSelect={(slot) => setSlot(slot)}
@@ -134,12 +129,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       fetchAvailability={fetchAvailabilityFn}
       onCompleteActivity={completeActivity}
       opts={{
-        /**
-         * This should be set to false soon but current API response returns
-         * fixed availabilities that are in the past so to unblock e2e testing
-         * I'm allowing it for now
-         */
-        allowSchedulingInThePast: true,
+        allowSchedulingInThePast: false,
       }}
     />
   )
