@@ -5,19 +5,14 @@ export {
 
 export type ActionFields = {
   patientName: string
-  patientEmail: string
-  deliveryMethodPreference: 'Virtual' | 'In-Person' | 'Hybrid'
-  locationFacilityPreference: 'f1' | 'f2' | 'f3'
-  locationStatePreference: string
-  agePreference: '18-25' | '26-50' | '50-60'
-  genderPreference: 'M' | 'F'
-  languagePreference: 'en' | 'sp' | 'fr' | 'de' | 'it'
-  therapeuticModalityPreference: 'Psychiatry' | 'Therapy'
-  clinicalFocusPreference: string // although it's an array of strings, we receive it as comma-separated string in hosted pages
-  // clinicalFocusPreference: (
-  //   | 'Panic Disorder'
-  //   | 'Acute Stress'
-  //   | 'Generalized Anxiety'
-  // )[]
-  ethnicityPreference: 'Hispanic' | 'Caucasian' | 'African American'
+  agePreference?: number | undefined
+  genderPreference?: 'M' | 'F' | undefined
+  ethnicityPreference?: 'Hispanic' | 'White' | 'African American' | undefined
+  therapeuticModalityPreference?: 'Psychiatric' | 'Therapy' | undefined
+  clinicalFocusPreference?: string | undefined // we receive it as a string although it's an array of strings
+  // clinicalFocusPreference?:
+  //   | ('ADHD' | 'Anxiety d/o' | 'Autism spectrum' | 'Gender dysphoria')[]
+  //   | undefined
+  deliveryMethodPreference?: 'virtual' | 'in-person' | undefined
+  locationStatePreference?: 'CO' | 'NY' | 'TX' | 'VA' | 'MD' | 'DC' | undefined
 }
