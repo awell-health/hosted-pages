@@ -68,6 +68,18 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
               | 'Anxiety d/o'
               | 'Autism spectrum'
               | 'Gender dysphoria'
+              | 'Trauma (including PTSD)'
+              | 'Depressive d/o'
+              | 'Bipolar spectrum'
+              | 'Anger management'
+              | 'OCD'
+              | 'Personality d/o'
+              | 'Substance use'
+              | 'Eating d/o'
+              | 'Psychosis (e.g. schizophrenia)'
+              | 'Dissociative d/o'
+              | 'Developmental delay'
+              | 'Traumatic brain injury'
             )[])
           : undefined,
         deliveryMethod: deliveryMethodPreference,
