@@ -33,15 +33,12 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
 
   const {
     patientName,
-    patientEmail,
     agePreference,
     genderPreference,
-    languagePreference,
     ethnicityPreference,
     clinicalFocusPreference,
     deliveryMethodPreference,
     locationStatePreference,
-    locationFacilityPreference,
     therapeuticModalityPreference,
   } = useMemo(() => mapActionFieldsToObject<ActionFields>(fields), [fields])
 
@@ -57,37 +54,35 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const fetchProvidersFn = useCallback(
     () =>
       fetchProviders({
-        agePreference,
+        age: agePreference ? String(agePreference) : undefined,
         gender: genderPreference,
         ethnicity: ethnicityPreference,
-        language: languagePreference,
         therapeuticModality: therapeuticModalityPreference,
         /**
          * Although it's an array of strings,
          * we receive it as comma-separated string in hosted pages
          */
-        clinicalFocus: clinicalFocusPreference.split(',') as (
-          | 'Panic Disorder'
-          | 'Acute Stress'
-          | 'Generalized Anxiety'
-        )[],
+        clinicalFocus: clinicalFocusPreference
+          ? (clinicalFocusPreference.split(',') as (
+              | 'ADHD'
+              | 'Anxiety d/o'
+              | 'Autism spectrum'
+              | 'Gender dysphoria'
+            )[])
+          : undefined,
         deliveryMethod: deliveryMethodPreference,
         location: {
-          facility: locationFacilityPreference,
           state: locationStatePreference,
         },
       }),
     [
       patientName,
-      patientEmail,
       agePreference,
       genderPreference,
-      languagePreference,
       ethnicityPreference,
       clinicalFocusPreference,
       deliveryMethodPreference,
       locationStatePreference,
-      locationFacilityPreference,
       therapeuticModalityPreference,
     ]
   )
