@@ -10,14 +10,18 @@ import type {
 export const fetchProviders = async (
   input: GetProvidersInputType
 ): Promise<GetProvidersResponseType> => {
+  const { location, ...rest } = input
+  console.log('removing location from api request', { location })
+  console.log('sending request with input', { rest })
   try {
     const response = await fetch('/api/sol/providers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify(rest),
     })
+
     if (!response.ok) {
       throw new Error('Failed to fetch providers')
     }
