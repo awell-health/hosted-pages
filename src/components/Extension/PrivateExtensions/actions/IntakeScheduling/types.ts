@@ -4,6 +4,7 @@ export {
 } from '../../../../../hooks/useCompleteExtensionActivity'
 
 export type ActionFields = {
+  providerId?: string | undefined
   patientName: string
   agePreference?: number | undefined
   genderPreference?: 'M' | 'F' | 'Non-binary/non-conforming' | undefined
