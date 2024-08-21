@@ -32,6 +32,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const { onSubmit } = useIntakeScheduling()
 
   const {
+    providerId,
     patientName,
     agePreference,
     genderPreference,
@@ -128,6 +129,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
 
   return (
     <SchedulingActivity
+      providerId={providerId}
       timeZone={timeZone}
       onProviderSelect={(id) => setProvider(id)}
       onDateSelect={(date) => setDate(date)}
