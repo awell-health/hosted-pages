@@ -6,7 +6,6 @@ import type {
   BookAppointmentInputType,
   BookAppointmentResponseType,
 } from '@awell-health/sol-scheduling'
-import { rest } from 'lodash'
 
 export const fetchProviders = async (
   input: GetProvidersInputType

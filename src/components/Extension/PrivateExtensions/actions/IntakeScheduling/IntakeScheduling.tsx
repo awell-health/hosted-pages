@@ -115,15 +115,16 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     })
   }, [])
 
-  const completeActivity = useCallback(() => {
-    if (!slot) throw new Error('No slot was selected')
-
-    onSubmit({
-      activityId: activity_id,
-      eventId: slot.eventId,
-      date: slot.slotstart,
-    })
-  }, [activity_id, onSubmit, slot])
+  const completeActivity = useCallback(
+    (_slot: SlotType) => {
+      onSubmit({
+        activityId: activity_id,
+        eventId: _slot.eventId,
+        date: _slot.slotstart,
+      })
+    },
+    [activity_id, onSubmit]
+  )
 
   return (
     <SchedulingActivity
