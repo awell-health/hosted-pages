@@ -120,9 +120,10 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       onSubmit({
         activityId: activity_id,
         eventId: _slot.eventId,
-        dateString: _slot.slotstart.toLocaleDateString(),
-        timeString: _slot.slotstart.toLocaleTimeString(),
         providerId: _slot.providerId,
+        slotDate: _slot.slotstart.toISOString(),
+        slotDateOnlyLocaleString: _slot.slotstart.toLocaleDateString(),
+        slotTimeOnlyLocaleString: _slot.slotstart.toLocaleTimeString(),
       })
     },
     [activity_id, onSubmit, providerId]
