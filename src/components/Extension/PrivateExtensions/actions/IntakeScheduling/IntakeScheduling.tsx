@@ -89,7 +89,6 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         },
       }),
     [
-      patientName,
       agePreference,
       genderPreference,
       ethnicityPreference,
@@ -121,10 +120,12 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       onSubmit({
         activityId: activity_id,
         eventId: _slot.eventId,
-        date: _slot.slotstart,
+        dateString: _slot.slotstart.toLocaleDateString(),
+        timeString: _slot.slotstart.toLocaleTimeString(),
+        providerId: _slot.providerId,
       })
     },
-    [activity_id, onSubmit]
+    [activity_id, onSubmit, providerId]
   )
 
   return (
