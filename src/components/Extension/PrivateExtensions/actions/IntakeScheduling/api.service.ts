@@ -1,40 +1,45 @@
-import type {
-  GetProvidersResponseType,
-  GetAvailabilitiesResponseType,
-  GetProvidersInputType,
-  GetAvailabilitiesInputType,
-  BookAppointmentInputType,
-  BookAppointmentResponseType,
+import {
+  type GetProvidersResponseType,
+  type GetAvailabilitiesResponseType,
+  type GetProvidersInputType,
+  type GetAvailabilitiesInputType,
+  type BookAppointmentInputType,
+  type BookAppointmentResponseType,
+  GetAvailabilitiesResponseSchema,
+  GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
 
 export const fetchProviders = async (
   input: GetProvidersInputType
 ): Promise<GetProvidersResponseType> => {
-  const { location, ...rest } = input
-  console.log('removing location from api request', { location })
-  console.log('sending request with input', { rest })
   try {
     const response = await fetch('/api/sol/providers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(rest),
+      body: JSON.stringify(input),
     })
 
     if (!response.ok) {
       throw new Error('Failed to fetch providers')
     }
 
-    const jsonRes = (await response.json()) as GetProvidersResponseType
+    const jsonRes = await response.json()
+    const result = GetProvidersResponseSchema.safeParse(jsonRes)
+
+    if (!result.success) {
+      console.error('Zod parsing error', result.error.issues)
+      throw new Error('Zod error', result.error)
+    }
 
     /**
      * Logging it the console for during the bootcamp
      */
-    console.log('[fetch providers] response', response)
-    console.log('[fetch providers] json response', jsonRes)
+    console.log('[get providers] json response', jsonRes)
+    console.log('[get providers] parsed response with zod ', result.data)
 
-    return jsonRes
+    return result.data
   } catch (error) {
     console.error('Error fetching providers:', error)
     throw error
@@ -55,15 +60,21 @@ export const fetchAvailability = async (
       )
     }
 
-    const jsonRes = (await response.json()) as GetAvailabilitiesResponseType
+    const jsonRes = await response.json()
+    const result = GetAvailabilitiesResponseSchema.safeParse(jsonRes)
+
+    if (!result.success) {
+      console.error('Zod parsing error', result.error.issues)
+      throw new Error('Zod error', result.error)
+    }
 
     /**
      * Logging it the console for during the bootcamp
      */
-    console.log('[fetch availability] response', response)
-    console.log('[fetch availability] json response', jsonRes)
+    console.log('[get availabilities] json response', jsonRes)
+    console.log('[get availabilities] parsed response with zod ', result.data)
 
-    return jsonRes
+    return result.data
   } catch (error) {
     console.error(
       `Error fetching availability for provider ${input.providerId[0]}:`,
@@ -93,7 +104,6 @@ export const bookAppointment = async (
     /**
      * Logging it the console for during the bootcamp
      */
-    console.log('[book appt] response', response)
     console.log('[book appt] json response', jsonRes)
 
     return jsonRes

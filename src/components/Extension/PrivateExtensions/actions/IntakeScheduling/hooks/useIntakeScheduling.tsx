@@ -1,5 +1,15 @@
 import { useCallback } from 'react'
 import { DataPoints, useCompleteExtensionActivity } from '../types'
+import { isNil } from 'lodash'
+
+interface OnSubmitProps {
+  activityId: string
+  eventId: string
+  providerId: string
+  slotDate: string
+  slotDateOnlyLocaleString: string
+  slotTimeOnlyLocaleString: string
+}
 
 export const useIntakeScheduling = () => {
   const { isSubmitting, onSubmit: _onSubmit } = useCompleteExtensionActivity()
@@ -8,20 +18,24 @@ export const useIntakeScheduling = () => {
     async ({
       activityId,
       eventId,
-      date,
-    }: {
-      activityId: string
-      eventId: string
-      date: Date
-    }) => {
+      providerId,
+      slotDate,
+      slotDateOnlyLocaleString,
+      slotTimeOnlyLocaleString,
+    }: OnSubmitProps) => {
       const dataPoints: DataPoints = [
         { key: 'eventId', value: eventId },
+        { key: 'providerId', value: providerId },
+        { key: 'slotDate', value: slotDate },
         {
-          key: 'date',
-          value: date.toISOString(),
+          key: 'slotDateOnlyLocaleString',
+          value: slotDateOnlyLocaleString,
+        },
+        {
+          key: 'slotTimeOnlyLocaleString',
+          value: slotTimeOnlyLocaleString,
         },
       ]
-
       return _onSubmit(activityId, dataPoints)
     },
     [_onSubmit]
