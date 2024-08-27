@@ -21,6 +21,8 @@
     "@formsort/react-embed": "^3.1.1",
     "@google-cloud/logging": "^11.0.0",
     "@localazy/cli": "^1.7.5",
+    "@module-federation/nextjs-mf": "^8.4.11",
+    "@module-federation/runtime": "^0.5.1",
     "@sentry/nextjs": "^7.59.3",
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.0",

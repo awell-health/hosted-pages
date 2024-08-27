@@ -20,6 +20,7 @@ import {
   Redirect as PrivateRedirect,
 } from './PrivateExtensions/actions'
 import { StripeExtension } from './StripeExtension'
+import ExternalComponentLoader from './ExternalComponent/ExternalComponent'
 
 interface ExtensionProps {
   activity: Activity
@@ -43,52 +44,54 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     )
   }
 
+  return <ExternalComponentLoader activityDetails={extensionActivityDetails} />
+
   /**
    * FOR PRIVATE EXTENSIONS
    */
-  const getDefaultReturnValue = () => {
-    switch (extensionActivityDetails.plugin_action_key) {
-      case AnonymousActionKeys.COLLECT_MEDICATION:
-        return (
-          <PrivateEnterMedication activityDetails={extensionActivityDetails} />
-        )
-      case AnonymousActionKeys.PATIENT_RECOMMENDATION:
-        return (
-          <PrivatePatientRecommendation
-            activityDetails={extensionActivityDetails}
-          />
-        )
-      case AnonymousActionKeys.REDIRECT:
-        return <PrivateRedirect activityDetails={extensionActivityDetails} />
-      case AnonymousActionKeys.INTAKE_SCHEDULING:
-        return <IntakeScheduling activityDetails={extensionActivityDetails} />
-      default:
-        return <ErrorPage title={t('activities.activity_not_supported')} />
-    }
-  }
+  // const getDefaultReturnValue = () => {
+  //   switch (extensionActivityDetails.plugin_action_key) {
+  //     case AnonymousActionKeys.COLLECT_MEDICATION:
+  //       return (
+  //         <PrivateEnterMedication activityDetails={extensionActivityDetails} />
+  //       )
+  //     case AnonymousActionKeys.PATIENT_RECOMMENDATION:
+  //       return (
+  //         <PrivatePatientRecommendation
+  //           activityDetails={extensionActivityDetails}
+  //         />
+  //       )
+  //     case AnonymousActionKeys.REDIRECT:
+  //       return <PrivateRedirect activityDetails={extensionActivityDetails} />
+  //     case AnonymousActionKeys.INTAKE_SCHEDULING:
+  //       return <IntakeScheduling activityDetails={extensionActivityDetails} />
+  //     default:
+  //       return <ErrorPage title={t('activities.activity_not_supported')} />
+  //   }
+  // }
 
-  switch (activity?.indirect_object?.id) {
-    case ExtensionKey.CAL_DOT_COM:
-      return <CalDotComExtension activityDetails={extensionActivityDetails} />
-    case ExtensionKey.DROPBOXSIGN:
-      return <DropboxSignExtension activityDetails={extensionActivityDetails} />
-    case ExtensionKey.CLOUDINARY:
-      return <CloudinaryExtension activityDetails={extensionActivityDetails} />
-    case ExtensionKey.FORMSORT:
-      return <FormsortExtension activityDetails={extensionActivityDetails} />
-    case ExtensionKey.DOCU_SIGN:
-      return <DocuSignExtension activityDetails={extensionActivityDetails} />
-    case ExtensionKey.COLLECT_DATA:
-      return <CollectDataExtension activityDetails={extensionActivityDetails} />
-    case ExtensionKey.STRIPE:
-      return <StripeExtension activityDetails={extensionActivityDetails} />
-    case ExtensionKey.EXPERIMENTAL:
-      return (
-        <ExperimentalExtension activityDetails={extensionActivityDetails} />
-      )
-    default:
-      return getDefaultReturnValue()
-  }
+  // switch (activity?.indirect_object?.id) {
+  //   case ExtensionKey.CAL_DOT_COM:
+  //     return <CalDotComExtension activityDetails={extensionActivityDetails} />
+  //   case ExtensionKey.DROPBOXSIGN:
+  //     return <DropboxSignExtension activityDetails={extensionActivityDetails} />
+  //   case ExtensionKey.CLOUDINARY:
+  //     return <CloudinaryExtension activityDetails={extensionActivityDetails} />
+  //   case ExtensionKey.FORMSORT:
+  //     return <FormsortExtension activityDetails={extensionActivityDetails} />
+  //   case ExtensionKey.DOCU_SIGN:
+  //     return <DocuSignExtension activityDetails={extensionActivityDetails} />
+  //   case ExtensionKey.COLLECT_DATA:
+  //     return <CollectDataExtension activityDetails={extensionActivityDetails} />
+  //   case ExtensionKey.STRIPE:
+  //     return <StripeExtension activityDetails={extensionActivityDetails} />
+  //   case ExtensionKey.EXPERIMENTAL:
+  //     return (
+  //       <ExperimentalExtension activityDetails={extensionActivityDetails} />
+  //     )
+  //   default:
+  //     return getDefaultReturnValue()
+  // }
 }
 
 Extension.displayName = 'Extension'

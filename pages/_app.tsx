@@ -5,6 +5,7 @@ import { appWithTranslation } from 'next-i18next'
 
 import type { FC, ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
+import { init } from '@module-federation/runtime'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -17,6 +18,16 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
+  init({
+    name: 'hosted-pages',
+    remotes: [
+      {
+        name: '@extension',
+        entry: `${process.env.NEXT_PUBLIC_URL_EXTENSIONS}/frontend/remoteEntry.js`,
+        type: 'esm',
+      },
+    ],
+  })
 
   return getLayout(<Component {...pageProps} />)
 }
