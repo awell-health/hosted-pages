@@ -9,7 +9,7 @@ import {
   BrandingSettings,
 } from './types'
 import type { HostedSession } from './types'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { isNil } from 'lodash'
 import { useApolloClient } from '@apollo/client'
 import { updateQuery } from '../../services/graphql'
@@ -17,7 +17,10 @@ import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
 import { Maybe } from '../../types'
 import { type CustomTheme, getTheme } from './branding'
-import { SessionMetadata } from '../../types/generated/types-orchestration'
+import {
+  HostedSessionStatus,
+  SessionMetadata,
+} from '../../types/generated/types-orchestration'
 
 interface UseHostedSessionHook {
   loading: boolean
@@ -33,8 +36,13 @@ const POLLING_DELAY_MS = 2000
 
 export const useHostedSession = (): UseHostedSessionHook => {
   const defaultTheme = getTheme()
+
+  const [isSessionCompleted, setIsSessionCompleted] = useState(false)
+
+  const pollInterval = isSessionCompleted ? undefined : POLLING_DELAY_MS
+
   const { data, loading, error, refetch } = useGetHostedSessionQuery({
-    pollInterval: POLLING_DELAY_MS,
+    pollInterval,
     onError: (error) => {
       Sentry.captureException(error, {
         contexts: {
@@ -65,6 +73,13 @@ export const useHostedSession = (): UseHostedSessionHook => {
       query: GetHostedSessionDocument,
       data: updatedQuery,
     })
+
+    if (
+      updatedHostedSession.status === HostedSessionStatus.Completed ||
+      updatedHostedSession.status === HostedSessionStatus.Expired
+    ) {
+      setIsSessionCompleted(true)
+    }
   }
 
   useEffect(() => {
@@ -120,9 +135,18 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }
 
   if (error) {
+    const unauthorizedError = error.graphQLErrors?.find(
+      (err) => err.extensions?.code === 'UNAUTHORIZED'
+    )
+
+    const message = unauthorizedError
+      ? // TODO: update this message with translation
+        'Session has already been completed or expired.'
+      : error.message
+
     return {
       loading: false,
-      error: error.message,
+      error: message,
       refetch,
       theme: defaultTheme,
     }
