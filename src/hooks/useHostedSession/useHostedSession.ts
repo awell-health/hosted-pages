@@ -139,10 +139,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
       (err) => err.extensions?.code === 'UNAUTHORIZED'
     )
 
-    const message = unauthorizedError
-      ? // TODO: update this message with translation
-        'Session has already been completed or expired.'
-      : error.message
+    const message = unauthorizedError ? 'UNAUTHORIZED' : error.message
 
     return {
       loading: false,
