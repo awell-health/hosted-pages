@@ -113,6 +113,13 @@ export const useHostedSession = (): UseHostedSessionHook => {
         hostedSession,
         branding: data?.hostedSession.branding,
       })
+
+      if (
+        hostedSession.status === HostedSessionStatus.Completed ||
+        hostedSession.status === HostedSessionStatus.Expired
+      ) {
+        setIsSessionCompleted(true)
+      }
     }
   }, [data])
 
