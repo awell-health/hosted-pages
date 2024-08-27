@@ -115,8 +115,9 @@ export const useHostedSession = (): UseHostedSessionHook => {
       })
 
       if (
-        hostedSession.status === HostedSessionStatus.Completed ||
-        hostedSession.status === HostedSessionStatus.Expired
+        !isNil(hostedSession?.status) &&
+        (hostedSession.status === HostedSessionStatus.Completed ||
+          hostedSession.status === HostedSessionStatus.Expired)
       ) {
         setIsSessionCompleted(true)
       }
