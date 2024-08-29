@@ -181,7 +181,14 @@ const Home: NextPageWithLayout = () => {
         >
           {renderSessionContent()}
           {error && (
-            <ErrorPage title={t('session.loading_error')} onRetry={refetch} />
+            <ErrorPage
+              title={
+                error === 'UNAUTHORIZED'
+                  ? t('session.session_completed_or_expired')
+                  : t('session.loading_error')
+              }
+              onRetry={refetch}
+            />
           )}
           <ToastContainer
             position="bottom-right"
