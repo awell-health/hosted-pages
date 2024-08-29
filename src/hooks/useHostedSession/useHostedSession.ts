@@ -41,18 +41,19 @@ export const useHostedSession = (): UseHostedSessionHook => {
 
   const pollInterval = isSessionCompleted ? undefined : POLLING_DELAY_MS
 
-  const { data, loading, error, refetch } = useGetHostedSessionQuery({
-    pollInterval,
-    onError: (error) => {
-      Sentry.captureException(error, {
-        contexts: {
-          graphql: {
-            query: 'GetHostedSession',
+  const { data, loading, error, refetch, stopPolling } =
+    useGetHostedSessionQuery({
+      pollInterval,
+      onError: (error) => {
+        Sentry.captureException(error, {
+          contexts: {
+            graphql: {
+              query: 'GetHostedSession',
+            },
           },
-        },
-      })
-    },
-  })
+        })
+      },
+    })
   const client = useApolloClient()
   const router = useRouter()
 
@@ -90,6 +91,12 @@ export const useHostedSession = (): UseHostedSessionHook => {
       })
     }
   })
+
+  useEffect(() => {
+    if (isSessionCompleted) {
+      stopPolling()
+    }
+  }, [isSessionCompleted])
 
   useEffect(() => {
     if (!isNil(data?.hostedSession?.session)) {
