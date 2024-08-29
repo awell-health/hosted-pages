@@ -93,7 +93,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
   })
 
   useEffect(() => {
-    if (isSessionCompleted === true) {
+    if (isSessionCompleted) {
       stopPolling()
     }
   }, [isSessionCompleted])
