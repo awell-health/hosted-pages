@@ -54,6 +54,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
         })
       },
     })
+  
   const client = useApolloClient()
   const router = useRouter()
 
