@@ -14,6 +14,7 @@ import { DocuSignExtension } from './DocuSignExtension'
 import { CollectDataExtension } from './CollectDataExtension'
 import { ExperimentalExtension } from './ExperimentalExtension'
 import {
+  IntakeScheduling,
   EnterMedication as PrivateEnterMedication,
   PatientRecommendation as PrivatePatientRecommendation,
   Redirect as PrivateRedirect,
@@ -59,6 +60,8 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
         )
       case AnonymousActionKeys.REDIRECT:
         return <PrivateRedirect activityDetails={extensionActivityDetails} />
+      case AnonymousActionKeys.INTAKE_SCHEDULING:
+        return <IntakeScheduling activityDetails={extensionActivityDetails} />
       default:
         return <ErrorPage title={t('activities.activity_not_supported')} />
     }
