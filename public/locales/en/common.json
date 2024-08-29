@@ -107,6 +107,7 @@
     "loading_error": "Something went wrong while loading your session.",
     "redirecting_to_next_page": "Redirecting you in a moment...",
     "session_canceled": "Your session has been cancelled.",
-    "try_again": "Try again"
+    "try_again": "Try again",
+    "session_completed_or_expired": "Your session has been completed or expired."
   }
 }
