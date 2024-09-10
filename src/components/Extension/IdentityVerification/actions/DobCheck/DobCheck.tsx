@@ -33,7 +33,7 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
     [fields]
   )
 
-  const handleSubmit = useCallback(() => {
+  const handleActivityCompletion = useCallback(() => {
     onSubmit({
       activityId: activity_id,
       success: true, // extension data point
@@ -72,12 +72,12 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
       }
 
       alert('Match!') // should be removed
-      handleSubmit()
+      handleActivityCompletion()
     } catch (error) {
       console.error('Error checking dob:', error)
       throw error
     }
-  }, [dobValue, handleSubmit])
+  }, [dobValue, handleActivityCompletion])
 
   return (
     <>
