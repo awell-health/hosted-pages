@@ -24,7 +24,7 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
 
   const [dobValue, setDobValue] = useState('')
   const [loading, setLoading] = useState(false)
-  const { activity_id, fields } = activityDetails
+  const { activity_id, fields, pathway_id } = activityDetails
 
   const { onSubmit } = useDobCheck()
 
@@ -36,7 +36,6 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
   const handleActivityCompletion = useCallback(() => {
     onSubmit({
       activityId: activity_id,
-      success: true, // extension data point
     })
   }, [activity_id, onSubmit])
 
@@ -49,12 +48,12 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
 
     try {
       setLoading(true)
-      const response = await fetch('/api/identity/check', {
+      const response = await fetch('/api/identity/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ dob: dobValue }),
+        body: JSON.stringify({ dob: dobValue, pathway_id, activity_id }),
       })
 
       setLoading(false)
@@ -71,7 +70,6 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
         return
       }
 
-      alert('Match!') // should be removed
       handleActivityCompletion()
     } catch (error) {
       console.error('Error checking dob:', error)
