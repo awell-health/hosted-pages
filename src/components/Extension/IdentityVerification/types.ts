@@ -8,5 +8,3 @@ export type IdentityVerificationExtensionSettings = {}
 export enum ActionKey {
   DOB_CHECK = 'dobCheck',
 }
-
-export type DobCheckActionFields = {}
