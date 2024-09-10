@@ -5,8 +5,19 @@ export const useDobCheck = () => {
   const { isSubmitting, onSubmit: _onSubmit } = useCompleteExtensionActivity()
 
   const onSubmit = useCallback(
-    async ({ activityId }: { activityId: string }) => {
-      const dataPoints: DataPoints = []
+    async ({
+      activityId,
+      success,
+    }: {
+      activityId: string
+      success: boolean
+    }) => {
+      const dataPoints: DataPoints = [
+        {
+          key: 'success',
+          value: String(success),
+        },
+      ]
 
       return _onSubmit(activityId, dataPoints)
     },

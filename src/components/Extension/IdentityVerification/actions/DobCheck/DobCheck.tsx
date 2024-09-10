@@ -20,6 +20,7 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
   const handleSubmit = useCallback(() => {
     onSubmit({
       activityId: activity_id,
+      success: true, // extension data point
     })
   }, [activity_id, onSubmit])
 
