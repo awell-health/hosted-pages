@@ -20,6 +20,7 @@ import {
   Redirect as PrivateRedirect,
 } from './PrivateExtensions/actions'
 import { StripeExtension } from './StripeExtension'
+import { IdentityVerification } from './IdentityVerification'
 
 interface ExtensionProps {
   activity: Activity
@@ -82,6 +83,8 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
       return <CollectDataExtension activityDetails={extensionActivityDetails} />
     case ExtensionKey.STRIPE:
       return <StripeExtension activityDetails={extensionActivityDetails} />
+    case ExtensionKey.IDENTITY_VERIFICATION:
+      return <IdentityVerification activityDetails={extensionActivityDetails} />
     case ExtensionKey.EXPERIMENTAL:
       return (
         <ExperimentalExtension activityDetails={extensionActivityDetails} />

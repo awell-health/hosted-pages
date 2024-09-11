@@ -30,6 +30,10 @@
       "medication_name": "Name",
       "submit_button": "Submit"
     },
+    "identity_verification": {
+      "default_label": "Enter your date of birth to verify your identity",
+      "cta": "Confirm"
+    },
     "cta_done": "Done",
     "docu_sign": {
       "cta_sign_document": "Sign document",
