@@ -42,7 +42,6 @@ export default async function handler(
 
   const { activity_id, pathway_id, dob } = bodyValidation.data
 
-  // TODO JB
   const token = jwt.sign(
     {
       username: environment.apiGatewayConsumerName,
@@ -57,7 +56,7 @@ export default async function handler(
 
   // LATER: we have an "i don't know my DOB" option then we can complete with failure... etc.
   const input = { pathway_id, dob }
-  // TODO JB
+
   const response = await fetch(environment.orchestrationApiUrl, {
     method: 'POST',
     headers: {
@@ -79,40 +78,8 @@ export default async function handler(
   })
 
   const resp = await response.json()
-  console.log(resp)
   const { data, errors } = resp
   const { is_verified } = data?.verify_identity
-
-  if (is_verified) {
-    await fetch(environment.orchestrationApiUrl, {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `
-            mutation CompleteExtensionActivity($input: CompleteExtensionActivityInput!) {
-              completeExtensionActivity(input: $input) {
-                code
-                success
-              }
-            }
-          `,
-        variables: {
-          input: {
-            activity_id,
-            data_points: [
-              {
-                key: 'success',
-                value: 'true',
-              },
-            ],
-          },
-        },
-      }),
-    })
-  }
 
   res.status(200).json({
     success: is_verified,
