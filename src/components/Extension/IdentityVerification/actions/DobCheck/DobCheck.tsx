@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import classes from './DobCheck.module.css'
 import activityClasses from '../../../../../../styles/ActivityLayout.module.css'
 
@@ -10,7 +10,6 @@ import {
   HostedPageFooter,
   InputField,
 } from '@awell-health/ui-library'
-import { isEmpty } from 'lodash'
 import { mapActionFieldsToObject } from '../../../utils'
 import { DobCheckActionFields } from './types'
 import { useTranslation } from 'next-i18next'
@@ -23,59 +22,17 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
   const { t } = useTranslation()
 
   const [dobValue, setDobValue] = useState('')
-  const [loading, setLoading] = useState(false)
   const { activity_id, fields, pathway_id } = activityDetails
 
-  const { onSubmit } = useDobCheck()
+  const { loading, onSubmit } = useDobCheck({
+    pathway_id,
+    activity_id,
+  })
 
   const { label } = useMemo(
     () => mapActionFieldsToObject<DobCheckActionFields>(fields),
     [fields]
   )
-
-  const handleActivityCompletion = useCallback(() => {
-    onSubmit({
-      activityId: activity_id,
-    })
-  }, [activity_id, onSubmit])
-
-  const handleDobCheck = useCallback(async () => {
-    if (isEmpty(dobValue)) {
-      // Prettify this later
-      alert('Please enter a date of birth')
-      return
-    }
-
-    try {
-      setLoading(true)
-      const response = await fetch('/api/identity/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ dob: dobValue, pathway_id, activity_id }),
-      })
-
-      setLoading(false)
-
-      if (!response.ok) {
-        throw new Error('Failed to check dob')
-      }
-
-      const jsonRes = await response.json()
-
-      if (!jsonRes?.success) {
-        // Prettify this later
-        alert('No match')
-        return
-      }
-
-      handleActivityCompletion()
-    } catch (error) {
-      console.error('Error checking dob:', error)
-      throw error
-    }
-  }, [dobValue, handleActivityCompletion])
 
   return (
     <>
@@ -108,7 +65,11 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
         <div
           className={`${activityClasses.button_wrapper} ${classes.container}`}
         >
-          <Button variant="primary" onClick={handleDobCheck} disabled={loading}>
+          <Button
+            variant="primary"
+            onClick={() => onSubmit(dobValue)}
+            disabled={loading}
+          >
             {t('activities.identity_verification.cta')}
           </Button>
         </div>
