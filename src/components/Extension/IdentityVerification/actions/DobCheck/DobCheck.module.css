@@ -1,0 +1,25 @@
+.container {
+  max-width: 95%;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 850px;
+  }
+}
+
+.label {
+  text-align: left;
+}
+
+.inputWrapper {
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.submitButton {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
