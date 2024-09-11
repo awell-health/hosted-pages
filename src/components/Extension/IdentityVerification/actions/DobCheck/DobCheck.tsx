@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import classes from './DobCheck.module.css'
 import activityClasses from '../../../../../../styles/ActivityLayout.module.css'
 
