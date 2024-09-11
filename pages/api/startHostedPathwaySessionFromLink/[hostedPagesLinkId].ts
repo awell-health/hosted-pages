@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { environment } from '../../../types'
 import { isNil } from 'lodash'
+import { JwtFeature } from '../../../lib'
 
 export type StartHostedCareflowSessionParams = {
   hostedPagesLinkId: string
@@ -39,7 +40,7 @@ export default async function handler(
   const token = jwt.sign(
     {
       username: environment.apiGatewayConsumerName,
-      feature: 'hosted-pathway-link',
+      feature: JwtFeature.HostedPathwayLink,
     },
     environment.jwtAuthSecret,
     {
