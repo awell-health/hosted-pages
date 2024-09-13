@@ -8,12 +8,16 @@ import { ErrorPage } from '../ErrorPage'
 import attachmentIcon from './../../assets/link.svg'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import { useHostedSession } from '../../hooks/useHostedSession'
+import { isEmpty } from 'lodash'
 interface MessageProps {
   activity: Activity
 }
 
 export const Message = ({ activity }: MessageProps): JSX.Element => {
   const { t } = useTranslation()
+  const { theme } = useHostedSession()
+
   const { loading, message, error, onRead, refetch } = useMessage(activity)
 
   if (loading) {
@@ -53,7 +57,11 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
         file: t('activities.message.download_file_attachment'),
       }}
       onMessageRead={handleReadMessage}
-      buttonLabels={{ readMessage: t('activities.message.cta_mark_as_read') }}
+      buttonLabels={{
+        readMessage: isEmpty(theme.locales.message.cta_mark_as_read)
+          ? t('activities.message.cta_mark_as_read')
+          : theme.locales.message.cta_mark_as_read,
+      }}
     />
   )
 }
