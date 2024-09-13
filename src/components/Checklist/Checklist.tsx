@@ -7,6 +7,8 @@ import { ErrorPage } from '../ErrorPage'
 import { useTranslation } from 'next-i18next'
 import { addSentryBreadcrumb } from '../../services/ErrorReporter'
 import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import { useHostedSession } from '../../hooks/useHostedSession'
+import { isEmpty } from 'lodash'
 
 interface ChecklistProps {
   activity: Activity
@@ -14,6 +16,7 @@ interface ChecklistProps {
 
 export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   const { t } = useTranslation()
+  const { theme } = useHostedSession()
   const { loading, items, title, error, refetch } = useChecklist(activity)
   const { onSubmit, isSubmitting } = useSubmitChecklist(activity)
 
@@ -46,7 +49,11 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
       items={items || []}
       onSubmit={handleSubmit}
       disabled={isSubmitting}
-      submitLabel={t('activities.checklist.cta_submit')}
+      submitLabel={
+        isEmpty(theme.locales.checklist.cta_submit)
+          ? t('activities.checklist.cta_submit')
+          : theme.locales.checklist.cta_submit
+      }
     />
   )
 }
