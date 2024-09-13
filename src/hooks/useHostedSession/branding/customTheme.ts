@@ -36,6 +36,18 @@ const CustomLocales = z
   .object({
     form: z
       .object({
+        next_question_label: z.string().default(''),
+        previous_question_label: z.string().default(''),
+        cta_submit: z.string().default(''),
+      })
+      .default({}),
+    message: z
+      .object({
+        cta_mark_as_read: z.string().default(''),
+      })
+      .default({}),
+    checklist: z
+      .object({
         cta_submit: z.string().default(''),
       })
       .default({}),
