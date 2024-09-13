@@ -41,7 +41,6 @@
       "failed_sign_document": "Signing link has failed."
     },
     "form": {
-      "cta_start_form": "Start form",
       "cta_submit": "Submit",
       "date_cannot_be_in_the_future": "Date cannot be in the future.",
       "date_cannot_be_in_the_past": "Date cannot be in the past.",

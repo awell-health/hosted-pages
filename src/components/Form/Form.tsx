@@ -138,12 +138,15 @@ export const Form: FC<FormProps> = ({ activity }) => {
   }
 
   const button_labels = {
-    prev: t('activities.form.previous_question_label'),
-    next: t('activities.form.next_question_label'),
+    prev: isEmpty(theme.locales.form.previous_question_label)
+      ? t('activities.form.previous_question_label')
+      : theme.locales.form.previous_question_label,
+    next: isEmpty(theme.locales.form.next_question_label)
+      ? t('activities.form.next_question_label')
+      : theme.locales.form.next_question_label,
     submit: isEmpty(theme.locales.form.cta_submit)
       ? t('activities.form.cta_submit')
       : theme.locales.form.cta_submit,
-    start_form: t('activities.form.cta_start_form'),
   }
 
   const error_labels: ErrorLabels = {
