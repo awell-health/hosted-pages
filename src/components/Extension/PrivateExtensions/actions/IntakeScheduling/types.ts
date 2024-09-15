@@ -4,23 +4,22 @@ export {
 } from '../../../../../hooks/useCompleteExtensionActivity'
 
 export type ActionFields = {
-  providerId?: string | undefined
+  providerId?: string
   patientName: string
-  agePreference?: number | undefined
-  genderPreference?: 'M' | 'F' | 'Non-binary/non-conforming' | undefined
+  agePreference?: number
+  genderPreference?: 'M' | 'F' | 'Non-binary/non-conforming'
   ethnicityPreference?:
     | 'Asian'
     | 'Black or African American'
     | 'Hispanic or Latinx'
     | 'White'
     | 'Other'
-    | undefined
-  therapeuticModalityPreference?: 'Psychiatric' | 'Therapy' | undefined
-  clinicalFocusPreference?: string | undefined // we receive it as a string although it's an array of strings
+  therapeuticModalityPreference?: 'Psychiatric' | 'Therapy'
+  clinicalFocusPreference?: string // we receive it as a string although it's an array of strings
   // clinicalFocusPreference?:
   //   | ('ADHD' | 'Anxiety d/o' | 'Autism spectrum' | 'Gender dysphoria')[]
   //   | undefined
-  deliveryMethodPreference?: 'virtual' | 'in-person' | undefined
+  deliveryMethodPreference?: 'virtual' | 'in-person'
   locationStatePreference?:
     | 'AL'
     | 'CO'
@@ -40,5 +39,4 @@ export type ActionFields = {
     | 'TX'
     | 'VA'
     | 'WY'
-    | undefined
 }

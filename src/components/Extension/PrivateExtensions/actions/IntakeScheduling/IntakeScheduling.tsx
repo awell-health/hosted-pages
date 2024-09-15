@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { ExtensionActivityRecord } from '../../../types'
@@ -133,9 +134,9 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     <SchedulingActivity
       providerId={providerId}
       timeZone={timeZone}
-      onProviderSelect={(id) => setProvider(id)}
-      onDateSelect={(date) => setDate(date)}
-      onSlotSelect={(slot) => setSlot(slot)}
+      onProviderSelect={(id: string) => setProvider(id)}
+      onDateSelect={(date: Date) => setDate(date)}
+      onSlotSelect={(slot: SlotType) => setSlot(slot)}
       onBooking={bookAppointmentFn}
       fetchProviders={fetchProvidersFn}
       fetchAvailability={fetchAvailabilityFn}
