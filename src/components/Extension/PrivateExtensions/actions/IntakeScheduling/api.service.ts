@@ -8,11 +8,14 @@ import {
   GetAvailabilitiesResponseSchema,
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
+import { log } from '../../../../../utils/logging'
 
 export const fetchProviders = async (
   input: GetProvidersInputType
 ): Promise<GetProvidersResponseType> => {
+  const basicMessage = 'Fetching sol providers'
   try {
+    log({ message: basicMessage, data: input }, 'INFO', '')
     const response = await fetch('/api/sol/providers', {
       method: 'POST',
       headers: {
@@ -22,6 +25,14 @@ export const fetchProviders = async (
     })
 
     if (!response.ok) {
+      log(
+        {
+          message: `${basicMessage}: failed`,
+          data: { input, response },
+        },
+        'ERROR',
+        ''
+      )
       throw new Error('Failed to fetch providers')
     }
 
@@ -29,19 +40,35 @@ export const fetchProviders = async (
     const result = GetProvidersResponseSchema.safeParse(jsonRes)
 
     if (!result.success) {
-      console.error('Zod parsing error', result.error.issues)
+      log(
+        {
+          message: `${basicMessage}: zod parsing error`,
+          data: { input, response, result },
+        },
+        'ERROR',
+        ''
+      )
       throw new Error('Zod error', result.error)
     }
-
-    /**
-     * Logging it the console for during the bootcamp
-     */
-    console.log('[get providers] json response', jsonRes)
-    console.log('[get providers] parsed response with zod ', result.data)
-
+    log(
+      {
+        message: `${basicMessage}: successfull`,
+        data: { input, result },
+      },
+      'INFO',
+      ''
+    )
     return result.data
   } catch (error) {
-    console.error('Error fetching providers:', error)
+    const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
+    log(
+      {
+        message: `${basicMessage}: error`,
+        data: { input, error },
+      },
+      'ERROR',
+      errMessage
+    )
     throw error
   }
 }
@@ -49,12 +76,23 @@ export const fetchProviders = async (
 export const fetchAvailability = async (
   input: GetAvailabilitiesInputType
 ): Promise<GetAvailabilitiesResponseType> => {
+  const basicMessage = 'Fetching provider availability'
+
   try {
+    log({ message: basicMessage, data: input }, 'INFO', '')
     const response = await fetch(
       `/api/sol/providers/${input.providerId[0]}/availability`
     )
 
     if (!response.ok) {
+      log(
+        {
+          message: `${basicMessage}: failed`,
+          data: { input, response },
+        },
+        'ERROR',
+        ''
+      )
       throw new Error(
         `Failed to fetch availability for provider ${input.providerId[0]}`
       )
@@ -64,21 +102,29 @@ export const fetchAvailability = async (
     const result = GetAvailabilitiesResponseSchema.safeParse(jsonRes)
 
     if (!result.success) {
-      console.error('Zod parsing error', result.error.issues)
+      log(
+        {
+          message: `${basicMessage}: failed with zod error`,
+          data: { input, result },
+        },
+        'ERROR',
+        ''
+      )
       throw new Error('Zod error', result.error)
     }
 
-    /**
-     * Logging it the console for during the bootcamp
-     */
-    console.log('[get availabilities] json response', jsonRes)
-    console.log('[get availabilities] parsed response with zod ', result.data)
-
+    log(
+      { message: `${basicMessage}: success`, data: { input, result } },
+      'INFO',
+      ''
+    )
     return result.data
   } catch (error) {
-    console.error(
-      `Error fetching availability for provider ${input.providerId[0]}:`,
-      error
+    const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
+    log(
+      { message: `${basicMessage}: error`, data: { input, error } },
+      'ERROR',
+      errMessage
     )
     throw error
   }
@@ -87,7 +133,9 @@ export const fetchAvailability = async (
 export const bookAppointment = async (
   input: BookAppointmentInputType
 ): Promise<BookAppointmentResponseType> => {
+  const basicMessage = 'Booking sol appointment'
   try {
+    log({ message: basicMessage, data: input }, 'INFO', '')
     const response = await fetch(`/api/sol/appointments`, {
       method: 'POST',
       headers: {
@@ -96,19 +144,26 @@ export const bookAppointment = async (
       body: JSON.stringify(input),
     })
     if (!response.ok) {
+      log(
+        { message: `${basicMessage}: failed`, data: { input, response } },
+        'ERROR',
+        'Failed to book appointment'
+      )
       throw new Error(`Failed to book appointment`)
     }
 
     const jsonRes = (await response.json()) as BookAppointmentResponseType
 
-    /**
-     * Logging it the console for during the bootcamp
-     */
-    console.log('[book appt] json response', jsonRes)
+    log({ message: basicMessage, data: { input, jsonRes } }, 'INFO', '')
 
     return jsonRes
   } catch (error) {
-    console.error(`Error booking the appointment`, error)
+    const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
+    log(
+      { message: `${basicMessage}: error`, data: { input, error } },
+      'ERROR',
+      errMessage
+    )
     throw error
   }
 }
