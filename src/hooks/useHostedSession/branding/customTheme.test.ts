@@ -1,93 +1,59 @@
 import { getTheme } from './customTheme'
 
+const DEFAULT_THEME = {
+  layout: { showCloseButton: true, showLogo: true },
+  form: {
+    showProgressBar: true,
+    showAsterisksForRequiredQuestions: true,
+  },
+  locales: {
+    form: {
+      next_question_label: '',
+      previous_question_label: '',
+      cta_submit: '',
+    },
+    message: {
+      cta_mark_as_read: '',
+    },
+    checklist: {
+      cta_submit: '',
+    },
+  },
+}
+
 describe('Custom theme branding', () => {
   test('When custom theme is empty string, the default theme is set', () => {
     const customTheme = ''
     const outcome = getTheme(customTheme)
 
-    expect(outcome).toStrictEqual({
-      layout: { showCloseButton: true, showLogo: true },
-      form: {
-        showProgressBar: true,
-        showAsterisksForRequiredQuestions: true,
-      },
-      locales: {
-        form: {
-          cta_submit: '',
-        },
-      },
-    })
+    expect(outcome).toStrictEqual(DEFAULT_THEME)
   })
 
   test('When custom theme is empty object, the default theme is set', () => {
     const customTheme = '{}'
     const outcome = getTheme(customTheme)
 
-    expect(outcome).toStrictEqual({
-      layout: { showCloseButton: true, showLogo: true },
-      form: {
-        showProgressBar: true,
-        showAsterisksForRequiredQuestions: true,
-      },
-      locales: {
-        form: {
-          cta_submit: '',
-        },
-      },
-    })
+    expect(outcome).toStrictEqual(DEFAULT_THEME)
   })
 
   test('When custom theme is invalid JSON string, the default theme is set', () => {
     const customTheme = 'no valid json'
     const outcome = getTheme(customTheme)
 
-    expect(outcome).toStrictEqual({
-      layout: { showCloseButton: true, showLogo: true },
-      form: {
-        showProgressBar: true,
-        showAsterisksForRequiredQuestions: true,
-      },
-      locales: {
-        form: {
-          cta_submit: '',
-        },
-      },
-    })
+    expect(outcome).toStrictEqual(DEFAULT_THEME)
   })
 
   test('When custom theme is undefined, the default theme is set', () => {
     const outcome = getTheme()
 
-    expect(outcome).toStrictEqual({
-      layout: { showCloseButton: true, showLogo: true },
-      form: {
-        showProgressBar: true,
-        showAsterisksForRequiredQuestions: true,
-      },
-      locales: {
-        form: {
-          cta_submit: '',
-        },
-      },
-    })
+    expect(outcome).toStrictEqual(DEFAULT_THEME)
   })
 
   test('When custom theme is null, the default theme is set', () => {
     const customTheme = null
     const outcome = getTheme(customTheme)
 
-    expect(outcome).toStrictEqual({
-      layout: { showCloseButton: true, showLogo: true },
-      form: {
-        showProgressBar: true,
-        showAsterisksForRequiredQuestions: true,
-      },
-      locales: {
-        form: {
-          cta_submit: '',
-        },
-      },
-    })
+    expect(outcome).toStrictEqual(DEFAULT_THEME)
   })
 
   test('When custom theme is not in the correct shape, we should ignore unexpected fields', () => {
@@ -95,23 +61,12 @@ describe('Custom theme branding', () => {
       hello: 'world',
       test: 123,
       layout: {
-        showCloseButton: false,
+        showCloseButton: true,
       },
     })
     const outcome = getTheme(customTheme)
 
-    expect(outcome).toStrictEqual({
-      layout: { showCloseButton: false, showLogo: true },
-      form: {
-        showProgressBar: true,
-        showAsterisksForRequiredQuestions: true,
-      },
-      locales: {
-        form: {
-          cta_submit: '',
-        },
-      },
-    })
+    expect(outcome).toStrictEqual(DEFAULT_THEME)
   })
 
   test('When custom theme is defined then it should be parsed correctly', () => {
@@ -126,24 +81,21 @@ describe('Custom theme branding', () => {
       },
       locales: {
         form: {
-          cta_submit: 'Custom copy',
+          next_question_label: 'Custom label 1',
+          previous_question_label: 'Custom label 2',
+          cta_submit: 'Custom label 3',
+        },
+        message: {
+          cta_mark_as_read: 'Custom label 4',
+        },
+        checklist: {
+          cta_submit: 'Custom label 5',
         },
       },
     })
     const outcome = getTheme(customTheme)
 
-    expect(outcome).toStrictEqual({
-      layout: { showCloseButton: false, showLogo: false },
-      form: {
-        showProgressBar: true,
-        showAsterisksForRequiredQuestions: false,
-      },
-      locales: {
-        form: {
-          cta_submit: 'Custom copy',
-        },
-      },
-    })
+    expect(outcome).toStrictEqual(JSON.parse(customTheme))
   })
 
   test('When custom theme is partially defined then it should be parsed correctly and merged with defaut', () => {
@@ -162,6 +114,14 @@ describe('Custom theme branding', () => {
       },
       locales: {
         form: {
+          next_question_label: '',
+          previous_question_label: '',
+          cta_submit: '',
+        },
+        message: {
+          cta_mark_as_read: '',
+        },
+        checklist: {
           cta_submit: '',
         },
       },

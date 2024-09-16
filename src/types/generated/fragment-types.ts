@@ -9,6 +9,7 @@
   "possibleTypes": {
     "PaginationAndSortingPayload": [
       "ActivitiesPayload",
+      "DataPointPayload",
       "OrchestrationFactsPayload",
       "PathwaysPayload",
       "PatientsPayload",
@@ -36,9 +37,11 @@
       "FormPayload",
       "FormResponsePayload",
       "FormsPayload",
+      "GenerateRetoolEmbedUrlPayload",
       "HostedPagesLinkPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
+      "IdentityVerificationPayload",
       "MarkMessageAsReadPayload",
       "MessagePayload",
       "OrchestrationFactsPromptPayload",
@@ -63,6 +66,7 @@
       "SubmitChecklistPayload",
       "SubmitFormResponsePayload",
       "TracksPayload",
+      "UpdateEmrReportStatusPayload",
       "UpdatePatientDemographicsQueryPayload",
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
