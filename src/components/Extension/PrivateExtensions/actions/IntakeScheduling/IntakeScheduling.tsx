@@ -28,6 +28,23 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [slot, setSlot] = useState<SlotType | undefined>(undefined)
+  const [providerPreferences, setProviderPreferences] = useState<{
+    age?: string
+    gender?: string | undefined
+    ethnicity?: string | undefined
+    clinicalFocus?: string[] | undefined
+    deliveryMethod?: string | undefined
+    locationState?: string | undefined
+    therapeuticModality?: string | undefined
+  }>({
+    age: undefined,
+    gender: undefined,
+    ethnicity: undefined,
+    clinicalFocus: undefined,
+    deliveryMethod: undefined,
+    locationState: undefined,
+    therapeuticModality: undefined,
+  })
 
   const { activity_id, fields } = activityDetails
   const { onSubmit } = useIntakeScheduling()
@@ -35,7 +52,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const {
     providerId,
     patientName,
-    agePreference,
+    age,
     genderPreference,
     ethnicityPreference,
     clinicalFocusPreference,
@@ -51,12 +68,41 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       // Reset to default mode on unmount
       resetLayoutMode()
     }
-  }, [])
+  })
+
+  useEffect(() => {
+    // Set the initial provider preferences from the mapped fields
+    setProviderPreferences({
+      age: age ? String(age) : undefined,
+      gender: genderPreference,
+      ethnicity: ethnicityPreference,
+      clinicalFocus: clinicalFocusPreference?.split(','),
+      therapeuticModality: therapeuticModalityPreference,
+      locationState: locationStatePreference,
+    })
+  }, [
+    age,
+    genderPreference,
+    ethnicityPreference,
+    clinicalFocusPreference,
+    therapeuticModalityPreference,
+    locationStatePreference,
+  ])
+
+  const handleProviderPreferencesChange = useCallback(
+    (key: string, value: any) => {
+      setProviderPreferences((prev) => ({
+        ...prev,
+        [key]: value,
+      }))
+    },
+    []
+  )
 
   const fetchProvidersFn = useCallback(
     () =>
       fetchProviders({
-        age: agePreference ? String(agePreference) : undefined,
+        age: age ? String(age) : undefined,
         gender: genderPreference,
         ethnicity: ethnicityPreference,
         therapeuticModality: therapeuticModalityPreference,
@@ -90,7 +136,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         },
       }),
     [
-      agePreference,
+      age,
       genderPreference,
       ethnicityPreference,
       clinicalFocusPreference,
@@ -144,6 +190,8 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       opts={{
         allowSchedulingInThePast: false,
       }}
+      providerPreferences={providerPreferences}
+      onProviderPreferencesChange={handleProviderPreferencesChange}
     />
   )
 }

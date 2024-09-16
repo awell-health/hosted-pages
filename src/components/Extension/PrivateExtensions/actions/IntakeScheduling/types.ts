@@ -6,7 +6,7 @@ export {
 export type ActionFields = {
   providerId?: string
   patientName: string
-  agePreference?: number
+  age?: string
   genderPreference?: 'M' | 'F' | 'Non-binary/non-conforming'
   ethnicityPreference?:
     | 'Asian'

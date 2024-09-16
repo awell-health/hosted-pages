@@ -8,6 +8,7 @@ import {
   GetAvailabilitiesResponseSchema,
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
+import { SolApiResponseError } from './helpers/error'
 import { log } from '../../../../../utils/logging'
 
 export const fetchProviders = async (
@@ -25,30 +26,32 @@ export const fetchProviders = async (
     })
 
     if (!response.ok) {
+      const errorMessage = `Failed to fetch providers: ${response.statusText}`
       log(
         {
-          message: `${basicMessage}: failed`,
+          message: `${basicMessage}: ${errorMessage}`,
           data: { input, response },
         },
         'ERROR',
         ''
       )
-      throw new Error('Failed to fetch providers')
+      throw new SolApiResponseError(errorMessage)
     }
 
     const jsonRes = await response.json()
     const result = GetProvidersResponseSchema.safeParse(jsonRes)
 
     if (!result.success) {
+      const errorMessage = 'SOL API response does not match expected schema'
       log(
         {
-          message: `${basicMessage}: zod parsing error`,
+          message: `${basicMessage}: ${errorMessage}`,
           data: { input, response, result },
         },
         'ERROR',
         ''
       )
-      throw new Error('Zod error', result.error)
+      throw new SolApiResponseError(errorMessage, result.error.issues)
     }
     log(
       {
@@ -85,32 +88,32 @@ export const fetchAvailability = async (
     )
 
     if (!response.ok) {
+      const errorMessage = `Failed to fetch availability for provider ${input.providerId[0]}: ${response.statusText}`
       log(
         {
-          message: `${basicMessage}: failed`,
+          message: `${basicMessage}: ${errorMessage}`,
           data: { input, response },
         },
         'ERROR',
         ''
       )
-      throw new Error(
-        `Failed to fetch availability for provider ${input.providerId[0]}`
-      )
+      throw new SolApiResponseError(errorMessage)
     }
 
     const jsonRes = await response.json()
     const result = GetAvailabilitiesResponseSchema.safeParse(jsonRes)
 
     if (!result.success) {
+      const errorMessage = 'SOL API response does not match expected schema'
       log(
         {
-          message: `${basicMessage}: failed with zod error`,
+          message: `${basicMessage}: ${errorMessage}`,
           data: { input, result },
         },
         'ERROR',
         ''
       )
-      throw new Error('Zod error', result.error)
+      throw new SolApiResponseError(errorMessage, result.error.issues)
     }
 
     log(
@@ -144,12 +147,13 @@ export const bookAppointment = async (
       body: JSON.stringify(input),
     })
     if (!response.ok) {
+      const errorMessage = `Failed to book appointment: ${response.statusText}`
       log(
         { message: `${basicMessage}: failed`, data: { input, response } },
         'ERROR',
-        'Failed to book appointment'
+        errorMessage
       )
-      throw new Error(`Failed to book appointment`)
+      throw new SolApiResponseError(errorMessage)
     }
 
     const jsonRes = (await response.json()) as BookAppointmentResponseType
