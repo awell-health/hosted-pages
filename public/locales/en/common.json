@@ -30,6 +30,10 @@
       "medication_name": "Name",
       "submit_button": "Submit"
     },
+    "identity_verification": {
+      "default_label": "Enter your date of birth to verify your identity",
+      "cta": "Confirm"
+    },
     "cta_done": "Done",
     "docu_sign": {
       "cta_sign_document": "Sign document",
@@ -37,7 +41,6 @@
       "failed_sign_document": "Signing link has failed."
     },
     "form": {
-      "cta_start_form": "Start form",
       "cta_submit": "Submit",
       "date_cannot_be_in_the_future": "Date cannot be in the future.",
       "date_cannot_be_in_the_past": "Date cannot be in the past.",
@@ -48,6 +51,7 @@
       "next_question_label": "Next",
       "not_a_number": "Please enter a number.",
       "number_out_of_range": "Number is out of range.",
+      "email_invalid_format": "Email is in invalid format.",
       "previous_question_label": "Prev",
       "question_required_error": "This question is required.",
       "questions": {
