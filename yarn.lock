@@ -99,7 +99,28 @@
     moment-timezone "^0.5.45"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.65", "@awell-health/ui-library@^0.1.65":
+"@awell-health/ui-library@0.1.68":
+  version "0.1.68"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.68.tgz#0a2f5771d391872a12ba991c055a113f32096dd6"
+  integrity sha512-qj6ulsTVHDT7EornN2B8uS/asHR0WKAwvbPiR5YeTJWCPIULQz+Xn7eJMpXbVMSiBmwgPWQ1rdVI4M+y3b3Otw==
+  dependencies:
+    "@calcom/embed-react" "^1.0.10"
+    "@heroicons/react" "^2.1.3"
+    cloudinary-core "^2.13.0"
+    date-fns "^2.29.1"
+    dompurify "^2.4.0"
+    dotenv "^16.3.1"
+    escape-html "^1.0.3"
+    html-react-parser "^3.0.1"
+    lodash "^4.17.21"
+    react-date-picker "^8.4.0"
+    react-hook-form "^7.41.5"
+    react-international-phone "^1.8.8"
+    react-markdown "^9.0.0"
+    react-window "^1.8.10"
+    remark-gfm "^4.0.0"
+
+"@awell-health/ui-library@^0.1.65":
   version "0.1.65"
   resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.65.tgz#6383e5008dcb6451f3de4772b8d23b821cd867d2"
   integrity sha512-UjT3/QVF+65rO4XtfYg1G9mEDurTlbTPgT+uVr8+GmgytmICqSPTih+Da4x6tsfQDksvMilz1JEyXkbd9CP4ew==

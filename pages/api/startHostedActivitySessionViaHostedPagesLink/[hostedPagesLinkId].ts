@@ -7,6 +7,7 @@ import {
   StartHostedActivitySessionPayload,
 } from '../../../types'
 import { isNil } from 'lodash'
+import { JwtFeature } from '../../../lib'
 
 type Data =
   | StartHostedActivitySessionPayload
@@ -23,7 +24,7 @@ export default async function handler(
   const token = jwt.sign(
     {
       username: environment.apiGatewayConsumerName,
-      feature: 'hosted-activities-link',
+      feature: JwtFeature.HostedActivitiesLink,
     },
     environment.jwtAuthSecret,
     {
