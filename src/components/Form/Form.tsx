@@ -159,6 +159,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     dateCannotBeToday: t('activities.form.date_cannot_be_today'),
     notANumber: t('activities.form.not_a_number'),
     numberOutOfRange: t('activities.form.number_out_of_range'),
+    emailInvalidFormat: t('activities.form.email_invalid_format'),
   }
 
   const renderTraditionalForm =
