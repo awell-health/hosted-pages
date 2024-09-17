@@ -8,6 +8,12 @@ import {
   type SlotType,
   SchedulingActivity,
   GetProvidersInputType,
+  Gender,
+  Ethnicity,
+  Modality,
+  ClinicalFocus,
+  DeliveryMethod,
+  LocationState,
 } from '@awell-health/sol-scheduling'
 import {
   bookAppointment,
@@ -51,11 +57,11 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   }, [])
 
   useEffect(() => {
-    fetchProvidersFn()
+    fetchProvidersFn(providerPreferences)
   }, [providerPreferences])
 
   const fetchProvidersFn = useCallback(
-    () => fetchProviders(providerPreferences),
+    (prefs: GetProvidersInputType) => fetchProviders(prefs),
     [providerPreferences]
   )
 
@@ -120,36 +126,20 @@ const populateInitialPrefs = (
     age: providerPrefs.agePreference
       ? String(providerPrefs.agePreference)
       : undefined,
-    gender: providerPrefs.genderPreference,
-    ethnicity: providerPrefs.ethnicityPreference,
-    therapeuticModality: providerPrefs.therapeuticModalityPreference,
+    gender: providerPrefs.genderPreference as Gender,
+    ethnicity: providerPrefs.ethnicityPreference as Ethnicity,
+    therapeuticModality:
+      providerPrefs.therapeuticModalityPreference as Modality,
     /**
      * Although it's an array of strings,
      * we receive it as comma-separated string in hosted pages
      */
     clinicalFocus: providerPrefs.clinicalFocusPreference
-      ? (providerPrefs.clinicalFocusPreference.split(',') as (
-          | 'ADHD'
-          | 'Anxiety d/o'
-          | 'Autism spectrum'
-          | 'Gender dysphoria'
-          | 'Trauma (including PTSD)'
-          | 'Depressive d/o'
-          | 'Bipolar spectrum'
-          | 'Anger management'
-          | 'OCD'
-          | 'Personality d/o'
-          | 'Substance use'
-          | 'Eating d/o'
-          | 'Psychosis (e.g. schizophrenia)'
-          | 'Dissociative d/o'
-          | 'Developmental delay'
-          | 'Traumatic brain injury'
-        )[])
+      ? (providerPrefs.clinicalFocusPreference.split(',') as ClinicalFocus[])
       : undefined,
-    deliveryMethod: providerPrefs.deliveryMethodPreference,
+    deliveryMethod: providerPrefs.deliveryMethodPreference as DeliveryMethod,
     location: {
-      state: providerPrefs.locationStatePreference,
+      state: providerPrefs.locationStatePreference as LocationState,
     },
   }
 }
