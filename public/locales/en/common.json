@@ -51,6 +51,7 @@
       "next_question_label": "Next",
       "not_a_number": "Please enter a number.",
       "number_out_of_range": "Number is out of range.",
+      "email_invalid_format": "Email is in invalid format.",
       "previous_question_label": "Prev",
       "question_required_error": "This question is required.",
       "questions": {
