@@ -9,14 +9,26 @@ import {
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
 import { SolApiResponseError } from './helpers/error'
-import { log } from '../../../../../utils/logging'
+
+// Helper function to log messages to the API route
+const log = async (params: {}, severity: string, error: string | {} = '') => {
+  try {
+    await fetch('/api/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ params, severity, error }),
+    })
+  } catch (err) {
+    console.error('Error sending log request:', err)
+  }
+}
 
 export const fetchProviders = async (
   input: GetProvidersInputType
 ): Promise<GetProvidersResponseType> => {
-  const basicMessage = 'Fetching sol providers'
+  const basicMessage = 'SOL: Fetching providers'
   try {
-    log({ message: basicMessage, data: input }, 'INFO', '')
+    log({ message: basicMessage, data: input }, 'INFO')
     const response = await fetch('/api/sol/providers', {
       method: 'POST',
       headers: {
@@ -33,7 +45,7 @@ export const fetchProviders = async (
           data: { input, response },
         },
         'ERROR',
-        ''
+        errorMessage
       )
       throw new SolApiResponseError(errorMessage)
     }
@@ -49,7 +61,7 @@ export const fetchProviders = async (
           data: { input, response, result },
         },
         'ERROR',
-        ''
+        errorMessage
       )
       throw new SolApiResponseError(errorMessage, result.error.issues)
     }
@@ -58,19 +70,18 @@ export const fetchProviders = async (
         message: `${basicMessage}: successfull`,
         data: { input, result },
       },
-      'INFO',
-      ''
+      'INFO'
     )
     return result.data
   } catch (error) {
     const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
     log(
       {
-        message: `${basicMessage}: error`,
+        message: `${basicMessage}: ${errMessage}`,
         data: { input, error },
       },
       'ERROR',
-      errMessage
+      error as SolApiResponseError
     )
     throw error
   }
@@ -79,10 +90,10 @@ export const fetchProviders = async (
 export const fetchAvailability = async (
   input: GetAvailabilitiesInputType
 ): Promise<GetAvailabilitiesResponseType> => {
-  const basicMessage = 'Fetching provider availability'
+  const basicMessage = 'SOL: Fetching provider availability'
 
   try {
-    log({ message: basicMessage, data: input }, 'INFO', '')
+    log({ message: basicMessage, data: input }, 'INFO')
     const response = await fetch(
       `/api/sol/providers/${input.providerId[0]}/availability`
     )
@@ -95,7 +106,7 @@ export const fetchAvailability = async (
           data: { input, response },
         },
         'ERROR',
-        ''
+        errorMessage
       )
       throw new SolApiResponseError(errorMessage)
     }
@@ -111,23 +122,22 @@ export const fetchAvailability = async (
           data: { input, result },
         },
         'ERROR',
-        ''
+        errorMessage
       )
       throw new SolApiResponseError(errorMessage, result.error.issues)
     }
 
     log(
       { message: `${basicMessage}: success`, data: { input, result } },
-      'INFO',
-      ''
+      'INFO'
     )
     return result.data
   } catch (error) {
     const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
     log(
-      { message: `${basicMessage}: error`, data: { input, error } },
+      { message: `${basicMessage}: ${errMessage}`, data: { input, error } },
       'ERROR',
-      errMessage
+      error as SolApiResponseError
     )
     throw error
   }
@@ -136,9 +146,9 @@ export const fetchAvailability = async (
 export const bookAppointment = async (
   input: BookAppointmentInputType
 ): Promise<BookAppointmentResponseType> => {
-  const basicMessage = 'Booking sol appointment'
+  const basicMessage = 'SOL: Booking appointment'
   try {
-    log({ message: basicMessage, data: input }, 'INFO', '')
+    log({ message: basicMessage, data: input }, 'INFO')
     const response = await fetch(`/api/sol/appointments`, {
       method: 'POST',
       headers: {
@@ -158,15 +168,15 @@ export const bookAppointment = async (
 
     const jsonRes = (await response.json()) as BookAppointmentResponseType
 
-    log({ message: basicMessage, data: { input, jsonRes } }, 'INFO', '')
+    log({ message: basicMessage, data: { input, jsonRes } }, 'INFO')
 
     return jsonRes
   } catch (error) {
     const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
     log(
-      { message: `${basicMessage}: error`, data: { input, error } },
+      { message: `${basicMessage}: ${errMessage}`, data: { input, error } },
       'ERROR',
-      errMessage
+      error as SolApiResponseError
     )
     throw error
   }

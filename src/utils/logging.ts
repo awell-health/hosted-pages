@@ -1,6 +1,6 @@
 import { Log, Logging } from '@google-cloud/logging'
 import path from 'path'
-import fs from 'fs'
+import fs from 'fs/promises'
 import os from 'os'
 
 const metadata = {
@@ -20,12 +20,14 @@ const getLogger = (): Log | undefined => {
   if (loggerInstance === undefined) {
     console.log('Initializing logger')
     const keyFile = path.join(os.tmpdir(), 'logging-sa-key.json')
-    fs.writeFileSync(
-      keyFile,
-      process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY ?? ''
-    )
-    const gcpLoggingClient = new Logging({ keyFile })
-    loggerInstance = gcpLoggingClient.log('hosted-sessions')
+    fs.writeFile(keyFile, process.env.GOOGLE_APPLICATION_CREDENTIALS_KEY ?? '')
+      .then(() => {
+        const gcpLoggingClient = new Logging({ keyFile })
+        loggerInstance = gcpLoggingClient.log('hosted-sessions')
+      })
+      .catch((err) => {
+        console.error('Error writing key file:', err)
+      })
   }
 
   return loggerInstance
