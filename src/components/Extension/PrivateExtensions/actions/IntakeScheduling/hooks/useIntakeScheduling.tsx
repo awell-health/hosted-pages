@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { DataPoints, useCompleteExtensionActivity } from '../types'
-import { isNil } from 'lodash'
 
 interface OnSubmitProps {
   activityId: string
