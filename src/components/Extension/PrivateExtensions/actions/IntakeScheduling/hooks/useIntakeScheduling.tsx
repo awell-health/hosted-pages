@@ -8,6 +8,9 @@ interface OnSubmitProps {
   slotDate: string
   slotDateOnlyLocaleString: string
   slotTimeOnlyLocaleString: string
+  facility: string
+  eventLocationType: string
+  providerPreferences: string
 }
 
 export const useIntakeScheduling = () => {

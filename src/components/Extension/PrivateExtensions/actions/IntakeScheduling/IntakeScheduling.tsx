@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 
 import type { ExtensionActivityRecord } from '../../../types'
 import { useIntakeScheduling } from './hooks/useIntakeScheduling'
@@ -22,12 +22,11 @@ import {
 } from './api.service'
 import { useTheme } from '@awell-health/ui-library'
 import '@awell-health/sol-scheduling/style.css'
+import { SelectedSlot } from '@awell-health/sol-scheduling/dist/lib/api/schema/shared.schema'
 
 interface IntakeSchedulingProps {
   activityDetails: ExtensionActivityRecord
 }
-
-const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   activityDetails,
@@ -39,10 +38,6 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
 
   const { updateLayoutMode, resetLayoutMode } = useTheme()
   const { onSubmit } = useIntakeScheduling()
-
-  const [provider, setProvider] = useState<string | undefined>(undefined)
-  const [date, setDate] = useState<Date | undefined>(undefined)
-  const [slot, setSlot] = useState<SlotType | undefined>(undefined)
 
   const [providerPreferences, setProviderPreferences] =
     useState<GetProvidersInputType>(initialPrefs)
@@ -71,18 +66,19 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     })
   }, [])
 
-  const bookAppointmentFn = useCallback((_slot: SlotType) => {
+  const bookAppointmentFn = useCallback((_slot: SelectedSlot) => {
     return bookAppointment({
       eventId: _slot.eventId,
       providerId: _slot.providerId,
       userInfo: {
         userName: patientName,
       },
+      locationType: _slot.locationType,
     })
   }, [])
 
   const completeActivity = useCallback(
-    (_slot: SlotType, preferences: GetProvidersInputType) => {
+    (_slot: SelectedSlot, preferences: GetProvidersInputType) => {
       console.log('need to add prefs to activity datapoints', preferences)
       onSubmit({
         activityId: activity_id,
@@ -91,6 +87,9 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         slotDate: _slot.slotstart.toISOString(),
         slotDateOnlyLocaleString: _slot.slotstart.toLocaleDateString(),
         slotTimeOnlyLocaleString: _slot.slotstart.toLocaleTimeString(),
+        facility: _slot.facility,
+        eventLocationType: _slot.locationType,
+        providerPreferences: JSON.stringify(preferences),
       })
     },
     [activity_id, onSubmit, providerId]
@@ -106,13 +105,6 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       onCompleteActivity={completeActivity}
       opts={{
         allowSchedulingInThePast: false,
-      }}
-      timeZone={timeZone}
-      onProviderSelect={(id) => setProvider(id)}
-      onDateSelect={(date) => setDate(date)}
-      onSlotSelect={(slot) => setSlot(slot)}
-      onProviderPreferencesChange={(preferences: GetProvidersInputType) => {
-        setProviderPreferences(preferences)
       }}
     />
   )
