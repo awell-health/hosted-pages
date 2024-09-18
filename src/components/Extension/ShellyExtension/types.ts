@@ -6,4 +6,3 @@ export {
 export enum ActionKey {
   REVIEW_MEDICATION_EXTRACTION = 'reviewMedicationExtraction',
 }
-
