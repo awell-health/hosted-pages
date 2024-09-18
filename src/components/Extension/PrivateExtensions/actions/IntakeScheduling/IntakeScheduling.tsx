@@ -82,7 +82,8 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   }, [])
 
   const completeActivity = useCallback(
-    (_slot: SlotType) => {
+    (_slot: SlotType, preferences: GetProvidersInputType) => {
+      console.log('need to add prefs to activity datapoints', preferences)
       onSubmit({
         activityId: activity_id,
         eventId: _slot.eventId,
@@ -98,18 +99,18 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   return (
     <SchedulingActivity
       providerId={providerId}
-      timeZone={timeZone}
-      onProviderSelect={(id) => setProvider(id)}
-      onDateSelect={(date) => setDate(date)}
-      onSlotSelect={(slot) => setSlot(slot)}
-      onBooking={bookAppointmentFn}
+      providerPreferences={providerPreferences}
       fetchProviders={fetchProvidersFn}
       fetchAvailability={fetchAvailabilityFn}
+      onBooking={bookAppointmentFn}
       onCompleteActivity={completeActivity}
       opts={{
         allowSchedulingInThePast: false,
       }}
-      providerPreferences={providerPreferences}
+      timeZone={timeZone}
+      onProviderSelect={(id) => setProvider(id)}
+      onDateSelect={(date) => setDate(date)}
+      onSlotSelect={(slot) => setSlot(slot)}
       onProviderPreferencesChange={(preferences: GetProvidersInputType) => {
         setProviderPreferences(preferences)
       }}

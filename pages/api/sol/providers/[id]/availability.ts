@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../../../../src/utils'
-import {
-  type GetAvailabilitiesResponseType,
-  GetAvailabilitiesInputSchema,
-} from '@awell-health/sol-scheduling'
+import { type GetAvailabilitiesResponseType } from '@awell-health/sol-scheduling'
 
 export default async function handler(
   req: NextApiRequest,

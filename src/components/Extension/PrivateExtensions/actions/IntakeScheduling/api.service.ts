@@ -27,7 +27,6 @@ export const fetchProviders = async (
 
     const jsonRes = await response.json()
     const result = GetProvidersResponseSchema.safeParse(jsonRes)
-
     if (!result.success) {
       console.error('Zod parsing error', result.error.issues)
       throw new Error('Zod error', result.error)
@@ -62,7 +61,6 @@ export const fetchAvailability = async (
 
     const jsonRes = await response.json()
     const result = GetAvailabilitiesResponseSchema.safeParse(jsonRes)
-
     if (!result.success) {
       console.error('Zod parsing error', result.error.issues)
       throw new Error('Zod error', result.error)
