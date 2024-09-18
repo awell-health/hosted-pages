@@ -5,4 +5,5 @@ export {
 
 export type ActionFields = {
   imageUrl?: string
+  medicationData?: string
 }

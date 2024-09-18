@@ -8,7 +8,6 @@ import {
   Button,
   HostedPageFooter,
   InputField,
-  QuestionLabel,
   useTheme,
 } from '@awell-health/ui-library'
 import { isEmpty } from 'lodash'
@@ -20,10 +19,20 @@ interface ReviewMedicationExtractionProps {
   activityDetails: ExtensionActivityRecord
 }
 
+type ExtractedMedicationData = {
+  medications: Array<{
+    extracted_medication_name: string
+    extracted_brand_name: string
+    extracted_dosage: string
+    dose_form_name: string
+  }>
+}
+
 type Medication = {
   name: string
+  brand_name: string
   dose: string
-  instructions?: string
+  dose_form_name?: string
 }
 
 export const ReviewMedicationExtraction: FC<
@@ -34,10 +43,29 @@ export const ReviewMedicationExtraction: FC<
   const { updateLayoutMode, resetLayoutMode } = useTheme()
   const { onSubmit } = useReviewMedicationExtraction()
 
-  const { imageUrl } = useMemo(
+  const { imageUrl, medicationData } = useMemo(
     () => mapActionFieldsToObject<ActionFields>(fields),
     [fields]
   )
+
+  useEffect(() => {
+    if (medicationData) {
+      const parsedMedicationData: ExtractedMedicationData =
+        JSON.parse(medicationData)
+
+      const mappedMedications = parsedMedicationData?.medications.map(
+        (medication) => {
+          return {
+            name: medication.extracted_medication_name,
+            brand_name: medication.extracted_brand_name,
+            dose: medication.extracted_dosage,
+            dose_form_name: medication.dose_form_name,
+          }
+        }
+      )
+      setMedications(mappedMedications)
+    }
+  }, [])
 
   useEffect(() => {
     updateLayoutMode('flexible')
@@ -53,7 +81,8 @@ export const ReviewMedicationExtraction: FC<
       return (
         !isEmpty(medication.name) ||
         !isEmpty(medication.dose) ||
-        !isEmpty(medication.instructions)
+        !isEmpty(medication.dose_form_name) ||
+        !isEmpty(medication.brand_name)
       )
     })
 
@@ -64,7 +93,10 @@ export const ReviewMedicationExtraction: FC<
   }, [activity_id, onSubmit, medications])
 
   const addMedication = () => {
-    setMedications([...medications, { name: '', dose: '', instructions: '' }])
+    setMedications([
+      ...medications,
+      { name: '', dose: '', dose_form_name: '', brand_name: '' },
+    ])
   }
 
   const updateMedication = (
@@ -119,6 +151,16 @@ export const ReviewMedicationExtraction: FC<
                 placeholder="Medication Name"
               />
               <InputField
+                id="brand_name"
+                label="Brand name"
+                type="text"
+                value={medication.brand_name || ''}
+                onChange={(e) =>
+                  updateMedication(index, 'brand_name', e.target.value)
+                }
+                placeholder="Brand name"
+              />
+              <InputField
                 id="dose"
                 label="Dose"
                 type="text"
@@ -129,14 +171,14 @@ export const ReviewMedicationExtraction: FC<
                 placeholder="Dose"
               />
               <InputField
-                id="instructions"
-                label="Instructions"
+                id="dose_form_name"
+                label="Dose form name"
                 type="text"
-                value={medication.instructions || ''}
+                value={medication.dose_form_name || ''}
                 onChange={(e) =>
-                  updateMedication(index, 'instructions', e.target.value)
+                  updateMedication(index, 'dose_form_name', e.target.value)
                 }
-                placeholder="Instructions"
+                placeholder="Dose form name"
               />
               <Button
                 variant="tertiary"
