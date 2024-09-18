@@ -7,13 +7,16 @@ export const useReviewMedicationExtraction = () => {
   const onSubmit = useCallback(
     async ({
       activityId,
-      stringifiedMedication,
+      validatedData,
     }: {
       activityId: string
-      stringifiedMedication: string
+      validatedData: string
     }) => {
       const dataPoints: DataPoints = [
-        { key: 'stringifiedMedicationData', value: stringifiedMedication },
+        {
+          key: 'validatedData',
+          value: validatedData,
+        },
       ]
 
       return _onSubmit(activityId, dataPoints)

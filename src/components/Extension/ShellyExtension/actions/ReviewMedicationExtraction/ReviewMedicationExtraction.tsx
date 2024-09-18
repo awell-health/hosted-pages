@@ -14,6 +14,7 @@ import {
 import { isEmpty } from 'lodash'
 import { mapActionFieldsToObject } from '../../../utils'
 import { ActionFields } from './types'
+import Image from 'next/image'
 
 interface ReviewMedicationExtractionProps {
   activityDetails: ExtensionActivityRecord
@@ -33,7 +34,7 @@ export const ReviewMedicationExtraction: FC<
   const { updateLayoutMode, resetLayoutMode } = useTheme()
   const { onSubmit } = useReviewMedicationExtraction()
 
-  const { questionLabel } = useMemo(
+  const { imageUrl } = useMemo(
     () => mapActionFieldsToObject<ActionFields>(fields),
     [fields]
   )
@@ -58,7 +59,7 @@ export const ReviewMedicationExtraction: FC<
 
     onSubmit({
       activityId: activity_id,
-      stringifiedMedication: JSON.stringify(filteredMedications),
+      validatedData: JSON.stringify({ medications: filteredMedications }),
     })
   }, [activity_id, onSubmit, medications])
 
@@ -89,9 +90,20 @@ export const ReviewMedicationExtraction: FC<
         <div
           className={`${classes.container} ${classes.groupMedsListContainer}`}
         >
-          {!questionLabel && (
-            <div className={classes.label}>
-              <QuestionLabel label="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." />
+          {imageUrl && (
+            <div className={classes.image}>
+              <Image
+                layout="responsive"
+                alt="medication-image"
+                src={imageUrl}
+                width={800} // Set a default width
+                height={600} // Set a default height to maintain aspect ratio
+                sizes="(max-width: 768px) 100vw, 
+             (max-width: 1200px) 50vw, 
+             33vw" // Specify sizes based on viewport width
+                objectFit="contain" // Ensures the image fits within its container
+                objectPosition="center" // Centers the image
+              />
             </div>
           )}
           {medications.map((medication, index) => (

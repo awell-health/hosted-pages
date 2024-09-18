@@ -27,8 +27,10 @@
   gap: 12px;
 }
 
-.label {
-  text-align: left;
+.image {
+  width: 100%; 
+  max-width: 800px; 
+  margin: 0 auto;
 }
 
 .singleMedsListContainer:not(:first-child) label {

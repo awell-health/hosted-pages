@@ -4,5 +4,5 @@ export {
 } from '../../../../../hooks/useCompleteExtensionActivity'
 
 export type ActionFields = {
-  questionLabel?: string
+  imageUrl?: string
 }
