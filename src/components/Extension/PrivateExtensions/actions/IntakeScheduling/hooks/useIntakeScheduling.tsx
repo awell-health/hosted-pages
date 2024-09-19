@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { DataPoints, useCompleteExtensionActivity } from '../types'
-import { isNil } from 'lodash'
 
 interface OnSubmitProps {
   activityId: string
@@ -9,6 +8,9 @@ interface OnSubmitProps {
   slotDate: string
   slotDateOnlyLocaleString: string
   slotTimeOnlyLocaleString: string
+  facility: string
+  eventLocationType: string
+  providerPreferences: string
 }
 
 export const useIntakeScheduling = () => {
@@ -22,6 +24,9 @@ export const useIntakeScheduling = () => {
       slotDate,
       slotDateOnlyLocaleString,
       slotTimeOnlyLocaleString,
+      facility,
+      eventLocationType,
+      providerPreferences,
     }: OnSubmitProps) => {
       const dataPoints: DataPoints = [
         { key: 'eventId', value: eventId },
@@ -35,7 +40,13 @@ export const useIntakeScheduling = () => {
           key: 'slotTimeOnlyLocaleString',
           value: slotTimeOnlyLocaleString,
         },
+        { key: 'facility', value: facility },
+        { key: 'eventLocationType', value: eventLocationType },
+        { key: 'providerPreferences', value: providerPreferences },
       ]
+      console.log('onCompleteActivity', {
+        dataPoints,
+      })
       return _onSubmit(activityId, dataPoints)
     },
     [_onSubmit]

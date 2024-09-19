@@ -21,6 +21,7 @@ import {
 } from './PrivateExtensions/actions'
 import { StripeExtension } from './StripeExtension'
 import { IdentityVerification } from './IdentityVerification'
+import { ShellyExtension } from './ShellyExtension'
 
 interface ExtensionProps {
   activity: Activity
@@ -89,6 +90,8 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
       return (
         <ExperimentalExtension activityDetails={extensionActivityDetails} />
       )
+    case ExtensionKey.SHELLY:
+      return <ShellyExtension activityDetails={extensionActivityDetails} />
     default:
       return getDefaultReturnValue()
   }
