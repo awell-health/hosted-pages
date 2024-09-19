@@ -24,6 +24,9 @@ export const useIntakeScheduling = () => {
       slotDate,
       slotDateOnlyLocaleString,
       slotTimeOnlyLocaleString,
+      facility,
+      eventLocationType,
+      providerPreferences,
     }: OnSubmitProps) => {
       const dataPoints: DataPoints = [
         { key: 'eventId', value: eventId },
@@ -37,6 +40,9 @@ export const useIntakeScheduling = () => {
           key: 'slotTimeOnlyLocaleString',
           value: slotTimeOnlyLocaleString,
         },
+        { key: 'facility', value: facility },
+        { key: 'eventLocationType', value: eventLocationType },
+        { key: 'providerPreferences', value: providerPreferences },
       ]
       return _onSubmit(activityId, dataPoints)
     },
