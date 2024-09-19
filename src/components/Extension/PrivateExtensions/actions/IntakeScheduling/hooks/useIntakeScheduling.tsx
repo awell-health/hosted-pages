@@ -44,6 +44,9 @@ export const useIntakeScheduling = () => {
         { key: 'eventLocationType', value: eventLocationType },
         { key: 'providerPreferences', value: providerPreferences },
       ]
+      console.log('onCompleteActivity', {
+        dataPoints,
+      })
       return _onSubmit(activityId, dataPoints)
     },
     [_onSubmit]

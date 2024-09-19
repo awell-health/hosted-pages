@@ -79,10 +79,6 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
 
   const completeActivity = useCallback(
     (_slot: SelectedSlot, preferences: GetProvidersInputType) => {
-      console.log('onComplete', {
-        preferences,
-        _slot,
-      })
       onSubmit({
         activityId: activity_id,
         eventId: _slot.eventId,
