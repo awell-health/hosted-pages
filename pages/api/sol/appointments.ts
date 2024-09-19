@@ -19,7 +19,8 @@ export default async function handler(
       !process.env.SOL_AUTH_URL ||
       !process.env.SOL_CLIENT_ID ||
       !process.env.SOL_CLIENT_SECRET ||
-      !process.env.SOL_RESOURCE
+      !process.env.SOL_RESOURCE ||
+      !process.env.SOL_BOOKING_ENDPOINT
     )
       throw new Error(
         'Missing environment variables for connection to the SOL API'
@@ -42,7 +43,7 @@ export default async function handler(
       })
     }
 
-    const response = await fetch(process.env.SOL_BOOKING_ENDPOINT ?? '', {
+    const response = await fetch(process.env.SOL_BOOKING_ENDPOINT, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,

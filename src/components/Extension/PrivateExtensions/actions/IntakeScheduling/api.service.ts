@@ -8,11 +8,27 @@ import {
   GetAvailabilitiesResponseSchema,
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
+import { SolApiResponseError } from './helpers/error'
+
+// Helper function to log messages to the API route
+const log = async (params: {}, severity: string, error: string | {} = '') => {
+  try {
+    await fetch('/api/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ params, severity, error }),
+    })
+  } catch (err) {
+    console.error('Error sending log request:', err)
+  }
+}
 
 export const fetchProviders = async (
   input: GetProvidersInputType
 ): Promise<GetProvidersResponseType> => {
+  const basicMessage = 'SOL: Fetching providers'
   try {
+    log({ message: basicMessage, data: input }, 'INFO')
     const response = await fetch('/api/sol/providers', {
       method: 'POST',
       headers: {
@@ -22,26 +38,50 @@ export const fetchProviders = async (
     })
 
     if (!response.ok) {
-      throw new Error('Failed to fetch providers')
+      const errorMessage = `Failed to fetch providers: ${response.statusText}`
+      log(
+        {
+          message: `${basicMessage}: ${errorMessage}`,
+          data: { input, response },
+        },
+        'ERROR',
+        errorMessage
+      )
+      throw new SolApiResponseError(errorMessage)
     }
 
     const jsonRes = await response.json()
     const result = GetProvidersResponseSchema.safeParse(jsonRes)
-
     if (!result.success) {
-      console.error('Zod parsing error', result.error.issues)
-      throw new Error('Zod error', result.error)
+      const errorMessage = 'SOL API response does not match expected schema'
+      log(
+        {
+          message: `${basicMessage}: ${errorMessage}`,
+          data: { input, response, result },
+        },
+        'ERROR',
+        errorMessage
+      )
+      throw new SolApiResponseError(errorMessage, result.error.issues)
     }
-
-    /**
-     * Logging it the console for during the bootcamp
-     */
-    console.log('[get providers] json response', jsonRes)
-    console.log('[get providers] parsed response with zod ', result.data)
-
+    log(
+      {
+        message: `${basicMessage}: successfull`,
+        data: { input, result },
+      },
+      'INFO'
+    )
     return result.data
   } catch (error) {
-    console.error('Error fetching providers:', error)
+    const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
+    log(
+      {
+        message: `${basicMessage}: ${errMessage}`,
+        data: { input, error },
+      },
+      'ERROR',
+      error as SolApiResponseError
+    )
     throw error
   }
 }
@@ -49,36 +89,53 @@ export const fetchProviders = async (
 export const fetchAvailability = async (
   input: GetAvailabilitiesInputType
 ): Promise<GetAvailabilitiesResponseType> => {
+  const basicMessage = 'SOL: Fetching provider availability'
+
   try {
+    log({ message: basicMessage, data: input }, 'INFO')
     const response = await fetch(
       `/api/sol/providers/${input.providerId[0]}/availability`
     )
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch availability for provider ${input.providerId[0]}`
+      const errorMessage = `Failed to fetch availability for provider ${input.providerId[0]}: ${response.statusText}`
+      log(
+        {
+          message: `${basicMessage}: ${errorMessage}`,
+          data: { input, response },
+        },
+        'ERROR',
+        errorMessage
       )
+      throw new SolApiResponseError(errorMessage)
     }
 
     const jsonRes = await response.json()
     const result = GetAvailabilitiesResponseSchema.safeParse(jsonRes)
-
     if (!result.success) {
-      console.error('Zod parsing error', result.error.issues)
-      throw new Error('Zod error', result.error)
+      const errorMessage = 'SOL API response does not match expected schema'
+      log(
+        {
+          message: `${basicMessage}: ${errorMessage}`,
+          data: { input, result },
+        },
+        'ERROR',
+        errorMessage
+      )
+      throw new SolApiResponseError(errorMessage, result.error.issues)
     }
 
-    /**
-     * Logging it the console for during the bootcamp
-     */
-    console.log('[get availabilities] json response', jsonRes)
-    console.log('[get availabilities] parsed response with zod ', result.data)
-
+    log(
+      { message: `${basicMessage}: success`, data: { input, result } },
+      'INFO'
+    )
     return result.data
   } catch (error) {
-    console.error(
-      `Error fetching availability for provider ${input.providerId[0]}:`,
-      error
+    const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
+    log(
+      { message: `${basicMessage}: ${errMessage}`, data: { input, error } },
+      'ERROR',
+      error as SolApiResponseError
     )
     throw error
   }
@@ -87,7 +144,9 @@ export const fetchAvailability = async (
 export const bookAppointment = async (
   input: BookAppointmentInputType
 ): Promise<BookAppointmentResponseType> => {
+  const basicMessage = 'SOL: Booking appointment'
   try {
+    log({ message: basicMessage, data: input }, 'INFO')
     const response = await fetch(`/api/sol/appointments`, {
       method: 'POST',
       headers: {
@@ -96,19 +155,27 @@ export const bookAppointment = async (
       body: JSON.stringify(input),
     })
     if (!response.ok) {
-      throw new Error(`Failed to book appointment`)
+      const errorMessage = `Failed to book appointment: ${response.statusText}`
+      log(
+        { message: `${basicMessage}: failed`, data: { input, response } },
+        'ERROR',
+        errorMessage
+      )
+      throw new SolApiResponseError(errorMessage)
     }
 
     const jsonRes = (await response.json()) as BookAppointmentResponseType
 
-    /**
-     * Logging it the console for during the bootcamp
-     */
-    console.log('[book appt] json response', jsonRes)
+    log({ message: basicMessage, data: { input, jsonRes } }, 'INFO')
 
     return jsonRes
   } catch (error) {
-    console.error(`Error booking the appointment`, error)
+    const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
+    log(
+      { message: `${basicMessage}: ${errMessage}`, data: { input, error } },
+      'ERROR',
+      error as SolApiResponseError
+    )
     throw error
   }
 }
