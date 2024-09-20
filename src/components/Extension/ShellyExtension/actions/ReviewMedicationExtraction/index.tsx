@@ -1,0 +1,1 @@
+export { ReviewMedicationExtraction } from './ReviewMedicationExtraction'
