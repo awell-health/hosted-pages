@@ -23,9 +23,17 @@ const log = async (params: {}, severity: string, error: string | {} = '') => {
   }
 }
 
-export const fetchProviders = async (
+interface RequestOptions {
+  baseUrl: string
+}
+
+export const fetchProviders = async ({
+  input,
+  requestOptions,
+}: {
   input: GetProvidersInputType
-): Promise<GetProvidersResponseType> => {
+  requestOptions: RequestOptions
+}): Promise<GetProvidersResponseType> => {
   const basicMessage = 'SOL: Fetching providers'
   try {
     log({ message: basicMessage, data: input }, 'INFO')
@@ -33,6 +41,7 @@ export const fetchProviders = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-sol-api-url': requestOptions.baseUrl,
       },
       body: JSON.stringify(input),
     })
@@ -86,15 +95,24 @@ export const fetchProviders = async (
   }
 }
 
-export const fetchAvailability = async (
+export const fetchAvailability = async ({
+  input,
+  requestOptions,
+}: {
   input: GetAvailabilitiesInputType
-): Promise<GetAvailabilitiesResponseType> => {
+  requestOptions: RequestOptions
+}): Promise<GetAvailabilitiesResponseType> => {
   const basicMessage = 'SOL: Fetching provider availability'
 
   try {
     log({ message: basicMessage, data: input }, 'INFO')
     const response = await fetch(
-      `/api/sol/providers/${input.providerId[0]}/availability`
+      `/api/sol/providers/${input.providerId[0]}/availability`,
+      {
+        headers: {
+          'x-sol-api-url': requestOptions.baseUrl,
+        },
+      }
     )
 
     if (!response.ok) {
@@ -141,9 +159,13 @@ export const fetchAvailability = async (
   }
 }
 
-export const bookAppointment = async (
+export const bookAppointment = async ({
+  input,
+  requestOptions,
+}: {
   input: BookAppointmentInputType
-): Promise<BookAppointmentResponseType> => {
+  requestOptions: RequestOptions
+}): Promise<BookAppointmentResponseType> => {
   const basicMessage = 'SOL: Booking appointment'
   try {
     log({ message: basicMessage, data: input }, 'INFO')
@@ -151,6 +173,7 @@ export const bookAppointment = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-sol-api-url': requestOptions.baseUrl,
       },
       body: JSON.stringify(input),
     })

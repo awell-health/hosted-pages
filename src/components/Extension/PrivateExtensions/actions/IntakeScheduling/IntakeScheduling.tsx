@@ -1,9 +1,9 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { ExtensionActivityRecord } from '../../../types'
 import { useIntakeScheduling } from './hooks/useIntakeScheduling'
-import { mapActionFieldsToObject } from '../../../utils'
-import { ActionFields } from './types'
+import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
+import { ActionFields, ExtensionSettings } from './types'
 import {
   SchedulingActivity,
   GetProvidersInputType,
@@ -30,7 +30,7 @@ interface IntakeSchedulingProps {
 export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   activityDetails,
 }) => {
-  const { activity_id, fields } = activityDetails
+  const { activity_id, fields, settings } = activityDetails
   const { providerId, patientName, ...providerPrefs } =
     mapActionFieldsToObject<ActionFields>(fields)
   const initialPrefs = populateInitialPrefs(providerPrefs)
@@ -39,6 +39,11 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const { onSubmit } = useIntakeScheduling()
 
   const [providerPreferences] = useState<GetProvidersInputType>(initialPrefs)
+
+  const { baseUrl } = useMemo(
+    () => mapSettingsToObject<ExtensionSettings>(settings),
+    [settings]
+  )
 
   useEffect(() => {
     updateLayoutMode('flexible')
@@ -50,32 +55,42 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   }, [updateLayoutMode, resetLayoutMode])
 
   const fetchProvidersFn = useCallback(
-    (prefs: GetProvidersInputType) => fetchProviders(prefs),
-    []
+    (prefs: GetProvidersInputType) =>
+      fetchProviders({ input: prefs, requestOptions: { baseUrl } }),
+    [baseUrl]
   )
 
   useEffect(() => {
     fetchProvidersFn(providerPreferences)
   }, [providerPreferences, fetchProvidersFn])
 
-  const fetchAvailabilityFn = useCallback((_providerId: string) => {
-    return fetchAvailability({
-      providerId: [_providerId],
-    })
-  }, [])
+  const fetchAvailabilityFn = useCallback(
+    (_providerId: string) => {
+      return fetchAvailability({
+        input: {
+          providerId: [_providerId],
+        },
+        requestOptions: { baseUrl },
+      })
+    },
+    [baseUrl]
+  )
 
   const bookAppointmentFn = useCallback(
     (_slot: SelectedSlot) => {
       return bookAppointment({
-        eventId: _slot.eventId,
-        providerId: _slot.providerId,
-        userInfo: {
-          userName: patientName,
+        input: {
+          eventId: _slot.eventId,
+          providerId: _slot.providerId,
+          userInfo: {
+            userName: patientName,
+          },
+          locationType: _slot.locationType,
         },
-        locationType: _slot.locationType,
+        requestOptions: { baseUrl },
       })
     },
-    [patientName]
+    [patientName, baseUrl]
   )
 
   const completeActivity = useCallback(
