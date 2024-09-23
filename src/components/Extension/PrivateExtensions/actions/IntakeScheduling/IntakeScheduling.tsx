@@ -1,11 +1,10 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { ExtensionActivityRecord } from '../../../types'
 import { useIntakeScheduling } from './hooks/useIntakeScheduling'
-import { mapActionFieldsToObject } from '../../../utils'
-import { ActionFields } from './types'
+import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
+import { ActionFields, ExtensionSettings } from './types'
 import {
-  type SlotType,
   SchedulingActivity,
   GetProvidersInputType,
   Gender,
@@ -31,7 +30,7 @@ interface IntakeSchedulingProps {
 export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   activityDetails,
 }) => {
-  const { activity_id, fields } = activityDetails
+  const { activity_id, fields, settings } = activityDetails
   const { providerId, patientName, ...providerPrefs } =
     mapActionFieldsToObject<ActionFields>(fields)
   const initialPrefs = populateInitialPrefs(providerPrefs)
@@ -39,8 +38,12 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const { updateLayoutMode, resetLayoutMode } = useTheme()
   const { onSubmit } = useIntakeScheduling()
 
-  const [providerPreferences, setProviderPreferences] =
-    useState<GetProvidersInputType>(initialPrefs)
+  const [providerPreferences] = useState<GetProvidersInputType>(initialPrefs)
+
+  const { baseUrl } = useMemo(
+    () => mapSettingsToObject<ExtensionSettings>(settings),
+    [settings]
+  )
 
   useEffect(() => {
     updateLayoutMode('flexible')
@@ -49,33 +52,46 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       // Reset to default mode on unmount
       resetLayoutMode()
     }
-  }, [])
+  }, [updateLayoutMode, resetLayoutMode])
+
+  const fetchProvidersFn = useCallback(
+    (prefs: GetProvidersInputType) =>
+      fetchProviders({ input: prefs, requestOptions: { baseUrl } }),
+    [baseUrl]
+  )
 
   useEffect(() => {
     fetchProvidersFn(providerPreferences)
-  }, [providerPreferences])
+  }, [providerPreferences, fetchProvidersFn])
 
-  const fetchProvidersFn = useCallback(
-    (prefs: GetProvidersInputType) => fetchProviders(prefs),
-    [providerPreferences]
+  const fetchAvailabilityFn = useCallback(
+    (_providerId: string) => {
+      return fetchAvailability({
+        input: {
+          providerId: [_providerId],
+        },
+        requestOptions: { baseUrl },
+      })
+    },
+    [baseUrl]
   )
 
-  const fetchAvailabilityFn = useCallback((_providerId: string) => {
-    return fetchAvailability({
-      providerId: [_providerId],
-    })
-  }, [])
-
-  const bookAppointmentFn = useCallback((_slot: SelectedSlot) => {
-    return bookAppointment({
-      eventId: _slot.eventId,
-      providerId: _slot.providerId,
-      userInfo: {
-        userName: patientName,
-      },
-      locationType: _slot.locationType,
-    })
-  }, [])
+  const bookAppointmentFn = useCallback(
+    (_slot: SelectedSlot) => {
+      return bookAppointment({
+        input: {
+          eventId: _slot.eventId,
+          providerId: _slot.providerId,
+          userInfo: {
+            userName: patientName,
+          },
+          locationType: _slot.locationType,
+        },
+        requestOptions: { baseUrl },
+      })
+    },
+    [patientName, baseUrl]
+  )
 
   const completeActivity = useCallback(
     (_slot: SelectedSlot, preferences: GetProvidersInputType) => {
@@ -83,15 +99,11 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         activityId: activity_id,
         eventId: _slot.eventId,
         providerId: _slot.providerId,
-        slotDate: _slot.slotstart.toISOString(),
-        slotDateOnlyLocaleString: _slot.slotstart.toLocaleDateString(),
-        slotTimeOnlyLocaleString: _slot.slotstart.toLocaleTimeString(),
-        facility: _slot.facility,
-        eventLocationType: _slot.locationType,
+        patientTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Timezone of the environment where the code is executed (browser)
         providerPreferences: JSON.stringify(preferences),
       })
     },
-    [activity_id, onSubmit, providerId]
+    [activity_id, onSubmit]
   )
 
   return (
