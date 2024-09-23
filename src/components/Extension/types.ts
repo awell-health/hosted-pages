@@ -17,6 +17,7 @@ export enum ExtensionKey {
   EXPERIMENTAL = 'experimental',
   STRIPE = 'stripe',
   IDENTITY_VERIFICATION = 'identityVerification',
+  SHELLY = 'shelly',
 }
 
 /**
