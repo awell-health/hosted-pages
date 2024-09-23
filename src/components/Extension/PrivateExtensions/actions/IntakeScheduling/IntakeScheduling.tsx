@@ -5,7 +5,6 @@ import { useIntakeScheduling } from './hooks/useIntakeScheduling'
 import { mapActionFieldsToObject } from '../../../utils'
 import { ActionFields } from './types'
 import {
-  type SlotType,
   SchedulingActivity,
   GetProvidersInputType,
   Gender,
@@ -39,8 +38,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const { updateLayoutMode, resetLayoutMode } = useTheme()
   const { onSubmit } = useIntakeScheduling()
 
-  const [providerPreferences, setProviderPreferences] =
-    useState<GetProvidersInputType>(initialPrefs)
+  const [providerPreferences] = useState<GetProvidersInputType>(initialPrefs)
 
   useEffect(() => {
     updateLayoutMode('flexible')
@@ -49,16 +47,16 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       // Reset to default mode on unmount
       resetLayoutMode()
     }
-  }, [])
-
-  useEffect(() => {
-    fetchProvidersFn(providerPreferences)
-  }, [providerPreferences])
+  }, [updateLayoutMode, resetLayoutMode])
 
   const fetchProvidersFn = useCallback(
     (prefs: GetProvidersInputType) => fetchProviders(prefs),
-    [providerPreferences]
+    []
   )
+
+  useEffect(() => {
+    fetchProvidersFn(providerPreferences)
+  }, [providerPreferences, fetchProvidersFn])
 
   const fetchAvailabilityFn = useCallback((_providerId: string) => {
     return fetchAvailability({
@@ -66,16 +64,19 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     })
   }, [])
 
-  const bookAppointmentFn = useCallback((_slot: SelectedSlot) => {
-    return bookAppointment({
-      eventId: _slot.eventId,
-      providerId: _slot.providerId,
-      userInfo: {
-        userName: patientName,
-      },
-      locationType: _slot.locationType,
-    })
-  }, [])
+  const bookAppointmentFn = useCallback(
+    (_slot: SelectedSlot) => {
+      return bookAppointment({
+        eventId: _slot.eventId,
+        providerId: _slot.providerId,
+        userInfo: {
+          userName: patientName,
+        },
+        locationType: _slot.locationType,
+      })
+    },
+    [patientName]
+  )
 
   const completeActivity = useCallback(
     (_slot: SelectedSlot, preferences: GetProvidersInputType) => {
@@ -83,15 +84,11 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         activityId: activity_id,
         eventId: _slot.eventId,
         providerId: _slot.providerId,
-        slotDate: _slot.slotstart.toISOString(),
-        slotDateOnlyLocaleString: _slot.slotstart.toLocaleDateString(),
-        slotTimeOnlyLocaleString: _slot.slotstart.toLocaleTimeString(),
-        facility: _slot.facility,
-        eventLocationType: _slot.locationType,
+        patientTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Timezone of the environment where the code is executed (browser)
         providerPreferences: JSON.stringify(preferences),
       })
     },
-    [activity_id, onSubmit, providerId]
+    [activity_id, onSubmit]
   )
 
   return (
