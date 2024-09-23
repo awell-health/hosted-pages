@@ -3,6 +3,10 @@ export {
   useCompleteExtensionActivity,
 } from '../../../../../hooks/useCompleteExtensionActivity'
 
+export type ExtensionSettings = {
+  baseUrl: string
+}
+
 export type ActionFields = {
   providerId?: string | undefined
   patientName: string

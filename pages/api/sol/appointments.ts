@@ -4,6 +4,8 @@ import {
   BookAppointmentInputSchema,
   BookAppointmentResponseType,
 } from '@awell-health/sol-scheduling'
+import { getSolEnvSettings, API_ROUTES, API_METHODS } from './utils'
+import { omit } from 'lodash'
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,23 +17,8 @@ export default async function handler(
   }
 
   try {
-    if (
-      !process.env.SOL_AUTH_URL ||
-      !process.env.SOL_CLIENT_ID ||
-      !process.env.SOL_CLIENT_SECRET ||
-      !process.env.SOL_RESOURCE ||
-      !process.env.SOL_BOOKING_ENDPOINT
-    )
-      throw new Error(
-        'Missing environment variables for connection to the SOL API'
-      )
-
-    const accessToken = await getAccessToken({
-      authUrl: process.env.SOL_AUTH_URL,
-      clientId: process.env.SOL_CLIENT_ID,
-      clientSecret: process.env.SOL_CLIENT_SECRET,
-      resource: process.env.SOL_RESOURCE,
-    })
+    const settings = getSolEnvSettings({ headers: req.headers })
+    const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const bodyValidation = BookAppointmentInputSchema.safeParse(req.body)
 
@@ -43,14 +30,17 @@ export default async function handler(
       })
     }
 
-    const response = await fetch(process.env.SOL_BOOKING_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(bodyValidation.data),
-    })
+    const response = await fetch(
+      `${settings.baseUrl}${API_ROUTES[API_METHODS.BOOK_EVENT]}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyValidation.data),
+      }
+    )
 
     if (!response.ok) {
       return res.status(response.status).json({
