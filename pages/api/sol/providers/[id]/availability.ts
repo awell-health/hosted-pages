@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../../../../src/utils'
 import { type GetAvailabilitiesResponseType } from '@awell-health/sol-scheduling'
+import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../../utils'
+import { omit } from 'lodash'
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,34 +16,22 @@ export default async function handler(
   try {
     const { id } = req.query
 
-    if (
-      !process.env.SOL_AUTH_URL ||
-      !process.env.SOL_CLIENT_ID ||
-      !process.env.SOL_CLIENT_SECRET ||
-      !process.env.SOL_RESOURCE ||
-      !process.env.SOL_AVAILABILITY_ENDPOINT
+    const settings = getSolEnvSettings({ headers: req.headers })
+    const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
+
+    const response = await fetch(
+      `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_AVAILABILITY]}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          providerId: [id],
+        }),
+      }
     )
-      throw new Error(
-        'Missing environment variables for connection to the SOL API'
-      )
-
-    const accessToken = await getAccessToken({
-      authUrl: process.env.SOL_AUTH_URL,
-      clientId: process.env.SOL_CLIENT_ID,
-      clientSecret: process.env.SOL_CLIENT_SECRET,
-      resource: process.env.SOL_RESOURCE,
-    })
-
-    const response = await fetch(process.env.SOL_AVAILABILITY_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        providerId: [id],
-      }),
-    })
 
     if (!response.ok) {
       return res.status(response.status).json({
