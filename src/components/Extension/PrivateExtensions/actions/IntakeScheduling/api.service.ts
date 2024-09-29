@@ -5,7 +5,10 @@ import {
   type GetAvailabilitiesInputType,
   type BookAppointmentInputType,
   type BookAppointmentResponseType,
+  type GetProviderInputType,
+  type GetProviderResponseType,
   GetAvailabilitiesResponseSchema,
+  GetProviderResponseSchema,
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
 import { SolApiResponseError } from './helpers/error'
@@ -88,6 +91,67 @@ export const fetchProviders = async ({
         message: `${basicMessage}: ${errMessage}`,
         data: { input, error },
       },
+      'ERROR',
+      error as SolApiResponseError
+    )
+    throw error
+  }
+}
+
+export const fetchProvider = async ({
+  input,
+  requestOptions,
+}: {
+  input: GetProviderInputType
+  requestOptions: RequestOptions
+}): Promise<GetProviderResponseType> => {
+  const basicMessage = 'SOL: Fetching provider details'
+
+  try {
+    log({ message: basicMessage, data: input }, 'INFO')
+    const response = await fetch(`/api/sol/providers/${input.providerId}`, {
+      headers: {
+        'x-sol-api-url': requestOptions.baseUrl,
+      },
+    })
+
+    if (!response.ok) {
+      const errorMessage = `Failed to fetch availability for provider ${input.providerId}: ${response.statusText}`
+      log(
+        {
+          message: `${basicMessage}: ${errorMessage}`,
+          data: { input, response },
+        },
+        'ERROR',
+        errorMessage
+      )
+      throw new SolApiResponseError(errorMessage)
+    }
+
+    const jsonRes = await response.json()
+    const result = GetProviderResponseSchema.safeParse(jsonRes)
+    if (!result.success) {
+      const errorMessage = 'SOL API response does not match expected schema'
+      log(
+        {
+          message: `${basicMessage}: ${errorMessage}`,
+          data: { input, result },
+        },
+        'ERROR',
+        errorMessage
+      )
+      throw new SolApiResponseError(errorMessage, result.error.issues)
+    }
+
+    log(
+      { message: `${basicMessage}: success`, data: { input, result } },
+      'INFO'
+    )
+    return result.data
+  } catch (error) {
+    const errMessage = (error as any)?.message ?? `Unknown error: ${error}`
+    log(
+      { message: `${basicMessage}: ${errMessage}`, data: { input, error } },
       'ERROR',
       error as SolApiResponseError
     )
