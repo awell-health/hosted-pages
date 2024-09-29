@@ -6,22 +6,24 @@ import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
 import { ActionFields, ExtensionSettings } from './types'
 import {
   SchedulingActivity,
-  GetProvidersInputType,
+  type GetProvidersInputType,
   Gender,
   Ethnicity,
   Modality,
   ClinicalFocus,
   DeliveryMethod,
   LocationState,
+  type SlotWithConfirmedLocation,
 } from '@awell-health/sol-scheduling'
 import {
   bookAppointment,
+  fetchProvider,
   fetchAvailability,
   fetchProviders,
 } from './api.service'
 import { useTheme } from '@awell-health/ui-library'
 import '@awell-health/sol-scheduling/style.css'
-import { SelectedSlot } from '@awell-health/sol-scheduling/dist/lib/api/schema/shared.schema'
+import { SalesforcePreferencesType } from '@awell-health/sol-scheduling/dist/lib/utils/preferences'
 
 interface IntakeSchedulingProps {
   activityDetails: ExtensionActivityRecord
@@ -54,6 +56,12 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     }
   }, [updateLayoutMode, resetLayoutMode])
 
+  const fetchProviderFn = useCallback(
+    (providerId: string) =>
+      fetchProvider({ input: { providerId }, requestOptions: { baseUrl } }),
+    [baseUrl]
+  )
+
   const fetchProvidersFn = useCallback(
     (prefs: GetProvidersInputType) =>
       fetchProviders({ input: prefs, requestOptions: { baseUrl } }),
@@ -77,7 +85,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   )
 
   const bookAppointmentFn = useCallback(
-    (_slot: SelectedSlot) => {
+    (_slot: SlotWithConfirmedLocation) => {
       return bookAppointment({
         input: {
           eventId: _slot.eventId,
@@ -85,7 +93,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
           userInfo: {
             userName: patientName,
           },
-          locationType: _slot.locationType,
+          locationType: _slot.confirmedLocation,
         },
         requestOptions: { baseUrl },
       })
@@ -94,7 +102,10 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   )
 
   const completeActivity = useCallback(
-    (_slot: SelectedSlot, preferences: GetProvidersInputType) => {
+    (
+      _slot: SlotWithConfirmedLocation,
+      preferences: SalesforcePreferencesType
+    ) => {
       onSubmit({
         activityId: activity_id,
         eventId: _slot.eventId,
@@ -110,6 +121,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     <SchedulingActivity
       providerId={providerId}
       providerPreferences={providerPreferences}
+      fetchProvider={fetchProviderFn}
       fetchProviders={fetchProvidersFn}
       fetchAvailability={fetchAvailabilityFn}
       onBooking={bookAppointmentFn}
