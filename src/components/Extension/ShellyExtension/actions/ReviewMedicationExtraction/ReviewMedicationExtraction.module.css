@@ -52,3 +52,49 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.tableContainer {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  padding-left: 12px;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table td label {
+  display: none;
+}
+
+.table td:last-child {
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .tableContainer {
+    overflow-x: auto; 
+  }
+
+  .table {
+    width: auto; 
+    min-width: 600px; 
+  }
+}
