@@ -45,7 +45,8 @@ export default async function handler(
     if (!response.ok) {
       return res.status(response.status).json({
         error: `Request failed with status ${response.status}`,
-        message: `${response}`,
+        data: `${JSON.stringify(response)}`,
+        accessToken,
         errorCode: String(response.status),
       })
     }

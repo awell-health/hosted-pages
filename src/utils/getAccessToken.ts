@@ -16,19 +16,6 @@ interface getAccessTokenProps {
   scope?: string
 }
 
-// Helper function to log messages to the API route
-const log = async (params: {}, severity: string, error: string | {} = '') => {
-  try {
-    await fetch('/api/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ params, severity, error }),
-    })
-  } catch (err) {
-    console.error('Error sending log request:', err)
-  }
-}
-
 export const getAccessToken = async (props: getAccessTokenProps) => {
   // Check if we have a valid token cached
   if (
@@ -53,7 +40,6 @@ export const getAccessToken = async (props: getAccessTokenProps) => {
     }),
   })
 
-  log({ message: `SOL: AuthorizationToken`, data: response }, 'INFO')
   const data = await response.json()
 
   tokenCache.accessToken = data.access_token
