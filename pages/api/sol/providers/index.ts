@@ -51,7 +51,11 @@ export default async function handler(
       })
     }
 
-    const jsonRes: GetProvidersResponseType = await response.json()
+    const jsonRes: GetProvidersResponseType | { data: string } =
+      await response.json()
+    if (jsonRes.data === '') {
+      return res.status(404).json({ data: [] })
+    }
     return res.status(200).json(jsonRes)
   } catch (error) {
     return res.status(500).json({

@@ -3,6 +3,7 @@ import { getAccessToken } from '../../../../../src/utils'
 import { type GetAvailabilitiesResponseType } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../../utils'
 import { omit } from 'lodash'
+import { log } from '../../../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,7 +41,11 @@ export default async function handler(
       })
     }
 
-    const jsonRes: GetAvailabilitiesResponseType = await response.json()
+    const jsonRes: GetAvailabilitiesResponseType | { data: string } =
+      await response.json()
+    if (jsonRes.data === '') {
+      return res.status(404).json({ data: [] })
+    }
     return res.status(200).json(jsonRes)
   } catch (error) {
     return res.status(500).json({
