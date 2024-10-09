@@ -25,6 +25,7 @@ type ExtractedMedicationData = {
     extracted_brand_name: string
     extracted_dosage: string
     dose_form_name: string
+    prescribable_name: string
   }>
 }
 
@@ -32,7 +33,7 @@ type Medication = {
   name: string
   brand_name: string
   dose: string
-  dose_form_name?: string
+  prescribable_name?: string
 }
 
 export const ReviewMedicationExtraction: FC<
@@ -60,12 +61,13 @@ export const ReviewMedicationExtraction: FC<
             brand_name: medication.extracted_brand_name,
             dose: medication.extracted_dosage,
             dose_form_name: medication.dose_form_name,
+            prescribable_name: medication.prescribable_name,
           }
         }
       )
       setMedications(mappedMedications)
     }
-  }, [])
+  }, [medicationData])
 
   useEffect(() => {
     updateLayoutMode('flexible')
@@ -81,7 +83,7 @@ export const ReviewMedicationExtraction: FC<
       return (
         !isEmpty(medication.name) ||
         !isEmpty(medication.dose) ||
-        !isEmpty(medication.dose_form_name) ||
+        !isEmpty(medication.prescribable_name) ||
         !isEmpty(medication.brand_name)
       )
     })
@@ -95,7 +97,7 @@ export const ReviewMedicationExtraction: FC<
   const addMedication = () => {
     setMedications([
       ...medications,
-      { name: '', dose: '', dose_form_name: '', brand_name: '' },
+      { name: '', dose: '', prescribable_name: '', brand_name: '' },
     ])
   }
 
@@ -138,56 +140,84 @@ export const ReviewMedicationExtraction: FC<
               />
             </div>
           )}
-          {medications.map((medication, index) => (
-            <div className={classes.singleMedsListContainer} key={index}>
-              <InputField
-                id="name"
-                label="Name"
-                type="text"
-                value={medication.name}
-                onChange={(e) =>
-                  updateMedication(index, 'name', e.target.value)
-                }
-                placeholder="Medication Name"
-              />
-              <InputField
-                id="brand_name"
-                label="Brand name"
-                type="text"
-                value={medication.brand_name || ''}
-                onChange={(e) =>
-                  updateMedication(index, 'brand_name', e.target.value)
-                }
-                placeholder="Brand name"
-              />
-              <InputField
-                id="dose"
-                label="Dose"
-                type="text"
-                value={medication.dose}
-                onChange={(e) =>
-                  updateMedication(index, 'dose', e.target.value)
-                }
-                placeholder="Dose"
-              />
-              <InputField
-                id="dose_form_name"
-                label="Dose form name"
-                type="text"
-                value={medication.dose_form_name || ''}
-                onChange={(e) =>
-                  updateMedication(index, 'dose_form_name', e.target.value)
-                }
-                placeholder="Dose form name"
-              />
-              <Button
-                variant="tertiary"
-                onClick={() => removeMedication(index)}
-              >
-                X
-              </Button>
-            </div>
-          ))}
+
+          <table className={classes.table}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Brand Name</th>
+                <th>Dose</th>
+                <th>Prescribable Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {medications.map((medication, index) => (
+                <tr key={index}>
+                  <td>
+                    <InputField
+                      id={`name-${index}`}
+                      label="Name"
+                      type="text"
+                      value={medication.name}
+                      onChange={(e) =>
+                        updateMedication(index, 'name', e.target.value)
+                      }
+                      placeholder="Medication Name"
+                    />
+                  </td>
+                  <td>
+                    <InputField
+                      id={`brand_name-${index}`}
+                      label=""
+                      type="text"
+                      value={medication.brand_name || ''}
+                      onChange={(e) =>
+                        updateMedication(index, 'brand_name', e.target.value)
+                      }
+                      placeholder="Brand name"
+                    />
+                  </td>
+                  <td>
+                    <InputField
+                      id={`dose-${index}`}
+                      label=""
+                      type="text"
+                      value={medication.dose}
+                      onChange={(e) =>
+                        updateMedication(index, 'dose', e.target.value)
+                      }
+                      placeholder="Dose"
+                    />
+                  </td>
+                  <td>
+                    <InputField
+                      id={`prescribable_name-${index}`}
+                      label=""
+                      type="text"
+                      value={medication.prescribable_name || ''}
+                      onChange={(e) =>
+                        updateMedication(
+                          index,
+                          'prescribable_name',
+                          e.target.value
+                        )
+                      }
+                      placeholder="Prescribable name"
+                    />
+                  </td>
+                  <td>
+                    <Button
+                      variant="tertiary"
+                      onClick={() => removeMedication(index)}
+                    >
+                      X
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
         <div className={`${classes.container} ${classes.addMedsButton}`}>
           <Button onClick={addMedication} variant="secondary">

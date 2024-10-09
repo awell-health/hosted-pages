@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../../../../src/utils'
-import { type GetAvailabilitiesResponseType } from '@awell-health/sol-scheduling'
+import { type GetProviderResponseType } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../../utils'
 import { omit } from 'lodash'
-import { log } from '../../../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,16 +20,15 @@ export default async function handler(
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const response = await fetch(
-      `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_AVAILABILITY]}`,
+      `${settings.baseUrl}${
+        API_ROUTES[API_METHODS.GET_PROVIDER]
+      }?providerId=${id}`,
       {
-        method: 'POST',
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          providerId: [id],
-        }),
       }
     )
 
@@ -41,11 +39,7 @@ export default async function handler(
       })
     }
 
-    const jsonRes: GetAvailabilitiesResponseType | { data: string } =
-      await response.json()
-    if (jsonRes.data === '') {
-      return res.status(404).json({ data: [] })
-    }
+    const jsonRes: GetProviderResponseType = await response.json()
     return res.status(200).json(jsonRes)
   } catch (error) {
     return res.status(500).json({
