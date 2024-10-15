@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
-
+import * as z from 'zod'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useIntakeScheduling } from './hooks/useIntakeScheduling'
 import { mapActionFieldsToObject, mapSettingsToObject } from '../../../utils'
@@ -9,11 +9,11 @@ import {
   type GetProvidersInputType,
   Gender,
   Ethnicity,
-  Modality,
   ClinicalFocus,
   DeliveryMethod,
   LocationState,
   type SlotWithConfirmedLocation,
+  TherapeuticModalitySchema,
 } from '@awell-health/sol-scheduling'
 import {
   bookAppointment,
@@ -144,8 +144,9 @@ const populateInitialPrefs = (
       : undefined,
     gender: providerPrefs.genderPreference as Gender,
     ethnicity: providerPrefs.ethnicityPreference as Ethnicity,
-    therapeuticModality:
-      providerPrefs.therapeuticModalityPreference as Modality,
+    therapeuticModality: providerPrefs.therapeuticModalityPreference as z.infer<
+      typeof TherapeuticModalitySchema
+    >,
     /**
      * Although it's an array of strings,
      * we receive it as comma-separated string in hosted pages
