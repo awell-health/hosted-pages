@@ -6,6 +6,7 @@ import {
 } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../utils'
 import { omit } from 'lodash'
+import { log } from '../../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,7 +22,6 @@ export default async function handler(
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const bodyValidation = GetProvidersInputSchema.safeParse(req.body)
-
     if (!bodyValidation.success) {
       const { errors } = bodyValidation.error
 
@@ -29,20 +29,27 @@ export default async function handler(
         error: { message: 'Invalid request', errors },
       })
     }
-
-    const response = await fetch(
-      `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_PROVIDERS]}`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bodyValidation.data),
-      }
-    )
-
+    const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_PROVIDERS]}`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyValidation.data),
+    })
     if (!response.ok) {
+      const responseBody = await response.json()
+      log(
+        {
+          responseBody,
+          validatedRequestBody: bodyValidation.data,
+          requestBody: req.body,
+          errorCode: response.status,
+          responseText: response.statusText,
+        },
+        'ERROR'
+      )
       return res.status(response.status).json({
         error: `Request failed with status ${response.status}`,
         data: `${JSON.stringify(response)}`,
