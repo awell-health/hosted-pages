@@ -6,7 +6,19 @@ import {
 } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../utils'
 import { omit } from 'lodash'
-import { log } from '../../../../src/utils/logging'
+
+// Helper function to log messages to the API route
+const log = async (params: {}, severity: string, error: string | {} = '') => {
+  try {
+    await fetch('/api/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ params, severity, error }),
+    })
+  } catch (err) {
+    console.error('Error sending log request:', err)
+  }
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,6 +34,14 @@ export default async function handler(
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const bodyValidation = GetProvidersInputSchema.safeParse(req.body)
+    log(
+      {
+        message: 'SOL: Parsing body',
+        bodyValidation,
+        body: req.body,
+      },
+      'INFO'
+    )
     if (!bodyValidation.success) {
       const { errors } = bodyValidation.error
 
@@ -42,6 +62,7 @@ export default async function handler(
       const responseBody = await response.json()
       log(
         {
+          message: 'SOL: Failed Getting Providers',
           responseBody,
           validatedRequestBody: bodyValidation.data,
           requestBody: req.body,
