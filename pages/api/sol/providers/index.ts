@@ -22,6 +22,14 @@ export default async function handler(
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const bodyValidation = GetProvidersInputSchema.safeParse(req.body)
+    log(
+      {
+        message: 'SOL: Parsing body',
+        bodyValidation,
+        body: req.body,
+      },
+      'INFO'
+    )
     if (!bodyValidation.success) {
       const { errors } = bodyValidation.error
 
@@ -42,6 +50,7 @@ export default async function handler(
       const responseBody = await response.json()
       log(
         {
+          message: 'SOL: Failed Getting Providers',
           responseBody,
           validatedRequestBody: bodyValidation.data,
           requestBody: req.body,
