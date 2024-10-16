@@ -22,14 +22,11 @@ export default async function handler(
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const bodyValidation = GetProvidersInputSchema.safeParse(req.body)
-    log(
-      {
-        message: 'SOL: Parsing body',
-        bodyValidation,
-        body: req.body,
-      },
-      'INFO'
-    )
+    log({
+      message: 'SOL: Parsing body',
+      bodyValidation,
+      body: req.body,
+    })
     if (!bodyValidation.success) {
       const { errors } = bodyValidation.error
 
