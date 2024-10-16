@@ -57,14 +57,24 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   }, [updateLayoutMode, resetLayoutMode])
 
   const fetchProviderFn = useCallback(
-    (providerId: string) =>
-      fetchProvider({ input: { providerId }, requestOptions: { baseUrl } }),
+    async (providerId: string) => {
+      const provider = await fetchProvider({
+        input: { providerId },
+        requestOptions: { baseUrl },
+      })
+      return provider
+    },
     [baseUrl]
   )
 
   const fetchProvidersFn = useCallback(
-    (prefs: GetProvidersInputType) =>
-      fetchProviders({ input: prefs, requestOptions: { baseUrl } }),
+    async (prefs: GetProvidersInputType) => {
+      const providers = await fetchProviders({
+        input: prefs,
+        requestOptions: { baseUrl },
+      })
+      return providers
+    },
     [baseUrl]
   )
 
