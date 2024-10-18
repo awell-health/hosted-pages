@@ -31,19 +31,29 @@ const getLogger = (): Log | undefined => {
   return loggerInstance
 }
 
-export function log(params: {}, severity: string, error: string | {}) {
+export function log(
+  params: {},
+  severity: string = 'INFO',
+  error?: string | {}
+) {
   const logger = getLogger()
   if (logger === undefined) {
-    console.log('GCP log entry:', JSON.stringify({ params, severity, error }))
+    console.log(
+      'GCP log entry:',
+      JSON.stringify({ params, severity, ...(error && { error }) })
+    )
   } else {
     logger
       .write(
-        logger.entry({ ...metadata, severity: severity }, { params, error })
+        logger.entry(
+          { ...metadata, severity: severity },
+          { params, ...(error && { error }) }
+        )
       )
       .catch((err) => {
         console.error(
           'GCP log error:',
-          JSON.stringify({ err, params, severity, error })
+          JSON.stringify({ err, params, severity, ...(error && { error }) })
         )
       })
   }

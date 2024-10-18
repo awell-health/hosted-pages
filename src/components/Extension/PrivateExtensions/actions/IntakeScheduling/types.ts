@@ -19,12 +19,16 @@ export type ActionFields = {
     | 'White'
     | 'Other'
     | undefined
-  therapeuticModalityPreference?: 'Psychiatric' | 'Therapy' | undefined
+  therapeuticModalityPreference?:
+    | 'Psychiatric'
+    | 'Therapy'
+    | 'Both'
+    | 'Not sure'
   clinicalFocusPreference?: string | undefined // we receive it as a string although it's an array of strings
   // clinicalFocusPreference?:
   //   | ('ADHD' | 'Anxiety d/o' | 'Autism spectrum' | 'Gender dysphoria')[]
   //   | undefined
-  deliveryMethodPreference?: 'virtual' | 'in-person' | undefined
+  deliveryMethodPreference?: 'Telehealth' | 'In-Person' | undefined
   locationStatePreference?:
     | 'AL'
     | 'CO'
