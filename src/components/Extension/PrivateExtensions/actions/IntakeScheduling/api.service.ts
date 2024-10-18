@@ -79,7 +79,7 @@ export const fetchProviders = async ({
     log(
       {
         message: `${basicMessage}: successfull`,
-        data: { input, result },
+        data: { input, results: result.data.data.length },
       },
       'INFO'
     )
