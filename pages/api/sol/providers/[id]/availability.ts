@@ -13,28 +13,37 @@ export default async function handler(
     res.setHeader('Allow', 'GET')
     return res.status(405).end('Method Not Allowed')
   }
-
+  const logMessage = 'SOL: Getting availability'
   try {
     const { id } = req.query
 
     const settings = getSolEnvSettings({ headers: req.headers })
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
-    const response = await fetch(
-      `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_AVAILABILITY]}`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          providerId: [id],
-        }),
-      }
-    )
+    const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_AVAILABILITY]}`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        providerId: [id],
+      }),
+    })
 
     if (!response.ok) {
+      const responseBody = await response.json()
+      log(
+        {
+          message: `${logMessage}: failed`,
+          responseBody,
+          errorCode: response.status,
+          responseText: response.statusText,
+          url,
+        },
+        'ERROR'
+      )
       return res.status(response.status).json({
         error: `Request failed with status ${response.status}`,
         errorCode: String(response.status),
@@ -44,12 +53,36 @@ export default async function handler(
     const jsonRes: GetAvailabilitiesResponseType | { data: string } =
       await response.json()
     if (jsonRes.data === '') {
+      log(
+        {
+          message: `${logMessage}: failed - no data returned`,
+          responseBody: jsonRes,
+          errorCode: response.status,
+          responseText: response.statusText,
+          url,
+        },
+        'ERROR'
+      )
       return res.status(404).json({ data: [] })
     }
+    log({
+      message: `${logMessage}: success`,
+      responseBody: jsonRes,
+      url,
+    })
     return res.status(200).json(jsonRes)
   } catch (error) {
+    const errMessage = 'Internal Server Error'
+    log(
+      {
+        message: `${logMessage}: failed - ${errMessage}`,
+        error,
+        providerId: req.query,
+      },
+      'ERROR'
+    )
     return res.status(500).json({
-      error: 'Internal Server Error',
+      error: errMessage,
       errorCode: '500',
     })
   }
