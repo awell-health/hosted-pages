@@ -17,6 +17,7 @@
     ],
     "Payload": [
       "ActionPayload",
+      "AddActivityMetadataPayload",
       "AddIdentifierToPatientPayload",
       "AddTrackPayload",
       "ApiCallPayload",
@@ -29,6 +30,7 @@
       "CompleteExtensionActivityPayload",
       "CreatePatientPayload",
       "CurrentUserPayload",
+      "DecisionOutputsPayload",
       "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",

@@ -25,6 +25,7 @@ const defaultOptions = {} as const;
     ],
     "Payload": [
       "ActionPayload",
+      "AddActivityMetadataPayload",
       "AddIdentifierToPatientPayload",
       "AddTrackPayload",
       "ApiCallPayload",
@@ -37,6 +38,7 @@ const defaultOptions = {} as const;
       "CompleteExtensionActivityPayload",
       "CreatePatientPayload",
       "CurrentUserPayload",
+      "DecisionOutputsPayload",
       "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",
@@ -92,6 +94,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: any;
   /** Safe date scalar that can serialize string or date */
   SafeDate: any;
 };
@@ -148,6 +152,7 @@ export type Activity = {
   indirect_object?: Maybe<ActivityObject>;
   isUserActivity: Scalars['Boolean'];
   label?: Maybe<ActivityLabel>;
+  metadata?: Maybe<Scalars['JSON']>;
   object: ActivityObject;
   public?: Maybe<Scalars['Boolean']>;
   reference_id: Scalars['String'];
@@ -214,6 +219,7 @@ export enum ActivityObjectType {
   Calculation = 'CALCULATION',
   Checklist = 'CHECKLIST',
   ClinicalNote = 'CLINICAL_NOTE',
+  Decision = 'DECISION',
   EmrReport = 'EMR_REPORT',
   EmrRequest = 'EMR_REQUEST',
   EvaluatedRule = 'EVALUATED_RULE',
@@ -263,6 +269,19 @@ export type ActivityTrack = {
   __typename?: 'ActivityTrack';
   id?: Maybe<Scalars['String']>;
   title: Scalars['String'];
+};
+
+export type AddActivityMetadataInput = {
+  activity_id: Scalars['String'];
+  metadata: Scalars['JSON'];
+  note?: InputMaybe<Scalars['String']>;
+};
+
+export type AddActivityMetadataPayload = Payload & {
+  __typename?: 'AddActivityMetadataPayload';
+  activity: Activity;
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type AddIdentifierToPatientInput = {
@@ -581,6 +600,7 @@ export type DataPoint = {
   data_set_id: Scalars['String'];
   date: Scalars['String'];
   id: Scalars['ID'];
+  key: Scalars['String'];
   serialized_value?: Maybe<Scalars['String']>;
   valueType: DataPointValueType;
 };
@@ -634,6 +654,7 @@ export enum DataPointSourceType {
   ApiCallStatus = 'API_CALL_STATUS',
   Calculation = 'CALCULATION',
   DataPoint = 'DATA_POINT',
+  Decision = 'DECISION',
   ExtensionAction = 'EXTENSION_ACTION',
   ExtensionWebhook = 'EXTENSION_WEBHOOK',
   Form = 'FORM',
@@ -664,6 +685,13 @@ export type DateConfig = {
 export type DateFilter = {
   gte?: InputMaybe<Scalars['String']>;
   lte?: InputMaybe<Scalars['String']>;
+};
+
+export type DecisionOutputsPayload = Payload & {
+  __typename?: 'DecisionOutputsPayload';
+  code: Scalars['String'];
+  outputs: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type DeletePathwayInput = {
@@ -1077,6 +1105,7 @@ export type MultipleSelectConfig = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addActivityMetadata: AddActivityMetadataPayload;
   addIdentifierToPatient: AddIdentifierToPatientPayload;
   addTrack: AddTrackPayload;
   completeExtensionActivity: CompleteExtensionActivityPayload;
@@ -1118,6 +1147,11 @@ export type Mutation = {
   updatePatientDemographicsQuery: UpdatePatientDemographicsQueryPayload;
   updatePatientLanguage: UpdatePatientLanguagePayload;
   verify_identity: IdentityVerificationPayload;
+};
+
+
+export type MutationAddActivityMetadataArgs = {
+  input: AddActivityMetadataInput;
 };
 
 
@@ -1626,6 +1660,7 @@ export type Query = {
   calculationResults: CalculationResultsPayload;
   checklist: ChecklistPayload;
   clinicalNote: ClinicalNotePayload;
+  decisionOutputs: DecisionOutputsPayload;
   emrReport: EmrReportPayload;
   extensionActivityRecord: ExtensionActivityRecordPayload;
   filterStakeholders: StakeholdersPayload;
@@ -1722,6 +1757,12 @@ export type QueryChecklistArgs = {
 
 export type QueryClinicalNoteArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryDecisionOutputsArgs = {
+  activity_id: Scalars['String'];
+  pathway_id: Scalars['String'];
 };
 
 
@@ -2558,6 +2599,7 @@ export enum UserQuestionType {
   Date = 'DATE',
   Description = 'DESCRIPTION',
   Email = 'EMAIL',
+  Icd10Classification = 'ICD10_CLASSIFICATION',
   LongText = 'LONG_TEXT',
   MultipleChoice = 'MULTIPLE_CHOICE',
   MultipleChoiceGrid = 'MULTIPLE_CHOICE_GRID',
