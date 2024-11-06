@@ -84,10 +84,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell-health/sol-scheduling@0.3.13":
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.3.13.tgz#c1d9eddbbed43f76bc41562bb1286cd2d66f9e20"
-  integrity sha512-QA2/oGsbv+LsX/2PbOiL67BBH3dhk5CsF/d/oe/EtSEbbCPQ1Tqf/Cn1O+r9POsNGImog/jg9gE157Ex4OcWjg==
+"@awell-health/sol-scheduling@0.3.16":
+  version "0.3.16"
+  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.3.16.tgz#beea4953981f2d0ba3e928ba4b081754df896bfe"
+  integrity sha512-yYuqWXp37JAgv3/oucU2OHt5fGPA1LOP37djJWBMfObvHy/0yf4zFN81L3TIj4xKlRxawXUAVjyIP0N9tJuzsg==
   dependencies:
     "@headlessui/react" "^2.1.2"
     "@heroicons/react" "^2.1.5"
@@ -101,13 +101,14 @@
     tailwindcss-animate "^1.0.7"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.80":
-  version "0.1.80"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.80.tgz#c19b24c52978277247b42d21d703c56e0eee93a6"
-  integrity sha512-ww8zUqDHQeArHoAjhZmJzXs1TCza+MxztvLgLgN5wVeYkSvu6RfZ7ITUgrXKn3l4Pa8QmAl5XFiXsxBWOcuBLQ==
+"@awell-health/ui-library@0.1.82":
+  version "0.1.82"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.82.tgz#a394a38a1e2273fe3c50d7ae52dbd31f6eeab886"
+  integrity sha512-hMXyfUcFNCV70kbt72SMJJhdFYAcJYUdcdCF+7TUawh7wEy6rFGT0qgYcD36BBrAhgNX8iNcnglBci1N1dAQGg==
   dependencies:
     "@calcom/embed-react" "^1.5.1"
     "@heroicons/react" "^2.1.3"
+    axios "^1.7.7"
     cloudinary-core "^2.13.0"
     clsx "^2.1.1"
     date-fns "^2.29.1"
@@ -2938,6 +2939,15 @@ axe-core@^4.4.3:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.4.3.tgz#11c74d23d5013c0fa5d183796729bc3482bd2f6f"
   integrity sha512-32+ub6kkdhhWick/UjvEwRchgoetXqTK14INLqbGm5U2TzBkBNF3nQtLYm8ovxSkQWArjEQvftCKryjZaATu3w==
 
+axios@^1.7.7:
+  version "1.7.7"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.7.tgz#2f554296f9892a72ac8d8e4c5b79c14a91d0a47f"
+  integrity sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
 axobject-query@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-2.2.0.tgz#943d47e10c0b704aa42275e20edf3722648989be"
@@ -4520,6 +4530,11 @@ flatted@^3.1.0:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.6.tgz#022e9218c637f9f3fc9c35ab9c9193f05add60b2"
   integrity sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==
+
+follow-redirects@^1.15.6:
+  version "1.15.9"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.9.tgz#a604fa10e443bf98ca94228d9eebcc2e8a2c8ee1"
+  integrity sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==
 
 for-each@^0.3.3:
   version "0.3.3"
