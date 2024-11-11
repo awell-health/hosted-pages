@@ -38,13 +38,14 @@ export default async function handler(
       })
     }
     const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_PROVIDERS]}`
+    const requestBody = bodyValidation.data
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(bodyValidation.data),
+      body: JSON.stringify(requestBody),
     })
     if (!response.ok) {
       const responseBody = await response.json()
@@ -74,9 +75,10 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed - no data returned`,
+          requestBody,
           responseBody: jsonRes,
-          errorCode: response.status,
           responseText: response.statusText,
+          errorCode: response.status,
           url,
         },
         'WARNING'

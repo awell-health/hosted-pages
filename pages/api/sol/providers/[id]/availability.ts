@@ -21,15 +21,17 @@ export default async function handler(
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_AVAILABILITY]}`
+
+    const requestBody = {
+      providerId: [id],
+    }
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        providerId: [id],
-      }),
+      body: JSON.stringify(requestBody),
     })
 
     if (!response.ok) {
@@ -56,9 +58,10 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed - no data returned`,
+          requestBody,
           responseBody: jsonRes,
-          errorCode: response.status,
           responseText: response.statusText,
+          errorCode: response.status,
           url,
         },
         'WARNING'
