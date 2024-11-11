@@ -5,7 +5,7 @@ import {
   GetProvidersResponseType,
 } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../utils'
-import { omit } from 'lodash'
+import { omit, isEmpty } from 'lodash'
 import { log } from '../../../../src/utils/logging'
 
 export default async function handler(
@@ -68,9 +68,9 @@ export default async function handler(
       })
     }
 
-    const jsonRes: GetProvidersResponseType | { data: string } =
-      await response.json()
-    if (jsonRes.data === '') {
+    const jsonRes: GetProvidersResponseType = await response.json()
+
+    if (isEmpty(jsonRes.data)) {
       log(
         {
           message: `${logMessage}: failed - no data returned`,
@@ -79,7 +79,7 @@ export default async function handler(
           responseText: response.statusText,
           url,
         },
-        'ERROR'
+        'WARNING'
       )
       return res.status(404).json({ data: [] })
     }
