@@ -15,7 +15,7 @@ export default async function handler(
   }
   const logMessage = 'SOL: Getting provider'
 
-  const { id, session_id, pathway_id } = req.query
+  const { id, session, pathway } = req.query
 
   try {
     const settings = getSolEnvSettings({ headers: req.headers })
@@ -43,8 +43,8 @@ export default async function handler(
           url,
           context: {
             session: {
-              id: session_id,
-              pathway_id,
+              id: session,
+              pathway,
             },
           },
         },
@@ -63,8 +63,8 @@ export default async function handler(
       url,
       context: {
         session: {
-          id: session_id,
-          pathway_id,
+          id: session,
+          pathway,
         },
       },
     })

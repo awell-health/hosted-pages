@@ -68,7 +68,7 @@ export const fetchProvider = async ({
 }): Promise<GetProviderResponseType> => {
   try {
     const response = await fetch(
-      `/api/sol/providers/${input.providerId}?session_id=${requestOptions.logContext?.session?.id}&pathway_id=${requestOptions.logContext?.session?.pathway_id}`,
+      `/api/sol/providers/${input.providerId}?session=${requestOptions.logContext?.session?.id}&pathway=${requestOptions.logContext?.session?.pathway_id}`,
       {
         headers: {
           'x-sol-api-url': requestOptions.baseUrl,
@@ -102,7 +102,7 @@ export const fetchAvailability = async ({
 }): Promise<GetAvailabilitiesResponseType> => {
   try {
     const response = await fetch(
-      `/api/sol/providers/${input.providerId[0]}/availability?session_id=${requestOptions.logContext?.session?.id}&pathway_id=${requestOptions.logContext?.session?.pathway_id}`,
+      `/api/sol/providers/${input.providerId[0]}/availability?session=${requestOptions.logContext?.session?.id}&pathway=${requestOptions.logContext?.session?.pathway_id}`,
       {
         headers: {
           'x-sol-api-url': requestOptions.baseUrl,
