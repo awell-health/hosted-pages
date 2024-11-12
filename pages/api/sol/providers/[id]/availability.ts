@@ -46,7 +46,7 @@ export default async function handler(
           context: {
             session: {
               id: session,
-              pathway,
+              pathway_id: pathway,
             },
           },
         },
@@ -72,7 +72,7 @@ export default async function handler(
           context: {
             session: {
               id: session,
-              pathway,
+              pathway_id: pathway,
             },
           },
         },
@@ -87,7 +87,7 @@ export default async function handler(
       context: {
         session: {
           id: session,
-          pathway,
+          pathway_id: pathway,
         },
       },
     })
@@ -102,7 +102,7 @@ export default async function handler(
         context: {
           session: {
             id: session,
-            pathway,
+            pathway_id: pathway,
           },
         },
       },
