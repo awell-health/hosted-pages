@@ -24,6 +24,7 @@ import {
 import { useTheme } from '@awell-health/ui-library'
 import '@awell-health/sol-scheduling/style.css'
 import { SalesforcePreferencesType } from '@awell-health/sol-scheduling/dist/lib/utils/preferences'
+import { useHostedSession } from '../../../../../hooks/useHostedSession'
 
 interface IntakeSchedulingProps {
   activityDetails: ExtensionActivityRecord
@@ -32,7 +33,9 @@ interface IntakeSchedulingProps {
 export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   activityDetails,
 }) => {
-  const { activity_id, fields, settings } = activityDetails
+  const { activity_id, fields, settings, pathway_id } = activityDetails
+  const { session, metadata } = useHostedSession()
+
   const { providerId, patientName, ...providerPrefs } =
     mapActionFieldsToObject<ActionFields>(fields)
   const initialPrefs = populateInitialPrefs(providerPrefs)
@@ -41,6 +44,14 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const { onSubmit } = useIntakeScheduling()
 
   const [providerPreferences] = useState<GetProvidersInputType>(initialPrefs)
+
+  const logContext = useMemo(
+    () => ({
+      session,
+      metadata,
+    }),
+    [session, metadata]
+  )
 
   const { baseUrl } = useMemo(
     () => mapSettingsToObject<ExtensionSettings>(settings),
@@ -60,22 +71,22 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     async (providerId: string) => {
       const provider = await fetchProvider({
         input: { providerId },
-        requestOptions: { baseUrl },
+        requestOptions: { baseUrl, logContext },
       })
       return provider
     },
-    [baseUrl]
+    [baseUrl, logContext]
   )
 
   const fetchProvidersFn = useCallback(
     async (prefs: GetProvidersInputType) => {
       const providers = await fetchProviders({
         input: prefs,
-        requestOptions: { baseUrl },
+        requestOptions: { baseUrl, logContext },
       })
       return providers
     },
-    [baseUrl]
+    [baseUrl, logContext]
   )
 
   useEffect(() => {
@@ -88,10 +99,10 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         input: {
           providerId: [_providerId],
         },
-        requestOptions: { baseUrl },
+        requestOptions: { baseUrl, logContext },
       })
     },
-    [baseUrl]
+    [baseUrl, logContext]
   )
 
   const bookAppointmentFn = useCallback(
@@ -105,10 +116,10 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
           },
           locationType: _slot.confirmedLocation,
         },
-        requestOptions: { baseUrl },
+        requestOptions: { baseUrl, logContext },
       })
     },
-    [patientName, baseUrl]
+    [patientName, baseUrl, logContext]
   )
 
   const completeActivity = useCallback(

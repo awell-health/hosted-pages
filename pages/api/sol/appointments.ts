@@ -17,16 +17,19 @@ export default async function handler(
     return res.status(405).end('Method Not Allowed')
   }
   const logMessage = 'SOL: Booking appointment'
+  const { input, logContext } = req.body
+
   try {
     const settings = getSolEnvSettings({ headers: req.headers })
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
-    const bodyValidation = BookAppointmentInputSchema.safeParse(req.body)
+    const bodyValidation = BookAppointmentInputSchema.safeParse(input)
     log(
       {
         message: `${logMessage}: parsing body`,
+        requestBody: input,
         bodyValidation,
-        body: req.body,
+        context: logContext,
       },
       bodyValidation.success ? 'INFO' : 'ERROR'
     )
@@ -53,12 +56,13 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed`,
-          responseBody,
+          requestBody: input,
           validatedRequestBody: bodyValidation.data,
-          requestBody: req.body,
+          responseBody,
           errorCode: response.status,
           responseText: response.statusText,
           url,
+          context: logContext,
         },
         'ERROR'
       )
@@ -71,8 +75,10 @@ export default async function handler(
     const jsonRes: BookAppointmentResponseType = await response.json()
     log({
       message: `${logMessage}: success`,
+      requestBody: input,
       responseBody: jsonRes,
       url,
+      context: logContext,
     })
     return res.status(200).json(jsonRes)
   } catch (error) {
@@ -80,8 +86,9 @@ export default async function handler(
     log(
       {
         message: `${logMessage}: failed - ${errMessage}`,
+        requestBody: input,
         error,
-        body: req.body,
+        context: logContext,
       },
       'ERROR'
     )
