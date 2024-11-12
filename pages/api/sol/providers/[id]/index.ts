@@ -37,6 +37,7 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed`,
+          queryParams: req.query,
           responseBody,
           errorCode: response.status,
           responseText: response.statusText,
@@ -59,6 +60,7 @@ export default async function handler(
     const jsonRes: GetProviderResponseType = await response.json()
     log({
       message: `${logMessage}: success`,
+      queryParams: req.query,
       responseBody: jsonRes,
       url,
       context: {
@@ -74,8 +76,9 @@ export default async function handler(
     log(
       {
         message: `${logMessage}: failed - ${errMessage}`,
-        error,
+        queryParams: req.query,
         providerId: req.query,
+        error,
       },
       'ERROR'
     )

@@ -39,6 +39,7 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed`,
+          queryParams: req.query,
           responseBody,
           errorCode: response.status,
           responseText: response.statusText,
@@ -64,6 +65,7 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed - no data returned`,
+          queryParams: req.query,
           requestBody,
           responseBody: jsonRes,
           responseText: response.statusText,
@@ -82,6 +84,7 @@ export default async function handler(
     }
     log({
       message: `${logMessage}: success`,
+      queryParams: req.query,
       responseBody: jsonRes,
       url,
       context: {
@@ -98,7 +101,7 @@ export default async function handler(
       {
         message: `${logMessage}: failed - ${errMessage}`,
         error,
-        providerId: req.query,
+        queryParams: req.query,
         context: {
           session: {
             id: session,

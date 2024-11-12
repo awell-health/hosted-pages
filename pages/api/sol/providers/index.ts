@@ -27,8 +27,8 @@ export default async function handler(
     log(
       {
         message: `${logMessage}: parsing body`,
+        requestBody: input,
         bodyValidation,
-        body: input,
         context: logContext,
       },
       bodyValidation.success ? 'INFO' : 'ERROR'
@@ -55,11 +55,11 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed`,
-          responseBody,
-          validatedRequestBody: bodyValidation.data,
           requestBody: input,
-          errorCode: response.status,
+          validatedRequestBody: bodyValidation.data,
           responseText: response.statusText,
+          responseBody,
+          errorCode: response.status,
           url,
           context: logContext,
         },
@@ -92,6 +92,7 @@ export default async function handler(
     }
     log({
       message: `${logMessage}: success`,
+      requestBody: input,
       responseBody: jsonRes,
       url,
       context: logContext,
@@ -102,8 +103,8 @@ export default async function handler(
     log(
       {
         message: `${logMessage}: failed - ${errMessage}`,
+        requestBody: input,
         error,
-        body: input,
         context: logContext,
       },
       'ERROR'

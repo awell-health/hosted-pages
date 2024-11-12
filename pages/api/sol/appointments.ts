@@ -27,8 +27,8 @@ export default async function handler(
     log(
       {
         message: `${logMessage}: parsing body`,
+        requestBody: input,
         bodyValidation,
-        body: input,
         context: logContext,
       },
       bodyValidation.success ? 'INFO' : 'ERROR'
@@ -56,9 +56,9 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed`,
-          responseBody,
-          validatedRequestBody: bodyValidation.data,
           requestBody: input,
+          validatedRequestBody: bodyValidation.data,
+          responseBody,
           errorCode: response.status,
           responseText: response.statusText,
           url,
@@ -75,6 +75,7 @@ export default async function handler(
     const jsonRes: BookAppointmentResponseType = await response.json()
     log({
       message: `${logMessage}: success`,
+      requestBody: input,
       responseBody: jsonRes,
       url,
       context: logContext,
@@ -85,8 +86,8 @@ export default async function handler(
     log(
       {
         message: `${logMessage}: failed - ${errMessage}`,
+        requestBody: input,
         error,
-        body: input,
         context: logContext,
       },
       'ERROR'
