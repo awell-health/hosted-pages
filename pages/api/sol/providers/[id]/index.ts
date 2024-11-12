@@ -14,9 +14,10 @@ export default async function handler(
     return res.status(405).end('Method Not Allowed')
   }
   const logMessage = 'SOL: Getting provider'
-  try {
-    const { id } = req.query
 
+  const { id, session_id, pathway_id } = req.query
+
+  try {
     const settings = getSolEnvSettings({ headers: req.headers })
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
@@ -40,6 +41,12 @@ export default async function handler(
           errorCode: response.status,
           responseText: response.statusText,
           url,
+          context: {
+            session: {
+              id: session_id,
+              pathway_id,
+            },
+          },
         },
         'ERROR'
       )
@@ -54,6 +61,12 @@ export default async function handler(
       message: `${logMessage}: success`,
       responseBody: jsonRes,
       url,
+      context: {
+        session: {
+          id: session_id,
+          pathway_id,
+        },
+      },
     })
     return res.status(200).json(jsonRes)
   } catch (error) {

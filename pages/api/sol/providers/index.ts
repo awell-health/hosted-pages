@@ -17,16 +17,19 @@ export default async function handler(
     return res.status(405).end('Method Not Allowed')
   }
   const logMessage = 'SOL: Getting providers'
+  const { input, logContext } = req.body
+
   try {
     const settings = getSolEnvSettings({ headers: req.headers })
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
-    const bodyValidation = GetProvidersInputSchema.safeParse(req.body)
+    const bodyValidation = GetProvidersInputSchema.safeParse(input)
     log(
       {
         message: `${logMessage}: parsing body`,
         bodyValidation,
-        body: req.body,
+        body: input,
+        context: logContext,
       },
       bodyValidation.success ? 'INFO' : 'ERROR'
     )
@@ -54,10 +57,11 @@ export default async function handler(
           message: `${logMessage}: failed`,
           responseBody,
           validatedRequestBody: bodyValidation.data,
-          requestBody: req.body,
+          requestBody: input,
           errorCode: response.status,
           responseText: response.statusText,
           url,
+          context: logContext,
         },
         'ERROR'
       )
@@ -80,6 +84,7 @@ export default async function handler(
           responseText: response.statusText,
           errorCode: response.status,
           url,
+          context: logContext,
         },
         'WARNING'
       )
@@ -89,6 +94,7 @@ export default async function handler(
       message: `${logMessage}: success`,
       responseBody: jsonRes,
       url,
+      context: logContext,
     })
     return res.status(200).json(jsonRes)
   } catch (error) {
@@ -97,7 +103,8 @@ export default async function handler(
       {
         message: `${logMessage}: failed - ${errMessage}`,
         error,
-        body: req.body,
+        body: input,
+        context: logContext,
       },
       'ERROR'
     )

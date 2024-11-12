@@ -12,8 +12,14 @@ import {
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
 import { SolApiResponseError } from './helpers/error'
+import type { HostedSession } from '../../../../../hooks/useHostedSession/types'
+import { type SessionMetadata } from '../../../../../types/generated/types-orchestration'
 interface RequestOptions {
   baseUrl: string
+  logContext?: {
+    session?: HostedSession | null
+    metadata?: SessionMetadata | null
+  }
 }
 
 export const fetchProviders = async ({
@@ -30,7 +36,7 @@ export const fetchProviders = async ({
         'Content-Type': 'application/json',
         'x-sol-api-url': requestOptions.baseUrl,
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ input, logContext: requestOptions?.logContext }),
     })
 
     if (!response.ok) {
@@ -61,11 +67,14 @@ export const fetchProvider = async ({
   requestOptions: RequestOptions
 }): Promise<GetProviderResponseType> => {
   try {
-    const response = await fetch(`/api/sol/providers/${input.providerId}`, {
-      headers: {
-        'x-sol-api-url': requestOptions.baseUrl,
-      },
-    })
+    const response = await fetch(
+      `/api/sol/providers/${input.providerId}?session_id=${requestOptions.logContext?.session?.id}&pathway_id=${requestOptions.logContext?.session?.pathway_id}`,
+      {
+        headers: {
+          'x-sol-api-url': requestOptions.baseUrl,
+        },
+      }
+    )
 
     if (!response.ok) {
       const errorMessage = `Failed to fetch availability for provider ${input.providerId}: ${response.statusText}`
@@ -93,7 +102,7 @@ export const fetchAvailability = async ({
 }): Promise<GetAvailabilitiesResponseType> => {
   try {
     const response = await fetch(
-      `/api/sol/providers/${input.providerId[0]}/availability`,
+      `/api/sol/providers/${input.providerId[0]}/availability?session_id=${requestOptions.logContext?.session?.id}&pathway_id=${requestOptions.logContext?.session?.pathway_id}`,
       {
         headers: {
           'x-sol-api-url': requestOptions.baseUrl,
@@ -132,7 +141,7 @@ export const bookAppointment = async ({
         'Content-Type': 'application/json',
         'x-sol-api-url': requestOptions.baseUrl,
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ input, logContext: requestOptions?.logContext }),
     })
     if (!response.ok) {
       const errorMessage = `Failed to book appointment: ${response.statusText}`
