@@ -131,6 +131,15 @@ export const Form: FC<FormProps> = ({ activity }) => {
         'activities.form.questions.select.search_placeholder'
       ),
       no_options: t('activities.form.questions.select.no_options'),
+      icd_10_catalogue_description: t(
+        'activities.form.questions.select.icd_10_catalogue_description'
+      ),
+      icd_10_catalogue_link: t(
+        'activities.form.questions.select.icd_10_catalogue_link'
+      ),
+      search_icd_placeholder: t(
+        'activities.form.questions.select.search_icd_placeholder'
+      ),
     },
     slider: {
       tooltip_guide: t('activities.form.questions.slider.tooltip_guide'),
