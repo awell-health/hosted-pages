@@ -55,7 +55,9 @@
           "loading": "Cargando…",
           "no_options": "No se encontraron coincidencias",
           "search_placeholder": "Busca una opción",
-          "type_to_search": "Escriba para buscar"
+          "type_to_search": "Escriba para buscar",
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue"
         },
         "slider": {
           "tooltip_guide": "Toca para indicar tu respuesta"

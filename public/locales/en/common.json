@@ -59,7 +59,10 @@
           "loading": "Loading...",
           "no_options": "No matches found",
           "search_placeholder": "Search for an option",
-          "type_to_search": "Type to search"
+          "search_icd_placeholder": "Start typing to search a medical condition",
+          "type_to_search": "Type to search",
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
