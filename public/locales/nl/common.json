@@ -55,7 +55,9 @@
           "loading": "Laden...",
           "no_options": "Geen matches gevonden",
           "search_placeholder": "Zoek een optie",
-          "type_to_search": "Typ om te zoeken"
+          "type_to_search": "Typ om te zoeken",
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue"
         },
         "slider": {
           "tooltip_guide": "Klik om antwoord aan te duiden"
