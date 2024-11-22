@@ -84,10 +84,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell-health/sol-scheduling@0.3.24":
-  version "0.3.24"
-  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.3.24.tgz#19fd05fa55ff5735d528fa39b2fa420c6e0ecc63"
-  integrity sha512-NkUsr7GalByTqQ58YoA4QAZRSedKw8CiMkOPdl7vNdQnXCAGshtMW+3EKx6VpVniRrFc6fmtdsnch4UlIZvQLQ==
+"@awell-health/sol-scheduling@0.3.27":
+  version "0.3.27"
+  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.3.27.tgz#f6bc96f83abbe4cdf14f4781a8fab5d71fad2366"
+  integrity sha512-fcGkst7nsQ4Ez+fNwJTQsrVu1gmwSWQrty/gi8KW4FB5W3jK6MUhiAMl4TBAKZqv74UztBpWEOArTlZ8eGyASw==
   dependencies:
     "@headlessui/react" "^2.1.2"
     "@heroicons/react" "^2.1.5"
