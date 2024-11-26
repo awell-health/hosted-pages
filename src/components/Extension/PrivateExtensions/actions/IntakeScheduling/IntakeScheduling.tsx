@@ -33,11 +33,12 @@ interface IntakeSchedulingProps {
 export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   activityDetails,
 }) => {
-  const { activity_id, fields, settings, pathway_id } = activityDetails
+  const { activity_id, fields, settings } = activityDetails
   const { session, metadata } = useHostedSession()
 
   const { providerId, patientName, ...providerPrefs } =
     mapActionFieldsToObject<ActionFields>(fields)
+
   const initialPrefs = populateInitialPrefs(providerPrefs)
 
   const { updateLayoutMode, resetLayoutMode } = useTheme()
@@ -88,10 +89,6 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     },
     [baseUrl, logContext]
   )
-
-  useEffect(() => {
-    fetchProvidersFn(providerPreferences)
-  }, [providerPreferences, fetchProvidersFn])
 
   const fetchAvailabilityFn = useCallback(
     (_providerId: string) => {
