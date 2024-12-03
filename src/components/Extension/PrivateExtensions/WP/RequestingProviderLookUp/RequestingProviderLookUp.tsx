@@ -35,7 +35,7 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
   const [selectedProviderId, setSelectedProviderId] =
     useState<Provider['reference']>()
 
-  const { siteId, label, required } =
+  const { patient, label, required } =
     mapActionFieldsToObject<ActionFields>(fields)
 
   const selectedProvider = useMemo(() => {
@@ -76,6 +76,10 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
   const handleFetchProviders = useCallback(async () => {
     try {
       setLoading(true)
+
+      const patientObject = JSON.parse(patient)
+      const siteId = patientObject?.site.Id
+
       const response = await fetch(
         `/api/wp/lookup/providers/${siteId}?session=${session?.id}&pathway=${session?.pathway_id}&tenant=${metadata?.tenant_id}`,
         {
@@ -105,7 +109,7 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
     } finally {
       setLoading(false)
     }
-  }, [siteId, session, metadata])
+  }, [patient, session, metadata])
 
   useEffect(() => {
     async function fetchData() {

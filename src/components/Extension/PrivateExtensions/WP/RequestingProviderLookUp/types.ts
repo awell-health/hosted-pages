@@ -10,7 +10,7 @@ export {
 export type ExtensionSettings = {}
 
 export type ActionFields = {
-  siteId: string
+  patient: string // Serialized JSON object
   label: string
   required?: string // serialized boolean
 }
