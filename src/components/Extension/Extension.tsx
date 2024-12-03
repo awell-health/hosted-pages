@@ -22,6 +22,7 @@ import {
 import { StripeExtension } from './StripeExtension'
 import { IdentityVerification } from './IdentityVerification'
 import { ShellyExtension } from './ShellyExtension'
+import { RequestingProviderLookUp } from './PrivateExtensions/WP'
 
 interface ExtensionProps {
   activity: Activity
@@ -64,6 +65,12 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
         return <PrivateRedirect activityDetails={extensionActivityDetails} />
       case AnonymousActionKeys.INTAKE_SCHEDULING:
         return <IntakeScheduling activityDetails={extensionActivityDetails} />
+      case AnonymousActionKeys.WP_REQUESTING_PROVIDER_LOOKUP:
+        return (
+          <RequestingProviderLookUp
+            activityDetails={extensionActivityDetails}
+          />
+        )
       default:
         return <ErrorPage title={t('activities.activity_not_supported')} />
     }

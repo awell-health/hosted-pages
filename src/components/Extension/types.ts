@@ -29,4 +29,5 @@ export enum AnonymousActionKeys {
   PATIENT_RECOMMENDATION = 'patientRecommendation',
   REDIRECT = 'redirect',
   INTAKE_SCHEDULING = 'intakeScheduling',
+  WP_REQUESTING_PROVIDER_LOOKUP = 'wpRequestingProviderSelect',
 }
