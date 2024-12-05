@@ -3,9 +3,9 @@ import { DataPoints, useCompleteExtensionActivity } from '../types'
 
 interface OnSubmitProps {
   activityId: string
-  providerFullName: string
-  providerReference: string
-  providerId: string
+  providerFullName?: string
+  providerReference?: string
+  providerId?: string
 }
 
 export const useRequestingProviderLookUp = () => {
@@ -19,11 +19,11 @@ export const useRequestingProviderLookUp = () => {
       providerId,
     }: OnSubmitProps) => {
       const dataPoints: DataPoints = [
-        { key: 'providerFullName', value: providerFullName },
-        { key: 'providerReference', value: providerReference },
+        { key: 'providerFullName', value: providerFullName || '' },
+        { key: 'providerReference', value: providerReference || '' },
         {
           key: 'providerId',
-          value: providerId,
+          value: providerId || '',
         },
       ]
       return _onSubmit(activityId, dataPoints)
