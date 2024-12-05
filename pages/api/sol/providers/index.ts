@@ -5,7 +5,7 @@ import {
   GetProvidersResponseType,
 } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../utils'
-import { omit, isEmpty } from 'lodash'
+import { omit, isEmpty, isNil } from 'lodash'
 import { log } from '../../../../src/utils/logging'
 
 export default async function handler(
@@ -22,12 +22,17 @@ export default async function handler(
   try {
     const settings = getSolEnvSettings({ headers: req.headers })
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
-
-    const bodyValidation = GetProvidersInputSchema.safeParse(input)
+    const modifiedInput = Object.fromEntries(
+      Object.entries(input).filter(
+        ([_, value]) => !isNil(value) && !isEmpty(value)
+      )
+    )
+    const bodyValidation = GetProvidersInputSchema.safeParse(modifiedInput)
     log(
       {
-        message: `${logMessage}: parsing body`,
+        message: `${logMessage}: parsing body (removing nil and empty values)`,
         requestBody: input,
+        modifiedInput,
         bodyValidation,
         context: logContext,
       },
@@ -41,18 +46,13 @@ export default async function handler(
       })
     }
     const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_PROVIDERS]}`
-    const requestBody = Object.fromEntries(
-      Object.entries(bodyValidation.data).filter(
-        ([_, value]) => !isEmpty(value)
-      )
-    )
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify(bodyValidation.data),
     })
     if (!response.ok) {
       const responseBody = await response.json()
@@ -83,7 +83,7 @@ export default async function handler(
       log(
         {
           message: `${logMessage}: failed - no data returned`,
-          requestBody,
+          requestBody: bodyValidation.data,
           responseBody: jsonRes,
           responseText: response.statusText,
           errorCode: response.status,
@@ -96,7 +96,7 @@ export default async function handler(
     }
     log({
       message: `${logMessage}: success`,
-      requestBody: input,
+      requestBody: bodyValidation.data,
       responseBody: jsonRes,
       url,
       context: logContext,
