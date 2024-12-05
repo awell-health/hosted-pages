@@ -60,18 +60,18 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
   }, [providers])
 
   const handleSubmit = useCallback(() => {
-    if (isNil(selectedProvider)) {
+    if (required === 'true' && isNil(selectedProvider)) {
       setError(t('activities.form.question_required_error'))
       return
     }
 
     onSubmit({
       activityId: activity_id,
-      providerReference: selectedProvider.reference,
-      providerFullName: selectedProvider.provider,
-      providerId: selectedProvider.reference.split('/')[1],
+      providerReference: selectedProvider?.reference,
+      providerFullName: selectedProvider?.provider,
+      providerId: selectedProvider?.reference.split('/')[1],
     })
-  }, [selectedProvider, activity_id, onSubmit, t])
+  }, [selectedProvider, activity_id, onSubmit, t, required])
 
   const handleFetchProviders = useCallback(async () => {
     try {
