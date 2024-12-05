@@ -41,7 +41,11 @@ export default async function handler(
       })
     }
     const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_PROVIDERS]}`
-    const requestBody = bodyValidation.data
+    const requestBody = Object.fromEntries(
+      Object.entries(bodyValidation.data).filter(
+        ([_, value]) => !isEmpty(value)
+      )
+    )
     const response = await fetch(url, {
       method: 'POST',
       headers: {
