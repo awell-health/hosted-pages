@@ -175,6 +175,7 @@ const populateInitialPrefs = (
     deliveryMethod: providerPrefs.deliveryMethodPreference as DeliveryMethod,
     location: {
       state: providerPrefs.locationStatePreference as LocationState,
+      facility: undefined,
     },
   }
 }
