@@ -20,6 +20,11 @@ interface ActivityProps {
   activityDetails: ExtensionActivityRecord
 }
 
+type ErrorType = {
+  type: 'required' | 'api'
+  message: string
+}
+
 export const RequestingProviderLookUp: FC<ActivityProps> = ({
   activityDetails,
 }) => {
@@ -30,7 +35,7 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
   const { onSubmit, isSubmitting } = useRequestingProviderLookUp()
 
   const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<unknown>()
+  const [error, setError] = useState<ErrorType | undefined>(undefined)
   const [providers, setProviders] = useState<Provider[]>([])
   const [selectedProviderId, setSelectedProviderId] =
     useState<Provider['reference']>()
@@ -59,9 +64,22 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
     })
   }, [providers])
 
+  /**
+   * If there's an API error, we allow the user to submit the activity
+   * so they are not blocked.
+   */
+  const isRequired = useMemo(() => {
+    if (required !== 'true') return false
+    if (error !== undefined && error.type === 'api') return false
+    return required === 'true'
+  }, [required, error])
+
   const handleSubmit = useCallback(() => {
-    if (required === 'true' && isNil(selectedProvider)) {
-      setError(t('activities.form.question_required_error'))
+    if (isRequired && isNil(selectedProvider)) {
+      setError({
+        type: 'required',
+        message: t('activities.form.question_required_error'),
+      })
       return
     }
 
@@ -71,10 +89,12 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
       providerFullName: selectedProvider?.provider,
       providerId: selectedProvider?.reference.split('/')[1],
     })
-  }, [selectedProvider, activity_id, onSubmit, t, required])
+  }, [selectedProvider, activity_id, onSubmit, t, isRequired])
 
   const handleFetchProviders = useCallback(async () => {
     try {
+      // Reset error state
+      setError(undefined)
       setLoading(true)
 
       const patientObject = JSON.parse(patient)
@@ -91,14 +111,20 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
       )
 
       if (response.status === 404) {
-        setError('No providers were found, try reloading the page.')
+        setError({
+          type: 'api',
+          message:
+            "No providers were found. You can try reloading the page or if that doesn't work leave the requesting provider blank and complete it later in ERMA.",
+        })
         return
       }
 
       if (!response.ok) {
-        setError(
-          'Something went wrong while fetching providers, try reloading the page.'
-        )
+        setError({
+          type: 'api',
+          message:
+            "Something went wrong while fetching providers. You can try reloading the page or if that doesn't work leave the requesting provider blank and complete it later in ERMA.",
+        })
         return
       }
 
@@ -147,11 +173,13 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
                 )
                 setSelectedProviderId(selectedOption?.value_string)
               }}
-              mandatory={required === 'true'}
+              mandatory={isRequired}
               filtering
             />
             {!isNil(error) && (
-              <div className={classes.error}>{String(error) as string}</div>
+              <div className={classes.error}>
+                {String(error.message) as string}
+              </div>
             )}
           </div>
         </div>
