@@ -1,0 +1,120 @@
+{
+  "activities": {
+    "activity_not_supported": "Activity type is not supported.",
+    "checklist": {
+      "cta_submit": "Submit",
+      "loading_error": "Something went wrong while loading the checklist.",
+      "saving_error": "Checklist submission failed."
+    },
+    "cloudinary": {
+      "cta_upload_files": "Upload files",
+      "file_attachment": "View file",
+      "file_count_one": "You have uploaded 1 file.",
+      "file_count_other": "You have uploaded {{count}} files.",
+      "file_count_zero": "You have not uploaded any files yet.",
+      "link_attachment": "Open link",
+      "no_files": "You have not uploaded any files yet.",
+      "single_file_upload_action": {
+        "cta_upload_file": "Upload file",
+        "file_uploaded": "You have successfully uploaded a file.",
+        "no_file_uploaded": "You have not uploaded a file yet.",
+        "subject_single_file_upload": "Upload file"
+      },
+      "subject": "Upload files",
+      "video_attachment": "Open video"
+    },
+    "collect_medication": {
+      "add_medication_button": "Add medication",
+      "medication_dose": "Dose",
+      "medication_instructions": "Instructions",
+      "medication_name": "Name",
+      "submit_button": "Submit"
+    },
+    "identity_verification": {
+      "default_label": "Enter your date of birth to verify your identity",
+      "cta": "Confirm"
+    },
+    "cta_done": "Done",
+    "docu_sign": {
+      "cta_sign_document": "Sign document",
+      "expired_sign_document": "Signing link has expired.",
+      "failed_sign_document": "Signing link has failed."
+    },
+    "form": {
+      "cta_submit": "Submit",
+      "date_cannot_be_in_the_future": "Date cannot be in the future.",
+      "date_cannot_be_in_the_past": "Date cannot be in the past.",
+      "date_cannot_be_today": "Date cannot be today.",
+      "form_has_errors": "Please fix the errors in the form before submitting",
+      "invalid_phone_number": "Phone number is invalid.",
+      "loading_error": "Something went wrong while loading the form.",
+      "next_question_label": "Next",
+      "not_a_number": "Please enter a number.",
+      "number_out_of_range": "Number is out of range.",
+      "email_invalid_format": "Email is in invalid format.",
+      "previous_question_label": "Prev",
+      "question_required_error": "This question is required.",
+      "questions": {
+        "select": {
+          "loading": "Loading...",
+          "no_options": "No matches found",
+          "search_placeholder": "Search for an option",
+          "search_icd_placeholder": "Start typing to search a medical condition",
+          "type_to_search": "Type to search",
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue"
+        },
+        "slider": {
+          "tooltip_guide": "Touch to indicate your answer"
+        },
+        "yes_no": {
+          "no_answer": "No",
+          "yes_answer": "Yes"
+        }
+      },
+      "saving_error": "Form submission failed.",
+      "slider_not_touched_error": "Please move the slider to indicate your answer."
+    },
+    "loading_error": "Something went wrong while loading your activities.",
+    "message": {
+      "cta_mark_as_read": "Done",
+      "download_file_attachment": "Download",
+      "loading_error": "Something went wrong while loading the message.",
+      "open_link_attachment": "Open link",
+      "open_video_attachment": "Open video",
+      "toast_mark_as_read_error": "Error while marking message as read."
+    }
+  },
+  "errors": {
+    "app_error": "Oops, something went wrong. Please try again."
+  },
+  "link_page": {
+    "loading_error": "Oops, we could not start a session for you.",
+    "try_again": "Try again"
+  },
+  "preview": {
+    "cta": "Try it out"
+  },
+  "seo": {
+    "description": "Complete activities in your care flow with Awell hosted pages.",
+    "title": "Awell Activities"
+  },
+  "session": {
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
+    "close_modal": {
+      "cancel_button_label": "No, continue",
+      "confirm_button_label": "Yes, cancel session",
+      "description": "There are still some activities for you to complete. If you cancel your session, you might lose data you haven't submitted yet.",
+      "title": "Are you sure you want to cancel your session?"
+    },
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
+    "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
+    "loading_error": "Something went wrong while loading your session.",
+    "redirecting_to_next_page": "Redirecting you in a moment...",
+    "session_canceled": "Your session has been cancelled.",
+    "try_again": "Try again",
+    "session_completed_or_expired": "Your session has been completed or expired."
+  }
+}
