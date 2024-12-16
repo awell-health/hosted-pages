@@ -37,24 +37,26 @@
       "failed_sign_document": "Der Link zum Signieren ist fehlgeschlagen."
     },
     "form": {
-      "cta_start_form": "Formular starten",
       "cta_submit": "Absenden",
       "date_cannot_be_in_the_future": "Date cannot be in the future.",
       "date_cannot_be_in_the_past": "Date cannot be in the past.",
       "date_cannot_be_today": "Date cannot be today.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Bitte korrigieren Sie die Fehler im Formular vor dem Absenden",
       "invalid_phone_number": "Telefonnummer ist ungültig",
       "loading_error": "Beim Laden des Formulars ist etwas schief gelaufen.",
       "next_question_label": "Weiter",
       "not_a_number": "Please enter a number.",
       "number_out_of_range": "Number is out of range.",
-      "email_invalid_format": "Email is in invalid format.",
       "previous_question_label": "Vorheriger",
       "question_required_error": "Diese Frage ist erforderlich.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Loading...",
           "no_options": "Keine Optionen gefunden",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Suche nach einer Option",
           "type_to_search": "Beginnen Sie mit der Eingabe zur Suche"
         },
@@ -68,6 +70,10 @@
       },
       "saving_error": "Das Absenden des Formulars ist fehlgeschlagen.",
       "slider_not_touched_error": "Bitte bewegen Sie den Schieberegler, um Ihre Antwort anzuzeigen."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Beim Laden Ihrer Aktivitäten ist etwas schief gelaufen.",
     "message": {
@@ -108,6 +114,7 @@
     "loading_error": "Beim Laden Ihrer Sitzung ist ein Fehler aufgetreten.",
     "redirecting_to_next_page": "Ich werde dich gleich umleiten...",
     "session_canceled": "Ihre Sitzung wurde abgesagt.",
+    "session_completed_or_expired": "Your session has been completed or expired.",
     "try_again": "Erneut versuchen"
   }
 }
