@@ -37,11 +37,11 @@
       "failed_sign_document": "Signing link has failed."
     },
     "form": {
-      "cta_start_form": "Начать заполнение формы",
       "cta_submit": "Подать",
       "date_cannot_be_in_the_future": "Дата не может быть в будущем.",
       "date_cannot_be_in_the_past": "Дата не может быть в прошлом.",
       "date_cannot_be_today": "Дата не может быть сегодняшней.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
       "invalid_phone_number": "Номер телефона недействительный.",
       "loading_error": "Во время загрузки формы что-то пошло не так.",
@@ -52,12 +52,13 @@
       "question_required_error": "Ответ на этот вопрос обязателен.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Loading...",
           "no_options": "Опции не найдены",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Поиск опции",
-          "type_to_search": "Type to search",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -69,6 +70,10 @@
       },
       "saving_error": "Не удалось подать форму.",
       "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Во время загрузки действия что-то пошло не так.",
     "message": {
@@ -109,6 +114,7 @@
     "loading_error": "Что-то пошло не так при загрузке сессии.",
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "session_canceled": "Ваша сессия истекла.",
+    "session_completed_or_expired": "Your session has been completed or expired.",
     "try_again": "Попробуйте снова"
   }
 }

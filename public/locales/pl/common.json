@@ -1,120 +1,120 @@
 {
   "activities": {
-    "activity_not_supported": "Activity type is not supported.",
+    "activity_not_supported": "Typ aktywności nie jest obsługiwany.",
     "checklist": {
-      "cta_submit": "Submit",
-      "loading_error": "Something went wrong while loading the checklist.",
-      "saving_error": "Checklist submission failed."
+      "cta_submit": "Zatwierdź",
+      "loading_error": "Coś poszło nie tak podczas ładowania listy kontrolnej.",
+      "saving_error": "Przesłanie listy kontrolnej nie powiodło się."
     },
     "cloudinary": {
-      "cta_upload_files": "Upload files",
-      "file_attachment": "View file",
-      "file_count_one": "You have uploaded 1 file.",
-      "file_count_other": "You have uploaded {{count}} files.",
-      "file_count_zero": "You have not uploaded any files yet.",
-      "link_attachment": "Open link",
-      "no_files": "You have not uploaded any files yet.",
+      "cta_upload_files": "Prześlij pliki",
+      "file_attachment": "Wyświetl plik",
+      "file_count_one": "Załadowałeś 1 plik.",
+      "file_count_other": "Przesłałeś {{count}} pliki.",
+      "file_count_zero": "Nie przesłałeś jeszcze żadnych plików.",
+      "link_attachment": "Otwórz link",
+      "no_files": "Nie przesłałeś jeszcze żadnych plików.",
       "single_file_upload_action": {
-        "cta_upload_file": "Upload file",
-        "file_uploaded": "You have successfully uploaded a file.",
-        "no_file_uploaded": "You have not uploaded a file yet.",
-        "subject_single_file_upload": "Upload file"
+        "cta_upload_file": "Prześlij plik",
+        "file_uploaded": "Pomyślnie przesłałeś plik.",
+        "no_file_uploaded": "Nie przesłałeś jeszcze pliku.",
+        "subject_single_file_upload": "Prześlij plik"
       },
-      "subject": "Upload files",
-      "video_attachment": "Open video"
+      "subject": "Prześlij pliki",
+      "video_attachment": "Otwórz wideo"
     },
     "collect_medication": {
-      "add_medication_button": "Add medication",
-      "medication_dose": "Dose",
-      "medication_instructions": "Instructions",
-      "medication_name": "Name",
-      "submit_button": "Submit"
+      "add_medication_button": "Dodaj leki",
+      "medication_dose": "Dawka",
+      "medication_instructions": "Instrukcje",
+      "medication_name": "Nazwa",
+      "submit_button": "Zatwierdź"
     },
-    "identity_verification": {
-      "default_label": "Enter your date of birth to verify your identity",
-      "cta": "Confirm"
-    },
-    "cta_done": "Done",
+    "cta_done": "Gotowe",
     "docu_sign": {
-      "cta_sign_document": "Sign document",
-      "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "cta_sign_document": "Podpisz dokument",
+      "expired_sign_document": "Link do podpisywania wygasł.",
+      "failed_sign_document": "Podpisywanie łącza nie powiodło się."
     },
     "form": {
-      "cta_submit": "Submit",
-      "date_cannot_be_in_the_future": "Date cannot be in the future.",
-      "date_cannot_be_in_the_past": "Date cannot be in the past.",
-      "date_cannot_be_today": "Date cannot be today.",
-      "form_has_errors": "Please fix the errors in the form before submitting",
-      "invalid_phone_number": "Phone number is invalid.",
-      "loading_error": "Something went wrong while loading the form.",
-      "next_question_label": "Next",
-      "not_a_number": "Please enter a number.",
-      "number_out_of_range": "Number is out of range.",
-      "email_invalid_format": "Email is in invalid format.",
-      "previous_question_label": "Prev",
-      "question_required_error": "This question is required.",
+      "cta_submit": "Zatwierdź",
+      "date_cannot_be_in_the_future": "Data nie może być w przyszłości.",
+      "date_cannot_be_in_the_past": "Data nie może być przeszłością.",
+      "date_cannot_be_today": "Data nie może być dzisiaj.",
+      "email_invalid_format": "E-mail jest w nieprawidłowym formacie.",
+      "form_has_errors": "Proszę naprawić błędy w formularzu przed przesłaniem",
+      "invalid_phone_number": "Numer telefonu jest nieprawidłowy.",
+      "loading_error": "Coś poszło nie tak podczas ładowania formularza.",
+      "next_question_label": "Kolejny",
+      "not_a_number": "Proszę wpisać liczbę.",
+      "number_out_of_range": "Liczba jest poza zasięgiem.",
+      "previous_question_label": "Poprzednia",
+      "question_required_error": "To pytanie jest wymagane.",
       "questions": {
         "select": {
-          "loading": "Loading...",
-          "no_options": "No matches found",
-          "search_placeholder": "Search for an option",
-          "search_icd_placeholder": "Start typing to search a medical condition",
-          "type_to_search": "Type to search",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "icd_10_catalogue_description": "Aby ułatwić przeglądanie, otwórz katalog ICD w nowej karcie. Po znalezieniu potrzebnego kodu wróć, aby wprowadzić go tutaj.",
+          "icd_10_catalogue_link": "Otwórz katalog ICD",
+          "loading": "Ładowanie...",
+          "no_options": "Nie znaleziono dopasowań",
+          "search_icd_placeholder": "Zacznij pisać, aby wyszukać stan medyczny",
+          "search_placeholder": "Wyszukaj opcję",
+          "type_to_search": "Wpisz, aby wyszukać"
         },
         "slider": {
-          "tooltip_guide": "Touch to indicate your answer"
+          "tooltip_guide": "Dotknij, aby wskazać odpowiedź"
         },
         "yes_no": {
           "no_answer": "No",
           "yes_answer": "Yes"
         }
       },
-      "saving_error": "Form submission failed.",
-      "slider_not_touched_error": "Please move the slider to indicate your answer."
+      "saving_error": "Złożenie formularza nie powiodło się.",
+      "slider_not_touched_error": "Przesuń suwak, aby wskazać odpowiedź."
     },
-    "loading_error": "Something went wrong while loading your activities.",
+    "identity_verification": {
+      "cta": "Potwierdź",
+      "default_label": "Wprowadź swoją datę urodzenia, aby zweryfikować swoją tożsamość"
+    },
+    "loading_error": "Coś poszło nie tak podczas ładowania twoich działań.",
     "message": {
-      "cta_mark_as_read": "Done",
-      "download_file_attachment": "Download",
-      "loading_error": "Something went wrong while loading the message.",
-      "open_link_attachment": "Open link",
-      "open_video_attachment": "Open video",
-      "toast_mark_as_read_error": "Error while marking message as read."
+      "cta_mark_as_read": "Gotowe",
+      "download_file_attachment": "Pobierać",
+      "loading_error": "Coś poszło nie tak podczas ładowania wiadomości.",
+      "open_link_attachment": "Otwórz link",
+      "open_video_attachment": "Otwórz wideo",
+      "toast_mark_as_read_error": "Błąd podczas oznaczania komunikatu jako przeczytanego."
     }
   },
   "errors": {
-    "app_error": "Oops, something went wrong. Please try again."
+    "app_error": "Ups, coś poszło nie tak. Spróbuj ponownie."
   },
   "link_page": {
-    "loading_error": "Oops, we could not start a session for you.",
-    "try_again": "Try again"
+    "loading_error": "Ups, nie mogliśmy rozpocząć dla ciebie sesji.",
+    "try_again": "Spróbuj ponownie"
   },
   "preview": {
-    "cta": "Try it out"
+    "cta": "Wypróbuj"
   },
   "seo": {
-    "description": "Complete activities in your care flow with Awell hosted pages.",
-    "title": "Awell Activities"
+    "description": "Ukończ czynności w swoim przepływie opieki dzięki stronom hostowanym przez Awell.",
+    "title": "Aktywności Awell"
   },
   "session": {
-    "all_activities_completed_subtitle": "You can close this page now.",
-    "all_activities_completed_title": "You're all done!",
+    "all_activities_completed_subtitle": "Możesz teraz zamknąć tę stronę.",
+    "all_activities_completed_title": "Wszystko gotowe!",
     "close_modal": {
-      "cancel_button_label": "No, continue",
-      "confirm_button_label": "Yes, cancel session",
-      "description": "There are still some activities for you to complete. If you cancel your session, you might lose data you haven't submitted yet.",
-      "title": "Are you sure you want to cancel your session?"
+      "cancel_button_label": "Nie, kontynuuj",
+      "confirm_button_label": "Tak, anuluj sesję",
+      "description": "Jest jeszcze kilka czynności do wykonania. Jeśli anulujesz sesję, możesz stracić dane, których jeszcze nie przesłałeś.",
+      "title": "Czy na pewno chcesz anulować sesję?"
     },
-    "expired_subtitle": "Your session has expired due to inactivity.",
-    "expired_title": "Session expired",
-    "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
-    "loading_error": "Something went wrong while loading your session.",
-    "redirecting_to_next_page": "Redirecting you in a moment...",
-    "session_canceled": "Your session has been cancelled.",
-    "try_again": "Try again",
-    "session_completed_or_expired": "Your session has been completed or expired."
+    "expired_subtitle": "Twoja sesja wygasła z powodu braku aktywności.",
+    "expired_title": "Sesja wygasła",
+    "invalid_url": "Nieprawidłowy adres URL: adres URL musi zawierać parametr `sessionId`.",
+    "loading_error": "Coś poszło nie tak podczas ładowania sesji.",
+    "redirecting_to_next_page": "Przekierowanie cię za chwilę...",
+    "session_canceled": "Twoja sesja została odwołana.",
+    "session_completed_or_expired": "Twoja sesja została zakończona lub wygasła.",
+    "try_again": "Spróbuj ponownie"
   }
 }
