@@ -37,11 +37,11 @@
       "failed_sign_document": "No se pudo firmar el enlace."
     },
     "form": {
-      "cta_start_form": "Formulario de inicio",
       "cta_submit": "Enviar",
       "date_cannot_be_in_the_future": "La fecha no puede estar en el futuro.",
       "date_cannot_be_in_the_past": "La fecha no puede estar en el pasado.",
       "date_cannot_be_today": "La fecha no puede ser hoy.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Corrija los errores del formulario antes de enviarlo",
       "invalid_phone_number": "El número de teléfono no es válido.",
       "loading_error": "Se ha producido un error al cargar el formulario.",
@@ -52,12 +52,13 @@
       "question_required_error": "Esta pregunta es obligatoria.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Cargando…",
           "no_options": "No se encontraron coincidencias",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Busca una opción",
-          "type_to_search": "Escriba para buscar",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "type_to_search": "Escriba para buscar"
         },
         "slider": {
           "tooltip_guide": "Toca para indicar tu respuesta"
@@ -69,6 +70,10 @@
       },
       "saving_error": "No se pudo enviar el formulario.",
       "slider_not_touched_error": "Mueva el control deslizante para indicar su respuesta."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Se ha producido un error al cargar tus actividades.",
     "message": {
@@ -109,6 +114,7 @@
     "loading_error": "Se ha producido un error al cargar la sesión.",
     "redirecting_to_next_page": "Te redirigiré en un momento...",
     "session_canceled": "Se ha cancelado tu sesión.",
+    "session_completed_or_expired": "Your session has been completed or expired.",
     "try_again": "Intentar de nuevo"
   }
 }

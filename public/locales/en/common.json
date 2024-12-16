@@ -30,10 +30,6 @@
       "medication_name": "Name",
       "submit_button": "Submit"
     },
-    "identity_verification": {
-      "default_label": "Enter your date of birth to verify your identity",
-      "cta": "Confirm"
-    },
     "cta_done": "Done",
     "docu_sign": {
       "cta_sign_document": "Sign document",
@@ -45,24 +41,24 @@
       "date_cannot_be_in_the_future": "Date cannot be in the future.",
       "date_cannot_be_in_the_past": "Date cannot be in the past.",
       "date_cannot_be_today": "Date cannot be today.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Please fix the errors in the form before submitting",
       "invalid_phone_number": "Phone number is invalid.",
       "loading_error": "Something went wrong while loading the form.",
       "next_question_label": "Next",
       "not_a_number": "Please enter a number.",
       "number_out_of_range": "Number is out of range.",
-      "email_invalid_format": "Email is in invalid format.",
       "previous_question_label": "Prev",
       "question_required_error": "This question is required.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Loading...",
           "no_options": "No matches found",
-          "search_placeholder": "Search for an option",
           "search_icd_placeholder": "Start typing to search a medical condition",
-          "type_to_search": "Type to search",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "search_placeholder": "Search for an option",
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -74,6 +70,10 @@
       },
       "saving_error": "Form submission failed.",
       "slider_not_touched_error": "Please move the slider to indicate your answer."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Something went wrong while loading your activities.",
     "message": {
@@ -114,7 +114,7 @@
     "loading_error": "Something went wrong while loading your session.",
     "redirecting_to_next_page": "Redirecting you in a moment...",
     "session_canceled": "Your session has been cancelled.",
-    "try_again": "Try again",
-    "session_completed_or_expired": "Your session has been completed or expired."
+    "session_completed_or_expired": "Your session has been completed or expired.",
+    "try_again": "Try again"
   }
 }
