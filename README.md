@@ -16,6 +16,4 @@ Hosted Pages supports multiple languages. Translations are managed with [Localaz
 
 - Run the "🌐 Download Localazy translations" GitHub action. This action downloads all translations files from Localazy and creates a PR with the updated translations.
 - Merge the PR into the `main` branch
-- Tag a new release and deploy to all environments with the corresponding GitHub actions
-
-
+- Tag a new release and deploy to all environments with the corresponding GitHub actions.

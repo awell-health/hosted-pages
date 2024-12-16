@@ -37,11 +37,11 @@
       "failed_sign_document": "Er is iets misgelopen met het te ondertekenen bestand."
     },
     "form": {
-      "cta_start_form": "Vragenlijst starten",
       "cta_submit": "Verzenden",
       "date_cannot_be_in_the_future": "De datum kan niet in de toekomst liggen.",
       "date_cannot_be_in_the_past": "De datum mag niet in het verleden liggen.",
       "date_cannot_be_today": "De datum kan niet vandaag zijn.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
       "invalid_phone_number": "Telefoonnummer is ongeldig.",
       "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
@@ -52,12 +52,13 @@
       "question_required_error": "Deze vraag is verplicht.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Laden...",
           "no_options": "Geen matches gevonden",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Zoek een optie",
-          "type_to_search": "Typ om te zoeken",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "type_to_search": "Typ om te zoeken"
         },
         "slider": {
           "tooltip_guide": "Klik om antwoord aan te duiden"
@@ -69,6 +70,10 @@
       },
       "saving_error": "Vragenlijst kon niet verzonden worden.",
       "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
     "message": {
@@ -109,6 +114,7 @@
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
+    "session_completed_or_expired": "Your session has been completed or expired.",
     "try_again": "Opnieuw proberen"
   }
 }

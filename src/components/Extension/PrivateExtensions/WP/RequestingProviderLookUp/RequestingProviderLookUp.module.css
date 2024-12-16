@@ -1,0 +1,11 @@
+.container {
+  width: 65ch;
+  margin: 0 auto;
+  padding: 0 var(--awell-spacing-4);
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 10px;
+}

@@ -37,11 +37,11 @@
       "failed_sign_document": "Échec du lien de signature."
     },
     "form": {
-      "cta_start_form": "Démarrer le formulaire",
       "cta_submit": "Soumettre",
       "date_cannot_be_in_the_future": "La date ne peut pas être dans le futur.",
       "date_cannot_be_in_the_past": "La date ne peut pas être dans le passé.",
       "date_cannot_be_today": "La date ne peut pas être aujourd'hui.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Veuillez corriger les erreurs dans le formulaire avant de soumettre",
       "invalid_phone_number": "Numéro de téléphone invalide.",
       "loading_error": "Quelque chose s'est mal passé lors du chargement du formulaire.",
@@ -52,12 +52,13 @@
       "question_required_error": "Cette question est obligatoire.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Loading...",
           "no_options": "Aucune option trouvée",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Rechercher une option",
-          "type_to_search": "Type to search",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -69,6 +70,10 @@
       },
       "saving_error": "Échec de la soumission du formulaire.",
       "slider_not_touched_error": "Veuillez déplacer le curseur pour indiquer votre réponse."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Quelque chose s'est mal passé lors du chargement des activités.",
     "message": {
@@ -109,6 +114,7 @@
     "loading_error": "Quelque chose s'est mal passé lors du chargement de la session.",
     "redirecting_to_next_page": "Redirection dans un instant.",
     "session_canceled": "Votre session a été annulée.",
+    "session_completed_or_expired": "Your session has been completed or expired.",
     "try_again": "Réessayer"
   }
 }

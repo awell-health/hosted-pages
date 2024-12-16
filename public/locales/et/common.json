@@ -37,11 +37,11 @@
       "failed_sign_document": "Allkirjastamise link ebaõnnestus."
     },
     "form": {
-      "cta_start_form": "Alusta teekonnaga",
       "cta_submit": "Esita vastused",
       "date_cannot_be_in_the_future": "Kuupäev ei saa olla tulevikus.",
       "date_cannot_be_in_the_past": "Kuupäev ei saa olla minevikus.",
       "date_cannot_be_today": "Kuupäev ei saa olla täna.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Palun paranda vormis olevad vead enne esitamist.",
       "invalid_phone_number": "Telefoninumber pole õige.",
       "loading_error": "Vormi laadimisel läks midagi valesti.",
@@ -52,12 +52,13 @@
       "question_required_error": "See küsimus on kohustuslik.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Laadimine...",
           "no_options": "Vasteid ei leitud",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Otsi valikut",
-          "type_to_search": "Type to search",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -69,6 +70,10 @@
       },
       "saving_error": "Vormi esitamine ebaõnnestus.",
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "message": {
@@ -109,6 +114,7 @@
     "loading_error": "Midagi läks seansi laadimisel valesti.",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "session_canceled": "Teie sessioon on katkestatud.",
+    "session_completed_or_expired": "Your session has been completed or expired.",
     "try_again": "Proovi uuesti"
   }
 }

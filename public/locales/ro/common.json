@@ -37,11 +37,11 @@
       "failed_sign_document": "Signing link has failed."
     },
     "form": {
-      "cta_start_form": "Începeți formularul",
       "cta_submit": "Trimiteți",
       "date_cannot_be_in_the_future": "Data nu poate fi în viitor.",
       "date_cannot_be_in_the_past": "Data nu poate fi în trecut.",
       "date_cannot_be_today": "Data nu poate fi astăzi.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Vă rugăm să corectați erorile din formular înainte de a trimite",
       "invalid_phone_number": "Numărul de telefon este invalid.",
       "loading_error": "Ceva nu a mers bine în timpul încărcării formularului.",
@@ -52,12 +52,13 @@
       "question_required_error": "Această întrebare este obligatorie.",
       "questions": {
         "select": {
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
           "loading": "Loading...",
           "no_options": "Nu s-au găsit opțiuni",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Căutați o opțiune",
-          "type_to_search": "Type to search",
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue"
+          "type_to_search": "Type to search"
         },
         "slider": {
           "tooltip_guide": "Touch to indicate your answer"
@@ -69,6 +70,10 @@
       },
       "saving_error": "Trimiterea formularului a eșuat.",
       "slider_not_touched_error": "Vă rugam să mutați cursorul pentru a indica răspunsul dumneavoastră."
+    },
+    "identity_verification": {
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity"
     },
     "loading_error": "Ceva nu a mers bine în timp ce încărcam activitățile tale.",
     "message": {
@@ -109,6 +114,7 @@
     "loading_error": "A apărut o problemă in timpul încărcării sesiunii tale.",
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "session_canceled": "Sesiunea ta a fost anulata.",
+    "session_completed_or_expired": "Your session has been completed or expired.",
     "try_again": "Încercați din nou"
   }
 }
