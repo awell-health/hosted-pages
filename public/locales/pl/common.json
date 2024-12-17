@@ -2,22 +2,22 @@
   "activities": {
     "activity_not_supported": "Typ aktywności nie jest obsługiwany.",
     "checklist": {
-      "cta_submit": "Zatwierdź",
+      "cta_submit": "Wyślij",
       "loading_error": "Coś poszło nie tak podczas ładowania listy kontrolnej.",
       "saving_error": "Przesłanie listy kontrolnej nie powiodło się."
     },
     "cloudinary": {
       "cta_upload_files": "Prześlij pliki",
       "file_attachment": "Wyświetl plik",
-      "file_count_one": "Załadowałeś 1 plik.",
-      "file_count_other": "Przesłałeś {{count}} pliki.",
+      "file_count_one": "Wysłano 1 plik.",
+      "file_count_other": "Wysłano {{count}} pliki.",
       "file_count_zero": "Nie przesłałeś jeszcze żadnych plików.",
       "link_attachment": "Otwórz link",
-      "no_files": "Nie przesłałeś jeszcze żadnych plików.",
+      "no_files": "Nie wysłano jeszcze żadnych plików.",
       "single_file_upload_action": {
         "cta_upload_file": "Prześlij plik",
-        "file_uploaded": "Pomyślnie przesłałeś plik.",
-        "no_file_uploaded": "Nie przesłałeś jeszcze pliku.",
+        "file_uploaded": "Pomyślnie wysłano plik.",
+        "no_file_uploaded": "Nie przesłano jeszcze pliku.",
         "subject_single_file_upload": "Prześlij plik"
       },
       "subject": "Prześlij pliki",
@@ -28,7 +28,7 @@
       "medication_dose": "Dawka",
       "medication_instructions": "Instrukcje",
       "medication_name": "Nazwa",
-      "submit_button": "Zatwierdź"
+      "submit_button": "Wyślij"
     },
     "cta_done": "Gotowe",
     "docu_sign": {
