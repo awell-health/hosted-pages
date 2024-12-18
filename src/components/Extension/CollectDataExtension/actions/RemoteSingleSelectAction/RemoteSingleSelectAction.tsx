@@ -1,13 +1,17 @@
-import React, { FC, useEffect, useMemo, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { mapActionFieldsToObject } from '../../../utils'
 import classes from './remoteSingleSelectAction.module.css'
 
 import type { RemoteSingleSelectActionFields } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useRemoteSingleSelectAction } from './hooks/useRemoteSingleSelectAction'
-import { Button, Select, type Option } from '@awell-health/ui-library'
+import { Button, Option, Select } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import { isNil, debounce } from 'lodash'
+import { OptionSchema, type SelectOption } from './types'
+import { z } from 'zod'
+import { useLogging } from '../../../../../hooks/useLogging'
+import { LogEvent } from '../../../../../hooks/useLogging/types'
 
 interface RemoteSingleSelectActionProps {
   activityDetails: ExtensionActivityRecord
@@ -19,11 +23,12 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
   const { activity_id, fields } = activityDetails
   const { t } = useTranslation()
   const { onSubmit, isSubmitting } = useRemoteSingleSelectAction()
-  const [selectedOption, setSelectedOption] = useState<Option>()
-  const [options, setOptions] = useState<Array<Option>>([])
+  const [selectedOption, setSelectedOption] = useState<SelectOption>()
+  const [options, setOptions] = useState<Array<SelectOption>>([])
   const [error, setError] = useState<unknown>()
   const [searchText, setSearchText] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const { errorLog } = useLogging()
 
   const generateUrl = (url: string, queryParam: string, search = '') => {
     return !isNil(queryParam) && search !== ''
@@ -37,7 +42,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
     headers: string,
     search = '',
     onError?: (error: unknown) => void
-  ) => {
+  ): Promise<SelectOption[]> => {
     try {
       setLoading(true)
       const response = await fetch(generateUrl(url, queryParam, search), {
@@ -51,11 +56,30 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
       if (!isNil(onError)) {
         onError(undefined)
       }
-      return options
+
+      const parsedOptions = z.array(OptionSchema).safeParse(options)
+
+      if (!parsedOptions.success) {
+        const message = 'Failed to parse options for remote single select'
+        errorLog(
+          {
+            msg: message,
+            activity: activityDetails,
+            error: parsedOptions.error,
+            response,
+          },
+          parsedOptions.error,
+          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+        )
+        throw new Error(message)
+      }
+
+      return parsedOptions.data
     } catch (error) {
       if (!isNil(onError)) {
         onError(error)
       }
+      return []
     } finally {
       setLoading(false)
     }
@@ -90,10 +114,19 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
     }
     onSubmit({
       activityId: activity_id,
-      label: selectedOption.label,
-      value: selectedOption.value.toString(),
+      selectedOption,
     })
   }
+
+  const handleOptionChange = useCallback(
+    (value: number | Array<Option> | string) => {
+      const selectedOption = options.find(
+        (option) => option.value_string === value.toString()
+      )
+      setSelectedOption(selectedOption)
+    },
+    [options]
+  )
 
   useEffect(() => {
     fetchOptionsDebounced()
@@ -115,18 +148,18 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
             loading: t('activities.form.questions.select.loading'),
           }}
           loading={loading}
-          options={options}
+          options={options.map((o) => ({
+            id: o.id,
+            label: o.label,
+            value: o.value,
+            value_string: o.value_string,
+          }))}
           onSearch={(value: string) => {
             setSearchText(value)
           }}
           type="single"
           value={selectedOption?.value ?? ''}
-          onChange={(value) => {
-            const selectedOption = options.find(
-              (option) => option.value.toString() === value.toString()
-            )
-            setSelectedOption(selectedOption)
-          }}
+          onChange={handleOptionChange}
           mandatory={mandatory === 'true'}
           filtering
         />
