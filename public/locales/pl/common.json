@@ -115,6 +115,7 @@
     "redirecting_to_next_page": "Przekierowanie cię za chwilę...",
     "session_canceled": "Twoja sesja została odwołana.",
     "session_completed_or_expired": "Twoja sesja została zakończona lub wygasła.",
-    "try_again": "Spróbuj ponownie"
+    "try_again": "Spróbuj ponownie",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
   }
 }
