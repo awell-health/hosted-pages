@@ -1,7 +1,7 @@
 import { z, ZodError } from 'zod'
 import { OptionSchema } from './types'
 
-describe('Remotae single select action', () => {
+describe('Remote single select action', () => {
   describe('Options schema', () => {
     test('When options schema contains only the required fields, the options are parsed correctly', () => {
       expect(() => {
