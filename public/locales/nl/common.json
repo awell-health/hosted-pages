@@ -112,10 +112,10 @@
     "expired_title": "Sessie vervallen",
     "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Opnieuw proberen",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
+    "try_again": "Opnieuw proberen"
   }
 }
