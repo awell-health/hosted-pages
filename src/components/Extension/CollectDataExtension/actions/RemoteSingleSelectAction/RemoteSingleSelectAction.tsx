@@ -24,7 +24,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
 
   const { t } = useTranslation()
   const { onSubmit, isSubmitting } = useRemoteSingleSelectAction()
-  const { errorLog, warningLog } = useLogging()
+  const { errorLog, warningLog, infoLog } = useLogging()
 
   const [selectedOption, setSelectedOption] = useState<SelectOption>()
   const [options, setOptions] = useState<Array<SelectOption>>([])
@@ -83,6 +83,15 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
         )
         setError('No options found')
       }
+
+      infoLog(
+        {
+          msg: 'Options found for remote single select',
+          activity: activityDetails,
+          response,
+        },
+        LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+      )
 
       return parsedOptions.data
     } catch (error) {
