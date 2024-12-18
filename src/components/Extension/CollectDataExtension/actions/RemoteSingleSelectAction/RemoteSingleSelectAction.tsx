@@ -108,7 +108,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
   }, 500)
 
   const handleSubmit = () => {
-    if (isNil(selectedOption) || isNil(selectedOption.value)) {
+    if (isNil(selectedOption) || isNil(selectedOption.value_string)) {
       setError(t('activities.form.question_required_error'))
       return
     }
@@ -158,7 +158,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
             setSearchText(value)
           }}
           type="single"
-          value={selectedOption?.value ?? ''}
+          value={selectedOption?.value_string ?? ''}
           onChange={handleOptionChange}
           mandatory={mandatory === 'true'}
           filtering
