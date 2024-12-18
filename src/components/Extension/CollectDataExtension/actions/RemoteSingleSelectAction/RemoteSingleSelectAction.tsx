@@ -160,7 +160,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
 
   useEffect(() => {
     fetchOptionsDebounced()
-  }, [searchText, fetchOptionsDebounced])
+  }, [searchText])
 
   return (
     <div className={classes.container}>
@@ -174,6 +174,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
             loading: t('activities.form.questions.select.loading'),
           }}
           loading={loading}
+          // @ts-expect-error value should be a number but is a string
           options={options.map((o) => ({
             id: o.id,
             label: o.label,

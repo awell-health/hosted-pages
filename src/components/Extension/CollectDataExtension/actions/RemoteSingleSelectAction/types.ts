@@ -12,9 +12,8 @@ export const OptionSchema = z
     ...option,
     /**
      * We currently don't support numbers in the remote select component, expectation is that the value is a string.
-     * Setting the value to NaN because the UI component expects a number.
      */
-    value: NaN,
+    value: option.value,
     value_string: option.value,
   }))
 
