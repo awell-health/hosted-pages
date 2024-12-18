@@ -1,11 +1,16 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { mapActionFieldsToObject } from '../../../utils'
+import activityClasses from '../../../../../../styles/ActivityLayout.module.css'
 import classes from './remoteSingleSelectAction.module.css'
-
 import type { RemoteSingleSelectActionFields } from '../../types'
 import type { ExtensionActivityRecord } from '../../../types'
 import { useRemoteSingleSelectAction } from './hooks/useRemoteSingleSelectAction'
-import { Button, Option, Select } from '@awell-health/ui-library'
+import {
+  Button,
+  HostedPageFooter,
+  Option,
+  Select,
+} from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import { isNil, debounce } from 'lodash'
 import { OptionSchema, type SelectOption } from './types'
@@ -158,48 +163,69 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
     [options]
   )
 
+  const uiSelectOptions = useMemo(() => {
+    return options.map((o) => ({
+      id: o.id,
+      label: o.label,
+      value: o.value,
+      value_string: o.value_string,
+    }))
+  }, [options])
+
   useEffect(() => {
     fetchOptionsDebounced()
   }, [searchText])
 
   return (
-    <div className={classes.container}>
-      <div className={classes.selectContainer}>
-        <Select
-          id="select"
-          labels={{
-            questionLabel: label,
-            noOptions: t('activities.form.questions.select.no_options'),
-            placeholder: t('activities.form.questions.select.type_to_search'),
-            loading: t('activities.form.questions.select.loading'),
-          }}
-          loading={loading}
-          // @ts-expect-error value should be a number but is a string
-          options={options.map((o) => ({
-            id: o.id,
-            label: o.label,
-            value: o.value,
-            value_string: o.value_string,
-          }))}
-          onSearch={(value: string) => {
-            setSearchText(value)
-          }}
-          type="single"
-          value={selectedOption?.value ?? ''}
-          onChange={handleOptionChange}
-          mandatory={mandatory === 'true'}
-          filtering
-        />
-        {!isNil(error) && (
-          <div className={classes.error}>{String(error) as string}</div>
-        )}
-      </div>
-      <div className={classes.buttonContainer}>
-        <Button onClick={handleSubmit} disabled={isSubmitting}>
-          {t('activities.form.cta_submit')}
-        </Button>
-      </div>
-    </div>
+    <>
+      <main
+        id="ahp_main_content_with_scroll_hint"
+        className={activityClasses.main_content}
+      >
+        <div className={classes.container}>
+          <div>
+            <Select
+              id="select"
+              labels={{
+                questionLabel: label,
+                noOptions: t('activities.form.questions.select.no_options'),
+                placeholder: t(
+                  'activities.form.questions.select.type_to_search'
+                ),
+                loading: t('activities.form.questions.select.loading'),
+              }}
+              loading={loading}
+              // @ts-expect-error value should be a number but is a string
+              options={uiSelectOptions}
+              onSearch={(value: string) => {
+                setSearchText(value)
+              }}
+              type="single"
+              value={selectedOption?.value ?? ''}
+              onChange={handleOptionChange}
+              mandatory={mandatory === 'true'}
+              filtering
+            />
+            {!isNil(error) && (
+              <div className={classes.error}>{String(error) as string}</div>
+            )}
+          </div>
+        </div>
+      </main>
+      <HostedPageFooter showScrollHint={false}>
+        <div
+          className={`${activityClasses.button_wrapper} ${classes.container}`}
+        >
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {t('activities.form.cta_submit')}
+          </Button>
+        </div>
+      </HostedPageFooter>
+    </>
   )
 }
 
