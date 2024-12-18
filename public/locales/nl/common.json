@@ -115,6 +115,7 @@
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Opnieuw proberen"
+    "try_again": "Opnieuw proberen",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
   }
 }
