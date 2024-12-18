@@ -9,7 +9,7 @@ import { Button, Option, Select } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import { isNil, debounce } from 'lodash'
 import { OptionSchema, type SelectOption } from './types'
-import { z } from 'zod'
+import { z, ZodError } from 'zod'
 import { useLogging } from '../../../../../hooks/useLogging'
 import { LogEvent } from '../../../../../hooks/useLogging/types'
 
@@ -21,14 +21,16 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
   activityDetails,
 }) => {
   const { activity_id, fields } = activityDetails
+
   const { t } = useTranslation()
   const { onSubmit, isSubmitting } = useRemoteSingleSelectAction()
+  const { errorLog, warningLog } = useLogging()
+
   const [selectedOption, setSelectedOption] = useState<SelectOption>()
   const [options, setOptions] = useState<Array<SelectOption>>([])
-  const [error, setError] = useState<unknown>()
+  const [error, setError] = useState<unknown>(undefined)
   const [searchText, setSearchText] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const { errorLog } = useLogging()
 
   const generateUrl = (url: string, queryParam: string, search = '') => {
     return !isNil(queryParam) && search !== ''
@@ -40,10 +42,10 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
     url: string,
     queryParam: string,
     headers: string,
-    search = '',
-    onError?: (error: unknown) => void
+    search = ''
   ): Promise<SelectOption[]> => {
     try {
+      setError(undefined) // Reset error state
       setLoading(true)
       const response = await fetch(generateUrl(url, queryParam, search), {
         method: 'GET',
@@ -53,17 +55,13 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
         },
       })
       const options = await response.json()
-      if (!isNil(onError)) {
-        onError(undefined)
-      }
 
       const parsedOptions = z.array(OptionSchema).safeParse(options)
 
       if (!parsedOptions.success) {
-        const message = 'Failed to parse options for remote single select'
         errorLog(
           {
-            msg: message,
+            msg: 'Failed to parse options for remote single select',
             activity: activityDetails,
             error: parsedOptions.error,
             response,
@@ -71,13 +69,37 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
           parsedOptions.error,
           LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
         )
-        throw new Error(message)
+        throw new ZodError(parsedOptions.error.issues)
+      }
+
+      if (parsedOptions.data.length === 0) {
+        warningLog(
+          {
+            msg: 'No options found for remote single select',
+            activity: activityDetails,
+            response,
+          },
+          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+        )
+        setError('No options found')
       }
 
       return parsedOptions.data
     } catch (error) {
-      if (!isNil(onError)) {
-        onError(error)
+      if (error instanceof ZodError) {
+        console.error(error.issues)
+        setError('Failed to parse options for remote single select')
+      } else {
+        errorLog(
+          {
+            msg: 'Failed to fetch options for remote single select',
+            activity: activityDetails,
+            error,
+          },
+          JSON.stringify(error),
+          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+        )
+        setError(error)
       }
       return []
     } finally {
@@ -101,13 +123,12 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
       url,
       queryParam,
       headers,
-      searchText,
-      setError
+      searchText
     )
     setOptions(options)
   }, 500)
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     if (isNil(selectedOption) || isNil(selectedOption.value_string)) {
       setError(t('activities.form.question_required_error'))
       return
@@ -116,7 +137,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
       activityId: activity_id,
       selectedOption,
     })
-  }
+  }, [selectedOption, activity_id, onSubmit, t])
 
   const handleOptionChange = useCallback(
     (value: number | Array<Option> | string) => {
@@ -130,11 +151,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
 
   useEffect(() => {
     fetchOptionsDebounced()
-  }, [searchText])
-
-  if (!activityDetails || !activityDetails.fields || !options) {
-    return null
-  }
+  }, [searchText, fetchOptionsDebounced])
 
   return (
     <div className={classes.container}>
