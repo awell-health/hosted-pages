@@ -5,6 +5,7 @@ export const getErrorMessage = (error: any, defaultMessage: string): string => {
   if (error instanceof ApolloError) {
     const errorMessage = error.graphQLErrors
       .map((err: any) =>
+        !isNil(err?.extensions?.data?.dataPointValueType) &&
         !isNil(err?.extensions?.data?.value)
           ? `Invalid ${err.extensions.data.dataPointValueType}: ${err.extensions.data.value}.`
           : err.message
