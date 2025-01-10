@@ -1,8 +1,16 @@
 import { ApolloError } from '@apollo/client'
+import { isNil } from 'lodash'
 
 export const getErrorMessage = (error: any, defaultMessage: string): string => {
   if (error instanceof ApolloError) {
-    return error.message
+    const errorMessage = error.graphQLErrors
+      .map((err: any) =>
+        !isNil(err?.extensions?.data?.value)
+          ? `Invalid ${err.extensions.data.dataPointValueType}: ${err.extensions.data.value}.`
+          : err.message
+      )
+      .join(' ')
+    return `${defaultMessage}\n${errorMessage}`
   }
   return defaultMessage
 }
