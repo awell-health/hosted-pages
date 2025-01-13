@@ -32,8 +32,14 @@ import { LogEvent } from '../src/hooks/useLogging/types'
 // i.e. https://goto.awell.health/en?sessionId=e-Dmjxm3E5AW
 const Home: NextPageWithLayout = () => {
   const { t } = useTranslation()
-  const { loading, session, branding, theme, error, refetch } =
-    useHostedSession()
+  const {
+    loading: sessionLoading,
+    session,
+    branding,
+    theme,
+    error,
+    refetch,
+  } = useHostedSession()
   const { removeItem: removeAccessToken } = useSessionStorage('accessToken', '')
   const router = useRouter()
   const { infoLog } = useLogging()
@@ -158,7 +164,7 @@ const Home: NextPageWithLayout = () => {
     }
   }
 
-  if (loading) {
+  if (sessionLoading) {
     return <LoadingPage showLogoBox={true} />
   }
 
