@@ -115,6 +115,7 @@
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "session_canceled": "Ваша сессия истекла.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Попробуйте снова"
+    "try_again": "Попробуйте снова",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
   }
 }
