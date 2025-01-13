@@ -115,6 +115,7 @@
     "redirecting_to_next_page": "Redirection dans un instant.",
     "session_canceled": "Votre session a été annulée.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Réessayer"
+    "try_again": "Réessayer",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
   }
 }

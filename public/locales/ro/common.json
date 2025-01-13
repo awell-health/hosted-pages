@@ -115,6 +115,7 @@
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "session_canceled": "Sesiunea ta a fost anulata.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Încercați din nou"
+    "try_again": "Încercați din nou",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
   }
 }

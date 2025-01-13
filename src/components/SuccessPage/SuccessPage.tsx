@@ -6,12 +6,18 @@ import successIcon from './../../assets/success.svg'
 
 interface SuccessPageProps {
   redirect?: boolean
+  description?: string
 }
 
 export const SuccessPage: FC<SuccessPageProps> = ({
   redirect = false,
+  description,
 }): JSX.Element => {
   const { t } = useTranslation()
+
+  const successDescription =
+    description || t('session.all_activities_completed_subtitle')
+
   return (
     <div className={classes.success_page}>
       <div className={classes.success_icon}>
@@ -21,9 +27,7 @@ export const SuccessPage: FC<SuccessPageProps> = ({
         {t('session.all_activities_completed_title')}
       </div>
       <div className={classes.success_text_subtitle}>
-        {redirect
-          ? t('session.redirecting_to_next_page')
-          : t('session.all_activities_completed_subtitle')}
+        {redirect ? t('session.redirecting_to_next_page') : successDescription}
       </div>
     </div>
   )
