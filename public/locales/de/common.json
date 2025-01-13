@@ -112,6 +112,7 @@
     "expired_title": "Session expired",
     "invalid_url": "Ungültige URL: Die URL muss den Parameter `sessionID` enthalten.",
     "loading_error": "Beim Laden Ihrer Sitzung ist ein Fehler aufgetreten.",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Ich werde dich gleich umleiten...",
     "session_canceled": "Ihre Sitzung wurde abgesagt.",
     "session_completed_or_expired": "Your session has been completed or expired.",
