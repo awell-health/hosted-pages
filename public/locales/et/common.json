@@ -112,10 +112,10 @@
     "expired_title": "Seanss lõppes",
     "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
     "loading_error": "Midagi läks seansi laadimisel valesti.",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "session_canceled": "Teie sessioon on katkestatud.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Proovi uuesti",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
+    "try_again": "Proovi uuesti"
   }
 }
