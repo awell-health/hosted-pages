@@ -112,10 +112,10 @@
     "expired_title": "Session expired",
     "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
     "loading_error": "Something went wrong while loading your session.",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Redirecting you in a moment...",
     "session_canceled": "Your session has been cancelled.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Try again",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
+    "try_again": "Try again"
   }
 }
