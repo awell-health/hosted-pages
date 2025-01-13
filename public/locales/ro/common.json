@@ -112,10 +112,10 @@
     "expired_title": "Session expired",
     "invalid_url": "URL invalid: URL-ul trebuie să conțină parametrul `sessionId`.",
     "loading_error": "A apărut o problemă in timpul încărcării sesiunii tale.",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "session_canceled": "Sesiunea ta a fost anulata.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Încercați din nou",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
+    "try_again": "Încercați din nou"
   }
 }

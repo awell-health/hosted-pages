@@ -100,7 +100,7 @@
     "title": "Awell Activités"
   },
   "session": {
-    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_subtitle": "Vous pouvez fermer cette page.",
     "all_activities_completed_title": "Vous avez terminé !",
     "close_modal": {
       "cancel_button_label": "Non",
@@ -112,10 +112,10 @@
     "expired_title": "Session expired",
     "invalid_url": "URL invalide : l'URL doit contenir le paramètre `sessionId`.",
     "loading_error": "Quelque chose s'est mal passé lors du chargement de la session.",
+    "no_more_pending_activities": "Tout est en ordre. Il n’y a plus d activités en attente. Vous pouvez fermer cette page.",
     "redirecting_to_next_page": "Redirection dans un instant.",
     "session_canceled": "Votre session a été annulée.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Réessayer",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
+    "try_again": "Réessayer"
   }
 }
