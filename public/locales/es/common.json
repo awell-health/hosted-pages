@@ -112,10 +112,10 @@
     "expired_title": "La sesión ha caducado",
     "invalid_url": "URL no válida: la URL debe contener el parámetro `SessionId`.",
     "loading_error": "Se ha producido un error al cargar la sesión.",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Te redirigiré en un momento...",
     "session_canceled": "Se ha cancelado tu sesión.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Intentar de nuevo",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page."
+    "try_again": "Intentar de nuevo"
   }
 }
