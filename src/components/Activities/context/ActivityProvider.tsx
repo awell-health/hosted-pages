@@ -9,7 +9,7 @@ import { ActivityContext } from './ActivityContext'
 import { useLogging } from '../../../hooks/useLogging'
 import { LogEvent } from '../../../hooks/useLogging/types'
 
-const POLLING_DELAY = 5000 // 5 seconds
+const POLLING_DELAY = 250 // 5 seconds
 
 interface ActivityProviderProps {
   children?: React.ReactNode
