@@ -23,6 +23,7 @@ import { StripeExtension } from './StripeExtension'
 import { IdentityVerification } from './IdentityVerification'
 import { ShellyExtension } from './ShellyExtension'
 import { RequestingProviderLookUp } from './PrivateExtensions/WP'
+import { StartCareFlowAndSession } from './SharedActions'
 
 interface ExtensionProps {
   activity: Activity
@@ -71,6 +72,11 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
             activityDetails={extensionActivityDetails}
           />
         )
+      case AnonymousActionKeys.START_CARE_FLOW_AND_SESSION:
+        return (
+          <StartCareFlowAndSession activityDetails={extensionActivityDetails} />
+        )
+      // TODO add a specific case for the new plugin action
       default:
         return <ErrorPage title={t('activities.activity_not_supported')} />
     }
