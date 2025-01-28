@@ -30,4 +30,5 @@ export enum AnonymousActionKeys {
   REDIRECT = 'redirect',
   INTAKE_SCHEDULING = 'intakeScheduling',
   WP_REQUESTING_PROVIDER_LOOKUP = 'wpRequestingProviderSelect',
+  START_CARE_FLOW_AND_SESSION = 'startCareFlowAndSession',
 }
