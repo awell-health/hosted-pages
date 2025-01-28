@@ -18,6 +18,7 @@ export const useCollectMedication = () => {
       activityId: string
       medicationData: MedicationData
     }) => {
+      const serializedMedicationData = JSON.stringify(medicationData)
       const prettyMedicationData = medicationData
         .map((medication) => {
           const parts = [medication.name]
@@ -33,8 +34,8 @@ export const useCollectMedication = () => {
         .join('\n')
 
       const dataPoints: DataPoints = [
-        { key: 'medicationData', value: JSON.stringify(medicationData) }, // JSON data point value type
-        { key: 'medicationDataString', value: JSON.stringify(medicationData) }, // String data point value type
+        { key: 'medicationData', value: serializedMedicationData }, // JSON data point value type
+        { key: 'medicationDataString', value: serializedMedicationData }, // String data point value type
         { key: 'prettyMedicationData', value: prettyMedicationData },
       ]
 
