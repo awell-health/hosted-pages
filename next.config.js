@@ -12,9 +12,9 @@ const nextConfig = {
 }
 
 const sentryConfig = {
-  org: 'awell',
-  project: 'hosted-pages',
-  authToken: process.env.SENTRY_AUTH_TOKEN,
+  org: process.env.SENTRY_ORG || 'awell',
+  project: process.env.SENTRY_PROJECT || 'hosted-pages',
+  authToken: process.env.SENTRY_AUTH_TOKEN || '',
   silent: false,
   hideSourceMaps: true,
 }
