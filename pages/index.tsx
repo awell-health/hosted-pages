@@ -169,15 +169,6 @@ const Home: NextPageWithLayout = () => {
     return <LoadingPage showLogoBox={true} />
   }
 
-  const failFunction = () => {
-    try {
-      console.log('failFunction')
-      throw new Error('Test error')
-    } catch (error) {
-      captureException(error)
-    }
-  }
-
   return (
     <>
       <Head>
@@ -220,7 +211,6 @@ const Home: NextPageWithLayout = () => {
             onCloseHostedSession={onCloseHostedSession}
             onCloseModal={onCloseHostedSessionModal}
           />
-          <button onClick={failFunction}>Test error</button>
         </HostedPageLayout>
       </ThemeProvider>
     </>
