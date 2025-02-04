@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.6",
-    "@awell-health/sol-scheduling": "0.3.31",
+    "@awell-health/sol-scheduling": "0.3.32",
     "@awell-health/ui-library": "0.1.89",
     "@formsort/react-embed": "^3.1.1",
     "@google-cloud/logging": "^11.0.0",
