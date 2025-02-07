@@ -11,6 +11,7 @@ import awell_logo from '../src/assets/logo.svg'
 import Head from 'next/head'
 import { ErrorBoundary } from '../src/components/ErrorBoundary'
 import { NoSSRComponent } from '../src/components/NoSSR'
+import Image from 'next/image'
 
 const AWELL_BRAND_COLOR = '#004ac2'
 
@@ -44,7 +45,7 @@ const Preview: NextPage = () => {
         <ErrorBoundary style={{ height: '100%' }}>
           <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
             <HostedPageLayout
-              logo={awell_logo}
+              logo={<Image src={awell_logo} alt="Awell Logo" />}
               onCloseHostedPage={() => window.close()}
             >
               <MessageViewer
