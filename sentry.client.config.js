@@ -13,7 +13,7 @@ Sentry.init({
   // See https://github.com/getsentry/sentry-javascript/issues/6993 for latest
   environment: process.env.NEXT_PUBLIC_AWELL_ENVIRONMENT,
   // This sets the sample rate to be 50% for all transactions
-  tracesSampleRate: 0.5,
+  tracesSampleRate: 1,
   // This sets the sample rate to be 10%. You may want this to be 100% while
   // in development and sample at a lower rate in production
   replaysSessionSampleRate: 0.1,
@@ -39,7 +39,7 @@ Sentry.init({
     return event
   },
   integrations: [
-    new Sentry.Replay({
+    Sentry.replayIntegration({
       maskAllInputs: true,
       blockAllMedia: true,
       networkDetailAllowUrls: [
