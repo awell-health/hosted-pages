@@ -19,7 +19,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { hostedPagesLinkId } = req.query as StartHostedActivitySessionParams
+  const { hostedPagesLinkId, track_id, activity_id } =
+    req.query as StartHostedActivitySessionParams
 
   const token = jwt.sign(
     {
@@ -67,5 +68,13 @@ export default async function handler(
   const { session_id, session_url } =
     data?.startHostedActivitySessionViaHostedPagesLink
 
-  res.status(200).json({ sessionId: session_id, sessionUrl: session_url })
+  let additionalParams = ''
+  if (!isNil(activity_id)) {
+    additionalParams += `&activity_id=${activity_id}`
+  } else if (!isNil(track_id)) {
+    additionalParams += `&track_id=${track_id}`
+  }
+  const sessionUrl = `${session_url}${additionalParams}`
+
+  res.status(200).json({ sessionId: session_id, sessionUrl })
 }

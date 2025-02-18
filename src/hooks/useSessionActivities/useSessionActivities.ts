@@ -13,7 +13,7 @@ import {
   GetHostedSessionActivitiesQuery,
 } from './types'
 import { captureException } from '@sentry/nextjs'
-
+import { useRouter } from 'next/router'
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
@@ -28,6 +28,7 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     only_stakeholder_activities: true,
   }
   const client = useApolloClient()
+  const router = useRouter()
   const { data, error, loading, refetch, startPolling, stopPolling } =
     useGetHostedSessionActivitiesQuery({
       variables,
@@ -57,8 +58,25 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   useOnSessionActivityExpiredSubscription({ variables })
 
   const sortActivitiesByDate = (activities: Activity[]): Activity[] => {
+    console.log('activities', activities)
     if (isNil(activities) || isEmpty(activities)) {
       return []
+    }
+    if (!isNil(router.query.activity_id)) {
+      return sortBy(
+        activities.filter((a) => a.id === router.query.activity_id),
+        (activity) => {
+          return new Date(activity.date)
+        }
+      )
+    }
+    if (!isNil(router.query.track_id)) {
+      return sortBy(
+        activities.filter((a) => a.context?.track_id === router.query.track_id),
+        (activity) => {
+          return new Date(activity.date)
+        }
+      )
     }
     return sortBy(activities, (activity) => {
       return new Date(activity.date)
@@ -92,7 +110,7 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
         data: updatedQuery,
       })
     }
-  }, [onActivityCreated.data])
+  }, [onActivityCreated.data, router.query])
 
   return {
     activities,
