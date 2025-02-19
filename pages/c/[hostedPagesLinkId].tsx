@@ -14,7 +14,7 @@ import { LoadingPage } from '../../src/components'
 const HostedCareflowLink: NextPage = () => {
   const { query, isReady } = useRouter()
 
-  const { hostedPagesLinkId, patient_identifier } =
+  const { hostedPagesLinkId, patient_identifier, track_id, activity_id } =
     query as StartHostedCareflowSessionParams
 
   return (
@@ -24,6 +24,8 @@ const HostedCareflowLink: NextPage = () => {
           <StartHostedCareflowSessionFlow
             hostedPagesLinkId={hostedPagesLinkId}
             patient_identifier={patient_identifier}
+            track_id={track_id}
+            activity_id={activity_id}
           />
         )}
         {!isReady && <LoadingPage showLogoBox />}
