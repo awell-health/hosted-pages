@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useApolloClient } from '@apollo/client'
-import { isEmpty, isNil, sortBy } from 'lodash'
+import isNil from 'lodash/isNil'
 import { useEffect } from 'react'
 import { updateQuery } from '../../services/graphql'
 import {
@@ -57,45 +57,30 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   useOnSessionActivityCompletedSubscription({ variables })
   useOnSessionActivityExpiredSubscription({ variables })
 
-  const sortActivitiesByDate = (activities: Activity[]): Activity[] => {
-    console.log('activities', activities)
-    if (isNil(activities) || isEmpty(activities)) {
-      return []
-    }
+  const filterActivity = (activity: Activity): boolean => {
     if (!isNil(router.query.activity_id)) {
-      return sortBy(
-        activities.filter((a) => a.id === router.query.activity_id),
-        (activity) => {
-          return new Date(activity.date)
-        }
-      )
+      return activity.id === router.query.activity_id
     }
     if (!isNil(router.query.track_id)) {
-      return sortBy(
-        activities.filter((a) => a.context?.track_id === router.query.track_id),
-        (activity) => {
-          return new Date(activity.date)
-        }
-      )
+      return activity.context?.track_id === router.query.track_id
     }
-    return sortBy(activities, (activity) => {
-      return new Date(activity.date)
-    })
+    return true
   }
 
-  const activities = sortActivitiesByDate(
-    data?.hostedSessionActivities.activities ?? []
-  )
+  const sortByDate = (a: Activity, b: Activity): number => {
+    return new Date(a.date).getTime() - new Date(b.date).getTime()
+  }
+  const allActivities = data?.hostedSessionActivities.activities ?? []
 
+  const activities = allActivities.filter(filterActivity).sort(sortByDate)
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
       const {
         data: { sessionActivityCreated },
       } = onActivityCreated
-      const updatedActivities = sortActivitiesByDate([
-        sessionActivityCreated,
-        ...activities,
-      ])
+      const updatedActivities = [sessionActivityCreated, ...allActivities]
+        .filter(filterActivity)
+        .sort(sortByDate)
       const updatedQuery = updateQuery<
         GetHostedSessionActivitiesQuery,
         Array<Activity>
