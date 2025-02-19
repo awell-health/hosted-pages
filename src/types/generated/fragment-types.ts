@@ -17,6 +17,8 @@
     ],
     "Payload": [
       "ActionPayload",
+      "ActivityPayload",
+      "ActivityTypesPayload",
       "AddActivityMetadataPayload",
       "AddIdentifierToPatientPayload",
       "AddTrackPayload",
