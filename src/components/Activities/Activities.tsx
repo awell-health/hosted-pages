@@ -16,7 +16,6 @@ export const Activities: FC = () => {
   const { currentActivity, waitingForNewActivities } = useCurrentActivity()
   const [noActivities, setNoActivities] = useState(false)
   const { t } = useTranslation()
-
   useEffect(() => {
     let noActivitiesTimer: NodeJS.Timeout
     if (waitingForNewActivities) {
