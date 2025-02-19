@@ -13,12 +13,17 @@ import { NoSSRComponent } from '../../src/components/NoSSR'
 const HostedPagesLink: NextPage = () => {
   const router = useRouter()
 
-  const { hostedPagesLinkId } = router.query as StartHostedActivitySessionParams
+  const { hostedPagesLinkId, track_id, activity_id } =
+    router.query as StartHostedActivitySessionParams
 
   return (
     <NoSSRComponent>
       <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
-        <StartHostedActivitySessionFlow hostedPagesLinkId={hostedPagesLinkId} />
+        <StartHostedActivitySessionFlow
+          hostedPagesLinkId={hostedPagesLinkId}
+          track_id={track_id}
+          activity_id={activity_id}
+        />
       </ThemeProvider>
     </NoSSRComponent>
   )
