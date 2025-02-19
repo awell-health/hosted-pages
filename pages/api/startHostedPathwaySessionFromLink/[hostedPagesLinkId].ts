@@ -8,6 +8,8 @@ import { JwtFeature } from '../../../lib'
 export type StartHostedCareflowSessionParams = {
   hostedPagesLinkId: string
   patient_identifier?: string
+  track_id?: string
+  activity_id?: string
 }
 
 export type StartHostedCareflowSessionPayload = {
@@ -34,7 +36,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { hostedPagesLinkId, patient_identifier } =
+  const { hostedPagesLinkId, patient_identifier, track_id, activity_id } =
     req.query as StartHostedCareflowSessionParams
 
   const token = jwt.sign(
@@ -83,6 +85,14 @@ export default async function handler(
     return
   }
 
-  const sessionUrl = data?.startHostedPathwaySessionFromLink.session_url
+  let additionalParams = ''
+  if (!isNil(activity_id)) {
+    additionalParams += `&activity_id=${activity_id}`
+  } else if (!isNil(track_id)) {
+    additionalParams += `&track_id=${track_id}`
+  }
+
+  const sessionUrl = `${data?.startHostedPathwaySessionFromLink.session_url}${additionalParams}`
+
   res.status(200).json({ sessionUrl })
 }
