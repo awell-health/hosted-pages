@@ -138,7 +138,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       const { upload_url, file_url } = await getGcsSignedUrl({
         file_name: file.name,
         content_type: file.type,
-        expires_in: 3600,
+        expires_in: 360000,
         config_id,
       })
 
@@ -167,6 +167,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
       })
 
       if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`Failed to upload file ${file.name}: ${errorText}`)
         throw new Error(
           `Failed to upload file: ${response.status} ${response.statusText}`
         )
