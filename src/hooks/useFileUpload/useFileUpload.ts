@@ -20,9 +20,12 @@ export const useFileUpload = (): [
       try {
         const { content_type, expires_in, file_name, config_id } = args
 
+        // Ensure content_type is properly set
+        const safeContentType = content_type || 'application/octet-stream'
+
         const { data } = await getSignedUrl({
           variables: {
-            content_type,
+            content_type: safeContentType,
             expires_in,
             file_name,
             config_id,
@@ -35,6 +38,7 @@ export const useFileUpload = (): [
 
         return data.getSignedUrl
       } catch (error) {
+        console.error('useFileUpload - Error getting signed URL:', error)
         return {
           upload_url: '',
           file_url: '',

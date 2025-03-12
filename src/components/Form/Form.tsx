@@ -133,28 +133,47 @@ export const Form: FC<FormProps> = ({ activity }) => {
       if (isNil(config_id)) {
         throw new Error('Config ID is required')
       }
+
+      // Get signed URL with milliseconds for expires_in (some APIs expect milliseconds)
       const { upload_url, file_url } = await getGcsSignedUrl({
         file_name: file.name,
         content_type: file.type,
         expires_in: 3600,
         config_id,
       })
+
+      // Make sure we're using the exact content type that was used to generate the signed URL
+      let contentType = 'application/octet-stream'
+      try {
+        const url = new URL(upload_url)
+        const signedHeaders = url.searchParams.get('X-Goog-SignedHeaders')
+        if (signedHeaders && signedHeaders.includes('content-type')) {
+          contentType = file.type || 'application/octet-stream'
+        }
+      } catch (e) {
+        console.warn('Error parsing URL:', e)
+      }
+
       const response = await fetch(upload_url, {
         method: 'PUT',
         body: file,
         headers: {
-          'Content-Type': 'application/octet-stream',
+          'Content-Type': contentType,
           'Content-Length': file.size.toString(),
+          Origin: window.location.origin,
         },
+        credentials: 'omit',
+        mode: 'cors',
       })
 
       if (!response.ok) {
-        throw new Error('Failed to upload file')
+        throw new Error(
+          `Failed to upload file: ${response.status} ${response.statusText}`
+        )
       }
 
       return file_url
     } catch (error) {
-      console.error(error)
       throw error
     }
   }
