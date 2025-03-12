@@ -21,6 +21,7 @@ import { Option } from '../../types/generated/types-orchestration'
 import { ErrorLabels } from '@awell-health/ui-library/dist/types/hooks/useForm/types'
 import { useLogging } from '../../hooks/useLogging'
 import { LogEvent } from '../../hooks/useLogging/types'
+import { useFileUpload } from '../../hooks/useFileUpload'
 
 interface FormProps {
   activity: Activity
@@ -33,6 +34,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { onSubmit, isSubmitting } = useSubmitForm(activity)
   const { branding, theme } = useHostedSession()
   const { infoLog, errorLog } = useLogging()
+  const [getGcsSignedUrl] = useFileUpload()
 
   const [formProgress, setFormProgress] = useLocalStorage(activity.id, '')
 
@@ -123,6 +125,61 @@ export const Form: FC<FormProps> = ({ activity }) => {
     }
   }
 
+  const handleFileUpload = async (
+    file: File,
+    config_id?: string
+  ): Promise<string> => {
+    try {
+      if (isNil(config_id)) {
+        throw new Error('Config ID is required')
+      }
+
+      // Get signed URL with milliseconds for expires_in (some APIs expect milliseconds)
+      const { upload_url, file_url } = await getGcsSignedUrl({
+        file_name: file.name,
+        content_type: file.type,
+        expires_in: 360000,
+        config_id,
+      })
+
+      // Make sure we're using the exact content type that was used to generate the signed URL
+      let contentType = 'application/octet-stream'
+      try {
+        const url = new URL(upload_url)
+        const signedHeaders = url.searchParams.get('X-Goog-SignedHeaders')
+        if (signedHeaders && signedHeaders.includes('content-type')) {
+          contentType = file.type || 'application/octet-stream'
+        }
+      } catch (e) {
+        console.warn('Error parsing URL:', e)
+      }
+
+      const response = await fetch(upload_url, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': contentType,
+          'Content-Length': file.size.toString(),
+          Origin: window.location.origin,
+        },
+        credentials: 'omit',
+        mode: 'cors',
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`Failed to upload file ${file.name}: ${errorText}`)
+        throw new Error(
+          `Failed to upload file: ${response.status} ${response.statusText}`
+        )
+      }
+
+      return file_url
+    } catch (error) {
+      throw error
+    }
+  }
+
   const labels = {
     yes_label: t('activities.form.questions.yes_no.yes_answer'),
     no_label: t('activities.form.questions.yes_no.no_answer'),
@@ -188,6 +245,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
           storedAnswers={formProgress}
           onAnswersChange={handleOnAnswersChange}
           autosaveAnswers={branding?.hosted_page_autosave ?? true}
+          onFileUpload={handleFileUpload}
         />
       )}
       {!renderTraditionalForm && (
@@ -203,6 +261,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
           autoProgress={branding?.hosted_page_auto_progress ?? false}
           autosaveAnswers={branding?.hosted_page_autosave ?? true}
           showProgressBar={theme.form.showProgressBar}
+          onFileUpload={handleFileUpload}
         />
       )}
     </>
