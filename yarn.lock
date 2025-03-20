@@ -79,12 +79,12 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell-health/design-system@0.12.46":
-  version "0.12.46"
-  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.12.46.tgz#848a999e1ddfabdfae37afeb99883d140470d943"
-  integrity sha512-hjxSd9aBrV0ZEI8c79jboKPKi3LLQeTnqgBQOzoipH/xNZLrgSVQOWLd954nf2KZ2+MULWMYEFupuIRhabvi3A==
+"@awell-health/design-system@0.12.62":
+  version "0.12.62"
+  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.12.62.tgz#6deb70857264520d9a505e0b0eec1b6a7783ac2a"
+  integrity sha512-YGEG4Zji4JJkbY82sEszdCzRn8daO+7f+R8SzdT+7UbOBJxTW1oMGsU273A4myoTRYJ2QbRp0Wd8lp0O9NRdag==
   dependencies:
-    "@remixicon/react" "^4.3.0"
+    "@remixicon/react" "^4.6.0"
     class-variance-authority "^0.7.0"
     clsx "^2.1.1"
     date-fns "^4.1.0"
@@ -112,12 +112,12 @@
     tailwindcss-animate "^1.0.7"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.96":
-  version "0.1.96"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.96.tgz#07adecf90a3332a5cbd60a29ef5795eb4b02eb20"
-  integrity sha512-OgxkfpCYDdJXOregYVtJSprPY3wz1NgtZag2Pf+XkiAYMZEZWrOiMA2o4nBpuvYqpPbK8uRp20hQFfwpwdsPgQ==
+"@awell-health/ui-library@0.1.97":
+  version "0.1.97"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.97.tgz#905d3fc3ec4ae59cba177042ff410b3ab89daa62"
+  integrity sha512-hkPhZt45wqAWu1NgCnRyx1PYe1Q9QuFN9/NwfhGSaDlhdXZ3TGEW/Jk+Hck84eKJXmyrupqH9NDmUq/4m6yWbQ==
   dependencies:
-    "@awell-health/design-system" "0.12.46"
+    "@awell-health/design-system" "0.12.62"
     "@calcom/embed-react" "^1.5.1"
     "@heroicons/react" "^2.1.3"
     axios "^1.7.7"
@@ -2440,7 +2440,7 @@
   resolved "https://registry.yarnpkg.com/@react-types/shared/-/shared-3.24.1.tgz#fa06cb681d144fce9c515d8bd296d81440a45d25"
   integrity sha512-AUQeGYEm/zDTN6zLzdXolDxz3Jk5dDL7f506F07U8tBwxNNI3WRdhU84G0/AaFikOZzDXhOZDr3MhQMzyE7Ydw==
 
-"@remixicon/react@^4.3.0":
+"@remixicon/react@^4.6.0":
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@remixicon/react/-/react-4.6.0.tgz#c25276338b4d7acd29075c5b26a20f19feecac04"
   integrity sha512-bY56maEgT5IYUSRotqy9h03IAKJC85vlKtWFg2FKzfs8JPrkdBAYSa9dxoUSKFwGzup8Ux6vjShs9Aec3jvr2w==
