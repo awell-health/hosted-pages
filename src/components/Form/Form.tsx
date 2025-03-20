@@ -127,10 +127,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   const handleFileUpload = async (
     file: File,
-    config_id?: string
+    config_slug?: string
   ): Promise<string> => {
     try {
-      if (isNil(config_id)) {
+      if (isNil(config_slug)) {
         throw new Error('Config ID is required')
       }
 
@@ -139,7 +139,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
         file_name: file.name,
         content_type: file.type,
         expires_in: 360000,
-        config_id,
+        config_slug,
       })
 
       // Make sure we're using the exact content type that was used to generate the signed URL
