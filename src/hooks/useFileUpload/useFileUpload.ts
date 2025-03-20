@@ -18,7 +18,7 @@ export const useFileUpload = (): [
       file_url: string
     }> => {
       try {
-        const { content_type, expires_in, file_name, config_id } = args
+        const { content_type, expires_in, file_name, config_slug } = args
 
         // Ensure content_type is properly set
         const safeContentType = content_type || 'application/octet-stream'
@@ -28,7 +28,7 @@ export const useFileUpload = (): [
             content_type: safeContentType,
             expires_in,
             file_name,
-            config_id,
+            config_slug,
           },
         })
 

@@ -491,6 +491,25 @@ export type CancelScheduledTracksPayload = Payload & {
   unscheduled_ids: Array<Scalars['String']>;
 };
 
+export type CareflowVersion = {
+  __typename?: 'CareflowVersion';
+  live?: Maybe<Scalars['Boolean']>;
+  release_date?: Maybe<Scalars['String']>;
+  release_id?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Float']>;
+};
+
+export type CareflowVersions = {
+  __typename?: 'CareflowVersions';
+  careflow_definition_id: Scalars['String'];
+  versions?: Maybe<Array<CareflowVersion>>;
+};
+
+export type CareflowVersionsPayload = {
+  __typename?: 'CareflowVersionsPayload';
+  careflowVersions: Array<CareflowVersions>;
+};
+
 export type Checklist = {
   __typename?: 'Checklist';
   items: Array<Scalars['String']>;
@@ -552,6 +571,8 @@ export enum ConditionOperandType {
 export enum ConditionOperator {
   Contains = 'CONTAINS',
   DoesNotContain = 'DOES_NOT_CONTAIN',
+  HasFileUploaded = 'HAS_FILE_UPLOADED',
+  HasNoFileUploaded = 'HAS_NO_FILE_UPLOADED',
   IsAnyOf = 'IS_ANY_OF',
   IsEmpty = 'IS_EMPTY',
   IsEqualTo = 'IS_EQUAL_TO',
@@ -879,7 +900,7 @@ export type ExtensionDataPointInput = {
 export type FileStorageQuestionConfig = {
   __typename?: 'FileStorageQuestionConfig';
   accepted_file_types?: Maybe<Array<Scalars['String']>>;
-  file_storage_destination_id?: Maybe<Scalars['String']>;
+  file_storage_config_slug?: Maybe<Scalars['String']>;
 };
 
 export type FileUploadGcsPayload = Payload & {
@@ -1737,6 +1758,7 @@ export type Query = {
   forms: FormsPayload;
   generateRetoolEmbedUrl: GenerateRetoolEmbedUrlPayload;
   getOrchestrationFactsFromPrompt: OrchestrationFactsPromptPayload;
+  getPublishedCareflowVersions: CareflowVersionsPayload;
   /** Generate a signed URL for file upload to GCS */
   getSignedUrl: FileUploadGcsPayload;
   getStatusForPublishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
@@ -1903,8 +1925,13 @@ export type QueryGetOrchestrationFactsFromPromptArgs = {
 };
 
 
+export type QueryGetPublishedCareflowVersionsArgs = {
+  careflow_definition_id?: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryGetSignedUrlArgs = {
-  config_id: Scalars['String'];
+  config_slug: Scalars['String'];
   content_type: Scalars['String'];
   expires_in?: InputMaybe<Scalars['Float']>;
   file_name: Scalars['String'];
@@ -1931,6 +1958,7 @@ export type QueryMyActivitiesArgs = {
   pagination?: InputMaybe<PaginationParams>;
   pathway_id: Scalars['String'];
   sorting?: InputMaybe<SortingParams>;
+  track_id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1943,6 +1971,7 @@ export type QueryPathwayActivitiesArgs = {
   pagination?: InputMaybe<PaginationParams>;
   pathway_id: Scalars['String'];
   sorting?: InputMaybe<SortingParams>;
+  track_id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1965,6 +1994,7 @@ export type QueryPathwayDataPointsArgs = {
 
 export type QueryPathwayElementsArgs = {
   pathway_id: Scalars['String'];
+  track_id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -2430,6 +2460,7 @@ export type SubActivity = {
   error_category?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   object?: Maybe<ActivityObject>;
+  scheduled_date?: Maybe<Scalars['String']>;
   subject: ActivitySubject;
   text?: Maybe<TranslatedText>;
 };
@@ -2806,20 +2837,20 @@ export type GetSignedUrlQueryVariables = Exact<{
   content_type: Scalars['String'];
   expires_in?: InputMaybe<Scalars['Float']>;
   file_name: Scalars['String'];
-  config_id: Scalars['String'];
+  config_slug: Scalars['String'];
 }>;
 
 
 export type GetSignedUrlQuery = { __typename?: 'Query', getSignedUrl: { __typename?: 'FileUploadGCSPayload', upload_url: string, file_url: string } };
 
-export type FormFragment = { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_destination_id?: string | null, accepted_file_types?: Array<string> | null } | null } | null }> };
+export type FormFragment = { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null } | null }> };
 
 export type GetFormQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', form: { __typename?: 'FormPayload', form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_destination_id?: string | null, accepted_file_types?: Array<string> | null } | null } | null }> } | null } };
+export type GetFormQuery = { __typename?: 'Query', form: { __typename?: 'FormPayload', form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null } | null }> } | null } };
 
 export type GetFormResponseQueryVariables = Exact<{
   pathway_id: Scalars['String'];
@@ -2829,7 +2860,7 @@ export type GetFormResponseQueryVariables = Exact<{
 
 export type GetFormResponseQuery = { __typename?: 'Query', formResponse: { __typename?: 'FormResponsePayload', response: { __typename?: 'FormResponse', answers: Array<{ __typename?: 'Answer', question_id: string, value: string, value_type: DataPointValueType }> } } };
 
-export type QuestionFragment = { __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_destination_id?: string | null, accepted_file_types?: Array<string> | null } | null } | null };
+export type QuestionFragment = { __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null } | null };
 
 export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
 
@@ -2969,7 +3000,7 @@ export const QuestionFragmentDoc = gql`
       include_date_of_response
     }
     file_storage {
-      file_storage_destination_id
+      file_storage_config_slug
       accepted_file_types
     }
   }
@@ -3196,12 +3227,12 @@ export type GetExtensionActivityDetailsQueryHookResult = ReturnType<typeof useGe
 export type GetExtensionActivityDetailsLazyQueryHookResult = ReturnType<typeof useGetExtensionActivityDetailsLazyQuery>;
 export type GetExtensionActivityDetailsQueryResult = Apollo.QueryResult<GetExtensionActivityDetailsQuery, GetExtensionActivityDetailsQueryVariables>;
 export const GetSignedUrlDocument = gql`
-    query GetSignedUrl($content_type: String!, $expires_in: Float, $file_name: String!, $config_id: String!) {
+    query GetSignedUrl($content_type: String!, $expires_in: Float, $file_name: String!, $config_slug: String!) {
   getSignedUrl(
     content_type: $content_type
     expires_in: $expires_in
     file_name: $file_name
-    config_id: $config_id
+    config_slug: $config_slug
   ) {
     upload_url
     file_url
@@ -3224,7 +3255,7 @@ export const GetSignedUrlDocument = gql`
  *      content_type: // value for 'content_type'
  *      expires_in: // value for 'expires_in'
  *      file_name: // value for 'file_name'
- *      config_id: // value for 'config_id'
+ *      config_slug: // value for 'config_slug'
  *   },
  * });
  */
