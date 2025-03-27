@@ -16,7 +16,7 @@
   "dependencies": {
     "@apollo/client": "^3.8.6",
     "@awell-health/sol-scheduling": "0.3.33",
-    "@awell-health/ui-library": "0.1.97",
+    "@awell-health/ui-library": "0.1.98",
     "@formsort/react-embed": "^3.1.1",
     "@google-cloud/logging": "^11.0.0",
     "@localazy/cli": "^1.7.5",
@@ -71,5 +71,6 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "typescript": "4.7.4"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha256.c17d3797fb9a9115bf375e31bfd30058cac6bc9c3b8807a3d8cb2094794b51ca"
 }
