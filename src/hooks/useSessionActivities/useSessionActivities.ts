@@ -29,7 +29,7 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   }
   const client = useApolloClient()
   const router = useRouter()
-  const { data, error, loading, refetch, startPolling, stopPolling } =
+  const { error, loading, refetch, startPolling, stopPolling } =
     useGetHostedSessionActivitiesQuery({
       variables,
       onError: (error) => {
@@ -70,30 +70,19 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   const sortByDate = (a: Activity, b: Activity): number => {
     return new Date(a.date).getTime() - new Date(b.date).getTime()
   }
-  const allActivities = data?.hostedSessionActivities.activities ?? []
 
-  const activities = allActivities.filter(filterActivity).sort(sortByDate)
+  // Always get the latest activities from the cache
+  const cachedData = client.readQuery<GetHostedSessionActivitiesQuery>({
+    query: GetHostedSessionActivitiesDocument,
+    variables,
+  })
+  const activities = (cachedData?.hostedSessionActivities.activities ?? [])
+    .filter(filterActivity)
+    .sort(sortByDate)
+
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
-      const {
-        data: { sessionActivityCreated },
-      } = onActivityCreated
-      const updatedActivities = [sessionActivityCreated, ...allActivities]
-        .filter(filterActivity)
-        .sort(sortByDate)
-      const updatedQuery = updateQuery<
-        GetHostedSessionActivitiesQuery,
-        Array<Activity>
-      >(
-        data as GetHostedSessionActivitiesQuery,
-        ['hostedSessionActivities', 'activities'],
-        updatedActivities
-      )
-      client.writeQuery({
-        query: GetHostedSessionActivitiesDocument,
-        variables,
-        data: updatedQuery,
-      })
+      refetch()
     }
   }, [onActivityCreated.data, router.query])
 
