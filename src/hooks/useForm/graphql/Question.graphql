@@ -52,5 +52,9 @@ fragment Question on Question {
       allowed_dates
       include_date_of_response
     }
+    file_storage {
+      file_storage_config_slug
+      accepted_file_types
+    }
   }
 }
