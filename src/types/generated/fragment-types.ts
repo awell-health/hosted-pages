@@ -38,6 +38,7 @@
       "EmrReportPayload",
       "EvaluateFormRulesPayload",
       "ExtensionActivityRecordPayload",
+      "FileUploadGCSPayload",
       "FormPayload",
       "FormResponsePayload",
       "FormsPayload",
