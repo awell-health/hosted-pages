@@ -23,4 +23,7 @@ a {
 .slate-ul,
 .slate-ol {
   list-style: revert;
+  padding-left: 2em;
+  line-height: 1;
+  margin: 1em 0;
 }
