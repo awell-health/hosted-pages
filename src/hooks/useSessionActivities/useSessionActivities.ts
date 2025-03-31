@@ -1,16 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useApolloClient } from '@apollo/client'
 import isNil from 'lodash/isNil'
 import { useEffect } from 'react'
-import { updateQuery } from '../../services/graphql'
 import {
   Activity,
   useOnSessionActivityCompletedSubscription,
   useOnSessionActivityCreatedSubscription,
   useOnSessionActivityExpiredSubscription,
   useGetHostedSessionActivitiesQuery,
-  GetHostedSessionActivitiesDocument,
-  GetHostedSessionActivitiesQuery,
 } from './types'
 import { captureException } from '@sentry/nextjs'
 import { useRouter } from 'next/router'
@@ -27,9 +23,8 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   const variables = {
     only_stakeholder_activities: true,
   }
-  const client = useApolloClient()
   const router = useRouter()
-  const { error, loading, refetch, startPolling, stopPolling } =
+  const { data, error, loading, refetch, startPolling, stopPolling } =
     useGetHostedSessionActivitiesQuery({
       variables,
       onError: (error) => {
@@ -71,14 +66,9 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     return new Date(a.date).getTime() - new Date(b.date).getTime()
   }
 
-  // Always get the latest activities from the cache
-  const cachedData = client.readQuery<GetHostedSessionActivitiesQuery>({
-    query: GetHostedSessionActivitiesDocument,
-    variables,
-  })
-  const activities = (cachedData?.hostedSessionActivities.activities ?? [])
-    .filter(filterActivity)
-    .sort(sortByDate)
+  const allActivities = data?.hostedSessionActivities.activities ?? []
+
+  const activities = allActivities.filter(filterActivity).sort(sortByDate)
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
