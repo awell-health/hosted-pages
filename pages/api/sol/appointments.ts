@@ -16,6 +16,7 @@ export default async function handler(
     res.setHeader('Allow', 'POST')
     return res.status(405).end('Method Not Allowed')
   }
+  const startTime = new Date().valueOf()
   const logMessage = 'SOL: Booking appointment'
   const { input, logContext } = req.body
 
@@ -62,6 +63,7 @@ export default async function handler(
           errorCode: response.status,
           responseText: response.statusText,
           url,
+          performance: new Date().valueOf() - startTime,
           context: logContext,
         },
         'ERROR'
@@ -78,6 +80,7 @@ export default async function handler(
       requestBody: input,
       responseBody: jsonRes,
       url,
+      performance: new Date().valueOf() - startTime,
       context: logContext,
     })
     return res.status(200).json(jsonRes)

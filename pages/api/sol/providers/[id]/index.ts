@@ -13,6 +13,7 @@ export default async function handler(
     res.setHeader('Allow', 'GET')
     return res.status(405).end('Method Not Allowed')
   }
+  const startTime = new Date().valueOf()
   const logMessage = 'SOL: Getting provider'
 
   const { id, session, pathway } = req.query
@@ -42,6 +43,7 @@ export default async function handler(
           errorCode: response.status,
           responseText: response.statusText,
           url,
+          performance: new Date().valueOf() - startTime,
           context: {
             session: {
               id: session,
@@ -63,6 +65,7 @@ export default async function handler(
       queryParams: req.query,
       responseBody: jsonRes,
       url,
+      performance: new Date().valueOf() - startTime,
       context: {
         session: {
           id: session,
