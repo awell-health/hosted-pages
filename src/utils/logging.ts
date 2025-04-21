@@ -2,6 +2,7 @@ import { Log, Logging } from '@google-cloud/logging'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
+import { LogSeverity } from '../hooks/useLogging'
 
 const metadata = {
   resource: { type: 'global' },
@@ -33,7 +34,7 @@ const getLogger = (): Log | undefined => {
 
 export function log(
   params: {},
-  severity: string = 'INFO',
+  severity: LogSeverity = 'INFO',
   error?: string | {}
 ) {
   const logger = getLogger()

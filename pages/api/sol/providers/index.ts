@@ -16,9 +16,9 @@ export default async function handler(
     res.setHeader('Allow', 'POST')
     return res.status(405).end('Method Not Allowed')
   }
+  const startTime = new Date().valueOf()
   const logMessage = 'SOL: Getting providers'
   const { input, logContext } = req.body
-
   try {
     const settings = getSolEnvSettings({ headers: req.headers })
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
@@ -65,6 +65,7 @@ export default async function handler(
           responseBody,
           errorCode: response.status,
           url,
+          performance: new Date().valueOf() - startTime,
           context: logContext,
         },
         'ERROR'
@@ -88,6 +89,7 @@ export default async function handler(
           responseText: response.statusText,
           errorCode: response.status,
           url,
+          performance: new Date().valueOf() - startTime,
           context: logContext,
         },
         'WARNING'
@@ -99,6 +101,7 @@ export default async function handler(
       requestBody: bodyValidation.data,
       responseBody: jsonRes,
       url,
+      performance: new Date().valueOf() - startTime,
       context: logContext,
     })
     return res.status(200).json(jsonRes)
