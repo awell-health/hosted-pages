@@ -25,10 +25,16 @@ const isActive = (activity: Activity | undefined) =>
 export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const { t } = useTranslation()
   const [currentActivity, setCurrentActivity] = useState<Activity>()
-  const [state, setState] = useState<ActivityContextInterface['state']>('polling')
+  const [state, setState] =
+    useState<ActivityContextInterface['state']>('polling')
   const { activities, loading, error, refetch, startPolling, stopPolling } =
     useSessionActivities()
   const { infoLog, errorLog } = useLogging()
+
+  // Array of strings combining activity id and status.
+  // Used as a dependency for the effect to ensure it only runs when the set or status of activities changes,
+  // rather than on every new array reference.
+  const activityKeys = activities.map((a) => `${a.id}:${a.status}`)
 
   // activities list changes as we get new activities from the server or as we complete activities
   // this useEffect drives whole AHP logic, only by activities being changed in apollo cache
@@ -60,7 +66,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         stopPolling()
       }
     }
-  }, [activities])
+  }, [activityKeys.join(',')])
 
   useEffect(() => {
     switch (state) {
@@ -108,9 +114,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   }
 
   return (
-    <ActivityContext.Provider
-      value={{ currentActivity, state }}
-    >
+    <ActivityContext.Provider value={{ currentActivity, state }}>
       {children}
     </ActivityContext.Provider>
   )
