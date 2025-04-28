@@ -39,7 +39,6 @@ const defaultOptions = {} as const;
       "ClinicalNotePayload",
       "CompleteExtensionActivityPayload",
       "CreatePatientPayload",
-      "CurrentUserPayload",
       "DecisionOutputsPayload",
       "ElementsPayload",
       "EmptyPayload",
@@ -78,6 +77,7 @@ const defaultOptions = {} as const;
       "StopTrackPayload",
       "SubmitChecklistPayload",
       "SubmitFormResponsePayload",
+      "TenantPayload",
       "TracksPayload",
       "UpdateEmrReportStatusPayload",
       "UpdatePatientDemographicsQueryPayload",
@@ -218,6 +218,7 @@ export type ActivityObject = {
 
 export enum ActivityObjectType {
   Action = 'ACTION',
+  Agent = 'AGENT',
   ApiCall = 'API_CALL',
   Calculation = 'CALCULATION',
   Checklist = 'CHECKLIST',
@@ -619,21 +620,6 @@ export type CreatePatientPayload = Payload & {
   success: Scalars['Boolean'];
 };
 
-export type CurrentUser = {
-  __typename?: 'CurrentUser';
-  id: Scalars['ID'];
-  profile?: Maybe<UserProfile>;
-  tenant: Tenant;
-  tenant_id: Scalars['String'];
-};
-
-export type CurrentUserPayload = Payload & {
-  __typename?: 'CurrentUserPayload';
-  code: Scalars['String'];
-  success: Scalars['Boolean'];
-  user: CurrentUser;
-};
-
 export type DataPoint = {
   __typename?: 'DataPoint';
   activity_id?: Maybe<Scalars['String']>;
@@ -691,6 +677,7 @@ export type DataPointPossibleValue = {
 };
 
 export enum DataPointSourceType {
+  Agent = 'AGENT',
   ApiCall = 'API_CALL',
   ApiCallStatus = 'API_CALL_STATUS',
   Calculation = 'CALCULATION',
@@ -844,6 +831,11 @@ export type ExclusiveOptionConfig = {
   __typename?: 'ExclusiveOptionConfig';
   enabled?: Maybe<Scalars['Boolean']>;
   option_id?: Maybe<Scalars['String']>;
+};
+
+export type ExpireTimerInput = {
+  activity_id: Scalars['String'];
+  user_name: Scalars['String'];
 };
 
 export type ExtensionActionField = {
@@ -1196,6 +1188,7 @@ export type Mutation = {
   deletePathway: EmptyPayload;
   deletePatient: EmptyPayload;
   evaluateFormRules: EvaluateFormRulesPayload;
+  expireTimer: EmptyPayload;
   markMessageAsRead: MarkMessageAsReadPayload;
   /** Retrieve patient demographics from an external system */
   requestPatientDemographics: PatientDemographicsPayload;
@@ -1270,6 +1263,11 @@ export type MutationDeletePatientArgs = {
 
 export type MutationEvaluateFormRulesArgs = {
   input: EvaluateFormRulesInput;
+};
+
+
+export type MutationExpireTimerArgs = {
+  input: ExpireTimerInput;
 };
 
 
@@ -1791,11 +1789,11 @@ export type Query = {
   stakeholdersByDefinitionIds: StakeholdersPayload;
   stakeholdersByPathwayDefinitionIds: StakeholdersPayload;
   stakeholdersByReleaseIds: StakeholdersPayload;
+  tenant: TenantPayload;
   webhookCall: WebhookCallPayload;
   webhookCalls: WebhookCallsPayload;
   webhookCallsForPathwayDefinition: WebhookCallsPayload;
   webhookCallsForTenant: WebhookCallsPayload;
-  whoami: CurrentUserPayload;
 };
 
 
@@ -2605,6 +2603,13 @@ export type Tenant = {
   is_default: Scalars['Boolean'];
   logo_path: Scalars['String'];
   name: Scalars['String'];
+};
+
+export type TenantPayload = Payload & {
+  __typename?: 'TenantPayload';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  tenant: Tenant;
 };
 
 export type TextFilter = {
