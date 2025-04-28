@@ -115,7 +115,7 @@ const Home: NextPageWithLayout = () => {
     }
 
     switch (session?.status) {
-      case HostedSessionStatus.Completed:
+      case HostedSessionStatus.Completed: {
         infoLog(
           { msg: 'Hosted session is completed', session },
           LogEvent.SESSION_COMPLETED
@@ -128,7 +128,8 @@ const Home: NextPageWithLayout = () => {
           redirectAfterSession(session.success_url as string)
         }
         return
-      case HostedSessionStatus.Expired:
+      }
+      case HostedSessionStatus.Expired: {
         infoLog(
           { msg: 'Hosted session is expired', session },
           LogEvent.SESSION_EXPIRED
@@ -141,12 +142,14 @@ const Home: NextPageWithLayout = () => {
           redirectAfterSession(session.cancel_url as string)
         }
         return
-      default:
+      }
+      default: {
         infoLog(
           { msg: 'Hosted session is ongoing', session },
           LogEvent.SESSION_ONGOING
         )
         return
+      }
     }
   }, [session])
 
