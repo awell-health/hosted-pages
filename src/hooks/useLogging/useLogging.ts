@@ -34,10 +34,12 @@ export const useLogging = (): UseLoggingHook => {
   }
 
   const infoLog = async (params: {}, event: LogEvent): Promise<void> => {
+    console.log('infoLog', params, event)
     await log(params, 'INFO', event)
   }
 
   const warningLog = async (params: {}, event: LogEvent): Promise<void> => {
+    console.warn('warningLog', params, event)
     await log(params, 'WARNING', event)
   }
 
@@ -46,6 +48,7 @@ export const useLogging = (): UseLoggingHook => {
     error: string | {},
     event: LogEvent
   ): Promise<void> => {
+    console.error('errorLog', params, error, event)
     await log(params, 'ERROR', event, error)
   }
 
