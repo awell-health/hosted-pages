@@ -3,10 +3,21 @@ import { useHostedSession } from '../useHostedSession'
 import { LogEvent, LogSeverity } from './types'
 
 interface UseLoggingHook {
-  log: (message: {}, severity: LogSeverity, event: LogEvent) => void
-  infoLog: (message: {}, event: LogEvent) => void
-  warningLog: (message: {}, event: LogEvent) => void
-  errorLog: (message: {}, error: string | {}, event: LogEvent) => void
+  log: (
+    message: string,
+    params: {},
+    severity: LogSeverity,
+    event: LogEvent,
+    error?: string | {}
+  ) => void
+  infoLog: (message: string, params: {}, event: LogEvent) => void
+  warningLog: (message: string, params: {}, event: LogEvent) => void
+  errorLog: (
+    message: string,
+    params: {},
+    error: string | {},
+    event: LogEvent
+  ) => void
 }
 
 export const useLogging = (): UseLoggingHook => {
@@ -14,6 +25,7 @@ export const useLogging = (): UseLoggingHook => {
   const { session, metadata } = useHostedSession()
 
   const log = async (
+    message: string,
     params: {},
     severity: LogSeverity,
     event: LogEvent,
@@ -25,6 +37,7 @@ export const useLogging = (): UseLoggingHook => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        message: `[${event}] [${session?.id}] ${message}`,
         params: { ...params, authContext, session, metadata, event },
         client_timestamp: new Date().toISOString(),
         severity,
@@ -33,23 +46,32 @@ export const useLogging = (): UseLoggingHook => {
     })
   }
 
-  const infoLog = async (params: {}, event: LogEvent): Promise<void> => {
+  const infoLog = async (
+    message: string,
+    params: {},
+    event: LogEvent
+  ): Promise<void> => {
     console.log('infoLog', params, event)
-    await log(params, 'INFO', event)
+    await log(message, params, 'INFO', event)
   }
 
-  const warningLog = async (params: {}, event: LogEvent): Promise<void> => {
+  const warningLog = async (
+    message: string,
+    params: {},
+    event: LogEvent
+  ): Promise<void> => {
     console.warn('warningLog', params, event)
-    await log(params, 'WARNING', event)
+    await log(message, params, 'WARNING', event)
   }
 
   const errorLog = async (
+    message: string,
     params: {},
     error: string | {},
     event: LogEvent
   ): Promise<void> => {
     console.error('errorLog', params, error, event)
-    await log(params, 'ERROR', event, error)
+    await log(message, params, 'ERROR', event, error)
   }
 
   return {

@@ -23,7 +23,12 @@ interface RequestOptions {
   }
 }
 
-type LogRequest = (params: {}, severity: LogSeverity, event: LogEvent) => void
+type LogRequest = (
+  message: string,
+  params: {},
+  severity: LogSeverity,
+  event: LogEvent
+) => void
 
 export const fetchProviders = async ({
   input,
@@ -65,8 +70,8 @@ export const fetchProviders = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
+      `Fetch Providers: ${timeEnd - timeStart} milliseconds`,
       {
-        message: `Fetch Providers: ${timeEnd - timeStart} milliseconds`,
         time: timeEnd - timeStart,
         api: 'fetchProviders',
       },
@@ -113,8 +118,8 @@ export const fetchProvider = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
+      `Fetch Provider: ${timeEnd - timeStart} milliseconds`,
       {
-        message: `Fetch Provider: ${timeEnd - timeStart} milliseconds`,
         time: timeEnd - timeStart,
         api: 'fetchProvider',
       },
@@ -161,8 +166,8 @@ export const fetchAvailability = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
+      `Fetch Availability: ${timeEnd - timeStart} milliseconds`,
       {
-        message: `Fetch Availability: ${timeEnd - timeStart} milliseconds`,
         time: timeEnd - timeStart,
         api: 'fetchAvailability',
       },
@@ -203,8 +208,8 @@ export const bookAppointment = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
+      `Book Appointment: ${timeEnd - timeStart} milliseconds`,
       {
-        message: `Book Appointment: ${timeEnd - timeStart} milliseconds`,
         time: timeEnd - timeStart,
         api: 'bookAppointment',
       },

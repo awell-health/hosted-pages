@@ -43,8 +43,8 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
     infoLog(
+      `Activities list changed`,
       {
-        msg: 'Activities list changed',
         activities,
         prevCurrentActivity: currentActivity,
         nextCurrentActivity: current,
@@ -92,7 +92,8 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   useEffect(() => {
     infoLog(
-      { msg: 'Current activity changed', currentActivity },
+      `Current activity changed to ${currentActivity?.id} (${currentActivity?.object.type} - ${currentActivity?.object.name})`,
+      { currentActivity },
       LogEvent.ACTIVITY_CHANGED
     )
     if (!isNil(currentActivity)) {
@@ -106,7 +107,8 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   if (error) {
     errorLog(
-      { msg: 'Failed to load activities' },
+      `Failed to load activities`,
+      {},
       error,
       LogEvent.ACTIVITIES_FETCH_FAILED
     )
