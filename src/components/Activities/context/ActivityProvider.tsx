@@ -9,7 +9,7 @@ import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
-const POLLING_TIMEOUT = 10000 // 10 seconds
+const POLLING_TIMEOUT = 15000 // 15 seconds
 
 interface ActivityProviderProps {
   children?: React.ReactNode
@@ -73,6 +73,14 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       case 'polling': {
         startPolling(POLLING_INTERVAL)
         const timer = setTimeout(() => {
+          infoLog(
+            `No active activity found after ${POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            {
+              currentActivity,
+              activities,
+            },
+            LogEvent.ACTIVITY_NO_ACTIVE_FOUND
+          )
           setState('no-active-activity')
         }, POLLING_TIMEOUT)
         return () => {
