@@ -65,8 +65,8 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
 
       if (!parsedOptions.success) {
         errorLog(
+          `Failed to parse options for remote single select in activity ${activityDetails.id}`,
           {
-            msg: 'Failed to parse options for remote single select',
             activity: activityDetails,
             error: parsedOptions.error,
             response,
@@ -79,8 +79,8 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
 
       if (parsedOptions.data.length === 0) {
         warningLog(
+          `No options found for remote single select in activity ${activityDetails.id}`,
           {
-            msg: 'No options found for remote single select',
             activity: activityDetails,
             response,
           },
@@ -90,8 +90,8 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
       }
 
       infoLog(
+        `Options found for remote single select in activity ${activityDetails.id}`,
         {
-          msg: 'Options found for remote single select',
           activity: activityDetails,
           response,
         },
@@ -105,8 +105,8 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
         setError('Failed to parse options for remote single select')
       } else {
         errorLog(
+          `Failed to fetch options for remote single select in activity ${activityDetails.id}`,
           {
-            msg: 'Failed to fetch options for remote single select',
             activity: activityDetails,
             error,
           },

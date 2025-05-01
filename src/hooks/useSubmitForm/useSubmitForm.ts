@@ -36,8 +36,8 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
     }
 
     infoLog(
+      `Trying to submit a form response for activity ${activity.object.name}`,
       {
-        msg: 'Trying to submit a form response',
         activity,
       },
       LogEvent.FORM_SUBMITTING
@@ -53,7 +53,8 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       }
 
       infoLog(
-        { msg: 'Form response submitted', activity },
+        `Form response ${activity.object.name} submitted successfully`,
+        { activity },
         LogEvent.FORM_SUBMITTED
       )
       setIsSubmitting(false)
@@ -61,8 +62,8 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       return true
     } catch (error: any) {
       errorLog(
+        `Failed to submit form response for activity ${activity.object.name}`,
         {
-          msg: 'Failed to submit form response',
           response,
           activity,
         },

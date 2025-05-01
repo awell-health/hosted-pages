@@ -117,7 +117,8 @@ const Home: NextPageWithLayout = () => {
     switch (session?.status) {
       case HostedSessionStatus.Completed: {
         infoLog(
-          { msg: 'Hosted session is completed', session },
+          `Hosted session is completed`,
+          { session },
           LogEvent.SESSION_COMPLETED
         )
         addSentryBreadcrumb({
@@ -131,7 +132,8 @@ const Home: NextPageWithLayout = () => {
       }
       case HostedSessionStatus.Expired: {
         infoLog(
-          { msg: 'Hosted session is expired', session },
+          `Hosted session is expired`,
+          { session },
           LogEvent.SESSION_EXPIRED
         )
         addSentryBreadcrumb({
@@ -145,7 +147,8 @@ const Home: NextPageWithLayout = () => {
       }
       default: {
         infoLog(
-          { msg: 'Hosted session is ongoing', session },
+          `Hosted session is ongoing`,
+          { session },
           LogEvent.SESSION_ONGOING
         )
         return
