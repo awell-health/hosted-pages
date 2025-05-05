@@ -1,16 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useApolloClient } from '@apollo/client'
 import isNil from 'lodash/isNil'
 import { useEffect } from 'react'
-import { updateQuery } from '../../services/graphql'
 import {
   Activity,
   useOnSessionActivityCompletedSubscription,
   useOnSessionActivityCreatedSubscription,
   useOnSessionActivityExpiredSubscription,
   useGetHostedSessionActivitiesQuery,
-  GetHostedSessionActivitiesDocument,
-  GetHostedSessionActivitiesQuery,
 } from './types'
 import { captureException } from '@sentry/nextjs'
 import { useRouter } from 'next/router'
@@ -27,7 +23,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   const variables = {
     only_stakeholder_activities: true,
   }
-  const client = useApolloClient()
   const router = useRouter()
   const { data, error, loading, refetch, startPolling, stopPolling } =
     useGetHostedSessionActivitiesQuery({
@@ -70,30 +65,14 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   const sortByDate = (a: Activity, b: Activity): number => {
     return new Date(a.date).getTime() - new Date(b.date).getTime()
   }
+
   const allActivities = data?.hostedSessionActivities.activities ?? []
 
   const activities = allActivities.filter(filterActivity).sort(sortByDate)
+
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
-      const {
-        data: { sessionActivityCreated },
-      } = onActivityCreated
-      const updatedActivities = [sessionActivityCreated, ...allActivities]
-        .filter(filterActivity)
-        .sort(sortByDate)
-      const updatedQuery = updateQuery<
-        GetHostedSessionActivitiesQuery,
-        Array<Activity>
-      >(
-        data as GetHostedSessionActivitiesQuery,
-        ['hostedSessionActivities', 'activities'],
-        updatedActivities
-      )
-      client.writeQuery({
-        query: GetHostedSessionActivitiesDocument,
-        variables,
-        data: updatedQuery,
-      })
+      refetch()
     }
   }, [onActivityCreated.data, router.query])
 
