@@ -95,10 +95,10 @@
     tailwind-merge "^2.5.2"
     tailwindcss-animate "^1.0.7"
 
-"@awell-health/sol-scheduling@0.3.33":
-  version "0.3.33"
-  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.3.33.tgz#8d5f99deaeee19a3da2f9e9d207c4bfa4a168127"
-  integrity sha512-NKayw4iUAbx9NY8gW5k9vnrkiX9iZZLa3TgPEOPfMemIpiX/SjCTsNHnfQl1FNmjLPFnnAwkmywZ8tLBPSWTlQ==
+"@awell-health/sol-scheduling@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.4.0.tgz#46420c97fca15d301c1aa8e43e842bfcd06bba8a"
+  integrity sha512-kUhN6n459CNbh1QbpcA+quN/HVZzTLfsMRLJ5+9OwV5l+NJv4oQP/6EsFfzOZ1bFfzvQLkqvJ2C+n6iSPtN3pg==
   dependencies:
     "@headlessui/react" "^2.1.2"
     "@heroicons/react" "^2.1.5"
@@ -112,10 +112,10 @@
     tailwindcss-animate "^1.0.7"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.99":
-  version "0.1.99"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.99.tgz#edc1c89c7a9431e59485ff75ec359d026a18773a"
-  integrity sha512-+wEwJr1QadfPu/RMiwwa6iBIoxRWY8IxEz32nCxw0gx4GVL4hYDWYJxtIbr1TGQeKq2CpNt8vch2X7LrBUxaXg==
+"@awell-health/ui-library@0.1.100":
+  version "0.1.100"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.100.tgz#fa23c381943f550abf3dbf14e96eed135edb2b35"
+  integrity sha512-UxgQPJZ2QN4tYaVZzaDdzV7RBfr/VfY8R7jcDLf6WnZimxsjoIJJLswfVnM/5lbkP3j2ZET9oTekVJy25rX0EA==
   dependencies:
     "@awell-health/design-system" "0.12.62"
     "@calcom/embed-react" "^1.5.1"

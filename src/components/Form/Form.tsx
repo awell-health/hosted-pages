@@ -40,16 +40,18 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   if (isFetching) {
     infoLog(
+      `Form ${activity.object.name} is loading`,
       {
         activity,
         formProgress,
       },
-      LogEvent.FORM_WAITING_FOR_FETCH
+      LogEvent.FORM_LOADING
     )
     return <LoadingPage />
   }
   if (error || isNil(form)) {
     errorLog(
+      `Form ${activity.object.name} fetch failed`,
       {
         activity,
         form,
@@ -62,13 +64,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
     )
   }
   if (isSubmitting) {
-    infoLog(
-      {
-        activity,
-        form,
-      },
-      LogEvent.FORM_WAITING_FOR_SUBMISSION
-    )
     return <LoadingPage />
   }
 
