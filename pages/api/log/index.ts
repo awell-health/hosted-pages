@@ -7,8 +7,8 @@ export default async function handler(
 ) {
   switch (req.method) {
     case 'POST':
-      const { params, severity, error } = req.body
-      log(params, severity, error)
+      const { message, params, severity, error } = req.body
+      log(message, params, severity, error)
       res.status(200).json({ success: true })
       break
     default:

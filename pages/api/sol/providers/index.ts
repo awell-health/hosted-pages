@@ -29,8 +29,8 @@ export default async function handler(
     )
     const bodyValidation = GetProvidersInputSchema.safeParse(modifiedInput)
     log(
+      `${logMessage}: parsing body (removing nil and empty values)`,
       {
-        message: `${logMessage}: parsing body (removing nil and empty values)`,
         requestBody: input,
         modifiedInput,
         bodyValidation,
@@ -57,8 +57,8 @@ export default async function handler(
     if (!response.ok) {
       const responseBody = await response.json()
       log(
+        `${logMessage}: failed`,
         {
-          message: `${logMessage}: failed`,
           requestBody: input,
           validatedRequestBody: bodyValidation.data,
           responseText: response.statusText,
@@ -82,8 +82,8 @@ export default async function handler(
 
     if (isEmpty(jsonRes.data)) {
       log(
+        `${logMessage}: failed - no data returned`,
         {
-          message: `${logMessage}: failed - no data returned`,
           requestBody: bodyValidation.data,
           responseBody: jsonRes,
           responseText: response.statusText,
@@ -96,20 +96,23 @@ export default async function handler(
       )
       return res.status(404).json({ data: [] })
     }
-    log({
-      message: `${logMessage}: success`,
-      requestBody: bodyValidation.data,
-      responseBody: jsonRes,
-      url,
-      performance: new Date().valueOf() - startTime,
-      context: logContext,
-    })
+    log(
+      `${logMessage}: success`,
+      {
+        requestBody: bodyValidation.data,
+        responseBody: jsonRes,
+        url,
+        performance: new Date().valueOf() - startTime,
+        context: logContext,
+      },
+      'INFO'
+    )
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
     log(
+      `${logMessage}: failed - ${errMessage}`,
       {
-        message: `${logMessage}: failed - ${errMessage}`,
         requestBody: input,
         error,
         context: logContext,

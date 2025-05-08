@@ -37,8 +37,8 @@ export default async function handler(
     if (!response.ok) {
       const responseBody = await response.json()
       log(
+        `${logMessage}: failed`,
         {
-          message: `${logMessage}: failed`,
           requestUrl: url,
           responseBody,
           errorCode: response.status,
@@ -63,8 +63,8 @@ export default async function handler(
 
     if (isEmpty(jsonRes.data)) {
       log(
+        `${logMessage}: failed - no data returned`,
         {
-          message: `${logMessage}: failed - no data returned`,
           requestUrl: url,
           responseBody: jsonRes,
           responseText: response.statusText,
@@ -81,24 +81,27 @@ export default async function handler(
       )
       return res.status(404).json({ data: [] })
     }
-    log({
-      message: `${logMessage}: success`,
-      requestUrl: url,
-      responseBody: jsonRes,
-      context: {
-        session: {
-          id: session,
-          pathway_id: pathway,
+    log(
+      `${logMessage}: success`,
+      {
+        requestUrl: url,
+        responseBody: jsonRes,
+        context: {
+          session: {
+            id: session,
+            pathway_id: pathway,
+          },
+          tenant,
         },
-        tenant,
       },
-    })
+      'INFO'
+    )
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
     log(
+      `${logMessage}: failed - ${errMessage}`,
       {
-        message: `${logMessage}: failed - ${errMessage}`,
         requestUrl: url,
         error,
         context: {

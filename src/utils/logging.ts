@@ -33,6 +33,7 @@ const getLogger = (): Log | undefined => {
 }
 
 export function log(
+  message: string,
   params: {},
   severity: LogSeverity = 'INFO',
   error?: string | {}
@@ -41,20 +42,26 @@ export function log(
   if (logger === undefined) {
     console.log(
       'GCP log entry:',
-      JSON.stringify({ params, severity, ...(error && { error }) })
+      JSON.stringify({ message, params, severity, ...(error && { error }) })
     )
   } else {
     logger
       .write(
         logger.entry(
           { ...metadata, severity: severity },
-          { params, ...(error && { error }) }
+          { message, params, ...(error && { error }) }
         )
       )
       .catch((err) => {
         console.error(
           'GCP log error:',
-          JSON.stringify({ err, params, severity, ...(error && { error }) })
+          JSON.stringify({
+            err,
+            message,
+            params,
+            severity,
+            ...(error && { error }),
+          })
         )
       })
   }
