@@ -26,8 +26,8 @@ export default async function handler(
 
     const bodyValidation = BookAppointmentInputSchema.safeParse(input)
     log(
+      `${logMessage}: parsing body`,
       {
-        message: `${logMessage}: parsing body`,
         requestBody: input,
         bodyValidation,
         context: logContext,
@@ -55,8 +55,8 @@ export default async function handler(
     if (!response.ok) {
       const responseBody = await response.json()
       log(
+        `${logMessage}: failed`,
         {
-          message: `${logMessage}: failed`,
           requestBody: input,
           validatedRequestBody: bodyValidation.data,
           responseBody,
@@ -75,20 +75,23 @@ export default async function handler(
     }
 
     const jsonRes: BookAppointmentResponseType = await response.json()
-    log({
-      message: `${logMessage}: success`,
-      requestBody: input,
-      responseBody: jsonRes,
-      url,
-      performance: new Date().valueOf() - startTime,
-      context: logContext,
-    })
+    log(
+      `${logMessage}: success`,
+      {
+        requestBody: input,
+        responseBody: jsonRes,
+        url,
+        performance: new Date().valueOf() - startTime,
+        context: logContext,
+      },
+      'INFO'
+    )
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
     log(
+      `${logMessage}: failed - ${errMessage}`,
       {
-        message: `${logMessage}: failed - ${errMessage}`,
         requestBody: input,
         error,
         context: logContext,

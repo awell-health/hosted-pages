@@ -27,6 +27,7 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
       },
     }
     infoLog(
+      `Submitting checklist for activity ${activity.object.name}`,
       {
         activity,
         variables,
@@ -36,6 +37,7 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
     try {
       await submitChecklist({ variables })
       infoLog(
+        `Checklist ${activity.object.name} submitted successfully`,
         {
           activity,
         },
@@ -43,6 +45,7 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
       )
     } catch (error: any) {
       errorLog(
+        `Failed to submit checklist for activity ${activity.object.name}`,
         {
           activity,
           variables,

@@ -15,7 +15,8 @@ export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
 
   useEffect(() => {
     infoLog(
-      { msg: 'Loading new activity', activity },
+      `Loading activity ${activity?.id} (${activity?.object.type} - ${activity?.object.name}) in UI`,
+      { activity },
       LogEvent.ACTIVITY_LOADING
     )
   }, [])

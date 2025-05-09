@@ -52,19 +52,17 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
       },
     }
 
-    infoLog(
-      { msg: 'Trying to mark message as read', activity },
-      LogEvent.MESSAGE_MARKING_AS_READ
-    )
     try {
       await markMessageAsRead({ variables: markMessageAsReadVariables })
       infoLog(
-        { msg: 'Message marked as read successfully', activity },
+        `Message ${message_id} marked as read successfully for activity ${activity.object.name}`,
+        { activity },
         LogEvent.MESSAGE_MARKED_AS_READ
       )
     } catch (error: any) {
       errorLog(
-        { msg: 'Failed to mark message as read', activity },
+        `Failed to mark message ${message_id} as read for activity ${activity.object.name}`,
+        { activity },
         error,
         LogEvent.MESSAGE_MARKING_AS_READ_FAILED
       )
