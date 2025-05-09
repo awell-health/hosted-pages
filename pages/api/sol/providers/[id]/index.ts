@@ -36,8 +36,8 @@ export default async function handler(
     if (!response.ok) {
       const responseBody = await response.json()
       log(
+        `${logMessage}: failed`,
         {
-          message: `${logMessage}: failed`,
           queryParams: req.query,
           responseBody,
           errorCode: response.status,
@@ -60,25 +60,28 @@ export default async function handler(
     }
 
     const jsonRes: GetProviderResponseType = await response.json()
-    log({
-      message: `${logMessage}: success`,
-      queryParams: req.query,
-      responseBody: jsonRes,
-      url,
-      performance: new Date().valueOf() - startTime,
-      context: {
-        session: {
-          id: session,
-          pathway_id: pathway,
+    log(
+      `${logMessage}: success`,
+      {
+        queryParams: req.query,
+        responseBody: jsonRes,
+        url,
+        performance: new Date().valueOf() - startTime,
+        context: {
+          session: {
+            id: session,
+            pathway_id: pathway,
+          },
         },
       },
-    })
+      'INFO'
+    )
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
     log(
+      `${logMessage}: failed - ${errMessage}`,
       {
-        message: `${logMessage}: failed - ${errMessage}`,
         queryParams: req.query,
         providerId: req.query,
         error,

@@ -9,7 +9,7 @@ import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
-const POLLING_TIMEOUT = 10000 // 10 seconds
+const POLLING_TIMEOUT = 15000 // 15 seconds
 
 interface ActivityProviderProps {
   children?: React.ReactNode
@@ -43,8 +43,8 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
     infoLog(
+      `Activities list changed`,
       {
-        msg: 'Activities list changed',
         activities,
         prevCurrentActivity: currentActivity,
         nextCurrentActivity: current,
@@ -73,6 +73,14 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       case 'polling': {
         startPolling(POLLING_INTERVAL)
         const timer = setTimeout(() => {
+          infoLog(
+            `No active activity found after ${POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            {
+              currentActivity,
+              activities,
+            },
+            LogEvent.ACTIVITY_NO_ACTIVE_FOUND
+          )
           setState('no-active-activity')
         }, POLLING_TIMEOUT)
         return () => {
@@ -92,7 +100,8 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   useEffect(() => {
     infoLog(
-      { msg: 'Current activity changed', currentActivity },
+      `Current activity changed to ${currentActivity?.id} (${currentActivity?.object.type} - ${currentActivity?.object.name})`,
+      { currentActivity },
       LogEvent.ACTIVITY_CHANGED
     )
     if (!isNil(currentActivity)) {
@@ -106,7 +115,8 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   if (error) {
     errorLog(
-      { msg: 'Failed to load activities' },
+      `Failed to load activities`,
+      {},
       error,
       LogEvent.ACTIVITIES_FETCH_FAILED
     )
