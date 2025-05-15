@@ -95,10 +95,10 @@
     tailwind-merge "^2.5.2"
     tailwindcss-animate "^1.0.7"
 
-"@awell-health/sol-scheduling@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.4.0.tgz#46420c97fca15d301c1aa8e43e842bfcd06bba8a"
-  integrity sha512-kUhN6n459CNbh1QbpcA+quN/HVZzTLfsMRLJ5+9OwV5l+NJv4oQP/6EsFfzOZ1bFfzvQLkqvJ2C+n6iSPtN3pg==
+"@awell-health/sol-scheduling@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@awell-health/sol-scheduling/-/sol-scheduling-0.4.1.tgz#1459f5f99083890ee3092d675512305564fcce84"
+  integrity sha512-2RVcL+/NEFbr43duwyae2w2TwcP2air9XTb4KKZIQoaMh3fSspnYoAGyPwIOYhzsjkwVnZwrxz3nDyZ8+KyFjA==
   dependencies:
     "@headlessui/react" "^2.1.2"
     "@heroicons/react" "^2.1.5"
