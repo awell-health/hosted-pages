@@ -56,5 +56,9 @@ fragment Question on Question {
       file_storage_config_slug
       accepted_file_types
     }
+    input_validation {
+      pattern
+      helper_text
+    }
   }
 }
