@@ -3,6 +3,7 @@ import type { Form, Activity } from './types'
 import { captureException } from '@sentry/nextjs'
 import { isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
+import { Option } from '../../types/generated/types-orchestration'
 
 interface UseFormHook {
   loading: boolean
@@ -11,9 +12,9 @@ interface UseFormHook {
   refetch?: () => {}
 }
 
-export const useForm = (activity: Activity): UseFormHook => {
+export const useForm = (id: string): UseFormHook => {
   const variables = {
-    id: activity.object.id,
+    id,
   }
   const {
     data: formData,
@@ -34,10 +35,7 @@ export const useForm = (activity: Activity): UseFormHook => {
     captureException(populatedError, {
       contexts: {
         form: {
-          form_id: activity.object.id,
-        },
-        activity: {
-          ...activity,
+          form_id: id,
         },
         graphql: {
           query: 'GetForm',
@@ -47,6 +45,28 @@ export const useForm = (activity: Activity): UseFormHook => {
     })
 
     return { loading: false, error: message, refetch }
+  }
+
+  const form = formData?.form.form
+  if (!isNil(form)) {
+    const questions = form.questions.map((question) => ({
+      ...question,
+      options: question.options?.map((option) => {
+        // @ts-expect-error - TODO: deprecate `value` and replace it with `value_string` completely.
+        return {
+          ...option,
+          value: option.value_string,
+        } as Option
+      }),
+    }))
+    return {
+      loading: false,
+      form: {
+        ...form,
+        questions,
+      },
+      refetch,
+    }
   }
 
   return {
