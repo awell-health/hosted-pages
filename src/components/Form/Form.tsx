@@ -2,11 +2,10 @@ import { ConversationalForm, TraditionalForm } from '@awell-health/ui-library'
 import { ErrorLabels } from '@awell-health/ui-library/dist/types/hooks/useForm/types'
 import { isEmpty, isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import useLocalStorage from 'use-local-storage'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import { useFileUpload } from '../../hooks/useFileUpload'
-import { useForm } from '../../hooks/useForm'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { useLogging } from '../../hooks/useLogging'
 import { LogEvent } from '../../hooks/useLogging/types'
@@ -18,9 +17,12 @@ import { LoadingPage } from '../LoadingPage'
 import {
   Activity,
   AnswerInput,
+  FormActivityInputs,
   FormDisplayMode,
   QuestionRuleResult,
+  Form as FormType,
 } from './types'
+import { mapForm } from './mapper'
 
 interface FormProps {
   activity: Activity
@@ -35,18 +37,19 @@ interface FormProps {
  */
 
 export const Form: FC<FormProps> = ({ activity }) => {
-  const {
-    loading: isFetching,
-    form,
-    error,
-    refetch,
-  } = useForm(activity.object.id)
+  const [form, setForm] = useState<FormType | undefined>(
+    mapForm((activity.inputs as FormActivityInputs)?.form)
+  )
   const { t } = useTranslation()
   const { evaluateFormRules } = useEvaluateFormRules(activity.object.id)
   const { onSubmit, isSubmitting } = useSubmitForm(activity)
   const { branding, theme } = useHostedSession()
-  const { infoLog, errorLog } = useLogging()
+  const { errorLog } = useLogging()
   const [getGcsSignedUrl] = useFileUpload()
+
+  useEffect(() => {
+    setForm(mapForm((activity.inputs as FormActivityInputs)?.form))
+  }, [activity.inputs])
 
   /**
    * `persistedFormAnswers` stores the live state of the form answers in local storage.
@@ -227,50 +230,21 @@ export const Form: FC<FormProps> = ({ activity }) => {
     activity.form_display_mode &&
     activity.form_display_mode === FormDisplayMode.Regular
 
-  if (isFetching) {
-    infoLog(
-      `Form ${activity.object.name} is loading`,
-      {
-        activity,
-        // Log the initially loaded answers if available, not the live ones
-        formProgress: initialAnswersFromLocalStorage,
-      },
-      LogEvent.FORM_LOADING
-    )
-    return <LoadingPage />
-  }
-  if (error || isNil(form)) {
+  if (isNil(form)) {
     errorLog(
       `Form ${activity.object.name} fetch failed`,
       {
         activity,
         form,
       },
-      error ? error : 'Form is null',
+      'Form is null',
       LogEvent.FORM_FETCH_FAILED
     )
-    return (
-      <ErrorPage title={t('activities.form.loading_error')} onRetry={refetch} />
-    )
+    return <ErrorPage title={t('activities.form.loading_error')} />
   }
   if (isSubmitting) {
     return <LoadingPage />
   }
-  if (isNil(form)) {
-    errorLog(
-      `Form ${activity.object.name} fetch failed`,
-      {
-        activity,
-        form: form,
-      },
-      'Form is null after modification check',
-      LogEvent.FORM_FETCH_FAILED
-    )
-    return (
-      <ErrorPage title={t('activities.form.loading_error')} onRetry={refetch} />
-    )
-  }
-  console.log('Form component rendered')
 
   return (
     <>
