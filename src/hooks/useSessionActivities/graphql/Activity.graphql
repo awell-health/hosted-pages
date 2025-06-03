@@ -21,4 +21,12 @@ fragment Activity on Activity {
   context {
     track_id
   }
+  inputs {
+    type
+    ...on FormActivityInputs {
+      form {
+        ...Form
+      }
+    }
+  }
 }
