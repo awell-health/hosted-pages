@@ -1,16 +1,23 @@
 import { isNil } from 'lodash'
-import { Form, Option } from '../../types/generated/types-orchestration'
+import {
+  Form,
+  Option,
+  DynamicFormGraphqlType as DynamicForm,
+} from '../../types/generated/types-orchestration'
 
-export const mapForm = (form: Form | undefined | null) => {
+// Accepts either Form or DynamicFormGraphqlType and returns a normalized form object
+export const mapForm = (
+  form?: Form | DynamicForm | null
+): Form | DynamicForm | undefined => {
   if (isNil(form)) {
     return undefined
   }
+
   return {
     ...form,
-    questions: form.questions.map((question) => ({
+    questions: form.questions.map((question: any) => ({
       ...question,
-      options: question.options?.map((option) => {
-        // @ts-expect-error - TODO: deprecate `value` and replace it with `value_string` completely.
+      options: question.options?.map((option: any) => {
         return {
           ...option,
           value: option.value_string,

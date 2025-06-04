@@ -1,5 +1,5 @@
 export {
-  GetFormResponseDocument,
+  SubmitFormResponseDocument,
   useSubmitFormResponseMutation,
 } from './../../types/generated/types-orchestration'
 export type { AnswerInput } from './../../types/generated/types-orchestration'
