@@ -1,0 +1,63 @@
+fragment DynamicQuestion on DynamicQuestion {
+  id
+  key
+  title
+  dataPointValueType
+  options {
+    id
+    value_string
+    value
+    label
+  }
+  questionType
+  userQuestionType
+  questionConfig {
+    recode_enabled
+    mandatory
+    use_select
+    slider {
+      min
+      max
+      step_value
+      display_marks
+      min_label
+      max_label
+      is_value_tooltip_on
+      show_min_max_values
+    }
+    phone {
+      default_country
+      available_countries
+    }
+    number {
+      range {
+        min
+        max
+        enabled
+      }
+    }
+    multiple_select {
+      range {
+        min
+        max
+        enabled
+      }
+      exclusive_option {
+        option_id
+        enabled
+      }
+    }
+    date {
+      allowed_dates
+      include_date_of_response
+    }
+    file_storage {
+      file_storage_config_slug
+      accepted_file_types
+    }
+    input_validation {
+      pattern
+      helper_text
+    }
+  }
+}

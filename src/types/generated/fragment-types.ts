@@ -9,12 +9,14 @@
   "possibleTypes": {
     "ActivityInputs": [
       "CalculationActivityInputs",
+      "DynamicFormActivityInputs",
       "ExtensionActivityInputs",
       "FormActivityInputs",
       "MessageActivityInputs"
     ],
     "ActivityOutputs": [
       "CalculationActivityOutputs",
+      "DynamicFormActivityOutputs",
       "ExtensionActivityOutputs",
       "FormActivityOutputs"
     ],
