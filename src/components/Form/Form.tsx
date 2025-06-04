@@ -21,8 +21,13 @@ import {
   FormDisplayMode,
   QuestionRuleResult,
   Form as FormType,
+  DynamicForm as DynamicFormType,
 } from './types'
 import { mapForm } from './mapper'
+import {
+  ActivityInputType,
+  DynamicFormActivityInputs,
+} from '../../types/generated/types-orchestration'
 
 interface FormProps {
   activity: Activity
@@ -37,8 +42,17 @@ interface FormProps {
  */
 
 export const Form: FC<FormProps> = ({ activity }) => {
-  const [form, setForm] = useState<FormType | undefined>(
-    mapForm((activity.inputs as FormActivityInputs)?.form)
+  const [form, setForm] = useState<FormType | DynamicFormType | undefined>(
+    () => {
+      if (activity.inputs?.type === ActivityInputType.Form) {
+        return mapForm((activity.inputs as FormActivityInputs)?.form)
+      } else if (activity.inputs?.type === ActivityInputType.DynamicForm) {
+        return mapForm(
+          (activity.inputs as DynamicFormActivityInputs)?.dynamicForm
+        )
+      }
+      return undefined
+    }
   )
   const { t } = useTranslation()
   const { evaluateFormRules } = useEvaluateFormRules(activity.object.id)
@@ -48,7 +62,13 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const [getGcsSignedUrl] = useFileUpload()
 
   useEffect(() => {
-    setForm(mapForm((activity.inputs as FormActivityInputs)?.form))
+    if (activity.inputs?.type === ActivityInputType.Form) {
+      setForm(mapForm((activity.inputs as FormActivityInputs)?.form))
+    } else if (activity.inputs?.type === ActivityInputType.DynamicForm) {
+      setForm(
+        mapForm((activity.inputs as DynamicFormActivityInputs)?.dynamicForm)
+      )
+    }
   }, [activity.inputs])
 
   /**
@@ -250,7 +270,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     <>
       {renderTraditionalForm && (
         <TraditionalForm
-          form={form}
+          form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
           questionLabels={labels}
           buttonLabels={button_labels}
           errorLabels={error_labels}
@@ -264,7 +284,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       )}
       {!renderTraditionalForm && (
         <ConversationalForm
-          form={form}
+          form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
           questionLabels={labels}
           buttonLabels={button_labels}
           errorLabels={error_labels}
