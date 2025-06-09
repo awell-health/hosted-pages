@@ -7,9 +7,11 @@ import { LogEvent, useLogging } from '../../../hooks/useLogging'
 import { useSessionActivities } from '../../../hooks/useSessionActivities'
 import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
+import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
 const POLLING_TIMEOUT = 15000 // 15 seconds
+const AGENT_ACTIVITY_POLLING_TIMEOUT = 300000 // 5 minutes
 
 interface ActivityProviderProps {
   children?: React.ReactNode
@@ -42,6 +44,9 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   useEffect(() => {
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
+    if (current?.reference_type === ActivityReferenceType.Agent) {
+      setState('agent-activity-found')
+    }
     infoLog(
       `Activities list changed`,
       {
@@ -83,6 +88,23 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
           )
           setState('no-active-activity')
         }, POLLING_TIMEOUT)
+        return () => {
+          clearTimeout(timer)
+        }
+      }
+      case 'agent-activity-found': {
+        startPolling(AGENT_ACTIVITY_POLLING_TIMEOUT)
+        const timer = setTimeout(() => {
+          infoLog(
+            `No active activity found after ${AGENT_ACTIVITY_POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            {
+              currentActivity,
+              activities,
+            },
+            LogEvent.ACTIVITY_NO_ACTIVE_FOUND
+          )
+          setState('no-active-activity')
+        }, AGENT_ACTIVITY_POLLING_TIMEOUT)
         return () => {
           clearTimeout(timer)
         }
