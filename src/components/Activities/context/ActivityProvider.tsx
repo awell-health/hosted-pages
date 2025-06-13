@@ -44,9 +44,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   useEffect(() => {
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
-    if (current?.reference_type === ActivityReferenceType.Agent) {
-      setState('agent-activity-found')
-    }
     infoLog(
       `Activities list changed`,
       {
@@ -64,7 +61,15 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       if (isNil(firstActive)) {
         // nothing to activate, start polling for new activities so we don't rely on subscriptions
         setCurrentActivity(undefined)
-        setState('polling')
+        if (
+          activities.some(
+            (a) => a.reference_type === ActivityReferenceType.Agent
+          )
+        ) {
+          setState('polling-extended')
+        } else {
+          setState('polling')
+        }
       } else {
         // we have something to activate, stop polling, no need for it
         setCurrentActivity(firstActive)
@@ -92,7 +97,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
           clearTimeout(timer)
         }
       }
-      case 'agent-activity-found': {
+      case 'polling-extended': {
         startPolling(AGENT_ACTIVITY_POLLING_TIMEOUT)
         const timer = setTimeout(() => {
           infoLog(

@@ -5,9 +5,9 @@ export interface ActivityContextInterface {
   currentActivity: Activity | undefined
   state:
     | 'polling'
+    | 'polling-extended'
     | 'active-activity-found'
     | 'no-active-activity'
-    | 'agent-activity-found'
 }
 
 const initialContext: ActivityContextInterface = {
