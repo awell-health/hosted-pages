@@ -3,7 +3,11 @@ import { Activity } from '../types'
 
 export interface ActivityContextInterface {
   currentActivity: Activity | undefined
-  state: 'polling' | 'active-activity-found' | 'no-active-activity'
+  state:
+    | 'polling'
+    | 'polling-extended'
+    | 'active-activity-found'
+    | 'no-active-activity'
 }
 
 const initialContext: ActivityContextInterface = {
