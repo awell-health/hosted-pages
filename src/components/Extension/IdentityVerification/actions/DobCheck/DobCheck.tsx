@@ -61,7 +61,7 @@ export const DobCheck: FC<DobCheckProps> = ({ activityDetails }) => {
           </div>
         </div>
       </main>
-      <HostedPageFooter showScrollHint={false}>
+      <HostedPageFooter hideScrollHint={true}>
         <div
           className={`${activityClasses.button_wrapper} ${classes.container}`}
         >
