@@ -141,7 +141,7 @@ export const EnterMedication: FC<EnterMedicationProps> = ({
           </Button>
         </div>
       </main>
-      <HostedPageFooter hideScrollHint={true}>
+      <HostedPageFooter showScrollHint={false}>
         <div
           className={`${activityClasses.button_wrapper} ${classes.container}`}
         >
