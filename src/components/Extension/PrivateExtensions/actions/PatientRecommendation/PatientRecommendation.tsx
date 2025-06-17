@@ -8,6 +8,7 @@ import {
   Button,
   HostedPageFooter,
   RichTextViewer,
+  useScrollHint,
 } from '@awell-health/ui-library'
 import { mapActionFieldsToObject } from '../../../utils'
 import { ActionFields } from './types'
@@ -21,6 +22,7 @@ export const PatientRecommendation: FC<PatientRecommendationProps> = ({
 }) => {
   const { activity_id, fields } = activityDetails
   const { onSubmit } = usePatientRecommendation()
+  const { showScrollHint } = useScrollHint()
 
   const {
     title,
@@ -49,7 +51,7 @@ export const PatientRecommendation: FC<PatientRecommendationProps> = ({
           </div>
         </article>
       </main>
-      <HostedPageFooter>
+      <HostedPageFooter showScrollHint={showScrollHint}>
         <div
           className={`${classes.button_wrapper} ${activityClasses.container}`}
         >

@@ -212,7 +212,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
           </div>
         </div>
       </main>
-      <HostedPageFooter hideScrollHint={true}>
+      <HostedPageFooter showScrollHint={false}>
         <div
           className={`${activityClasses.button_wrapper} ${classes.container}`}
         >
