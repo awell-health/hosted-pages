@@ -7,9 +7,11 @@ import { LogEvent, useLogging } from '../../../hooks/useLogging'
 import { useSessionActivities } from '../../../hooks/useSessionActivities'
 import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
+import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
 const POLLING_TIMEOUT = 15000 // 15 seconds
+const AGENT_ACTIVITY_POLLING_TIMEOUT = 300000 // 5 minutes
 
 interface ActivityProviderProps {
   children?: React.ReactNode
@@ -59,7 +61,15 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       if (isNil(firstActive)) {
         // nothing to activate, start polling for new activities so we don't rely on subscriptions
         setCurrentActivity(undefined)
-        setState('polling')
+        if (
+          activities.some(
+            (a) => a.reference_type === ActivityReferenceType.Agent
+          )
+        ) {
+          setState('polling-extended')
+        } else {
+          setState('polling')
+        }
       } else {
         // we have something to activate, stop polling, no need for it
         setCurrentActivity(firstActive)
@@ -83,6 +93,23 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
           )
           setState('no-active-activity')
         }, POLLING_TIMEOUT)
+        return () => {
+          clearTimeout(timer)
+        }
+      }
+      case 'polling-extended': {
+        startPolling(AGENT_ACTIVITY_POLLING_TIMEOUT)
+        const timer = setTimeout(() => {
+          infoLog(
+            `No active activity found after ${AGENT_ACTIVITY_POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            {
+              currentActivity,
+              activities,
+            },
+            LogEvent.ACTIVITY_NO_ACTIVE_FOUND
+          )
+          setState('no-active-activity')
+        }, AGENT_ACTIVITY_POLLING_TIMEOUT)
         return () => {
           clearTimeout(timer)
         }
