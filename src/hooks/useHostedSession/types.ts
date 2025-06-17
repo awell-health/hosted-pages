@@ -1,6 +1,6 @@
 import type { GetHostedSessionQuery as GetHostedSessionQueryType } from '../../types/generated/types-orchestration'
 export type {
-  GetFormResponseQuery,
+  SubmitFormResponseInput,
   BrandingSettings,
 } from './../../types/generated/types-orchestration'
 
