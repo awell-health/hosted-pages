@@ -7,6 +7,19 @@
       }
       const result: PossibleTypesResultData = {
   "possibleTypes": {
+    "ActivityInputs": [
+      "CalculationActivityInputs",
+      "DynamicFormActivityInputs",
+      "ExtensionActivityInputs",
+      "FormActivityInputs",
+      "MessageActivityInputs"
+    ],
+    "ActivityOutputs": [
+      "CalculationActivityOutputs",
+      "DynamicFormActivityOutputs",
+      "ExtensionActivityOutputs",
+      "FormActivityOutputs"
+    ],
     "PaginationAndSortingPayload": [
       "ActivitiesPayload",
       "DataPointPayload",

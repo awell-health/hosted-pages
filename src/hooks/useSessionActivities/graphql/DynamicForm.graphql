@@ -1,0 +1,9 @@
+#import 'DynamicQuestion'
+fragment DynamicForm on DynamicFormGraphqlType {
+  key
+  title
+  trademark
+  questions {
+    ...DynamicQuestion
+  }
+}
