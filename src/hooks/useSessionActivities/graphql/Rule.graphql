@@ -1,0 +1,15 @@
+fragment Rule on Rule {
+  id
+  boolean_operator
+  definition_id
+  conditions {
+    id
+    reference
+    reference_key
+    operator
+    operand {
+      type
+      value
+    }
+  }
+}
