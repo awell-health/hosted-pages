@@ -61,4 +61,7 @@ fragment Question on Question {
       helper_text
     }
   }
+  rule {
+    ...Rule
+  }
 }
