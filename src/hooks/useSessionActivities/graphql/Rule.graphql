@@ -1,4 +1,5 @@
 fragment Rule on Rule {
+  id
   boolean_operator
   definition_id
   conditions {
