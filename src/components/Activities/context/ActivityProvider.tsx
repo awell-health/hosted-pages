@@ -8,6 +8,7 @@ import { useSessionActivities } from '../../../hooks/useSessionActivities'
 import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
 import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
+import useLocalStorage from 'use-local-storage'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
 const POLLING_TIMEOUT = 15000 // 15 seconds
@@ -26,6 +27,7 @@ const isActive = (activity: Activity | undefined) =>
  */
 export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const { t } = useTranslation()
+  const [, setLogoOverride] = useLocalStorage('awell-hp-logo-override', '')
   const [currentActivity, setCurrentActivity] = useState<Activity>()
   const [state, setState] =
     useState<ActivityContextInterface['state']>('polling')
@@ -42,6 +44,14 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   // this useEffect drives whole AHP logic, only by activities being changed in apollo cache
   // and base on their status do we determine what to show to the user
   useEffect(() => {
+    const activityWithLogoOverride = activities.find(
+      (a) => a.status === ActivityStatus.Active && a.metadata?.ahp_logo_override
+    )
+    if (activityWithLogoOverride) {
+      setLogoOverride(activityWithLogoOverride.metadata.ahp_logo_override)
+    } else {
+      setLogoOverride('')
+    }
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
     infoLog(
