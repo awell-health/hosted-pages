@@ -1,0 +1,15 @@
+mutation CompleteSession($input: CompleteSessionInput!) {
+  completeSession(input: $input) {
+    success
+    session {
+      id
+      status
+      pathway_id
+      stakeholder {
+        id
+        type
+        name
+      }
+    }
+  }
+} 
