@@ -51,6 +51,7 @@ const defaultOptions = {} as const;
       "ChecklistPayload",
       "ClinicalNotePayload",
       "CompleteExtensionActivityPayload",
+      "CompleteSessionPayload",
       "CreatePatientPayload",
       "DecisionOutputsPayload",
       "ElementsPayload",
@@ -640,6 +641,17 @@ export type CompleteExtensionActivityPayload = Payload & {
   __typename?: 'CompleteExtensionActivityPayload';
   activity: Activity;
   code: Scalars['String'];
+  success: Scalars['Boolean'];
+};
+
+export type CompleteSessionInput = {
+  session_id: Scalars['String'];
+};
+
+export type CompleteSessionPayload = Payload & {
+  __typename?: 'CompleteSessionPayload';
+  code: Scalars['String'];
+  session?: Maybe<HostedSession>;
   success: Scalars['Boolean'];
 };
 
@@ -1371,6 +1383,7 @@ export type Mutation = {
   addIdentifierToPatient: AddIdentifierToPatientPayload;
   addTrack: AddTrackPayload;
   completeExtensionActivity: CompleteExtensionActivityPayload;
+  completeSession: CompleteSessionPayload;
   createPatient: CreatePatientPayload;
   deletePathway: EmptyPayload;
   deletePatient: EmptyPayload;
@@ -1430,6 +1443,11 @@ export type MutationAddTrackArgs = {
 
 export type MutationCompleteExtensionActivityArgs = {
   input: CompleteExtensionActivityInput;
+};
+
+
+export type MutationCompleteSessionArgs = {
+  input: CompleteSessionInput;
 };
 
 
@@ -3084,6 +3102,7 @@ export type WebhookCallsPayload = Payload & {
 export type WorkerAgentConfigGraphqlType = {
   __typename?: 'WorkerAgentConfigGraphqlType';
   agent_id: Scalars['String'];
+  agent_uuid: Scalars['String'];
   created: AuditGraphqlType;
   description: Scalars['String'];
   guardrails?: Maybe<Array<Scalars['String']>>;
@@ -3095,6 +3114,7 @@ export type WorkerAgentConfigGraphqlType = {
   organization_slug: Scalars['String'];
   output_specs: Array<FieldSpecGraphqlType>;
   stakeholders: Array<StakeholderInfoGraphqlType>;
+  state: Scalars['String'];
   tools: Array<ToolSpecGraphqlType>;
   updated?: Maybe<AuditGraphqlType>;
   version: Scalars['Float'];
@@ -3118,6 +3138,13 @@ export type CompleteExtensionActivityMutationVariables = Exact<{
 
 
 export type CompleteExtensionActivityMutation = { __typename?: 'Mutation', completeExtensionActivity: { __typename?: 'CompleteExtensionActivityPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
+
+export type CompleteSessionMutationVariables = Exact<{
+  input: CompleteSessionInput;
+}>;
+
+
+export type CompleteSessionMutation = { __typename?: 'Mutation', completeSession: { __typename?: 'CompleteSessionPayload', success: boolean, session?: { __typename?: 'HostedSession', id: string, status: HostedSessionStatus, pathway_id: string, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } | null } };
 
 export type EvaluateFormRulesMutationVariables = Exact<{
   input: EvaluateFormRulesInput;
@@ -3538,6 +3565,49 @@ export function useCompleteExtensionActivityMutation(baseOptions?: Apollo.Mutati
 export type CompleteExtensionActivityMutationHookResult = ReturnType<typeof useCompleteExtensionActivityMutation>;
 export type CompleteExtensionActivityMutationResult = Apollo.MutationResult<CompleteExtensionActivityMutation>;
 export type CompleteExtensionActivityMutationOptions = Apollo.BaseMutationOptions<CompleteExtensionActivityMutation, CompleteExtensionActivityMutationVariables>;
+export const CompleteSessionDocument = gql`
+    mutation CompleteSession($input: CompleteSessionInput!) {
+  completeSession(input: $input) {
+    success
+    session {
+      id
+      status
+      pathway_id
+      stakeholder {
+        id
+        type
+        name
+      }
+    }
+  }
+}
+    `;
+export type CompleteSessionMutationFn = Apollo.MutationFunction<CompleteSessionMutation, CompleteSessionMutationVariables>;
+
+/**
+ * __useCompleteSessionMutation__
+ *
+ * To run a mutation, you first call `useCompleteSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCompleteSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [completeSessionMutation, { data, loading, error }] = useCompleteSessionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCompleteSessionMutation(baseOptions?: Apollo.MutationHookOptions<CompleteSessionMutation, CompleteSessionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CompleteSessionMutation, CompleteSessionMutationVariables>(CompleteSessionDocument, options);
+      }
+export type CompleteSessionMutationHookResult = ReturnType<typeof useCompleteSessionMutation>;
+export type CompleteSessionMutationResult = Apollo.MutationResult<CompleteSessionMutation>;
+export type CompleteSessionMutationOptions = Apollo.BaseMutationOptions<CompleteSessionMutation, CompleteSessionMutationVariables>;
 export const EvaluateFormRulesDocument = gql`
     mutation EvaluateFormRules($input: EvaluateFormRulesInput!) {
   evaluateFormRules(input: $input) {
