@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import isNil from 'lodash/isNil'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import {
   Activity,
   useOnSessionActivityCompletedSubscription,
   useOnSessionActivityCreatedSubscription,
   useOnSessionActivityExpiredSubscription,
   useGetHostedSessionActivitiesQuery,
+  ActivityStatus,
 } from './types'
 import { captureException } from '@sentry/nextjs'
 import { useRouter } from 'next/router'
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
+  isActivityComplete: boolean
   error?: string
   refetch?: () => {}
   startPolling: (pollInterval: number) => void
@@ -76,9 +78,24 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     }
   }, [onActivityCreated.data, router.query])
 
+  /**
+   * We want to redirect directly after individual activity completion, so this handler is a special case.
+   */
+  const isActivityComplete = useMemo(() => {
+    const { activity_id } = router.query
+    if (!isNil(activity_id)) {
+      return allActivities.some(
+        (activity) =>
+          activity.id === activity_id && activity.status === ActivityStatus.Done
+      )
+    }
+    return false
+  }, [router.query, allActivities])
+
   return {
     activities,
     loading,
+    isActivityComplete,
     error: error?.message,
     refetch,
     startPolling,

@@ -2,12 +2,15 @@
 import { isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import { ErrorPage, LoadingPage } from '../../'
 import { LogEvent, useLogging } from '../../../hooks/useLogging'
 import { useSessionActivities } from '../../../hooks/useSessionActivities'
+import { useCompleteSession } from '../../../hooks/useCompleteSession'
 import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
 import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
+import useLocalStorage from 'use-local-storage'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
 const POLLING_TIMEOUT = 15000 // 15 seconds
@@ -26,12 +29,22 @@ const isActive = (activity: Activity | undefined) =>
  */
 export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const { t } = useTranslation()
+  const [, setLogoOverride] = useLocalStorage('awell-hp-logo-override', '')
+  const router = useRouter()
   const [currentActivity, setCurrentActivity] = useState<Activity>()
   const [state, setState] =
     useState<ActivityContextInterface['state']>('polling')
-  const { activities, loading, error, refetch, startPolling, stopPolling } =
-    useSessionActivities()
+  const {
+    activities,
+    loading,
+    error,
+    refetch,
+    startPolling,
+    stopPolling,
+    isActivityComplete,
+  } = useSessionActivities()
   const { infoLog, errorLog } = useLogging()
+  const { onCompleteSession, isCompleting } = useCompleteSession()
 
   // Array of strings combining activity id and status.
   // Used as a dependency for the effect to ensure it only runs when the set or status of activities changes,
@@ -42,6 +55,14 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   // this useEffect drives whole AHP logic, only by activities being changed in apollo cache
   // and base on their status do we determine what to show to the user
   useEffect(() => {
+    const activityWithLogoOverride = activities.find(
+      (a) => a.status === ActivityStatus.Active && a.metadata?.ahp_logo_override
+    )
+    if (activityWithLogoOverride) {
+      setLogoOverride(activityWithLogoOverride.metadata.ahp_logo_override)
+    } else {
+      setLogoOverride('')
+    }
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
     infoLog(
@@ -135,6 +156,18 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       setState('active-activity-found')
     }
   }, [currentActivity])
+
+  useEffect(() => {
+    // we're only handling individual activities here --
+    if (isActivityComplete && !isCompleting && router.query.sessionId) {
+      void onCompleteSession(router.query.sessionId as string)
+    }
+  }, [
+    isActivityComplete,
+    isCompleting,
+    router.query.sessionId,
+    onCompleteSession,
+  ])
 
   if (loading || isNil(currentActivity) || !isActive(currentActivity)) {
     return <LoadingPage />
