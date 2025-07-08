@@ -7,6 +7,7 @@ import { NoSSRComponent } from '../../src/components/NoSSR'
 import { StartHostedCareflowSessionParams } from '../api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
 import { StartHostedCareflowSessionFlow } from '../../src/components/StartHostedPathwaySessionFlow'
 import { LoadingPage } from '../../src/components'
+import { validateLocale } from '../../src/utils'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'goto.awell.health/c/<hostedCareflowLinkId>?patient_identifier=system|id'
@@ -37,9 +38,12 @@ const HostedCareflowLink: NextPage = () => {
 export default HostedCareflowLink
 
 export async function getStaticProps({ locale }: { locale: string }) {
+  // Validate and normalize the locale, falling back to 'en' if misconfigured
+  const validatedLocale = validateLocale(locale)
+
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(validatedLocale, ['common'])),
     },
   }
 }

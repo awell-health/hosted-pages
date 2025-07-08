@@ -12,6 +12,7 @@ import Head from 'next/head'
 import { ErrorBoundary } from '../src/components/ErrorBoundary'
 import { NoSSRComponent } from '../src/components/NoSSR'
 import Image from 'next/image'
+import { validateLocale } from '../src/utils'
 
 const AWELL_BRAND_COLOR = '#004ac2'
 
@@ -91,9 +92,12 @@ const Preview: NextPage = () => {
 export default Preview
 
 export async function getStaticProps({ locale }: { locale: string }) {
+  // Validate and normalize the locale, falling back to 'en' if misconfigured
+  const validatedLocale = validateLocale(locale)
+
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(validatedLocale, ['common'])),
     },
   }
 }
