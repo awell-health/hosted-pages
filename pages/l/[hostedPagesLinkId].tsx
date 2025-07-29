@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { ThemeProvider } from '@awell-health/ui-library'
 import { AWELL_BRAND_COLOR } from '../../src/config'
 import { NoSSRComponent } from '../../src/components/NoSSR'
+import { validateLocale } from '../../src/utils'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'hosted-pages.awellhealth.com/l/<hostedPagesLinkId>'
@@ -32,9 +33,12 @@ const HostedPagesLink: NextPage = () => {
 export default HostedPagesLink
 
 export async function getStaticProps({ locale }: { locale: string }) {
+  // Validate and normalize the locale, falling back to 'en' if misconfigured
+  const validatedLocale = validateLocale(locale)
+
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(validatedLocale, ['common'])),
     },
   }
 }
