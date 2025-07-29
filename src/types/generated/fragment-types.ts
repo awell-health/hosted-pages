@@ -43,6 +43,7 @@
       "ChecklistPayload",
       "ClinicalNotePayload",
       "CompleteExtensionActivityPayload",
+      "CompleteSessionPayload",
       "CreatePatientPayload",
       "DecisionOutputsPayload",
       "ElementsPayload",

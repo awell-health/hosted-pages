@@ -22,6 +22,7 @@ fragment Activity on Activity {
     track_id
   }
   reference_type
+  metadata
   inputs {
     type
     ... on FormActivityInputs {
