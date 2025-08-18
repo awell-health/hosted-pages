@@ -163,6 +163,10 @@ const populateInitialPrefs = (
   providerPrefs: Omit<ActionFields, 'patientName' | 'providerId'>
 ) => {
   return {
+    /**
+     * When no age is provided, it will default to 30
+     * See: https://github.com/awell-health/sol-scheduling/pull/84/files
+     */
     age: providerPrefs.agePreference
       ? String(providerPrefs.agePreference)
       : undefined,
