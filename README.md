@@ -10,7 +10,7 @@ Hosted Pages supports multiple languages. Translations are managed with [Localaz
 
 - English is the source language. The English translations can be found in `public/locales/en/common.json`
 - When new translations keys are added, you should only update the `.../en/common.json` file. Changes to this file are detected by the CI/CD pipeline and are automatically pushed to Localazy. Note that the source of truth for the translation strings for English are also in Localazy. Any changes to translations you make in `.../en/common.json` will be overwritten with what is configured in Localazy.
-- Translations for all other languages should be managed in Localazy.
+- Translations for all other languages should be managed in Localazy
 
 ### How to fetch updated Translations and deploy them
 
