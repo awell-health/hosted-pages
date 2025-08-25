@@ -38,7 +38,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
   const { session, metadata } = useHostedSession()
   const { log } = useLogging()
 
-  const { providerId, patientName, ...providerPrefs } =
+  const { providerId, patientName, salesforceLeadId, ...providerPrefs } =
     mapActionFieldsToObject<ActionFields>(fields)
 
   const initialPrefs = populateInitialPrefs(providerPrefs)
@@ -115,6 +115,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
           providerId: _slot.providerId,
           userInfo: {
             userName: patientName,
+            ...(salesforceLeadId && { salesforceLeadId }),
           },
           locationType: _slot.confirmedLocation,
         },
@@ -122,7 +123,7 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
         log,
       })
     },
-    [patientName, baseUrl, logContext, log]
+    [patientName, salesforceLeadId, baseUrl, logContext, log]
   )
 
   const completeActivity = useCallback(
