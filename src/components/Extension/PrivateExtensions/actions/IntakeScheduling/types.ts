@@ -49,4 +49,5 @@ export type ActionFields = {
     | 'VA'
     | 'WY'
     | undefined
+  salesforceLeadId?: string | undefined
 }

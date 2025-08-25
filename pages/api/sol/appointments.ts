@@ -75,18 +75,37 @@ export default async function handler(
     }
 
     const jsonRes: BookAppointmentResponseType = await response.json()
+
+    const salesforceLeadId = (bodyValidation.data.userInfo as any)
+      ?.salesforceLeadId
+
+    const magicLink = salesforceLeadId
+      ? `${process.env.NEXT_PUBLIC_DOMAIN}/magic-link/${salesforceLeadId}`
+      : undefined
+
+    const enhancedResponse = {
+      ...jsonRes,
+      data: {
+        ...(typeof jsonRes.data === 'object' && jsonRes.data !== null
+          ? jsonRes.data
+          : {}),
+        salesforceLeadId,
+        magicLink,
+      },
+    }
+
     log(
       `${logMessage}: success`,
       {
         requestBody: input,
-        responseBody: jsonRes,
+        responseBody: enhancedResponse,
         url,
         performance: new Date().valueOf() - startTime,
         context: logContext,
       },
       'INFO'
     )
-    return res.status(200).json(jsonRes)
+    return res.status(200).json(enhancedResponse)
   } catch (error) {
     const errMessage = 'Internal Server Error'
     log(
