@@ -76,31 +76,18 @@ export default async function handler(
 
     const jsonRes: BookAppointmentResponseType = await response.json()
 
-    const salesforceLeadId = (bodyValidation.data.userInfo as any)
-      ?.salesforceLeadId
-
-    const enhancedResponse = {
-      ...jsonRes,
-      data: {
-        ...(typeof jsonRes.data === 'object' && jsonRes.data !== null
-          ? jsonRes.data
-          : {}),
-        salesforceLeadId,
-      },
-    }
-
     log(
       `${logMessage}: success`,
       {
         requestBody: input,
-        responseBody: enhancedResponse,
+        responseBody: jsonRes,
         url,
         performance: new Date().valueOf() - startTime,
         context: logContext,
       },
       'INFO'
     )
-    return res.status(200).json(enhancedResponse)
+    return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
     log(
