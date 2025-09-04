@@ -79,10 +79,6 @@ export default async function handler(
     const salesforceLeadId = (bodyValidation.data.userInfo as any)
       ?.salesforceLeadId
 
-    const magicLink = salesforceLeadId
-      ? `${process.env.NEXT_PUBLIC_DOMAIN}/magic-link/${salesforceLeadId}`
-      : undefined
-
     const enhancedResponse = {
       ...jsonRes,
       data: {
@@ -90,7 +86,6 @@ export default async function handler(
           ? jsonRes.data
           : {}),
         salesforceLeadId,
-        magicLink,
       },
     }
 
