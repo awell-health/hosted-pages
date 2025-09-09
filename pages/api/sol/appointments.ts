@@ -75,6 +75,7 @@ export default async function handler(
     }
 
     const jsonRes: BookAppointmentResponseType = await response.json()
+
     log(
       `${logMessage}: success`,
       {

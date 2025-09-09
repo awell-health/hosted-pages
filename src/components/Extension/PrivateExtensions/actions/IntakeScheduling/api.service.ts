@@ -15,6 +15,7 @@ import { SolApiResponseError } from './helpers/error'
 import type { HostedSession } from '../../../../../hooks/useHostedSession/types'
 import { type SessionMetadata } from '../../../../../types/generated/types-orchestration'
 import { LogEvent, LogSeverity } from '../../../../../hooks/useLogging/types'
+
 interface RequestOptions {
   baseUrl: string
   logContext?: {
@@ -70,7 +71,7 @@ export const fetchProviders = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
-      `Fetch Providers: ${timeEnd - timeStart} milliseconds`,
+      `SOL: Fetch Providers: ${timeEnd - timeStart} milliseconds`,
       {
         time: timeEnd - timeStart,
         api: 'fetchProviders',
@@ -118,7 +119,7 @@ export const fetchProvider = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
-      `Fetch Provider: ${timeEnd - timeStart} milliseconds`,
+      `SOL: Fetch Provider: ${timeEnd - timeStart} milliseconds`,
       {
         time: timeEnd - timeStart,
         api: 'fetchProvider',
@@ -166,7 +167,7 @@ export const fetchAvailability = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
-      `Fetch Availability: ${timeEnd - timeStart} milliseconds`,
+      `SOL: Fetch Availability: ${timeEnd - timeStart} milliseconds`,
       {
         time: timeEnd - timeStart,
         api: 'fetchAvailability',
@@ -187,6 +188,16 @@ export const bookAppointment = async ({
 }): Promise<BookAppointmentResponseType> => {
   const timeStart = new Date().valueOf()
   try {
+    log(
+      `SOL: Book Appointment request`,
+      {
+        body: input,
+        requestOptions,
+        api: 'bookAppointment',
+      },
+      'INFO',
+      LogEvent.SOL_API_REQUEST
+    )
     const response = await fetch(`/api/sol/appointments`, {
       method: 'POST',
       headers: {
@@ -208,7 +219,7 @@ export const bookAppointment = async ({
   } finally {
     const timeEnd = new Date().valueOf()
     log(
-      `Book Appointment: ${timeEnd - timeStart} milliseconds`,
+      `SOL: Book Appointment: ${timeEnd - timeStart} milliseconds`,
       {
         time: timeEnd - timeStart,
         api: 'bookAppointment',
