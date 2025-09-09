@@ -52,8 +52,10 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
     () => ({
       session,
       metadata,
+      fields,
+      activity_id,
     }),
-    [session, metadata]
+    [session, metadata, fields, activity_id]
   )
 
   const { baseUrl } = useMemo(
