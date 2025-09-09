@@ -13,7 +13,7 @@ import { ActivityReferenceType } from '../../../types/generated/types-orchestrat
 import useLocalStorage from 'use-local-storage'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
-const POLLING_TIMEOUT = 15000 // 15 seconds
+const POLLING_TIMEOUT = 30000 // 30 seconds
 const AGENT_ACTIVITY_POLLING_TIMEOUT = 300000 // 5 minutes
 
 interface ActivityProviderProps {
