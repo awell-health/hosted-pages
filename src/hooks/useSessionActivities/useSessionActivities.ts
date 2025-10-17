@@ -11,6 +11,13 @@ import {
 } from './types'
 import { captureException } from '@sentry/nextjs'
 import { useRouter } from 'next/router'
+import { useLogging } from '../useLogging'
+import { LogEvent } from '../useLogging/types'
+import {
+  OnSessionActivityCompletedSubscription,
+  OnSessionActivityCreatedSubscription,
+  OnSessionActivityExpiredSubscription,
+} from '../../types/generated/types-orchestration'
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
@@ -26,6 +33,7 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     only_stakeholder_activities: true,
   }
   const router = useRouter()
+  const { infoLog, warningLog } = useLogging()
   const {
     data,
     error,
@@ -55,82 +63,122 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
    */
   useEffect(() => {
     // Subscribe to new activities being created
-    const unsubscribeCreated = subscribeToMore({
-      document: OnSessionActivityCreatedDocument,
-      variables,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev
+    const unsubscribeCreated =
+      subscribeToMore<OnSessionActivityCreatedSubscription>({
+        document: OnSessionActivityCreatedDocument,
+        variables,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev
 
-        const subData = subscriptionData.data as any
-        console.log('OnSessionActivityCreated subscriptionData', subData)
-        const newActivity = subData.sessionActivityCreated
-        const existingActivities = prev.hostedSessionActivities.activities
+          const subData = subscriptionData.data
+          const newActivity = subData.sessionActivityCreated
+          const existingActivities = prev.hostedSessionActivities.activities
 
-        // Check if activity already exists to avoid duplicates
-        if (existingActivities.some((a) => a.id === newActivity.id)) {
-          return prev
-        }
+          // Check if activity already exists to avoid duplicates
+          if (existingActivities.some((a) => a.id === newActivity.id)) {
+            warningLog(
+              `Activity ${newActivity.id} already exists, skipping duplicate`,
+              {
+                activityId: newActivity.id,
+                activityType: newActivity.object.type,
+              },
+              LogEvent.SUBSCRIPTION_ACTIVITY_DUPLICATE
+            )
+            return prev
+          }
 
-        // Add new activity to the array
-        return {
-          ...prev,
-          hostedSessionActivities: {
-            ...prev.hostedSessionActivities,
-            activities: [...existingActivities, newActivity],
-          },
-        }
-      },
-    })
+          infoLog(
+            `New activity created via subscription: ${newActivity.id} (${newActivity.object.type} - ${newActivity.object.name})`,
+            {
+              activityId: newActivity.id,
+              activityType: newActivity.object.type,
+              activityName: newActivity.object.name,
+              status: newActivity.status,
+            },
+            LogEvent.SUBSCRIPTION_ACTIVITY_CREATED
+          )
+
+          // Add new activity to the array
+          return {
+            ...prev,
+            hostedSessionActivities: {
+              ...prev.hostedSessionActivities,
+              activities: [...existingActivities, newActivity],
+            },
+          }
+        },
+      })
 
     // Subscribe to activities being completed (status change)
-    const unsubscribeCompleted = subscribeToMore({
-      document: OnSessionActivityCompletedDocument,
-      variables,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev
+    const unsubscribeCompleted =
+      subscribeToMore<OnSessionActivityCompletedSubscription>({
+        document: OnSessionActivityCompletedDocument,
+        variables,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev
 
-        const subData = subscriptionData.data as any
-        console.log('OnSessionActivityCompleted subscriptionData', subData)
-        const completedActivity = subData.sessionActivityCompleted
-        const existingActivities = prev.hostedSessionActivities.activities
+          const subData = subscriptionData.data
+          const completedActivity = subData.sessionActivityCompleted
+          const existingActivities = prev.hostedSessionActivities.activities
 
-        // Update the activity in the array with the new status
-        return {
-          ...prev,
-          hostedSessionActivities: {
-            ...prev.hostedSessionActivities,
-            activities: existingActivities.map((a) =>
-              a.id === completedActivity.id ? completedActivity : a
-            ),
-          },
-        }
-      },
-    })
+          infoLog(
+            `Activity completed via subscription: ${completedActivity.id} (${completedActivity.object.type} - ${completedActivity.object.name})`,
+            {
+              activityId: completedActivity.id,
+              activityType: completedActivity.object.type,
+              activityName: completedActivity.object.name,
+              status: completedActivity.status,
+            },
+            LogEvent.SUBSCRIPTION_ACTIVITY_COMPLETED
+          )
+
+          // Update the activity in the array with the new status
+          return {
+            ...prev,
+            hostedSessionActivities: {
+              ...prev.hostedSessionActivities,
+              activities: existingActivities.map((a) =>
+                a.id === completedActivity.id ? completedActivity : a
+              ),
+            },
+          }
+        },
+      })
 
     // Subscribe to activities being expired (status change)
-    const unsubscribeExpired = subscribeToMore({
-      document: OnSessionActivityExpiredDocument,
-      variables,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev
+    const unsubscribeExpired =
+      subscribeToMore<OnSessionActivityExpiredSubscription>({
+        document: OnSessionActivityExpiredDocument,
+        variables,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev
+          const subData = subscriptionData.data
+          const expiredActivity = subData.sessionActivityExpired
+          const existingActivities = prev.hostedSessionActivities.activities
 
-        const subData = subscriptionData.data as any
-        console.log('OnSessionActivityExpired subscriptionData', subData)
-        const expiredActivity = subData.sessionActivityExpired
-        const existingActivities = prev.hostedSessionActivities.activities
+          infoLog(
+            `Activity expired via subscription: ${expiredActivity.id} (${expiredActivity.object.type} - ${expiredActivity.object.name})`,
+            {
+              activityId: expiredActivity.id,
+              activityType: expiredActivity.object.type,
+              activityName: expiredActivity.object.name,
+              status: expiredActivity.status,
+            },
+            LogEvent.SUBSCRIPTION_ACTIVITY_EXPIRED
+          )
 
-        // Update the activity in the array with the new status
-        return {
-          ...prev,
-          hostedSessionActivities: {
-            ...prev.hostedSessionActivities,
-            activities: existingActivities.map((a) =>
-              a.id === expiredActivity.id ? expiredActivity : a
-            ),
-          },
-        }
-      },
-    })
+          // Update the activity in the array with the new status
+          return {
+            ...prev,
+            hostedSessionActivities: {
+              ...prev.hostedSessionActivities,
+              activities: existingActivities.map((a) =>
+                a.id === expiredActivity.id ? expiredActivity : a
+              ),
+            },
+          }
+        },
+      })
 
     // Cleanup subscriptions on unmount
     return () => {

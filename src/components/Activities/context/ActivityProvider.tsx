@@ -88,11 +88,9 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         const hasAgentActivity = activities.some(
           (a) => a.reference_type === ActivityReferenceType.Agent
         )
-        const newState = hasAgentActivity ? 'polling-extended' : 'polling'
-        // Only update state if it's different to prevent unnecessary re-renders
-        if (state !== newState) {
-          setState(newState)
-        }
+        const nextState = hasAgentActivity ? 'polling-extended' : 'polling'
+        // Use functional update to prevent unnecessary re-renders
+        setState((prev) => (prev === nextState ? prev : nextState))
       } else {
         // we have something to activate, stop polling, no need for it
         setCurrentActivity(firstActive)
