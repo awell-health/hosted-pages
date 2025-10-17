@@ -9,11 +9,11 @@ import {
   split,
 } from '@apollo/client'
 import { ErrorLink, onError } from '@apollo/client/link/error'
+import { RetryLink } from '@apollo/client/link/retry'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient as createWebsocketClient } from 'graphql-ws'
 import { isNil } from 'lodash'
-import { LogEvent } from '../../hooks/useLogging/types'
 
 export const createClient = ({
   httpUri,
@@ -33,6 +33,22 @@ export const createClient = ({
   //errorLog: (message: {}, error: string | {}, event: LogEvent) => void
 }): ApolloClient<NormalizedCacheObject> => {
   const httpLink = createHttpLink({ uri: httpUri })
+
+  const retryLink = new RetryLink({
+    delay: {
+      initial: 300,
+      max: 2000,
+      jitter: true,
+    },
+    attempts: {
+      max: 3,
+      retryIf: (error) => {
+        // Only retry on network errors, not GraphQL errors
+        // Network errors indicate connectivity issues that might be transient
+        return !!error && !error.result
+      },
+    },
+  })
 
   const errorHandlingLink = onError((response) => {
     if (response.networkError) {
@@ -108,6 +124,7 @@ export const createClient = ({
   const defaultLink = ApolloLink.from([
     authenticationLink,
     ...extraLinks,
+    retryLink,
     errorHandlingLink,
     httpLink,
   ])
