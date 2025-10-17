@@ -169,7 +169,9 @@ const populateInitialPrefs = (
     age: providerPrefs.agePreference
       ? String(providerPrefs.agePreference)
       : undefined,
-    insurance: providerPrefs.insuranceFilter as string | undefined,
+    insurance: providerPrefs.insuranceFilter
+      ? String(providerPrefs.insuranceFilter)
+      : undefined,
     gender: providerPrefs.genderPreference as Gender,
     ethnicity: providerPrefs.ethnicityPreference as Ethnicity,
     therapeuticModality: providerPrefs.therapeuticModalityPreference as z.infer<
