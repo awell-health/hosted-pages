@@ -82,14 +82,13 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       if (isNil(firstActive)) {
         // nothing to activate, start polling for new activities so we don't rely on subscriptions
         setCurrentActivity(undefined)
-        if (
-          activities.some(
-            (a) => a.reference_type === ActivityReferenceType.Agent
-          )
-        ) {
-          setState('polling-extended')
-        } else {
-          setState('polling')
+        const hasAgentActivity = activities.some(
+          (a) => a.reference_type === ActivityReferenceType.Agent
+        )
+        const newState = hasAgentActivity ? 'polling-extended' : 'polling'
+        // Only update state if it's different to prevent unnecessary re-renders
+        if (state !== newState) {
+          setState(newState)
         }
       } else {
         // we have something to activate, stop polling, no need for it

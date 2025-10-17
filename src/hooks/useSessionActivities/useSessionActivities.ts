@@ -70,13 +70,21 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
 
   const allActivities = data?.hostedSessionActivities.activities ?? []
 
-  const activities = allActivities.filter(filterActivity).sort(sortByDate)
+  // Memoize activities to prevent unnecessary array recreations
+  // which could cause infinite loops in components that depend on this
+  const activities = useMemo(() => {
+    return allActivities.filter(filterActivity).sort(sortByDate)
+  }, [allActivities, router.query.activity_id, router.query.track_id])
 
   useEffect(() => {
     if (!isNil(onActivityCreated.data)) {
-      refetch()
+      // Only refetch if we're filtering by activity_id or track_id
+      // Otherwise, the subscription will update the cache automatically
+      if (!isNil(router.query.activity_id) || !isNil(router.query.track_id)) {
+        refetch()
+      }
     }
-  }, [onActivityCreated.data, router.query])
+  }, [onActivityCreated.data])
 
   /**
    * We want to redirect directly after individual activity completion, so this handler is a special case.
