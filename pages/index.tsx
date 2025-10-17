@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -15,7 +14,14 @@ import { ThemeProvider, HostedPageLayout } from '@awell-health/ui-library'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import awell_logo from '../src/assets/logo.svg'
-import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { defaultTo, isNil } from 'lodash'
 import { useSessionStorage } from '../src/hooks/useSessionStorage'
@@ -65,16 +71,11 @@ const Home: NextPageWithLayout = () => {
   const [showInvalidSession, setShowInvalidSession] = useState(false)
 
   const handleNetworkErrorRetry = useCallback(async () => {
-    // Reset network error state
-    setNetworkError(false)
-
     try {
-      // Attempt to refetch the session
-      await refetch?.()
+      const res = await refetch?.()
 
-      // Check if we now have session data
-      if (session) {
-        // Success! Reset error count and clear the network error state
+      const refetchedSession = res?.data?.hostedSession?.session
+      if (refetchedSession) {
         resetNetworkErrorCount()
         setNetworkError(false)
         setShowInvalidSession(false)
@@ -86,21 +87,13 @@ const Home: NextPageWithLayout = () => {
             sessionId: router.query.sessionId,
           },
         })
-      } else if (!sessionLoading && !error) {
-        // Refetch completed but no session - show invalid session page
-        setShowInvalidSession(true)
-        setNetworkError(false)
-
-        addSentryBreadcrumb({
-          category: BreadcrumbCategory.GENERIC,
-          data: {
-            message: 'Retry succeeded but session is invalid',
-            sessionId: router.query.sessionId,
-          },
-        })
+        return
       }
+
+      // No session and no unauthorized → treat as invalid
+      setShowInvalidSession(true)
+      setNetworkError(false)
     } catch (err) {
-      // Retry failed - keep showing network error page
       setNetworkError(true)
 
       addSentryBreadcrumb({
@@ -114,38 +107,18 @@ const Home: NextPageWithLayout = () => {
     }
   }, [
     refetch,
-    session,
-    sessionLoading,
-    error,
     resetNetworkErrorCount,
     setNetworkError,
+    setShowInvalidSession,
     router.query.sessionId,
   ])
 
-  const redirectAfterSession = (url: string) => {
-    // adding 2 second delay so users are aware of the redirection and we don't change the page abruptly
-    setTimeout(() => {
-      removeAccessToken()
-      setLogoOverride('')
-      router.push(url)
-    }, 2000)
-
-    // add sentry breadcrumb if redirect takes more than 10 seconds
-    setTimeout(() => {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.SLOW_REDIRECT,
-        data: { session, message: 'Redirect took at least 10 seconds' },
-      })
-    }, 10000)
-
-    // add sentry breadcrumb if redirect takes more than 15 seconds
-    setTimeout(() => {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.SLOW_REDIRECT,
-        data: { session, message: 'Redirect took at least 15 seconds' },
-      })
-    }, 15001)
-  }
+  const { redirectAfterSession, shouldRedirect } = useRedirectAfterSession({
+    removeAccessToken,
+    setLogoOverride,
+    router,
+    session,
+  })
 
   const onOpenCloseHostedSessionModal = () => {
     setIsCloseHostedSessionModalOpen(true)
@@ -163,15 +136,9 @@ const Home: NextPageWithLayout = () => {
     router.push(session?.cancel_url ?? 'https://awell.health')
   }
 
-  const shouldRedirect =
-    (session?.status === HostedSessionStatus.Completed &&
-      !isNil(session?.success_url)) ||
-    (session?.status === HostedSessionStatus.Expired &&
-      !isNil(session?.cancel_url))
-
   const hideCloseButton =
     (session?.status !== HostedSessionStatus.Active && !shouldRedirect) ||
-    !theme.layout.showCloseButton
+    !theme?.layout?.showCloseButton
 
   useEffect(() => {
     if (isNil(session?.status)) {
@@ -229,49 +196,23 @@ const Home: NextPageWithLayout = () => {
         return
       }
     }
-  }, [session])
+  }, [session, shouldRedirect, infoLog, redirectAfterSession])
 
-  const renderSessionContent = () => {
-    if (session) {
-      switch (session.status) {
-        case HostedSessionStatus.Active:
-          return <ActivitiesContainer />
-        case HostedSessionStatus.Completed:
-          return <SuccessPage redirect={shouldRedirect} />
-        case HostedSessionStatus.Expired:
-          return <SessionExpiredPage redirect={shouldRedirect} />
-      }
-    } else {
-      return null
-    }
-  }
-  const logo = useMemo(() => {
-    if (theme.layout.showLogo) {
-      const AwellLogo = <Image src={awell_logo} alt="Awell Logo" />
-      if (logoOverride && logoOverride !== '') {
-        return logoOverride
-      }
-      return defaultTo(branding?.logo_url, AwellLogo)
-    }
-    return undefined
-  }, [logoOverride, branding])
+  // content now handled by SessionRouter component
+  const logo = useLogo(theme, branding, logoOverride)
 
   // Show network error page if retry link failed after 3 attempts
   if (hasNetworkError && networkErrorCount >= 3) {
     const sessionId = router.query.sessionId as string | undefined
     return (
-      <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
-        <HostedPageLayout
-          logo={logo}
-          onCloseHostedPage={onOpenCloseHostedSessionModal}
-          hideCloseButton={true}
-        >
-          <NetworkErrorPage
-            onRetry={handleNetworkErrorRetry}
-            sessionId={sessionId}
-          />
-        </HostedPageLayout>
-      </ThemeProvider>
+      <NetworkErrorGate
+        show={true}
+        branding={branding}
+        logo={logo}
+        onCloseHostedPage={onOpenCloseHostedSessionModal}
+        onRetry={handleNetworkErrorRetry}
+        sessionId={sessionId}
+      />
     )
   }
 
@@ -280,15 +221,14 @@ const Home: NextPageWithLayout = () => {
     const sessionId = router.query.sessionId as string | undefined
     const errorType = error === 'UNAUTHORIZED' ? 'unauthorized' : 'not_found'
     return (
-      <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
-        <HostedPageLayout
-          logo={logo}
-          onCloseHostedPage={onOpenCloseHostedSessionModal}
-          hideCloseButton={true}
-        >
-          <InvalidSessionPage sessionId={sessionId} errorType={errorType} />
-        </HostedPageLayout>
-      </ThemeProvider>
+      <InvalidSessionGate
+        show={true}
+        branding={branding}
+        logo={logo}
+        onCloseHostedPage={onOpenCloseHostedSessionModal}
+        sessionId={sessionId}
+        errorType={errorType}
+      />
     )
   }
 
@@ -309,7 +249,7 @@ const Home: NextPageWithLayout = () => {
           onCloseHostedPage={onOpenCloseHostedSessionModal}
           hideCloseButton={hideCloseButton}
         >
-          {renderSessionContent()}
+          <SessionRouter session={session} shouldRedirect={shouldRedirect} />
           {error && (
             <ErrorPage
               title={
@@ -355,4 +295,159 @@ export async function getStaticProps({ locale }: { locale: string }) {
       ...(await serverSideTranslations(validatedLocale, ['common'])),
     },
   }
+}
+
+// Redirect and breadcrumb timing constants
+const REDIRECT_DELAY_MS = 2000
+const SLOW_REDIRECT_10S_MS = 10000
+const SLOW_REDIRECT_15S_MS = 15001
+
+// Returns a stable redirect function with timeout cleanup and a derived shouldRedirect flag
+function useRedirectAfterSession(params: {
+  removeAccessToken: () => void
+  setLogoOverride: any
+  router: ReturnType<typeof useRouter>
+  session: any
+}) {
+  const { removeAccessToken, setLogoOverride, router, session } = params
+  const timeoutIdsRef = useRef<number[]>([])
+
+  const shouldRedirect = useMemo(() => {
+    const hasSuccess =
+      session?.status === HostedSessionStatus.Completed &&
+      !isNil(session?.success_url)
+    const hasCancel =
+      session?.status === HostedSessionStatus.Expired &&
+      !isNil(session?.cancel_url)
+    return hasSuccess || hasCancel
+  }, [session])
+
+  const clearAllTimeouts = useCallback(() => {
+    timeoutIdsRef.current.forEach((id) => clearTimeout(id))
+    timeoutIdsRef.current = []
+  }, [])
+
+  const redirectAfterSession = useCallback(
+    (url: string) => {
+      clearAllTimeouts()
+
+      const redirectId = window.setTimeout(() => {
+        removeAccessToken()
+        setLogoOverride('')
+        router.push(url)
+      }, REDIRECT_DELAY_MS)
+
+      const slow10sId = window.setTimeout(() => {
+        addSentryBreadcrumb({
+          category: BreadcrumbCategory.SLOW_REDIRECT,
+          data: { session, message: 'Redirect took at least 10 seconds' },
+        })
+      }, SLOW_REDIRECT_10S_MS)
+
+      const slow15sId = window.setTimeout(() => {
+        addSentryBreadcrumb({
+          category: BreadcrumbCategory.SLOW_REDIRECT,
+          data: { session, message: 'Redirect took at least 15 seconds' },
+        })
+      }, SLOW_REDIRECT_15S_MS)
+
+      timeoutIdsRef.current.push(redirectId, slow10sId, slow15sId)
+    },
+    [clearAllTimeouts, removeAccessToken, setLogoOverride, router, session]
+  )
+
+  useEffect(() => {
+    return () => {
+      clearAllTimeouts()
+    }
+  }, [clearAllTimeouts])
+
+  return { redirectAfterSession, shouldRedirect }
+}
+
+// Returns a consistent logo value supported by HostedPageLayout: string URL or JSX element
+function useLogo(
+  theme: any,
+  branding: any,
+  logoOverride: string
+): string | JSX.Element | undefined {
+  return useMemo(() => {
+    if (!theme?.layout?.showLogo) return undefined
+
+    const AwellLogo = <Image src={awell_logo} alt="Awell Logo" />
+
+    if (logoOverride && logoOverride !== '') {
+      return logoOverride
+    }
+
+    if (branding?.logo_url) {
+      return branding.logo_url as string
+    }
+
+    return AwellLogo
+  }, [theme, branding, logoOverride])
+}
+
+// Switches on session status to render the proper view
+function SessionRouter(props: { session: any; shouldRedirect: boolean }) {
+  const { session, shouldRedirect } = props
+  if (!session) return null
+
+  switch (session.status) {
+    case HostedSessionStatus.Active:
+      return <ActivitiesContainer />
+    case HostedSessionStatus.Completed:
+      return <SuccessPage redirect={shouldRedirect} />
+    case HostedSessionStatus.Expired:
+      return <SessionExpiredPage redirect={shouldRedirect} />
+    default:
+      return null
+  }
+}
+
+function NetworkErrorGate(props: {
+  show: boolean
+  branding: any
+  logo: string | JSX.Element | undefined
+  onCloseHostedPage: () => void
+  onRetry: () => Promise<void>
+  sessionId?: string
+}) {
+  const { show, branding, logo, onCloseHostedPage, onRetry, sessionId } = props
+  if (!show) return null
+  return (
+    <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
+      <HostedPageLayout
+        logo={logo}
+        onCloseHostedPage={onCloseHostedPage}
+        hideCloseButton={true}
+      >
+        <NetworkErrorPage onRetry={onRetry} sessionId={sessionId} />
+      </HostedPageLayout>
+    </ThemeProvider>
+  )
+}
+
+function InvalidSessionGate(props: {
+  show: boolean
+  branding: any
+  logo: string | JSX.Element | undefined
+  onCloseHostedPage: () => void
+  sessionId?: string
+  errorType: 'unauthorized' | 'not_found'
+}) {
+  const { show, branding, logo, onCloseHostedPage, sessionId, errorType } =
+    props
+  if (!show) return null
+  return (
+    <ThemeProvider accentColor={branding?.accent_color || AWELL_BRAND_COLOR}>
+      <HostedPageLayout
+        logo={logo}
+        onCloseHostedPage={onCloseHostedPage}
+        hideCloseButton={true}
+      >
+        <InvalidSessionPage sessionId={sessionId} errorType={errorType} />
+      </HostedPageLayout>
+    </ThemeProvider>
+  )
 }
