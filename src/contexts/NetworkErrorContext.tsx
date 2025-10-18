@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useState,
+  useCallback,
   FC,
   ReactNode,
 } from 'react'
@@ -36,17 +37,17 @@ export const NetworkErrorProvider: FC<NetworkErrorProviderProps> = ({
   const [hasNetworkError, setHasNetworkError] = useState(false)
   const [networkErrorCount, setNetworkErrorCount] = useState(0)
 
-  const setNetworkError = (hasError: boolean) => {
+  const setNetworkError = useCallback((hasError: boolean) => {
     setHasNetworkError(hasError)
-  }
+  }, [])
 
-  const incrementNetworkErrorCount = () => {
+  const incrementNetworkErrorCount = useCallback(() => {
     setNetworkErrorCount((prev) => prev + 1)
-  }
+  }, [])
 
-  const resetNetworkErrorCount = () => {
+  const resetNetworkErrorCount = useCallback(() => {
     setNetworkErrorCount(0)
-  }
+  }, [])
 
   return (
     <NetworkErrorContext.Provider

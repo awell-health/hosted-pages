@@ -5,10 +5,9 @@ import { appWithTranslation } from 'next-i18next'
 
 import type { FC, ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
-import { ConnectivityProvider } from '../src/contexts/ConnectivityContext'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
+  getLayout?: (_page: ReactElement) => ReactNode
 }
 
 type AppPropsWithLayout = AppProps & {
@@ -19,11 +18,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
 
-  return getLayout(
-    <ConnectivityProvider>
-      <Component {...pageProps} />
-    </ConnectivityProvider>
-  )
+  return getLayout(<Component {...pageProps} />)
 }
 
 export default appWithTranslation(MyApp as FC)
