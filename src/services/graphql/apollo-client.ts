@@ -85,29 +85,34 @@ export const createClient = ({
         connectionParams: {
           authToken: window.sessionStorage.getItem('accessToken'),
         },
-        /*
-        on: {
-          connected: () => {
-            infoLog(
-              { msg: 'GraphQL WebSocket connected' },
-              LogEvent.GRAPHQL_WS_CONNECTED
-            )
-          },
-          error: (error) => {
-            errorLog(
-              { msg: 'GraphQL WebSocket error', error },
-              JSON.stringify(error),
-              LogEvent.GRAPHQL_WS_ERROR
-            )
-          },
-          closed: () => {
-            infoLog(
-              { msg: 'GraphQL WebSocket disconnected' },
-              LogEvent.GRAPHQL_WS_DISCONNECTED
-            )
-          },
+        // Only open the socket when there is at least one active subscription
+        lazy: true,
+        // Retry forever with exponential backoff, but wait for online before retrying
+        retryAttempts: Infinity,
+        shouldRetry: (closeOrError) => {
+          // Do not retry on auth-related close codes
+          if (typeof (closeOrError as any)?.code === 'number') {
+            const code = (closeOrError as any).code as number
+            if (code === 4401 || code === 4403) return false
+          }
+          return true
         },
-        */
+        retryWait: async (retries) => {
+          // If offline, wait until the browser is back online first
+          if (typeof window !== 'undefined' && !window.navigator.onLine) {
+            await new Promise<void>((resolve) => {
+              const onOnline = () => {
+                window.removeEventListener('online', onOnline)
+                resolve()
+              }
+              window.addEventListener('online', onOnline)
+            })
+          }
+          // Exponential backoff with jitter (cap at ~16s)
+          const base = Math.min(16000, 1000 * Math.pow(2, retries))
+          const jitter = Math.floor(Math.random() * 300)
+          await new Promise((r) => setTimeout(r, base + jitter))
+        },
       })
     )
   }
