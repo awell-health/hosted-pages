@@ -108,14 +108,26 @@
       "description": "Es gibt noch einige Aktivitäten, die Sie abschließen müssen. Wenn Sie Ihre Sitzung stornieren, verlieren Sie möglicherweise Daten, die Sie noch nicht übermittelt haben.",
       "title": "Bist du sicher, dass du deine Sitzung stornieren möchtest?"
     },
+    "expired_description": "Your session has expired and is no longer accessible. Please contact support if you need assistance.",
     "expired_subtitle": "Your session has expired due to inactivity.",
     "expired_title": "Session expired",
+    "invalid_session_description": "This session is not valid or cannot be found. Please check your link or contact support.",
+    "invalid_session_title": "Invalid session",
     "invalid_url": "Ungültige URL: Die URL muss den Parameter `sessionID` enthalten.",
     "loading_error": "Beim Laden Ihrer Sitzung ist ein Fehler aufgetreten.",
+    "network_error_description": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
+    "network_error_title": "Network connection error",
     "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
+    "not_found_description": "The session you're looking for could not be found. It may have been removed or the link is incorrect.",
+    "not_found_title": "Session not found",
     "redirecting_to_next_page": "Ich werde dich gleich umleiten...",
+    "retry": "Retry",
+    "retrying": "Retrying...",
     "session_canceled": "Ihre Sitzung wurde abgesagt.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Erneut versuchen"
+    "session_id": "Session ID",
+    "try_again": "Erneut versuchen",
+    "unauthorized_description": "You don't have permission to access this session. It may have been completed, expired, or cancelled.",
+    "unauthorized_title": "Access denied"
   }
 }

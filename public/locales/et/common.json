@@ -108,14 +108,26 @@
       "description": "Kui täitmise katkestad, siis arstikeskus sinu pöördumist kätte ei saa.",
       "title": "Soovid pöördumise täitmise pooleli jätta?"
     },
+    "expired_description": "Your session has expired and is no longer accessible. Please contact support if you need assistance.",
     "expired_subtitle": "Teie seanss on tegevusetuse tõttu aegunud.",
     "expired_title": "Seanss lõppes",
+    "invalid_session_description": "This session is not valid or cannot be found. Please check your link or contact support.",
+    "invalid_session_title": "Invalid session",
     "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
     "loading_error": "Midagi läks seansi laadimisel valesti.",
+    "network_error_description": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
+    "network_error_title": "Network connection error",
     "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
+    "not_found_description": "The session you're looking for could not be found. It may have been removed or the link is incorrect.",
+    "not_found_title": "Session not found",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
+    "retry": "Retry",
+    "retrying": "Retrying...",
     "session_canceled": "Teie sessioon on katkestatud.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Proovi uuesti"
+    "session_id": "Session ID",
+    "try_again": "Proovi uuesti",
+    "unauthorized_description": "You don't have permission to access this session. It may have been completed, expired, or cancelled.",
+    "unauthorized_title": "Access denied"
   }
 }

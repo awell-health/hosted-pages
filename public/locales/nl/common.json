@@ -108,14 +108,26 @@
       "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
       "title": "Ben je zeker dat je de sessie wil afsluiten?"
     },
+    "expired_description": "Your session has expired and is no longer accessible. Please contact support if you need assistance.",
     "expired_subtitle": "Je sessie is vervallen door inactiviteit.",
     "expired_title": "Sessie vervallen",
+    "invalid_session_description": "This session is not valid or cannot be found. Please check your link or contact support.",
+    "invalid_session_title": "Invalid session",
     "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
     "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
+    "network_error_description": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
+    "network_error_title": "Network connection error",
     "no_more_pending_activities": "Er zijn geen openstaande activiteiten. U kunt deze pagina sluiten.",
+    "not_found_description": "The session you're looking for could not be found. It may have been removed or the link is incorrect.",
+    "not_found_title": "Session not found",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
+    "retry": "Retry",
+    "retrying": "Retrying...",
     "session_canceled": "Je sessie werd geannuleerd.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Opnieuw proberen"
+    "session_id": "Session ID",
+    "try_again": "Opnieuw proberen",
+    "unauthorized_description": "You don't have permission to access this session. It may have been completed, expired, or cancelled.",
+    "unauthorized_title": "Access denied"
   }
 }

@@ -108,14 +108,26 @@
       "description": "Il vous reste encore quelques activités à compléter. Si vous annulez votre session, vous risquez de perdre les données que vous n'avez pas encore soumises.",
       "title": "Êtes-vous sûr de vouloir annuler votre session ?"
     },
+    "expired_description": "Your session has expired and is no longer accessible. Please contact support if you need assistance.",
     "expired_subtitle": "Your session has expired due to inactivity.",
     "expired_title": "Session expired",
+    "invalid_session_description": "This session is not valid or cannot be found. Please check your link or contact support.",
+    "invalid_session_title": "Invalid session",
     "invalid_url": "URL invalide : l'URL doit contenir le paramètre `sessionId`.",
     "loading_error": "Quelque chose s'est mal passé lors du chargement de la session.",
+    "network_error_description": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
+    "network_error_title": "Network connection error",
     "no_more_pending_activities": "Tout est en ordre. Il n’y a plus d activités en attente. Vous pouvez fermer cette page.",
+    "not_found_description": "The session you're looking for could not be found. It may have been removed or the link is incorrect.",
+    "not_found_title": "Session not found",
     "redirecting_to_next_page": "Redirection dans un instant.",
+    "retry": "Retry",
+    "retrying": "Retrying...",
     "session_canceled": "Votre session a été annulée.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Réessayer"
+    "session_id": "Session ID",
+    "try_again": "Réessayer",
+    "unauthorized_description": "You don't have permission to access this session. It may have been completed, expired, or cancelled.",
+    "unauthorized_title": "Access denied"
   }
 }
