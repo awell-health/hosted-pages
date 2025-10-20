@@ -11,6 +11,7 @@ export type ActionFields = {
   providerId?: string | undefined
   patientName: string
   agePreference?: number | undefined
+  insuranceFilter?: string | undefined
   genderPreference?: 'M' | 'F' | 'Non-binary/non-conforming' | undefined
   ethnicityPreference?:
     | 'Asian'

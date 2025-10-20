@@ -9,6 +9,9 @@ export {
   ActivityStatus,
   ActivityAction,
   GetHostedSessionActivitiesDocument,
+  OnSessionActivityCreatedDocument,
+  OnSessionActivityCompletedDocument,
+  OnSessionActivityExpiredDocument,
 } from './../../types/generated/types-orchestration'
 
 export type {
