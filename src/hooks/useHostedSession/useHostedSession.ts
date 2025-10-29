@@ -11,7 +11,7 @@ import {
 import type { HostedSession } from './types'
 import { useEffect, useState } from 'react'
 import { isNil } from 'lodash'
-import { useApolloClient } from '@apollo/client'
+import { type ApolloQueryResult, useApolloClient } from '@apollo/client'
 import { updateQuery } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
@@ -29,21 +29,18 @@ interface UseHostedSessionHook {
   branding?: Maybe<BrandingSettings>
   theme: CustomTheme
   error?: string
-  refetch?: () => {}
+  refetch?: () => Promise<ApolloQueryResult<GetHostedSessionQuery>> | undefined
+  startPolling: (pollInterval: number) => void
+  stopPolling: () => void
 }
-
-const POLLING_DELAY_MS = 2000
 
 export const useHostedSession = (): UseHostedSessionHook => {
   const defaultTheme = getTheme()
 
   const [isSessionCompleted, setIsSessionCompleted] = useState(false)
 
-  const pollInterval = isSessionCompleted ? undefined : POLLING_DELAY_MS
-
-  const { data, loading, error, refetch, stopPolling } =
+  const { data, loading, error, refetch, stopPolling, startPolling } =
     useGetHostedSessionQuery({
-      pollInterval,
       onError: (error) => {
         Sentry.captureException(error, {
           contexts: {
@@ -146,7 +143,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }, [client, onHostedSessionExpired.data])
 
   if (loading) {
-    return { loading: true, theme: defaultTheme }
+    return { loading: true, theme: defaultTheme, startPolling, stopPolling }
   }
 
   if (error) {
@@ -161,6 +158,8 @@ export const useHostedSession = (): UseHostedSessionHook => {
       error: message,
       refetch,
       theme: defaultTheme,
+      startPolling,
+      stopPolling,
     }
   }
 
@@ -171,5 +170,7 @@ export const useHostedSession = (): UseHostedSessionHook => {
     branding: data?.hostedSession?.branding,
     theme: getTheme(data?.hostedSession?.branding?.custom_theme),
     refetch,
+    startPolling,
+    stopPolling,
   }
 }

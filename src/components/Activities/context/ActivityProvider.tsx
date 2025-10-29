@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { ErrorPage, LoadingPage } from '../../'
 import { LogEvent, useLogging } from '../../../hooks/useLogging'
@@ -49,7 +49,10 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   // Array of strings combining activity id and status.
   // Used as a dependency for the effect to ensure it only runs when the set or status of activities changes,
   // rather than on every new array reference.
-  const activityKeys = activities.map((a) => `${a.id}:${a.status}`)
+  const activityKeys = useMemo(
+    () => activities.map((a) => `${a.id}:${a.status}`).join(','),
+    [activities]
+  )
 
   // activities list changes as we get new activities from the server or as we complete activities
   // this useEffect drives whole AHP logic, only by activities being changed in apollo cache
@@ -82,22 +85,19 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       if (isNil(firstActive)) {
         // nothing to activate, start polling for new activities so we don't rely on subscriptions
         setCurrentActivity(undefined)
-        if (
-          activities.some(
-            (a) => a.reference_type === ActivityReferenceType.Agent
-          )
-        ) {
-          setState('polling-extended')
-        } else {
-          setState('polling')
-        }
+        const hasAgentActivity = activities.some(
+          (a) => a.reference_type === ActivityReferenceType.Agent
+        )
+        const nextState = hasAgentActivity ? 'polling-extended' : 'polling'
+        // Use functional update to prevent unnecessary re-renders
+        setState((prev) => (prev === nextState ? prev : nextState))
       } else {
         // we have something to activate, stop polling, no need for it
         setCurrentActivity(firstActive)
         stopPolling()
       }
     }
-  }, [activityKeys.join(',')])
+  }, [activityKeys])
 
   useEffect(() => {
     switch (state) {
@@ -169,7 +169,9 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     onCompleteSession,
   ])
 
-  if (loading || isNil(currentActivity) || !isActive(currentActivity)) {
+  // Only show loading page during initial GraphQL query load
+  // Let Activities component handle state-based rendering (polling, no-active-activity, etc.)
+  if (loading) {
     return <LoadingPage />
   }
 
