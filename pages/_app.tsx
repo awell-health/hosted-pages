@@ -7,7 +7,7 @@ import type { FC, ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
+  getLayout?: (_page: ReactElement) => ReactNode
 }
 
 type AppPropsWithLayout = AppProps & {
