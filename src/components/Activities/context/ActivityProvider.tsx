@@ -169,7 +169,9 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     onCompleteSession,
   ])
 
-  if (loading || isNil(currentActivity) || !isActive(currentActivity)) {
+  // Only show loading page during initial GraphQL query load
+  // Let Activities component handle state-based rendering (polling, no-active-activity, etc.)
+  if (loading) {
     return <LoadingPage />
   }
 
