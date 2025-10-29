@@ -15,7 +15,7 @@ export const Activities: FC = () => {
   const { t } = useTranslation()
   const { infoLog } = useLogging()
 
-  if (state === 'polling') {
+  if (state === 'polling' || state === 'polling-extended') {
     return <LoadingPage />
   }
   if (state === 'no-active-activity') {
