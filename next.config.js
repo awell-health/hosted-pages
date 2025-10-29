@@ -17,6 +17,7 @@ const sentryConfig = {
   authToken: process.env.SENTRY_AUTH_TOKEN || '',
   silent: false,
   hideSourceMaps: true,
+  widenClientFileUpload: true,
 }
 
 const nextPlugins = [(nextConfig) => withSentryConfig(nextConfig, sentryConfig)]
