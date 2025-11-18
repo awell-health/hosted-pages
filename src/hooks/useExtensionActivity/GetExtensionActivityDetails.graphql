@@ -7,6 +7,7 @@ query GetExtensionActivityDetails($id: String!) {
       data_points {
         label
         value
+        valueType
       }
       plugin_key
       plugin_action_key

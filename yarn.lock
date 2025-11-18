@@ -1898,6 +1898,33 @@
     text-encoding "0.7.0"
     ws "6.2.2"
 
+"@module-federation/error-codes@0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/error-codes/-/error-codes-0.18.4.tgz#d907dc16fa14edb7666bd97b865e6f9b4a6cb4b2"
+  integrity sha512-cpLsqL8du9CfTTCKvXbRg93ALF+lklqHnuPryhbwVEQg2eYo6CMoMQ6Eb7kJhLigUABIDujbHD01SvBbASGkeQ==
+
+"@module-federation/runtime-core@0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/runtime-core/-/runtime-core-0.18.4.tgz#ed4059c1d1f9743be4ce8da140ea9c439ccab1ac"
+  integrity sha512-LGGlFXlNeTbIGBFDiOvg0zz4jBWCGPqQatXdKx7mylXhDij7YmwbuW19oenX+P1fGhmoBUBM5WndmR87U66qWA==
+  dependencies:
+    "@module-federation/error-codes" "0.18.4"
+    "@module-federation/sdk" "0.18.4"
+
+"@module-federation/runtime@^0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/runtime/-/runtime-0.18.4.tgz#87ae451d61e10846b0857090a75977456e449f96"
+  integrity sha512-2et6p7pjGRHzpmrW425jt/BiAU7QHgkZtbQB7pj01eQ8qx6SloFEBk9ODnV8/ztSm9H2T3d8GxXA6/9xVOslmQ==
+  dependencies:
+    "@module-federation/error-codes" "0.18.4"
+    "@module-federation/runtime-core" "0.18.4"
+    "@module-federation/sdk" "0.18.4"
+
+"@module-federation/sdk@0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/sdk/-/sdk-0.18.4.tgz#2a2e31f55b95176e863d46170812a9c490d46567"
+  integrity sha512-dErzOlX+E3HS2Sg1m12Hi9nCnfvQPuIvlq9N47KxrbT2TIU3KKYc9q/Ua+QWqxfTyMVFpbNDwFMJ1R/w/gYf4A==
+
 "@n1ru4l/graphql-live-query@^0.10.0":
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@n1ru4l/graphql-live-query/-/graphql-live-query-0.10.0.tgz#2306151630b0e74b017cc1067ebbea351acf56f8"
