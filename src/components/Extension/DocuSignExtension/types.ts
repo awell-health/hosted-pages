@@ -9,6 +9,8 @@ export enum ActionKey {
 
 export type EmbeddedSigningFields = {
   signUrl: string
+  envelopeId: string
+  clientUserId: string
 }
 
 export enum WindowEventType {

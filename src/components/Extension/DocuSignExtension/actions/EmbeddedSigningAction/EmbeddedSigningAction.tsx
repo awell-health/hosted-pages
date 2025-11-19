@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react'
 import { parse } from 'query-string'
 import he from 'he'
 import { mapActionFieldsToObject } from '../../../utils'
@@ -14,16 +21,29 @@ interface EmbeddedSigningActionActionProps {
   activityDetails: ExtensionActivityRecord
 }
 
+enum SigningState {
+  READY = 'ready',
+  SIGNING = 'signing',
+  COMPLETING = 'completing',
+  COMPLETED = 'completed',
+  ERROR = 'error',
+}
+
 export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
   activityDetails,
 }) => {
   const { activity_id, fields } = activityDetails
   const { onSubmit } = useCompleteEmbeddedSigningAction()
-  // visible in IFrame only
+
   const { event: iframeEvent } =
     (parse(location.search) as { event?: DocuSignEvent }) ?? {}
   const [isIframeLoaded, setIsIframeLoaded] = useState(false)
   const [event, setEvent] = useState<DocuSignEvent | undefined>(undefined)
+  const [signingState, setSigningState] = useState<SigningState>(
+    SigningState.READY
+  )
+
+  const completionAttemptedRef = useRef(false)
   const isFinished = !!event
   const isIframe = !!iframeEvent
 
@@ -32,21 +52,40 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
     [fields]
   )
 
-  /**
-   * This is needed because Orchestration seems to encode string action field values
-   * - Data point value: https://url.com/?signature_id=ABC&token=DEF
-   * - Action field value https://url.com/?signature_id&#x3D;ABC&amp;token&#x3D;DEF
-   *
-   * We need the decoded action field value and he library helps us to force decode
-   * the url to a valid one.
-   */
   const decodedSignUrl = he.decode(signUrl)
 
   const finishSigning = useCallback(
-    ({ signed }: { signed: boolean }) => {
-      onSubmit(activity_id, { signed })
+    async ({ signed, status }: { signed: boolean; status: string }) => {
+      if (
+        completionAttemptedRef.current ||
+        signingState === SigningState.COMPLETING ||
+        signingState === SigningState.COMPLETED
+      ) {
+        return
+      }
+
+      completionAttemptedRef.current = true
+      setSigningState(SigningState.COMPLETING)
+
+      try {
+        await onSubmit(activity_id, {
+          signed,
+          envelopeStatus: status,
+          recipientStatus: status,
+          completedAt: new Date().toISOString(),
+        })
+        setSigningState(SigningState.COMPLETED)
+      } catch (error) {
+        console.error('Failed to complete signing activity:', error)
+        completionAttemptedRef.current = false
+        setSigningState(SigningState.ERROR)
+
+        setTimeout(() => {
+          finishSigning({ signed, status })
+        }, 2000)
+      }
     },
-    [activity_id, onSubmit]
+    [activity_id, onSubmit, signingState]
   )
 
   useEffect(() => {
@@ -54,32 +93,57 @@ export const EmbeddedSigningAction: FC<EmbeddedSigningActionActionProps> = ({
       setIsIframeLoaded(false)
 
       if (event === DocuSignEvent.SIGNING_COMPLETE) {
-        finishSigning({ signed: true })
+        finishSigning({ signed: true, status: 'completed' })
+      } else if (event === DocuSignEvent.CANCEL) {
+        finishSigning({ signed: false, status: 'cancelled' })
+      } else if (event === DocuSignEvent.DECLINE) {
+        finishSigning({ signed: false, status: 'declined' })
+      } else if (event === DocuSignEvent.EXCEPTION) {
+        console.error('An error occurred during signing')
+        setSigningState(SigningState.ERROR)
+      } else if (event === DocuSignEvent.SESSION_TIMEOUT) {
+        console.error('Signing session timed out')
+        setSigningState(SigningState.ERROR)
+      } else if (event === DocuSignEvent.TTL_EXPIRED) {
+        console.error('Signing URL expired')
+        setSigningState(SigningState.ERROR)
       }
     }
   }, [event, finishSigning, isFinished])
 
-  // this window is iframe content -> render only messager
+  useEffect(() => {
+    if (
+      signingState === SigningState.SIGNING ||
+      signingState === SigningState.COMPLETING
+    ) {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault()
+        e.returnValue = 'Signing in progress. Are you sure you want to leave?'
+        return e.returnValue
+      }
+
+      window.addEventListener('beforeunload', handleBeforeUnload)
+      return () =>
+        window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [signingState])
+
   if (isIframe) {
     return <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
   }
 
-  // this window is extension content -> render messager and extension
   return (
     <>
       <IFrameMessager iframeEvent={iframeEvent} setEvent={setEvent} />
 
       <div
-        // if iframe is loaded -> fill screen
         className={`${classes.wrapper} ${
           isIframeLoaded ? classes['flex-full'] : ''
         }`}
       >
         {isFinished ? (
-          // signing process is finished -> display messsage
-          <FinishedMessage event={event} finishSigning={finishSigning} />
+          <FinishedMessage event={event} finishSigning={() => {}} />
         ) : (
-          // signing process incomplete (or user refreshed page) -> display signing process
           <SigningProcess
             signUrl={decodedSignUrl}
             isIframeLoaded={isIframeLoaded}
