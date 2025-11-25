@@ -35,5 +35,10 @@ fragment Activity on Activity {
         ...DynamicForm
       }
     }
+    ... on ExtensionActivityInputs {
+        componentKey
+        extension_fields
+        extension_settings
+    }
   }
 }
