@@ -112,10 +112,10 @@
     tailwindcss-animate "^1.0.7"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.121":
-  version "0.1.121"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.121.tgz#e0abba3ad87a866809e3d192316d0680c417572d"
-  integrity sha512-xeV9CZMQ+hwIJz4Q27M1haJgi+IJUn2n+lsHIaqPyX65d/8S/Rim0QiRxhMENJikv/zznE7Lc7543SkXAmhP5w==
+"@awell-health/ui-library@0.1.122":
+  version "0.1.122"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.122.tgz#6845f660a9611fa30a92319b6436915459c7ada4"
+  integrity sha512-fC/yJrpb/C80sMe8GPQuLeuoYAcPYzjrLG2EecCya/61D/ESx3Fe/l1HzP03rPOicikNVx2HMUwE1z4WU0C7/g==
   dependencies:
     "@awell-health/design-system" "0.12.62"
     "@calcom/embed-react" "^1.5.1"
@@ -1897,6 +1897,33 @@
     node-fetch "2.6.7"
     text-encoding "0.7.0"
     ws "6.2.2"
+
+"@module-federation/error-codes@0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/error-codes/-/error-codes-0.18.4.tgz#d907dc16fa14edb7666bd97b865e6f9b4a6cb4b2"
+  integrity sha512-cpLsqL8du9CfTTCKvXbRg93ALF+lklqHnuPryhbwVEQg2eYo6CMoMQ6Eb7kJhLigUABIDujbHD01SvBbASGkeQ==
+
+"@module-federation/runtime-core@0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/runtime-core/-/runtime-core-0.18.4.tgz#ed4059c1d1f9743be4ce8da140ea9c439ccab1ac"
+  integrity sha512-LGGlFXlNeTbIGBFDiOvg0zz4jBWCGPqQatXdKx7mylXhDij7YmwbuW19oenX+P1fGhmoBUBM5WndmR87U66qWA==
+  dependencies:
+    "@module-federation/error-codes" "0.18.4"
+    "@module-federation/sdk" "0.18.4"
+
+"@module-federation/runtime@^0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/runtime/-/runtime-0.18.4.tgz#87ae451d61e10846b0857090a75977456e449f96"
+  integrity sha512-2et6p7pjGRHzpmrW425jt/BiAU7QHgkZtbQB7pj01eQ8qx6SloFEBk9ODnV8/ztSm9H2T3d8GxXA6/9xVOslmQ==
+  dependencies:
+    "@module-federation/error-codes" "0.18.4"
+    "@module-federation/runtime-core" "0.18.4"
+    "@module-federation/sdk" "0.18.4"
+
+"@module-federation/sdk@0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@module-federation/sdk/-/sdk-0.18.4.tgz#2a2e31f55b95176e863d46170812a9c490d46567"
+  integrity sha512-dErzOlX+E3HS2Sg1m12Hi9nCnfvQPuIvlq9N47KxrbT2TIU3KKYc9q/Ua+QWqxfTyMVFpbNDwFMJ1R/w/gYf4A==
 
 "@n1ru4l/graphql-live-query@^0.10.0":
   version "0.10.0"

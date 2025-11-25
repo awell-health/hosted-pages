@@ -24,6 +24,7 @@ import { IdentityVerification } from './IdentityVerification'
 import { ShellyExtension } from './ShellyExtension'
 import { RequestingProviderLookUp } from './PrivateExtensions/WP'
 import { WaitForActivityToComplete } from './SharedActions'
+import { RemoteExtensionLoader } from './RemoteExtensionLoader'
 
 interface ExtensionProps {
   activity: Activity
@@ -84,6 +85,12 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     }
   }
 
+  // If we don't recognize the extension key and it's not an anonymous/private action,
+  // we'll try to load the extension via module federation as a fallback.
+  const isAnonymousKey = Object.values(AnonymousActionKeys).includes(
+    extensionActivityDetails.plugin_action_key as unknown as AnonymousActionKeys
+  )
+
   switch (activity?.indirect_object?.id) {
     case ExtensionKey.CAL_DOT_COM:
       return <CalDotComExtension activityDetails={extensionActivityDetails} />
@@ -108,6 +115,15 @@ export const Extension: FC<ExtensionProps> = ({ activity }) => {
     case ExtensionKey.SHELLY:
       return <ShellyExtension activityDetails={extensionActivityDetails} />
     default:
+      if (!isAnonymousKey) {
+        const componentId = `${extensionActivityDetails?.plugin_key}.${extensionActivityDetails?.plugin_action_key}`
+        return (
+          <RemoteExtensionLoader
+            componentId={componentId}
+            activityDetails={extensionActivityDetails}
+          />
+        )
+      }
       return getDefaultReturnValue()
   }
 }

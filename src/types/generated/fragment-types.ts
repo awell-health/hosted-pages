@@ -9,6 +9,7 @@
   "possibleTypes": {
     "ActivityInputs": [
       "CalculationActivityInputs",
+      "DecisionTableActivityInputs",
       "DynamicFormActivityInputs",
       "ExtensionActivityInputs",
       "FormActivityInputs",
@@ -16,6 +17,7 @@
     ],
     "ActivityOutputs": [
       "CalculationActivityOutputs",
+      "DecisionTableActivityOutputs",
       "DynamicFormActivityOutputs",
       "ExtensionActivityOutputs",
       "FormActivityOutputs"
@@ -45,13 +47,13 @@
       "CompleteExtensionActivityPayload",
       "CompleteSessionPayload",
       "CreatePatientPayload",
-      "DecisionOutputsPayload",
       "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",
       "EvaluateFormRulesPayload",
       "ExtensionActivityRecordPayload",
       "FileUploadGCSPayload",
+      "FormActivityDataPointsPayload",
       "FormPayload",
       "FormResponsePayload",
       "FormsPayload",
@@ -89,6 +91,7 @@
       "UpdatePatientDemographicsQueryPayload",
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
+      "UpsertPatientPayload",
       "WebhookCallPayload",
       "WebhookCallsPayload"
     ]
