@@ -3,14 +3,17 @@ query GetSignedUrl(
   $expires_in: Float
   $file_name: String!
   $config_slug: String!
+  $activity_id: String
 ) {
   getSignedUrl(
     content_type: $content_type
     expires_in: $expires_in
     file_name: $file_name
     config_slug: $config_slug
+    activity_id: $activity_id
   ) {
     upload_url
     file_url
+    required_headers
   }
 }

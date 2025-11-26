@@ -146,12 +146,14 @@ export const Form: FC<FormProps> = ({ activity }) => {
         }
 
         // Get signed URL with milliseconds for expires_in (some APIs expect milliseconds)
-        const { upload_url, file_url } = await getGcsSignedUrl({
-          file_name: file.name,
-          content_type: file.type,
-          expires_in: 360000,
-          config_slug,
-        })
+        const { upload_url, file_url, required_headers } =
+          await getGcsSignedUrl({
+            file_name: file.name,
+            content_type: file.type,
+            expires_in: 360000,
+            config_slug,
+            activity_id: activity.id,
+          })
 
         // Make sure we're using the exact content type that was used to generate the signed URL
         let contentType = 'application/octet-stream'
@@ -172,6 +174,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
             'Content-Type': contentType,
             'Content-Length': file.size.toString(),
             Origin: window.location.origin,
+            ...(required_headers || {}),
           },
           credentials: 'omit',
           mode: 'cors',
