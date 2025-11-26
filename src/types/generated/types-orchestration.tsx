@@ -1083,6 +1083,7 @@ export type FileUploadGcsPayload = Payload & {
   __typename?: 'FileUploadGCSPayload';
   code: Scalars['String'];
   file_url: Scalars['String'];
+  required_headers?: Maybe<Scalars['JSON']>;
   success: Scalars['Boolean'];
   upload_url: Scalars['String'];
 };
@@ -2245,6 +2246,7 @@ export type QueryGetPublishedCareflowVersionsArgs = {
 
 
 export type QueryGetSignedUrlArgs = {
+  activity_id?: InputMaybe<Scalars['String']>;
   config_slug: Scalars['String'];
   content_type: Scalars['String'];
   expires_in?: InputMaybe<Scalars['Float']>;
@@ -3256,10 +3258,11 @@ export type GetSignedUrlQueryVariables = Exact<{
   expires_in?: InputMaybe<Scalars['Float']>;
   file_name: Scalars['String'];
   config_slug: Scalars['String'];
+  activity_id?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type GetSignedUrlQuery = { __typename?: 'Query', getSignedUrl: { __typename?: 'FileUploadGCSPayload', upload_url: string, file_url: string } };
+export type GetSignedUrlQuery = { __typename?: 'Query', getSignedUrl: { __typename?: 'FileUploadGCSPayload', upload_url: string, file_url: string, required_headers?: any | null } };
 
 export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
 
@@ -3800,15 +3803,17 @@ export type GetExtensionActivityDetailsQueryHookResult = ReturnType<typeof useGe
 export type GetExtensionActivityDetailsLazyQueryHookResult = ReturnType<typeof useGetExtensionActivityDetailsLazyQuery>;
 export type GetExtensionActivityDetailsQueryResult = Apollo.QueryResult<GetExtensionActivityDetailsQuery, GetExtensionActivityDetailsQueryVariables>;
 export const GetSignedUrlDocument = gql`
-    query GetSignedUrl($content_type: String!, $expires_in: Float, $file_name: String!, $config_slug: String!) {
+    query GetSignedUrl($content_type: String!, $expires_in: Float, $file_name: String!, $config_slug: String!, $activity_id: String) {
   getSignedUrl(
     content_type: $content_type
     expires_in: $expires_in
     file_name: $file_name
     config_slug: $config_slug
+    activity_id: $activity_id
   ) {
     upload_url
     file_url
+    required_headers
   }
 }
     `;
@@ -3829,6 +3834,7 @@ export const GetSignedUrlDocument = gql`
  *      expires_in: // value for 'expires_in'
  *      file_name: // value for 'file_name'
  *      config_slug: // value for 'config_slug'
+ *      activity_id: // value for 'activity_id'
  *   },
  * });
  */
