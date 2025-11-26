@@ -6,6 +6,7 @@ export const useFileUpload = (): [
   (args: GetSignedUrlQueryVariables) => Promise<{
     upload_url: string
     file_url: string
+    required_headers?: any
   }>
 ] => {
   const [getSignedUrl] = useGetSignedUrlLazyQuery()
@@ -16,9 +17,16 @@ export const useFileUpload = (): [
     ): Promise<{
       upload_url: string
       file_url: string
+      required_headers?: any
     }> => {
       try {
-        const { content_type, expires_in, file_name, config_slug } = args
+        const {
+          content_type,
+          expires_in,
+          file_name,
+          config_slug,
+          activity_id,
+        } = args
 
         // Ensure content_type is properly set
         const safeContentType = content_type || 'application/octet-stream'
@@ -29,6 +37,7 @@ export const useFileUpload = (): [
             expires_in,
             file_name,
             config_slug,
+            activity_id,
           },
         })
 
@@ -42,6 +51,7 @@ export const useFileUpload = (): [
         return {
           upload_url: '',
           file_url: '',
+          required_headers: undefined,
         }
       }
     },
