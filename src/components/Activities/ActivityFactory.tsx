@@ -6,18 +6,24 @@ import { Message } from '../Message'
 import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
 import { Extension } from '../Extension'
-import { useLogging } from '../../hooks/useLogging'
-import { LogEvent } from '../../hooks/useLogging/types'
+import { useHostedSession } from '../../hooks/useHostedSession'
+import { logger, LogEvent } from '../../utils/logging'
 
 export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
   const { t } = useTranslation()
-  const { infoLog } = useLogging()
+  const { session } = useHostedSession()
 
   useEffect(() => {
-    infoLog(
+    logger.info(
       `Loading activity ${activity?.id} (${activity?.object.type} - ${activity?.object.name}) in UI`,
-      { activity },
-      LogEvent.ACTIVITY_LOADING
+      LogEvent.ACTIVITY_LOADING,
+      {
+        sessionId: session?.id,
+        pathwayId: session?.pathway_id,
+        stakeholderId: session?.stakeholder?.id,
+        sessionStatus: session?.status,
+        activity,
+      }
     )
   }, [])
 

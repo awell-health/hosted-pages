@@ -2,10 +2,11 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
 import type { Activity, Message } from './types'
 import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
-import { captureException } from '@sentry/nextjs'
+import * as Sentry from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
-import { useLogging } from '../useLogging'
-import { LogEvent } from '../useLogging/types'
+import { useHostedSession } from '../useHostedSession'
+import { logger, LogEvent } from '../../utils/logging'
+import { HostedSessionError } from '../../utils/errors'
 interface UseMessageActivityHook {
   loading: boolean
   message?: Message
@@ -21,13 +22,22 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
     object: { id: message_id },
   } = activity
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
-  const { infoLog, errorLog } = useLogging()
+  const { session } = useHostedSession()
 
   const variables = { id: message_id }
   const { data, loading, error, refetch } = useGetMessageQuery({
     variables,
     onError: (error) => {
-      captureException(error, {
+      const hostedSessionError = new HostedSessionError(
+        'Failed to get message',
+        {
+          errorType: 'MESSAGE_FETCH_FAILED',
+          operation: 'GetMessage',
+          activityId: activity.id,
+          originalError: error,
+        }
+      )
+      Sentry.captureException(hostedSessionError, {
         contexts: {
           message: {
             message_id,
@@ -41,7 +51,6 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
           },
         },
       })
-      GraphQLError
     },
   })
 
@@ -54,20 +63,28 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
 
     try {
       await markMessageAsRead({ variables: markMessageAsReadVariables })
-      infoLog(
+      logger.info(
         `Message ${message_id} marked as read successfully for activity ${activity.object.name}`,
-        { activity },
-        LogEvent.MESSAGE_MARKED_AS_READ
+        LogEvent.MESSAGE_MARKED_AS_READ,
+        {
+          sessionId: session?.id,
+          pathwayId: session?.pathway_id,
+          stakeholderId: session?.stakeholder?.id,
+          sessionStatus: session?.status,
+          activity,
+        }
       )
     } catch (error: any) {
-      errorLog(
+      const hostedSessionError = new HostedSessionError(
         `Failed to mark message ${message_id} as read for activity ${activity.object.name}`,
-        { activity },
-        error,
-        LogEvent.MESSAGE_MARKING_AS_READ_FAILED
+        {
+          errorType: 'MESSAGE_MARKING_AS_READ_FAILED',
+          operation: 'MarkMessageAsRead',
+          activityId: activity.id,
+          originalError: error,
+        }
       )
-      toast.error(t('activities.message.toast_mark_as_read_error'))
-      captureException(error, {
+      Sentry.captureException(hostedSessionError, {
         contexts: {
           graphql: {
             query: 'MarkMessageAsRead',
@@ -75,6 +92,19 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
           },
         },
       })
+      logger.error(
+        `Failed to mark message ${message_id} as read for activity ${activity.object.name}`,
+        LogEvent.MESSAGE_MARKING_AS_READ_FAILED,
+        {
+          sessionId: session?.id,
+          pathwayId: session?.pathway_id,
+          stakeholderId: session?.stakeholder?.id,
+          sessionStatus: session?.status,
+          activity,
+          error: error instanceof Error ? error.message : String(error),
+        }
+      )
+      toast.error(t('activities.message.toast_mark_as_read_error'))
     }
   }
 

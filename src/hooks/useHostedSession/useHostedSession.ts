@@ -21,6 +21,7 @@ import {
   HostedSessionStatus,
   SessionMetadata,
 } from '../../types/generated/types-orchestration'
+import { HostedSessionError } from '../../utils/errors'
 
 interface UseHostedSessionHook {
   loading: boolean
@@ -42,7 +43,15 @@ export const useHostedSession = (): UseHostedSessionHook => {
   const { data, loading, error, refetch, stopPolling, startPolling } =
     useGetHostedSessionQuery({
       onError: (error) => {
-        Sentry.captureException(error, {
+        const hostedSessionError = new HostedSessionError(
+          'Failed to get hosted session',
+          {
+            errorType: 'SESSION_INITIALIZATION_FAILED',
+            operation: 'GetHostedSession',
+            originalError: error,
+          }
+        )
+        Sentry.captureException(hostedSessionError, {
           contexts: {
             graphql: {
               query: 'GetHostedSession',

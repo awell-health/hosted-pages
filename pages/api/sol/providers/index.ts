@@ -6,7 +6,7 @@ import {
 } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../utils'
 import { omit, isEmpty, isNil } from 'lodash'
-import { log } from '../../../../src/utils/logging'
+import { logger, LogEvent } from '../../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,16 +28,29 @@ export default async function handler(
       )
     )
     const bodyValidation = GetProvidersInputSchema.safeParse(modifiedInput)
-    log(
-      `${logMessage}: parsing body (removing nil and empty values)`,
-      {
-        requestBody: input,
-        modifiedInput,
-        bodyValidation,
-        context: logContext,
-      },
-      bodyValidation.success ? 'INFO' : 'ERROR'
-    )
+    if (bodyValidation.success) {
+      logger.info(
+        `${logMessage}: parsing body (removing nil and empty values)`,
+        LogEvent.SOL_API_REQUEST,
+        {
+          requestBody: input,
+          modifiedInput,
+          bodyValidation,
+          context: logContext,
+        }
+      )
+    } else {
+      logger.error(
+        `${logMessage}: parsing body (removing nil and empty values)`,
+        LogEvent.SOL_API_REQUEST,
+        {
+          requestBody: input,
+          modifiedInput,
+          bodyValidation,
+          context: logContext,
+        }
+      )
+    }
     if (!bodyValidation.success) {
       const { errors } = bodyValidation.error
 
@@ -56,20 +69,16 @@ export default async function handler(
     })
     if (!response.ok) {
       const responseBody = await response.json()
-      log(
-        `${logMessage}: failed`,
-        {
-          requestBody: input,
-          validatedRequestBody: bodyValidation.data,
-          responseText: response.statusText,
-          responseBody,
-          errorCode: response.status,
-          url,
-          performance: new Date().valueOf() - startTime,
-          context: logContext,
-        },
-        'ERROR'
-      )
+      logger.error(`${logMessage}: failed`, LogEvent.SOL_API_REQUEST, {
+        requestBody: input,
+        validatedRequestBody: bodyValidation.data,
+        responseText: response.statusText,
+        responseBody,
+        errorCode: response.status,
+        url,
+        performance: new Date().valueOf() - startTime,
+        context: logContext,
+      })
       return res.status(response.status).json({
         error: `Request failed with status ${response.status}`,
         data: `${JSON.stringify(response)}`,
@@ -81,8 +90,9 @@ export default async function handler(
     const jsonRes: GetProvidersResponseType = await response.json()
 
     if (isEmpty(jsonRes.data)) {
-      log(
+      logger.warn(
         `${logMessage}: failed - no data returned`,
+        LogEvent.SOL_API_REQUEST,
         {
           requestBody: bodyValidation.data,
           responseBody: jsonRes,
@@ -91,33 +101,28 @@ export default async function handler(
           url,
           performance: new Date().valueOf() - startTime,
           context: logContext,
-        },
-        'WARNING'
+        }
       )
       return res.status(404).json({ data: [] })
     }
-    log(
-      `${logMessage}: success`,
-      {
-        requestBody: bodyValidation.data,
-        responseBody: jsonRes,
-        url,
-        performance: new Date().valueOf() - startTime,
-        context: logContext,
-      },
-      'INFO'
-    )
+    logger.info(`${logMessage}: success`, LogEvent.SOL_API_REQUEST, {
+      requestBody: bodyValidation.data,
+      responseBody: jsonRes,
+      url,
+      performance: new Date().valueOf() - startTime,
+      context: logContext,
+    })
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
-    log(
+    logger.error(
       `${logMessage}: failed - ${errMessage}`,
+      LogEvent.SOL_API_REQUEST,
       {
         requestBody: input,
         error,
         context: logContext,
-      },
-      'ERROR'
+      }
     )
     return res.status(500).json({
       error: errMessage,

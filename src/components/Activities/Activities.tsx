@@ -4,8 +4,9 @@ import { LoadingPage } from '../LoadingPage'
 import { ActivityFactory } from './ActivityFactory'
 import { useCurrentActivity } from './hooks'
 import { SuccessPage } from '../SuccessPage'
-import { LogEvent } from '../../hooks/useLogging/types'
-import { useLogging } from '../../hooks/useLogging'
+import { useExitTracking } from '../../hooks/useExitTracking'
+import { useHostedSession } from '../../hooks/useHostedSession'
+import { logger, LogEvent } from '../../utils/logging'
 /**
  * This component is used to display the activities for a hosted session.
  * It will display a loading page if the activities are not yet available.
@@ -13,16 +14,24 @@ import { useLogging } from '../../hooks/useLogging'
 export const Activities: FC = () => {
   const { currentActivity, state } = useCurrentActivity()
   const { t } = useTranslation()
-  const { infoLog } = useLogging()
+  const { session } = useHostedSession()
+
+  // Track session exit events (beforeunload, visibilitychange)
+  useExitTracking()
 
   if (state === 'polling' || state === 'polling-extended') {
     return <LoadingPage />
   }
   if (state === 'no-active-activity') {
-    infoLog(
-      `No active activity found, displaying success page`,
-      {},
-      LogEvent.ACTIVITY_NO_ACTIVE_FOUND
+    logger.info(
+      'No active activity found, displaying success page',
+      LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
+      {
+        sessionId: session?.id,
+        pathwayId: session?.pathway_id,
+        stakeholderId: session?.stakeholder?.id,
+        sessionStatus: session?.status,
+      }
     )
     return (
       <SuccessPage

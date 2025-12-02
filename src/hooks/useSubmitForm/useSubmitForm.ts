@@ -3,11 +3,12 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
 import type { Activity, AnswerInput } from './types'
 import { useSubmitFormResponseMutation } from './types'
-import { captureException } from '@sentry/nextjs'
-import { useLogging } from '../useLogging'
-import { LogEvent } from '../useLogging/types'
+import * as Sentry from '@sentry/nextjs'
 import { isNil } from 'lodash'
 import { getErrorMessage } from './utils'
+import { useHostedSession } from '../useHostedSession'
+import { logger, LogEvent } from '../../utils/logging'
+import { HostedSessionError } from '../../utils/errors'
 interface UseFormActivityHook {
   onSubmit: (response: Array<AnswerInput>) => Promise<boolean>
   isSubmitting: boolean
@@ -19,7 +20,7 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
 
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { infoLog, errorLog } = useLogging()
+  const { session } = useHostedSession()
 
   /**
    *
@@ -35,12 +36,16 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       },
     }
 
-    infoLog(
+    logger.info(
       `Trying to submit a form response for activity ${activity.object.name}`,
+      LogEvent.FORM_SUBMITTING,
       {
+        sessionId: session?.id,
+        pathwayId: session?.pathway_id,
+        stakeholderId: session?.stakeholder?.id,
+        sessionStatus: session?.status,
         activity,
-      },
-      LogEvent.FORM_SUBMITTING
+      }
     )
     try {
       const { errors } = await submitFormResponse({ variables })
@@ -52,31 +57,31 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
         )
       }
 
-      infoLog(
+      logger.info(
         `Form response ${activity.object.name} submitted successfully`,
-        { activity },
-        LogEvent.FORM_SUBMITTED
+        LogEvent.FORM_SUBMITTED,
+        {
+          sessionId: session?.id,
+          pathwayId: session?.pathway_id,
+          stakeholderId: session?.stakeholder?.id,
+          sessionStatus: session?.status,
+          activity,
+        }
       )
       setIsSubmitting(false)
 
       return true
     } catch (error: any) {
-      errorLog(
+      const hostedSessionError = new HostedSessionError(
         `Failed to submit form response for activity ${activity.object.name}`,
         {
-          response,
-          activity,
-        },
-        error,
-        LogEvent.FORM_SUBMISSION_FAILED
+          errorType: 'FORM_SUBMISSION_FAILED',
+          operation: 'SubmitFormResponse',
+          activityId: activity.id,
+          originalError: error,
+        }
       )
-      setIsSubmitting(false)
-      const errorText = getErrorMessage(
-        error,
-        t('activities.form.saving_error')
-      )
-      toast.error(errorText)
-      captureException(error, {
+      Sentry.captureException(hostedSessionError, {
         contexts: {
           activity,
           form: {
@@ -88,6 +93,25 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
           },
         },
       })
+      logger.error(
+        `Failed to submit form response for activity ${activity.object.name}`,
+        LogEvent.FORM_SUBMISSION_FAILED,
+        {
+          sessionId: session?.id,
+          pathwayId: session?.pathway_id,
+          stakeholderId: session?.stakeholder?.id,
+          sessionStatus: session?.status,
+          response,
+          activity,
+          error: error instanceof Error ? error.message : String(error),
+        }
+      )
+      setIsSubmitting(false)
+      const errorText = getErrorMessage(
+        error,
+        t('activities.form.saving_error')
+      )
+      toast.error(errorText)
       return false
     }
   }

@@ -14,6 +14,7 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient as createWebsocketClient } from 'graphql-ws'
 import { isNil } from 'lodash'
+import * as Sentry from '@sentry/nextjs'
 
 export const createClient = ({
   httpUri,
@@ -112,6 +113,36 @@ export const createClient = ({
           const base = Math.min(16000, 1000 * Math.pow(2, retries))
           const jitter = Math.floor(Math.random() * 300)
           await new Promise((r) => setTimeout(r, base + jitter))
+        },
+        // WebSocket connection event logging
+        // Note: Using Sentry.logger directly because apollo-client is created before session context is available
+        // This is infrastructure-level logging that doesn't have access to React hooks
+        on: {
+          connected: () => {
+            Sentry.logger.info('GraphQL WebSocket connected', {
+              event_type: 'GRAPHQL_WS_CONNECTED',
+              ws_url: wsUri,
+              timestamp: new Date().toISOString(),
+            })
+          },
+          error: (error) => {
+            Sentry.logger.error('GraphQL WebSocket error', {
+              event_type: 'GRAPHQL_WS_ERROR',
+              ws_url: wsUri,
+              error_message:
+                error instanceof Error ? error.message : String(error),
+              timestamp: new Date().toISOString(),
+            })
+          },
+          closed: (event) => {
+            Sentry.logger.warn('GraphQL WebSocket disconnected', {
+              event_type: 'GRAPHQL_WS_DISCONNECTED',
+              ws_url: wsUri,
+              close_code: (event as CloseEvent)?.code,
+              close_reason: (event as CloseEvent)?.reason,
+              timestamp: new Date().toISOString(),
+            })
+          },
         },
       })
     )

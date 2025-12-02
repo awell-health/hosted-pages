@@ -15,8 +15,9 @@ import { useTranslation } from 'next-i18next'
 import { isNil, debounce } from 'lodash'
 import { OptionSchema, type SelectOption } from './types'
 import { z, ZodError } from 'zod'
-import { useLogging } from '../../../../../hooks/useLogging'
-import { LogEvent } from '../../../../../hooks/useLogging/types'
+import { LogEvent } from '../../../../../utils/logging'
+import { useHostedSession } from '../../../../../hooks/useHostedSession'
+import { logger } from '../../../../../utils/logging'
 
 interface RemoteSingleSelectActionProps {
   activityDetails: ExtensionActivityRecord
@@ -29,7 +30,7 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
 
   const { t } = useTranslation()
   const { onSubmit, isSubmitting } = useRemoteSingleSelectAction()
-  const { errorLog, warningLog, infoLog } = useLogging()
+  const { session } = useHostedSession()
 
   const [selectedOption, setSelectedOption] = useState<SelectOption>()
   const [options, setOptions] = useState<Array<SelectOption>>([])
@@ -64,38 +65,49 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
       const parsedOptions = z.array(OptionSchema).safeParse(options)
 
       if (!parsedOptions.success) {
-        errorLog(
+        logger.error(
           `Failed to parse options for remote single select in activity ${activityDetails.id}`,
+          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
           {
+            sessionId: session?.id,
+            pathwayId: session?.pathway_id,
+            stakeholderId: session?.stakeholder?.id,
+            sessionStatus: session?.status,
             activity: activityDetails,
             error: parsedOptions.error,
             response,
-          },
-          parsedOptions.error,
-          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+          }
         )
         throw new ZodError(parsedOptions.error.issues)
       }
 
       if (parsedOptions.data.length === 0) {
-        warningLog(
+        logger.warn(
           `No options found for remote single select in activity ${activityDetails.id}`,
+          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
           {
+            sessionId: session?.id,
+            pathwayId: session?.pathway_id,
+            stakeholderId: session?.stakeholder?.id,
+            sessionStatus: session?.status,
             activity: activityDetails,
             response,
-          },
-          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+          }
         )
         setError('No options found')
       }
 
-      infoLog(
+      logger.info(
         `Options found for remote single select in activity ${activityDetails.id}`,
+        LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
         {
+          sessionId: session?.id,
+          pathwayId: session?.pathway_id,
+          stakeholderId: session?.stakeholder?.id,
+          sessionStatus: session?.status,
           activity: activityDetails,
           response,
-        },
-        LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+        }
       )
 
       return parsedOptions.data
@@ -104,14 +116,17 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
         console.error(error.issues)
         setError('Failed to parse options for remote single select')
       } else {
-        errorLog(
+        logger.error(
           `Failed to fetch options for remote single select in activity ${activityDetails.id}`,
+          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
           {
+            sessionId: session?.id,
+            pathwayId: session?.pathway_id,
+            stakeholderId: session?.stakeholder?.id,
+            sessionStatus: session?.status,
             activity: activityDetails,
-            error,
-          },
-          JSON.stringify(error),
-          LogEvent.REMOTE_SINGLE_SELECT_OPTIONS
+            error: error instanceof Error ? error.message : String(error),
+          }
         )
         setError(error)
       }

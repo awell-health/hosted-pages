@@ -1,9 +1,10 @@
 import type { AnswerInput, QuestionRuleResult } from './types'
 import { useEvaluateFormRulesMutation } from './types'
-import { captureException } from '@sentry/nextjs'
-import { useLogging } from '../useLogging'
-import { LogEvent } from '../useLogging/types'
+import * as Sentry from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
+import { useHostedSession } from '../useHostedSession'
+import { logger, LogEvent } from '../../utils/logging'
+import { HostedSessionError } from '../../utils/errors'
 
 interface UseEvaluateFormRulesHook {
   evaluateFormRules: (
@@ -15,7 +16,7 @@ export const useEvaluateFormRules = (
   form_id: string
 ): UseEvaluateFormRulesHook => {
   const [evaluateFormRulesMutation] = useEvaluateFormRulesMutation()
-  const { errorLog } = useLogging()
+  const { session } = useHostedSession()
 
   const handleError = (
     errors: any | GraphQLError[],
@@ -26,17 +27,17 @@ export const useEvaluateFormRules = (
       ? new Error('A graphql error occurred while evaluating form rules')
       : errors
 
-    errorLog(
-      `Error evaluating form rules for form ${form_id}: ${error.message}`,
+    const hostedSessionError = new HostedSessionError(
+      `Error evaluating form rules for form ${form_id}: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
       {
-        form_id,
-        answers,
-        errors,
-      },
-      error,
-      LogEvent.FORM_RULE_EVALUATION_FAILED
+        errorType: 'FORM_RULE_EVALUATION_FAILED',
+        operation: 'EvaluateFormRules',
+        originalError: error,
+      }
     )
-    captureException(error, {
+    Sentry.captureException(hostedSessionError, {
       contexts: {
         form: {
           form_id,
@@ -53,6 +54,21 @@ export const useEvaluateFormRules = (
         },
       },
     })
+    logger.error(
+      `Error evaluating form rules for form ${form_id}: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      LogEvent.FORM_RULE_EVALUATION_FAILED,
+      {
+        sessionId: session?.id,
+        pathwayId: session?.pathway_id,
+        stakeholderId: session?.stakeholder?.id,
+        sessionStatus: session?.status,
+        form_id,
+        answers,
+        errors: Array.isArray(errors) ? JSON.stringify(errors) : errors,
+      }
+    )
   }
 
   const evaluateFormRules = async (

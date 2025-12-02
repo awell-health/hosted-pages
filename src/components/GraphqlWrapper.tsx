@@ -5,6 +5,7 @@ import React, { FC, useCallback, useMemo } from 'react'
 import { createClient } from '../services/graphql'
 import fragmentTypes from '../types/generated/fragment-types'
 import { useNetworkError } from '../contexts/NetworkErrorContext'
+import { HostedSessionError } from '../utils/errors'
 
 interface GraphqlWrapperProps {
   children?: React.ReactNode
@@ -38,8 +39,18 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
           })
         }
 
-        // Capture in Sentry with enhanced context
-        Sentry.captureException(networkError, {
+        // Capture in Sentry with enhanced context using custom error class
+        const hostedSessionError = new HostedSessionError(
+          networkError.message || 'GraphQL network error',
+          {
+            errorType: isNetworkConnectivityError
+              ? 'NETWORK_CONNECTIVITY_ERROR'
+              : 'GRAPHQL_NETWORK_ERROR',
+            operation: operation.operationName,
+            originalError: networkError,
+          }
+        )
+        Sentry.captureException(hostedSessionError, {
           level: isNetworkConnectivityError ? 'warning' : 'error',
           tags: {
             graphql_operation: operation.operationName,

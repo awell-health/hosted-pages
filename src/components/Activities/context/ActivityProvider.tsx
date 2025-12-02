@@ -3,14 +3,17 @@ import { isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
+import * as Sentry from '@sentry/nextjs'
 import { ErrorPage, LoadingPage } from '../../'
-import { LogEvent, useLogging } from '../../../hooks/useLogging'
 import { useSessionActivities } from '../../../hooks/useSessionActivities'
 import { useCompleteSession } from '../../../hooks/useCompleteSession'
 import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
 import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
 import useLocalStorage from 'use-local-storage'
+import { useHostedSession } from '../../../hooks/useHostedSession'
+import { logger, LogEvent } from '../../../utils/logging'
+import { HostedSessionError } from '../../../utils/errors'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
 const POLLING_TIMEOUT = 30000 // 30 seconds
@@ -43,7 +46,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     stopPolling,
     isActivityComplete,
   } = useSessionActivities()
-  const { infoLog, errorLog } = useLogging()
+  const { session } = useHostedSession()
   const { onCompleteSession, isCompleting } = useCompleteSession()
 
   // Array of strings combining activity id and status.
@@ -68,16 +71,16 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     }
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
-    infoLog(
-      `Activities list changed`,
-      {
-        activities,
-        prevCurrentActivity: currentActivity,
-        nextCurrentActivity: current,
-        numberOfActivities: activities.length,
-      },
-      LogEvent.ACTIVITIES_LIST_CHANGED
-    )
+    logger.info('Activities list changed', LogEvent.ACTIVITIES_LIST_CHANGED, {
+      sessionId: session?.id,
+      pathwayId: session?.pathway_id,
+      stakeholderId: session?.stakeholder?.id,
+      sessionStatus: session?.status,
+      activities,
+      prevCurrentActivity: currentActivity,
+      nextCurrentActivity: current,
+      numberOfActivities: activities.length,
+    })
 
     // try and change current activity if it's not active
     if (!isActive(current)) {
@@ -104,13 +107,17 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       case 'polling': {
         startPolling(POLLING_INTERVAL)
         const timer = setTimeout(() => {
-          infoLog(
+          logger.info(
             `No active activity found after ${POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
             {
+              sessionId: session?.id,
+              pathwayId: session?.pathway_id,
+              stakeholderId: session?.stakeholder?.id,
+              sessionStatus: session?.status,
               currentActivity,
               activities,
-            },
-            LogEvent.ACTIVITY_NO_ACTIVE_FOUND
+            }
           )
           setState('no-active-activity')
         }, POLLING_TIMEOUT)
@@ -121,13 +128,17 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       case 'polling-extended': {
         startPolling(AGENT_ACTIVITY_POLLING_TIMEOUT)
         const timer = setTimeout(() => {
-          infoLog(
+          logger.info(
             `No active activity found after ${AGENT_ACTIVITY_POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
             {
+              sessionId: session?.id,
+              pathwayId: session?.pathway_id,
+              stakeholderId: session?.stakeholder?.id,
+              sessionStatus: session?.status,
               currentActivity,
               activities,
-            },
-            LogEvent.ACTIVITY_NO_ACTIVE_FOUND
+            }
           )
           setState('no-active-activity')
         }, AGENT_ACTIVITY_POLLING_TIMEOUT)
@@ -147,10 +158,16 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   }, [state])
 
   useEffect(() => {
-    infoLog(
+    logger.info(
       `Current activity changed to ${currentActivity?.id} (${currentActivity?.object.type} - ${currentActivity?.object.name})`,
-      { currentActivity },
-      LogEvent.ACTIVITY_CHANGED
+      LogEvent.ACTIVITY_CHANGED,
+      {
+        sessionId: session?.id,
+        pathwayId: session?.pathway_id,
+        stakeholderId: session?.stakeholder?.id,
+        sessionStatus: session?.status,
+        currentActivity,
+      }
     )
     if (!isNil(currentActivity)) {
       setState('active-activity-found')
@@ -176,11 +193,31 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   }
 
   if (error) {
-    errorLog(
-      `Failed to load activities`,
-      {},
-      error,
-      LogEvent.ACTIVITIES_FETCH_FAILED
+    const hostedSessionError = new HostedSessionError(
+      'Failed to load activities',
+      {
+        errorType: 'ACTIVITIES_FETCH_FAILED',
+        operation: 'GetSessionActivities',
+        originalError: error,
+      }
+    )
+    Sentry.captureException(hostedSessionError, {
+      contexts: {
+        graphql: {
+          query: 'GetSessionActivities',
+        },
+      },
+    })
+    logger.error(
+      'Failed to load activities',
+      LogEvent.ACTIVITIES_FETCH_FAILED,
+      {
+        sessionId: session?.id,
+        pathwayId: session?.pathway_id,
+        stakeholderId: session?.stakeholder?.id,
+        sessionStatus: session?.status,
+        error: error || 'Unknown error',
+      }
     )
     return <ErrorPage title={t('activities.loading_error')} onRetry={refetch} />
   }

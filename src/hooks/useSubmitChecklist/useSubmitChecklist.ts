@@ -3,9 +3,10 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
-import { captureException } from '@sentry/nextjs'
-import { useLogging } from '../useLogging'
-import { LogEvent } from '../useLogging/types'
+import * as Sentry from '@sentry/nextjs'
+import { useHostedSession } from '../useHostedSession'
+import { logger, LogEvent } from '../../utils/logging'
+import { HostedSessionError } from '../../utils/errors'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -17,7 +18,7 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
   const { id: activity_id } = activity
   const [submitChecklist] = useSubmitChecklistMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { infoLog, errorLog } = useLogging()
+  const { session } = useHostedSession()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -26,36 +27,42 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
         activity_id: activity_id,
       },
     }
-    infoLog(
+    logger.info(
       `Submitting checklist for activity ${activity.object.name}`,
+      LogEvent.CHECKLIST_SUBMITTING,
       {
+        sessionId: session?.id,
+        pathwayId: session?.pathway_id,
+        stakeholderId: session?.stakeholder?.id,
+        sessionStatus: session?.status,
         activity,
         variables,
-      },
-      LogEvent.CHECKLIST_SUBMITTING
+      }
     )
     try {
       await submitChecklist({ variables })
-      infoLog(
+      logger.info(
         `Checklist ${activity.object.name} submitted successfully`,
+        LogEvent.CHECKLIST_SUBMITTED,
         {
+          sessionId: session?.id,
+          pathwayId: session?.pathway_id,
+          stakeholderId: session?.stakeholder?.id,
+          sessionStatus: session?.status,
           activity,
-        },
-        LogEvent.CHECKLIST_SUBMITTED
+        }
       )
     } catch (error: any) {
-      errorLog(
+      const hostedSessionError = new HostedSessionError(
         `Failed to submit checklist for activity ${activity.object.name}`,
         {
-          activity,
-          variables,
-        },
-        error,
-        LogEvent.CHECKLIST_SUBMITTING_FAILED
+          errorType: 'CHECKLIST_SUBMITTING_FAILED',
+          operation: 'SubmitChecklist',
+          activityId: activity.id,
+          originalError: error,
+        }
       )
-      setIsSubmitting(false)
-      toast.error(t('activities.checklist.saving_error'))
-      captureException(error, {
+      Sentry.captureException(hostedSessionError, {
         contexts: {
           activity,
           graphql: {
@@ -64,6 +71,21 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
           },
         },
       })
+      logger.error(
+        `Failed to submit checklist for activity ${activity.object.name}`,
+        LogEvent.CHECKLIST_SUBMITTING_FAILED,
+        {
+          sessionId: session?.id,
+          pathwayId: session?.pathway_id,
+          stakeholderId: session?.stakeholder?.id,
+          sessionStatus: session?.status,
+          activity,
+          variables,
+          error: error instanceof Error ? error.message : String(error),
+        }
+      )
+      setIsSubmitting(false)
+      toast.error(t('activities.checklist.saving_error'))
     }
   }
 
