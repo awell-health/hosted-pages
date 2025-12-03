@@ -15,9 +15,12 @@ import { useTranslation } from 'next-i18next'
 import { isNil, debounce } from 'lodash'
 import { OptionSchema, type SelectOption } from './types'
 import { z, ZodError } from 'zod'
-import { LogEvent } from '../../../../../utils/logging'
+import { LogEvent, logger } from '../../../../../utils/logging'
 import { useHostedSession } from '../../../../../hooks/useHostedSession'
-import { logger } from '../../../../../utils/logging'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../../../../utils/errors'
 
 interface RemoteSingleSelectActionProps {
   activityDetails: ExtensionActivityRecord
@@ -113,9 +116,35 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
       return parsedOptions.data
     } catch (error) {
       if (error instanceof ZodError) {
-        console.error(error.issues)
+        const hostedSessionError = new HostedSessionError(
+          'Failed to parse options for remote single select',
+          {
+            errorType: 'REMOTE_SINGLE_SELECT_PARSE_ERROR',
+            activityId: activityDetails.id,
+            originalError: error,
+            contexts: {
+              activity: activityDetails,
+              validation: {
+                issues: error.issues,
+              },
+            },
+          }
+        )
+        captureHostedSessionError(hostedSessionError)
         setError('Failed to parse options for remote single select')
       } else {
+        const hostedSessionError = new HostedSessionError(
+          `Failed to fetch options for remote single select in activity ${activityDetails.id}`,
+          {
+            errorType: 'REMOTE_SINGLE_SELECT_FETCH_ERROR',
+            activityId: activityDetails.id,
+            originalError: error,
+            contexts: {
+              activity: activityDetails,
+            },
+          }
+        )
+        captureHostedSessionError(hostedSessionError)
         logger.error(
           `Failed to fetch options for remote single select in activity ${activityDetails.id}`,
           LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,

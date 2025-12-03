@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs'
+
 /**
  * Custom error class for hosted sessions with fingerprinting support.
  *
@@ -10,14 +12,20 @@
  * try {
  *   // some operation
  * } catch (error) {
- *   throw new HostedSessionError(
+ *   const hostedSessionError = new HostedSessionError(
  *     error instanceof Error ? error.message : String(error),
  *     {
  *       errorType: 'GRAPHQL_OPERATION_FAILED',
  *       operation: 'SubmitForm',
- *       originalError: error
+ *       originalError: error,
+ *       level: 'error',
+ *       tags: { graphql_operation: 'SubmitForm' },
+ *       contexts: {
+ *         graphql: { query: 'SubmitForm' }
+ *       }
  *     }
  *   )
+ *   captureHostedSessionError(hostedSessionError)
  * }
  */
 export interface HostedSessionErrorContext {
@@ -41,6 +49,18 @@ export interface HostedSessionErrorContext {
    * Original error that was caught
    */
   originalError?: unknown
+  /**
+   * Sentry error level ('error', 'warning', 'info', 'debug', 'fatal')
+   */
+  level?: Sentry.SeverityLevel
+  /**
+   * Sentry tags for filtering and grouping
+   */
+  tags?: Record<string, string>
+  /**
+   * Sentry contexts for additional structured data
+   */
+  contexts?: Record<string, Record<string, unknown>>
 }
 
 export class HostedSessionError extends Error {
@@ -49,6 +69,9 @@ export class HostedSessionError extends Error {
   public readonly activityId?: string
   public readonly context?: Record<string, unknown>
   public readonly originalError?: unknown
+  public readonly level?: Sentry.SeverityLevel
+  public readonly tags?: Record<string, string>
+  public readonly contexts?: Record<string, Record<string, unknown>>
 
   /**
    * Returns the fingerprint array for Sentry error grouping.
@@ -75,10 +98,25 @@ export class HostedSessionError extends Error {
     this.activityId = context.activityId
     this.context = context.context
     this.originalError = context.originalError
+    this.level = context.level
+    this.tags = context.tags
+    this.contexts = context.contexts
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, HostedSessionError)
     }
   }
+}
+
+/**
+ * Captures a HostedSessionError to Sentry, extracting level, tags, and contexts from the error.
+ * This ensures consistency in error reporting across the application.
+ */
+export const captureHostedSessionError = (error: HostedSessionError): void => {
+  Sentry.captureException(error, {
+    level: error.level,
+    tags: error.tags,
+    contexts: error.contexts,
+  })
 }

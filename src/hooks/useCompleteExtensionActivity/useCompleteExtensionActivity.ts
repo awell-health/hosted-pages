@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-toastify'
-import { captureException } from '@sentry/nextjs'
 import { type DataPoints, useCompleteExtensionActivityMutation } from './types'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 
 interface UseCompleteExtensionActivityHook {
   onSubmit: (activity_id: string, data_points: DataPoints) => Promise<void>
@@ -28,17 +31,25 @@ export const useCompleteExtensionActivity =
           await completeExtensionActivity({ variables })
         } catch (error) {
           toast.error(t('activities.checklist.saving_error'))
-          captureException(error, {
-            contexts: {
-              activity: {
-                activity_id,
+          const hostedSessionError = new HostedSessionError(
+            'Failed to complete extension activity',
+            {
+              errorType: 'EXTENSION_ACTIVITY_COMPLETION_FAILED',
+              operation: 'CompleteExtensionActivity',
+              activityId: activity_id,
+              originalError: error,
+              contexts: {
+                activity: {
+                  activity_id,
+                },
+                graphql: {
+                  query: 'CompleteExtensionActivity',
+                  variables: JSON.stringify(variables),
+                },
               },
-              graphql: {
-                query: 'CompleteExtensionActivity',
-                variables: JSON.stringify(variables),
-              },
-            },
-          })
+            }
+          )
+          captureHostedSessionError(hostedSessionError)
         } finally {
           setIsSubmitting(false)
         }

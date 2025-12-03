@@ -5,7 +5,7 @@ import React, { FC, useCallback, useMemo } from 'react'
 import { createClient } from '../services/graphql'
 import fragmentTypes from '../types/generated/fragment-types'
 import { useNetworkError } from '../contexts/NetworkErrorContext'
-import { HostedSessionError } from '../utils/errors'
+import { HostedSessionError, captureHostedSessionError } from '../utils/errors'
 
 interface GraphqlWrapperProps {
   children?: React.ReactNode
@@ -27,15 +27,11 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
           incrementNetworkErrorCount()
           setNetworkError(true)
 
-          // Add breadcrumb for network error
-          Sentry.addBreadcrumb({
+          // Log network connectivity error
+          Sentry.logger.error('Network connectivity error detected', {
             category: 'network',
-            message: 'Network connectivity error detected',
-            level: 'error',
-            data: {
-              operation: operation.operationName,
-              errorMessage: networkError.message,
-            },
+            operation: operation.operationName,
+            errorMessage: networkError.message,
           })
         }
 
@@ -48,47 +44,48 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
               : 'GRAPHQL_NETWORK_ERROR',
             operation: operation.operationName,
             originalError: networkError,
+            level: isNetworkConnectivityError ? 'warning' : 'error',
+            tags: {
+              graphql_operation: operation.operationName,
+              error_type: isNetworkConnectivityError
+                ? 'network_connectivity'
+                : 'graphql_network',
+            },
+            contexts: {
+              graphql: {
+                operation: operation.operationName,
+                variables: JSON.stringify(operation.variables),
+                result:
+                  networkError.name === 'ServerError'
+                    ? JSON.stringify((networkError as ServerError).result)
+                    : undefined,
+                statusCode:
+                  networkError.name === 'ServerError'
+                    ? JSON.stringify((networkError as ServerError).statusCode)
+                    : undefined,
+                bodyText:
+                  networkError.name === 'ServerParseError'
+                    ? JSON.stringify(
+                        (networkError as ServerParseError).bodyText
+                      )
+                    : undefined,
+              },
+              network: {
+                online:
+                  typeof navigator !== 'undefined' ? navigator.onLine : true,
+                connection:
+                  typeof navigator !== 'undefined' && 'connection' in navigator
+                    ? JSON.stringify(
+                        (navigator as any).connection || {
+                          effectiveType: 'unknown',
+                        }
+                      )
+                    : 'unknown',
+              },
+            },
           }
         )
-        Sentry.captureException(hostedSessionError, {
-          level: isNetworkConnectivityError ? 'warning' : 'error',
-          tags: {
-            graphql_operation: operation.operationName,
-            error_type: isNetworkConnectivityError
-              ? 'network_connectivity'
-              : 'graphql_network',
-          },
-          contexts: {
-            graphql: {
-              operation: operation.operationName,
-              variables: JSON.stringify(operation.variables),
-              result:
-                networkError.name === 'ServerError'
-                  ? JSON.stringify((networkError as ServerError).result)
-                  : undefined,
-              statusCode:
-                networkError.name === 'ServerError'
-                  ? JSON.stringify((networkError as ServerError).statusCode)
-                  : undefined,
-              bodyText:
-                networkError.name === 'ServerParseError'
-                  ? JSON.stringify((networkError as ServerParseError).bodyText)
-                  : undefined,
-            },
-            network: {
-              online:
-                typeof navigator !== 'undefined' ? navigator.onLine : true,
-              connection:
-                typeof navigator !== 'undefined' && 'connection' in navigator
-                  ? JSON.stringify(
-                      (navigator as any).connection || {
-                        effectiveType: 'unknown',
-                      }
-                    )
-                  : 'unknown',
-            },
-          },
-        })
+        captureHostedSessionError(hostedSessionError)
       }
     },
     [incrementNetworkErrorCount, setNetworkError]

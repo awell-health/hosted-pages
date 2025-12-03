@@ -8,7 +8,10 @@ import { isNil } from 'lodash'
 import { getErrorMessage } from './utils'
 import { useHostedSession } from '../useHostedSession'
 import { logger, LogEvent } from '../../utils/logging'
-import { HostedSessionError } from '../../utils/errors'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 interface UseFormActivityHook {
   onSubmit: (response: Array<AnswerInput>) => Promise<boolean>
   isSubmitting: boolean
@@ -79,20 +82,19 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
           operation: 'SubmitFormResponse',
           activityId: activity.id,
           originalError: error,
+          contexts: {
+            activity,
+            form: {
+              response: JSON.stringify(variables),
+            },
+            graphql: {
+              query: 'SubmitFormResponse',
+              variables: JSON.stringify(variables),
+            },
+          },
         }
       )
-      Sentry.captureException(hostedSessionError, {
-        contexts: {
-          activity,
-          form: {
-            response: JSON.stringify(variables),
-          },
-          graphql: {
-            query: 'SubmitFormResponse',
-            variables: JSON.stringify(variables),
-          },
-        },
-      })
+      captureHostedSessionError(hostedSessionError)
       logger.error(
         `Failed to submit form response for activity ${activity.object.name}`,
         LogEvent.FORM_SUBMISSION_FAILED,

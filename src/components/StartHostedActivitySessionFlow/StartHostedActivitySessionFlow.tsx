@@ -9,8 +9,7 @@ import {
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import { useTranslation } from 'next-i18next'
-import { addSentryBreadcrumb } from '../../services/ErrorReporter'
-import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import * as Sentry from '@sentry/nextjs'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -39,13 +38,10 @@ export const StartHostedActivitySessionFlow: FC<
 
   useEffect(() => {
     if (!isNil(data) && !isNil(data?.sessionUrl)) {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.NAVIGATION,
-        data: {
-          hostedPagesLinkId,
-          sessionUrl: data?.sessionUrl,
-          message: 'Redirecting to hosted session',
-        },
+      Sentry.logger.info('Navigation: Redirecting to hosted session', {
+        category: 'navigation',
+        hostedPagesLinkId,
+        sessionUrl: data?.sessionUrl,
       })
       const { sessionUrl } = data
       window.location.href = sessionUrl
@@ -53,9 +49,9 @@ export const StartHostedActivitySessionFlow: FC<
   }, [data, router])
 
   if (data?.error) {
-    addSentryBreadcrumb({
-      category: BreadcrumbCategory.HOSTED_ACTIVITY_ERROR,
-      data: { hostedPagesLinkId },
+    Sentry.logger.error('Error with hosted activity link', {
+      category: 'hosted_activity_error',
+      hostedPagesLinkId,
     })
 
     return (

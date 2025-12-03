@@ -26,8 +26,7 @@ import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { defaultTo, isNil } from 'lodash'
 import { useSessionStorage } from '../src/hooks/useSessionStorage'
 import Head from 'next/head'
-import { addSentryBreadcrumb } from '../src/services/ErrorReporter'
-import { BreadcrumbCategory } from '../src/services/ErrorReporter/addSentryBreadcrumb'
+import * as Sentry from '@sentry/nextjs'
 import { NextPageWithLayout } from './_app'
 import { HostedSessionLayout } from '../src/layouts'
 import { SuccessPage } from '../src/components/SuccessPage'
@@ -91,12 +90,10 @@ const Home: NextPageWithLayout = () => {
         setNetworkError(false)
         setShowInvalidSession(false)
 
-        addSentryBreadcrumb({
-          category: BreadcrumbCategory.GENERIC,
-          data: {
-            message: 'Network error retry successful',
-            sessionId: router.query.sessionId,
-          },
+        Sentry.logger.info('Network error retry successful', {
+          category: 'generic',
+          message: 'Network error retry successful',
+          sessionId: router.query.sessionId,
         })
         return
       }
@@ -107,13 +104,11 @@ const Home: NextPageWithLayout = () => {
     } catch (err) {
       setNetworkError(true)
 
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.GENERIC,
-        data: {
-          message: 'Network error retry failed',
-          sessionId: router.query.sessionId,
-          error: err,
-        },
+      Sentry.logger.error('Network error retry failed', {
+        category: 'generic',
+        message: 'Network error retry failed',
+        sessionId: router.query.sessionId,
+        error: err,
       })
     }
   }, [
@@ -140,9 +135,9 @@ const Home: NextPageWithLayout = () => {
   }
 
   const onCloseHostedSession = () => {
-    addSentryBreadcrumb({
-      category: BreadcrumbCategory.SESSION_CANCEL,
-      data: session,
+    Sentry.logger.info('Session cancelled', {
+      category: 'session_cancel',
+      session,
     })
     router.push(session?.cancel_url ?? 'https://awell.health')
   }
@@ -153,16 +148,18 @@ const Home: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (isNil(session?.status)) {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.GENERIC,
-        data: { session, message: 'Session status is null' },
+      Sentry.logger.warn('Session status is null', {
+        category: 'generic',
+        session,
+        message: 'Session status is null',
       })
       return
     }
     if (typeof window === 'undefined') {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.GENERIC,
-        data: { session, message: 'Window is undefined' },
+      Sentry.logger.warn('Window is undefined', {
+        category: 'generic',
+        session,
+        message: 'Window is undefined',
       })
       return
     }
@@ -176,9 +173,9 @@ const Home: NextPageWithLayout = () => {
           sessionStatus: session?.status,
           session,
         })
-        addSentryBreadcrumb({
-          category: BreadcrumbCategory.SESSION_COMPLETE,
-          data: { session },
+        Sentry.logger.info('Session completed', {
+          category: 'session_complete',
+          session,
         })
         if (shouldRedirect) {
           redirectAfterSession(session.success_url as string)
@@ -193,9 +190,9 @@ const Home: NextPageWithLayout = () => {
           sessionStatus: session?.status,
           session,
         })
-        addSentryBreadcrumb({
-          category: BreadcrumbCategory.SESSION_EXPIRE,
-          data: { session },
+        Sentry.logger.info('Session expired', {
+          category: 'session_expire',
+          session,
         })
         if (shouldRedirect) {
           redirectAfterSession(session.cancel_url as string)
@@ -359,16 +356,18 @@ function useRedirectAfterSession(params: {
       }, REDIRECT_DELAY_MS)
 
       const slow10sId = window.setTimeout(() => {
-        addSentryBreadcrumb({
-          category: BreadcrumbCategory.SLOW_REDIRECT,
-          data: { session, message: 'Redirect took at least 10 seconds' },
+        Sentry.logger.warn('Slow redirect at session end', {
+          category: 'slow_redirect',
+          session,
+          message: 'Redirect took at least 10 seconds',
         })
       }, SLOW_REDIRECT_10S_MS)
 
       const slow15sId = window.setTimeout(() => {
-        addSentryBreadcrumb({
-          category: BreadcrumbCategory.SLOW_REDIRECT,
-          data: { session, message: 'Redirect took at least 15 seconds' },
+        Sentry.logger.warn('Slow redirect at session end', {
+          category: 'slow_redirect',
+          session,
+          message: 'Redirect took at least 15 seconds',
         })
       }, SLOW_REDIRECT_15S_MS)
 

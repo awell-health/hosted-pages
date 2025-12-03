@@ -9,8 +9,8 @@ import { useFileUpload } from '../../hooks/useFileUpload'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
 import { logger, LogEvent } from '../../utils/logging'
-import { addSentryBreadcrumb, masker } from '../../services/ErrorReporter'
-import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import { masker } from '../../services/ErrorReporter'
+import * as Sentry from '@sentry/nextjs'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import {
@@ -94,12 +94,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
     async (
       response: Array<AnswerInput>
     ): Promise<Array<QuestionRuleResult>> => {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.EVALUATE_FORM_RULES,
-        data: {
-          form_id: activity.object.id,
-          response: masker(response),
-        },
+      Sentry.logger.info('Evaluating form rules', {
+        category: 'evaluate_form_rules',
+        form_id: activity.object.id,
+        response: masker(response),
       })
       return evaluateFormRules(response)
     },
@@ -108,12 +106,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   const handleSubmit = useCallback(
     async (response: Array<any>) => {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.SUBMIT_FORM,
-        data: {
-          form_id: activity.object.id,
-          response: masker(response),
-        },
+      Sentry.logger.info('Submitting form', {
+        category: 'submit_form',
+        form_id: activity.object.id,
+        response: masker(response),
       })
 
       const isSubmitted = await onSubmit(response)

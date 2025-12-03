@@ -6,7 +6,10 @@ import { useSubmitChecklistMutation } from './types'
 import * as Sentry from '@sentry/nextjs'
 import { useHostedSession } from '../useHostedSession'
 import { logger, LogEvent } from '../../utils/logging'
-import { HostedSessionError } from '../../utils/errors'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -60,17 +63,16 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
           operation: 'SubmitChecklist',
           activityId: activity.id,
           originalError: error,
+          contexts: {
+            activity,
+            graphql: {
+              query: 'SubmitChecklist',
+              variables: JSON.stringify(variables),
+            },
+          },
         }
       )
-      Sentry.captureException(hostedSessionError, {
-        contexts: {
-          activity,
-          graphql: {
-            query: 'SubmitChecklist',
-            variables: JSON.stringify(variables),
-          },
-        },
-      })
+      captureHostedSessionError(hostedSessionError)
       logger.error(
         `Failed to submit checklist for activity ${activity.object.name}`,
         LogEvent.CHECKLIST_SUBMITTING_FAILED,

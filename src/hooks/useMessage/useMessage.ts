@@ -6,7 +6,10 @@ import * as Sentry from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
 import { useHostedSession } from '../useHostedSession'
 import { logger, LogEvent } from '../../utils/logging'
-import { HostedSessionError } from '../../utils/errors'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 interface UseMessageActivityHook {
   loading: boolean
   message?: Message
@@ -35,22 +38,21 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
           operation: 'GetMessage',
           activityId: activity.id,
           originalError: error,
+          contexts: {
+            message: {
+              message_id,
+            },
+            activity: {
+              ...activity,
+            },
+            graphql: {
+              query: 'GetMessage',
+              variables: JSON.stringify(variables),
+            },
+          },
         }
       )
-      Sentry.captureException(hostedSessionError, {
-        contexts: {
-          message: {
-            message_id,
-          },
-          activity: {
-            ...activity,
-          },
-          graphql: {
-            query: 'GetMessage',
-            variables: JSON.stringify(variables),
-          },
-        },
-      })
+      captureHostedSessionError(hostedSessionError)
     },
   })
 
@@ -82,16 +84,15 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
           operation: 'MarkMessageAsRead',
           activityId: activity.id,
           originalError: error,
+          contexts: {
+            graphql: {
+              query: 'MarkMessageAsRead',
+              variables: JSON.stringify(markMessageAsReadVariables),
+            },
+          },
         }
       )
-      Sentry.captureException(hostedSessionError, {
-        contexts: {
-          graphql: {
-            query: 'MarkMessageAsRead',
-            variables: JSON.stringify(markMessageAsReadVariables),
-          },
-        },
-      })
+      captureHostedSessionError(hostedSessionError)
       logger.error(
         `Failed to mark message ${message_id} as read for activity ${activity.object.name}`,
         LogEvent.MESSAGE_MARKING_AS_READ_FAILED,

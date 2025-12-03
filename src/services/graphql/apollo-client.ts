@@ -22,16 +22,12 @@ export const createClient = ({
   onNetworkError = () => undefined,
   extraLinks = [],
   cacheConfig,
-}: //infoLog,
-//errorLog,
-{
+}: {
   httpUri: string
   wsUri: string
   onNetworkError?: ErrorLink.ErrorHandler
   extraLinks?: Array<ApolloLink>
   cacheConfig: InMemoryCacheConfig
-  //infoLog: (message: {}, event: LogEvent) => void
-  //errorLog: (message: {}, error: string | {}, event: LogEvent) => void
 }): ApolloClient<NormalizedCacheObject> => {
   const httpLink = createHttpLink({ uri: httpUri })
 

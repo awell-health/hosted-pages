@@ -4,7 +4,10 @@ import * as Sentry from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
 import { useHostedSession } from '../useHostedSession'
 import { logger, LogEvent } from '../../utils/logging'
-import { HostedSessionError } from '../../utils/errors'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 
 interface UseEvaluateFormRulesHook {
   evaluateFormRules: (
@@ -35,25 +38,24 @@ export const useEvaluateFormRules = (
         errorType: 'FORM_RULE_EVALUATION_FAILED',
         operation: 'EvaluateFormRules',
         originalError: error,
+        contexts: {
+          form: {
+            form_id,
+          },
+          answers: {
+            ...answers,
+          },
+          graphql: {
+            query: 'EvaluateFormRules',
+            variables: contextVariables
+              ? JSON.stringify(contextVariables)
+              : undefined,
+            errors: JSON.stringify(errors),
+          },
+        },
       }
     )
-    Sentry.captureException(hostedSessionError, {
-      contexts: {
-        form: {
-          form_id,
-        },
-        answers: {
-          ...answers,
-        },
-        graphql: {
-          query: 'EvaluateFormRules',
-          variables: contextVariables
-            ? JSON.stringify(contextVariables)
-            : undefined,
-          errors: JSON.stringify(errors),
-        },
-      },
-    })
+    captureHostedSessionError(hostedSessionError)
     logger.error(
       `Error evaluating form rules for form ${form_id}: ${
         error instanceof Error ? error.message : String(error)

@@ -13,7 +13,10 @@ import { ActivityReferenceType } from '../../../types/generated/types-orchestrat
 import useLocalStorage from 'use-local-storage'
 import { useHostedSession } from '../../../hooks/useHostedSession'
 import { logger, LogEvent } from '../../../utils/logging'
-import { HostedSessionError } from '../../../utils/errors'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../../utils/errors'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
 const POLLING_TIMEOUT = 30000 // 30 seconds
@@ -199,15 +202,14 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         errorType: 'ACTIVITIES_FETCH_FAILED',
         operation: 'GetSessionActivities',
         originalError: error,
+        contexts: {
+          graphql: {
+            query: 'GetSessionActivities',
+          },
+        },
       }
     )
-    Sentry.captureException(hostedSessionError, {
-      contexts: {
-        graphql: {
-          query: 'GetSessionActivities',
-        },
-      },
-    })
+    captureHostedSessionError(hostedSessionError)
     logger.error(
       'Failed to load activities',
       LogEvent.ACTIVITIES_FETCH_FAILED,

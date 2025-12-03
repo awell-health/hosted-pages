@@ -18,6 +18,10 @@ import {
 } from '../../types/generated/types-orchestration'
 import { useHostedSession } from '../useHostedSession'
 import { logger, LogEvent } from '../../utils/logging'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
@@ -45,15 +49,21 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
   } = useGetHostedSessionActivitiesQuery({
     variables,
     onError: (error) => {
-      // TODO: Review this and determine if it can be replaced by a custom error.
-      Sentry.captureException(error, {
-        contexts: {
-          graphql: {
-            query: 'GetHostedSessionActivities',
-            variables: JSON.stringify(variables),
+      const hostedSessionError = new HostedSessionError(
+        'Failed to get hosted session activities',
+        {
+          errorType: 'ACTIVITIES_FETCH_FAILED',
+          operation: 'GetHostedSessionActivities',
+          originalError: error,
+          contexts: {
+            graphql: {
+              query: 'GetHostedSessionActivities',
+              variables: JSON.stringify(variables),
+            },
           },
-        },
-      })
+        }
+      )
+      captureHostedSessionError(hostedSessionError)
     },
   })
 
