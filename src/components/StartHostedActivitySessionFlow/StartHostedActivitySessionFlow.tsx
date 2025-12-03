@@ -48,12 +48,19 @@ export const StartHostedActivitySessionFlow: FC<
     }
   }, [data, router])
 
-  if (data?.error) {
-    Sentry.logger.error('Error with hosted activity link', {
-      category: 'hosted_activity_error',
-      hostedPagesLinkId,
-    })
+  useEffect(() => {
+    if (data?.error) {
+      Sentry.logger.error('Error with hosted activity link', {
+        category: 'hosted_activity_error',
+        hostedPagesLinkId,
+        error: data.error,
+        track_id,
+        activity_id,
+      })
+    }
+  }, [data?.error, hostedPagesLinkId, track_id, activity_id])
 
+  if (data?.error) {
     return (
       <ErrorPage
         title={`${t('link_page.loading_error')} ${data.error}`}

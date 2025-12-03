@@ -50,12 +50,26 @@ export const StartHostedCareflowSessionFlow: FC<
     }
   }, [data])
 
+  useEffect(() => {
+    if (data?.error) {
+      Sentry.logger.error('Error with hosted pages link', {
+        category: 'hosted_pages_link_error',
+        hostedPagesLinkId,
+        error: data.error,
+        patient_identifier,
+        track_id,
+        activity_id,
+      })
+    }
+  }, [
+    data?.error,
+    hostedPagesLinkId,
+    patient_identifier,
+    track_id,
+    activity_id,
+  ])
+
   if (data?.error) {
-    Sentry.logger.error('Error with hosted pages link', {
-      category: 'hosted_pages_link_error',
-      hostedPagesLinkId,
-      message: data.error,
-    })
     return <ErrorPage title={`${t('link_page.loading_error')} ${data.error}`} />
   }
 

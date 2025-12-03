@@ -248,19 +248,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
     activity.form_display_mode === FormDisplayMode.Regular
 
   if (isNil(form)) {
-    logger.error(
-      `Form ${activity.object.name} fetch failed`,
-      LogEvent.FORM_FETCH_FAILED,
-      {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
-        activity,
-        form,
-        error: 'Form is null',
-      }
-    )
     return <ErrorPage title={t('activities.form.loading_error')} />
   }
   if (isSubmitting) {

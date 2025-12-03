@@ -14,7 +14,7 @@ interface GraphqlWrapperProps {
 const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
   const { incrementNetworkErrorCount, setNetworkError } = useNetworkError()
 
-  const onError: ErrorLink.ErrorHandler = useCallback(
+  const onNetworkError: ErrorLink.ErrorHandler = useCallback(
     ({ operation, networkError }) => {
       if (networkError) {
         // Check if this is a network connectivity error (fetch failed)
@@ -31,7 +31,10 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
           Sentry.logger.error('Network connectivity error detected', {
             category: 'network',
             operation: operation.operationName,
+            error: networkError.message,
             errorMessage: networkError.message,
+            errorName: networkError.name,
+            errorStack: networkError.stack,
           })
         }
 
@@ -41,7 +44,7 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
           {
             errorType: isNetworkConnectivityError
               ? 'NETWORK_CONNECTIVITY_ERROR'
-              : 'GRAPHQL_NETWORK_ERROR',
+              : 'GRAPHQL_ERROR',
             operation: operation.operationName,
             originalError: networkError,
             level: isNetworkConnectivityError ? 'warning' : 'error',
@@ -49,7 +52,7 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
               graphql_operation: operation.operationName,
               error_type: isNetworkConnectivityError
                 ? 'network_connectivity'
-                : 'graphql_network',
+                : 'graphql_error',
             },
             contexts: {
               graphql: {
@@ -96,12 +99,12 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
       createClient({
         httpUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API as string,
         wsUri: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API_WS as string,
-        onNetworkError: onError,
+        onNetworkError: onNetworkError,
         cacheConfig: {
           possibleTypes: fragmentTypes.possibleTypes,
         },
       }),
-    [onError]
+    [onNetworkError]
   )
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>

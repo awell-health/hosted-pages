@@ -29,6 +29,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   } = useSessionStorage('accessToken', '')
   const router = useRouter()
   const [tokenLoading, setTokenLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
 
   const { data, error } = useSwr(
     router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
@@ -42,6 +43,11 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Set client-side flag after hydration to prevent hydration mismatches
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   useEffect(() => {
     if (data?.token) {
       setAccessToken(data?.token)
@@ -50,28 +56,39 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.token])
 
+  useEffect(() => {
+    if (isClient && router.isReady && !router.query.sessionId) {
+      Sentry.logger.warn('Invalid URL', {
+        category: 'navigation',
+        url: router.asPath,
+        sessionId: router.query.sessionId,
+      })
+    }
+  }, [isClient, router.isReady, router.query.sessionId, router.asPath])
+
+  useEffect(() => {
+    if (!router.isReady || tokenLoading) {
+      Sentry.logger.info('Preparing router and/or token', {
+        category: 'navigation',
+        url: router.asPath,
+        sessionId: router.query.sessionId,
+      })
+    }
+  }, [router.isReady, tokenLoading, router.asPath, router.query.sessionId])
+
   const authenticationContext = {
     isAuthenticated: accessToken !== '',
     accessToken,
     error,
   }
 
-  if (router.isReady && !router.query.sessionId) {
-    Sentry.logger.warn('Invalid URL', {
-      category: 'navigation',
-      url: router.asPath,
-      sessionId: router.query.sessionId,
-    })
+  // Only check for missing sessionId on client-side after hydration
+  if (isClient && router.isReady && !router.query.sessionId) {
     return <ErrorPage title={t('session.invalid_url')} />
   }
 
   // Wait while token is being generated
   if (!router.isReady || tokenLoading) {
-    Sentry.logger.info('Preparing router and/or token', {
-      category: 'navigation',
-      url: router.asPath,
-      sessionId: router.query.sessionId,
-    })
     return <LoadingPage showLogoBox={true} />
   }
 
