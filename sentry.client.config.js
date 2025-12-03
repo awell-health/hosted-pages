@@ -53,6 +53,7 @@ Sentry.init({
   },
   integrations: [
     Sentry.replayIntegration({
+      maskAllText: false,
       maskAllInputs: true,
       blockAllMedia: true,
       networkDetailAllowUrls: [
