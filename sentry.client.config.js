@@ -17,11 +17,9 @@ Sentry.init({
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/logs/
   enableLogs: true,
   tracesSampleRate: 0,
-  // This sets the sample rate to be 10%. You may want this to be 100% while
-  // in development and sample at a lower rate in production
-  replaysSessionSampleRate: 0.1,
-  // If the entire session is not sampled, use the below sample rate to sample
-  // sessions when an error occurs.
+  // Set to 0 for manual control - we'll start replays for specific organizations
+  replaysSessionSampleRate: 0,
+  // Keep at 1.0 so replays are always buffering and can be flushed for specific organizations
   replaysOnErrorSampleRate: 1.0,
   beforeSend(event, hint) {
     // Apply fingerprinting strategy for custom errors

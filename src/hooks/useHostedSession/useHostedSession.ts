@@ -26,6 +26,17 @@ import {
   captureHostedSessionError,
 } from '../../utils/errors'
 
+// Organizations for which we automatically record replays for all sessions
+// Comma-separated list from environment variable
+const getOrganizationsWithAutoReplay = (): string[] => {
+  const orgs = process.env.NEXT_PUBLIC_SENTRY_REPLAY_ORGANIZATIONS
+  if (!orgs) return []
+  return orgs
+    .split(',')
+    .map((org) => org.trim())
+    .filter(Boolean)
+}
+
 interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
@@ -93,55 +104,98 @@ export const useHostedSession = (): UseHostedSessionHook => {
     }
   }
 
+  const hostedSession = data?.hostedSession?.session
+  const sessionId = hostedSession?.id
+  const organizationSlug = hostedSession?.organization_slug
+  const sessionStatus = hostedSession?.status
+  const pathwayId = hostedSession?.pathway_id
+  const stakeholderId = hostedSession?.stakeholder?.id
+  const stakeholderName = hostedSession?.stakeholder?.name
+  const stakeholderType = hostedSession?.stakeholder?.type
+  const successUrl = hostedSession?.success_url
+  const cancelUrl = hostedSession?.cancel_url
+  const branding = data?.hostedSession?.branding
+
+  // Set Sentry tags, context, and extras only when session ID changes
+  // This prevents re-running on every poll/refetch
   useEffect(() => {
-    if (!isNil(router)) {
-      Sentry.setTags({
-        session: router.query.sessionId as string,
-        api_endpoint: process.env.NEXT_PUBLIC_URL_ORCHESTRATION_API,
-      })
+    if (!sessionId || !hostedSession) return
+
+    Sentry.setTags({
+      pathway: pathwayId,
+      stakeholder: stakeholderId,
+      session: sessionId,
+      organization_slug: organizationSlug,
+    })
+    Sentry.setContext('session', {
+      id: sessionId,
+      pathway_id: pathwayId,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      organization_slug: organizationSlug,
+    })
+    Sentry.setContext('stakeholder', {
+      id: stakeholderId,
+      name: stakeholderName,
+      type: stakeholderType,
+    })
+    Sentry.setExtras({
+      hostedSession,
+      branding,
+    })
+  }, [
+    sessionId,
+    pathwayId,
+    stakeholderId,
+    stakeholderName,
+    stakeholderType,
+    organizationSlug,
+    successUrl,
+    cancelUrl,
+    hostedSession,
+    branding,
+  ])
+
+  // Automatically record replays for specific organizations
+  // Only runs when organization_slug changes, not on every poll/refetch
+  useEffect(() => {
+    if (!organizationSlug) return
+
+    const organizationsWithAutoReplay = getOrganizationsWithAutoReplay()
+    if (!organizationsWithAutoReplay.includes(organizationSlug)) return
+
+    // Since replaysOnErrorSampleRate > 0, replays are buffering
+    // Calling flush() will upload the buffered replay and continue recording
+    const replay = Sentry.getReplay()
+    if (replay) {
+      // Check if replay is active (has a replay ID)
+      // If it does, flush will upload the buffered replay and continue recording
+      // If it doesn't, start() will start a new replay session
+      const replayId = replay.getReplayId()
+      if (replayId) {
+        replay.flush()
+      } else {
+        replay.start()
+      }
     }
-  })
+  }, [organizationSlug])
+
+  // Handle session completion/expiration status
+  // Only runs when session status changes
+  useEffect(() => {
+    if (
+      sessionStatus === HostedSessionStatus.Completed ||
+      sessionStatus === HostedSessionStatus.Expired
+    ) {
+      setIsSessionCompleted(true)
+    }
+  }, [sessionStatus])
 
   useEffect(() => {
     if (isSessionCompleted) {
       stopPolling()
     }
   }, [isSessionCompleted])
-
-  useEffect(() => {
-    if (!isNil(data?.hostedSession?.session)) {
-      const hostedSession = data?.hostedSession.session
-      Sentry.setTags({
-        pathway: hostedSession?.pathway_id,
-        stakeholder: hostedSession?.stakeholder.id,
-        organization_slug: hostedSession?.organization_slug,
-      })
-      Sentry.setContext('session', {
-        id: hostedSession?.id,
-        pathway_id: hostedSession?.pathway_id,
-        success_url: hostedSession?.success_url,
-        cancel_url: hostedSession?.cancel_url,
-        organization_slug: hostedSession?.organization_slug,
-      })
-      Sentry.setContext('stakeholder', {
-        id: hostedSession?.stakeholder.id,
-        name: hostedSession?.stakeholder.name,
-        type: hostedSession?.stakeholder.type,
-      })
-      Sentry.setExtras({
-        hostedSession,
-        branding: data?.hostedSession.branding,
-      })
-
-      if (
-        hostedSession &&
-        (hostedSession.status === HostedSessionStatus.Completed ||
-          hostedSession.status === HostedSessionStatus.Expired)
-      ) {
-        setIsSessionCompleted(true)
-      }
-    }
-  }, [data])
 
   useEffect(() => {
     if (!isNil(onHostedSessionCompleted.data)) {
