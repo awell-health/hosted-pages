@@ -52,7 +52,7 @@ Sentry.init({
     Sentry.replayIntegration({
       maskAllText: false,
       maskAllInputs: true,
-      blockAllMedia: true,
+      blockAllMedia: false,
       networkDetailAllowUrls: [
         'https://api.awellhealth.com/orchestration/graphql',
         'https://api.uk.awellhealth.com/orchestration/graphql',
