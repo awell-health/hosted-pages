@@ -1,56 +1,75 @@
-import type { GetStaticPaths, NextPage } from 'next'
-import { useRouter } from 'next/router'
+import type { GetServerSideProps, NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { ThemeProvider } from '@awell-health/ui-library'
 import { AWELL_BRAND_COLOR } from '../../src/config'
-import { NoSSRComponent } from '../../src/components/NoSSR'
-import { StartHostedCareflowSessionParams } from '../api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
-import { StartHostedCareflowSessionFlow } from '../../src/components/StartHostedPathwaySessionFlow'
-import { LoadingPage } from '../../src/components'
 import { validateLocale } from '../../src/utils'
+import { startHostedPathwaySession } from '../../lib'
+import { ErrorPage } from '../../src/components/ErrorPage'
+import { useTranslation } from 'next-i18next'
+import * as Sentry from '@sentry/nextjs'
+import { StartHostedCareflowSessionParams } from '../api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'goto.awell.health/c/<hostedCareflowLinkId>?patient_identifier=system|id'
+ * Uses server-side rendering to create session and redirect immediately.
  */
-const HostedCareflowLink: NextPage = () => {
-  const { query, isReady } = useRouter()
+const HostedCareflowLink: NextPage<{ error?: string }> = ({ error }) => {
+  const { t } = useTranslation()
 
-  const { hostedPagesLinkId, patient_identifier, track_id, activity_id } =
-    query as StartHostedCareflowSessionParams
+  const retry = () => {
+    window.location.reload()
+  }
+
+  // This should never be reached in SSR mode without error since server redirects on success
+  // But kept as fallback for edge cases - show error page to give user option to retry
+  const errorTitle = error
+    ? `${t('link_page.loading_error')} ${error}`
+    : t('link_page.loading_error')
 
   return (
-    <NoSSRComponent>
-      <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
-        {isReady && (
-          <StartHostedCareflowSessionFlow
-            hostedPagesLinkId={hostedPagesLinkId}
-            patient_identifier={patient_identifier}
-            track_id={track_id}
-            activity_id={activity_id}
-          />
-        )}
-        {!isReady && <LoadingPage showLogoBox />}
-      </ThemeProvider>
-    </NoSSRComponent>
+    <ThemeProvider accentColor={AWELL_BRAND_COLOR}>
+      <ErrorPage title={errorTitle} onRetry={retry} />
+    </ThemeProvider>
   )
 }
 
 export default HostedCareflowLink
 
-export async function getStaticProps({ locale }: { locale: string }) {
-  // Validate and normalize the locale, falling back to 'en' if misconfigured
-  const validatedLocale = validateLocale(locale)
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { locale, query } = context
+  const validatedLocale = validateLocale(locale || 'en')
 
-  return {
-    props: {
-      ...(await serverSideTranslations(validatedLocale, ['common'])),
-    },
+  const params = {
+    hostedPagesLinkId: query.hostedPagesLinkId as string,
+    patient_identifier: query.patient_identifier as string | undefined,
+    track_id: query.track_id as string | undefined,
+    activity_id: query.activity_id as string | undefined,
+  } as StartHostedCareflowSessionParams
+
+  const result = await startHostedPathwaySession(params)
+
+  if ('error' in result) {
+    // Error already logged and reported to Sentry in startHostedPathwaySession
+    return {
+      props: {
+        ...(await serverSideTranslations(validatedLocale, ['common'])),
+        error: result.error,
+      },
+    }
   }
-}
 
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  // Log successful redirect server-side
+  Sentry.logger.info('Navigation: Redirecting to hosted session', {
+    category: 'navigation',
+    hostedPagesLinkId: params.hostedPagesLinkId,
+    sessionUrl: result.sessionUrl,
+  })
+
+  // Redirect server-side
   return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: 'blocking', //indicates the type of fallback
+    redirect: {
+      destination: result.sessionUrl,
+      permanent: false,
+    },
   }
 }
