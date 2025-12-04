@@ -48,23 +48,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     subscribeToMore,
   } = useGetHostedSessionActivitiesQuery({
     variables,
-    onError: (error) => {
-      const hostedSessionError = new HostedSessionError(
-        'Failed to get hosted session activities',
-        {
-          errorType: 'ACTIVITIES_FETCH_FAILED',
-          operation: 'GetHostedSessionActivities',
-          originalError: error,
-          contexts: {
-            graphql: {
-              query: 'GetHostedSessionActivities',
-              variables: JSON.stringify(variables),
-            },
-          },
-        }
-      )
-      captureHostedSessionError(hostedSessionError)
-    },
   })
 
   /**
@@ -83,7 +66,8 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
 
           const subData = subscriptionData.data
           const newActivity = subData.sessionActivityCreated
-          const existingActivities = prev.hostedSessionActivities.activities
+          const existingActivities =
+            prev.hostedSessionActivities?.activities ?? []
 
           // Check if activity already exists to avoid duplicates
           if (existingActivities.some((a) => a.id === newActivity.id)) {
@@ -138,7 +122,8 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
 
           const subData = subscriptionData.data
           const completedActivity = subData.sessionActivityCompleted
-          const existingActivities = prev.hostedSessionActivities.activities
+          const existingActivities =
+            prev.hostedSessionActivities?.activities ?? []
 
           logger.info(
             `Activity completed via subscription: ${completedActivity.id} (${completedActivity.object.type} - ${completedActivity.object.name})`,
@@ -177,7 +162,8 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
           if (!subscriptionData.data) return prev
           const subData = subscriptionData.data
           const expiredActivity = subData.sessionActivityExpired
-          const existingActivities = prev.hostedSessionActivities.activities
+          const existingActivities =
+            prev.hostedSessionActivities?.activities ?? []
 
           logger.info(
             `Activity expired via subscription: ${expiredActivity.id} (${expiredActivity.object.type} - ${expiredActivity.object.name})`,

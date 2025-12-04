@@ -1,6 +1,84 @@
 import * as Sentry from '@sentry/nextjs'
 
 /**
+ * Safely serializes an error or unknown value to a string for logging.
+ *
+ * This utility handles various error types more robustly than simple string casting:
+ * - Error instances: Extracts message, name, and stack trace
+ * - Plain objects: Uses JSON.stringify with circular reference protection
+ * - Primitives: Converts to string
+ * - null/undefined: Returns descriptive strings
+ *
+ * @param error - The error or value to serialize
+ * @returns A string representation of the error
+ *
+ * @example
+ * ```typescript
+ * serializeError(new Error('Something went wrong'))
+ * // Returns: "Error: Something went wrong"
+ *
+ * serializeError({ code: 500, message: 'Internal error' })
+ * // Returns: '{"code":500,"message":"Internal error"}'
+ *
+ * serializeError(null)
+ * // Returns: "null"
+ * ```
+ */
+export const serializeError = (error: unknown): string => {
+  if (error === null) {
+    return 'null'
+  }
+
+  if (error === undefined) {
+    return 'undefined'
+  }
+
+  if (error instanceof Error) {
+    // Prefer stack trace if available (includes name, message, and stack)
+    if (error.stack) {
+      return error.stack
+    }
+    // Fallback to name: message format if no stack trace
+    const parts = [error.name || 'Error']
+    if (error.message) {
+      parts.push(error.message)
+    }
+    return parts.join(': ') || 'Error'
+  }
+
+  // Handle primitives
+  if (
+    typeof error === 'string' ||
+    typeof error === 'number' ||
+    typeof error === 'boolean' ||
+    typeof error === 'bigint' ||
+    typeof error === 'symbol'
+  ) {
+    return String(error)
+  }
+
+  // Handle objects and arrays
+  // Use Set to track visited objects for circular reference detection
+  const seen = new Set<object>()
+  try {
+    return JSON.stringify(error, (key, value) => {
+      // Handle circular references
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) {
+          return '[Circular]'
+        }
+        seen.add(value)
+      }
+      return value
+    })
+  } catch {
+    // Fallback if JSON.stringify fails (e.g., due to circular references or other issues)
+    // Last resort: use Object.prototype.toString
+    return Object.prototype.toString.call(error)
+  }
+}
+
+/**
  * Custom error class for hosted sessions with fingerprinting support.
  *
  * This error class allows us to define fingerprinting strategies for Sentry

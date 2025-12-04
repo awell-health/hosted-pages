@@ -55,28 +55,8 @@ export const useHostedSession = (): UseHostedSessionHook => {
   const [isSessionCompleted, setIsSessionCompleted] = useState(false)
 
   const { data, loading, error, refetch, stopPolling, startPolling } =
-    useGetHostedSessionQuery({
-      onError: (error) => {
-        // organization_slug will be automatically included from Sentry scope
-        // if session was previously loaded (set by useHostedSession useEffect)
-        const hostedSessionError = new HostedSessionError(
-          'Failed to get hosted session',
-          {
-            errorType: 'SESSION_INITIALIZATION_FAILED',
-            operation: 'GetHostedSession',
-            originalError: error,
-            contexts: {
-              graphql: {
-                query: 'GetHostedSession',
-              },
-            },
-          }
-        )
-        captureHostedSessionError(hostedSessionError)
-      },
-    })
+    useGetHostedSessionQuery()
   const client = useApolloClient()
-  const router = useRouter()
 
   const onHostedSessionCompleted = useOnHostedSessionCompletedSubscription()
   const onHostedSessionExpired = useOnHostedSessionExpiredSubscription()

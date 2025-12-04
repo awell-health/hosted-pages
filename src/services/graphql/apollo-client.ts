@@ -15,6 +15,7 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient as createWebsocketClient } from 'graphql-ws'
 import { isNil } from 'lodash'
 import * as Sentry from '@sentry/nextjs'
+import { serializeError } from '../../utils/errors'
 
 export const createClient = ({
   httpUri,
@@ -125,8 +126,7 @@ export const createClient = ({
             Sentry.logger.error('GraphQL WebSocket error', {
               event_type: 'GRAPHQL_WS_ERROR',
               ws_url: wsUri,
-              error_message:
-                error instanceof Error ? error.message : String(error),
+              error_message: serializeError(error),
               timestamp: new Date().toISOString(),
             })
           },

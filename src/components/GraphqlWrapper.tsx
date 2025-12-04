@@ -42,14 +42,15 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
         // if session was previously loaded (set by useHostedSession useEffect)
         // Capture in Sentry with enhanced context using custom error class
         const hostedSessionError = new HostedSessionError(
-          networkError.message || 'GraphQL network error',
+          `${networkError.message || 'GraphQL network error - '} - ${
+            operation.operationName
+          }`,
           {
             errorType: isNetworkConnectivityError
               ? 'NETWORK_CONNECTIVITY_ERROR'
               : 'GRAPHQL_ERROR',
             operation: operation.operationName,
             originalError: networkError,
-            level: isNetworkConnectivityError ? 'warning' : 'error',
             tags: {
               graphql_operation: operation.operationName,
               error_type: isNetworkConnectivityError
