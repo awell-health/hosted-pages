@@ -1,30 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import {
-  useGetHostedSessionQuery,
-  useOnHostedSessionCompletedSubscription,
-  useOnHostedSessionExpiredSubscription,
-  GetHostedSessionDocument,
-  GetHostedSessionQuery,
-  BrandingSettings,
-} from './types'
-import type { HostedSession } from './types'
-import { useEffect, useState } from 'react'
-import { isNil } from 'lodash'
 import { type ApolloQueryResult, useApolloClient } from '@apollo/client'
-import { updateQuery } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
-import { useRouter } from 'next/router'
+import { isNil } from 'lodash'
+import { useEffect, useState } from 'react'
+import { updateQuery } from '../../services/graphql'
 import { Maybe } from '../../types'
-import { type CustomTheme, getTheme } from './branding'
 import {
   HostedSessionStatus,
   SessionMetadata,
 } from '../../types/generated/types-orchestration'
+import { type CustomTheme, getTheme } from './branding'
+import type { HostedSession } from './types'
 import {
-  HostedSessionError,
-  captureHostedSessionError,
-} from '../../utils/errors'
+  BrandingSettings,
+  GetHostedSessionDocument,
+  GetHostedSessionQuery,
+  useGetHostedSessionQuery,
+  useOnHostedSessionCompletedSubscription,
+  useOnHostedSessionExpiredSubscription,
+} from './types'
 
 // Organizations for which we automatically record replays for all sessions
 // Comma-separated list from environment variable
@@ -107,6 +102,15 @@ export const useHostedSession = (): UseHostedSessionHook => {
       session: sessionId,
       organization_slug: organizationSlug,
     })
+    sessionStorage.setItem(
+      'log-context',
+      JSON.stringify({
+        pathway: pathwayId,
+        stakeholder: stakeholderId,
+        session: sessionId,
+        organization_slug: organizationSlug,
+      })
+    )
     Sentry.setContext('session', {
       id: sessionId,
       pathway_id: pathwayId,

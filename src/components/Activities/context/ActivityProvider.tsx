@@ -1,22 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import * as Sentry from '@sentry/nextjs'
-import { ErrorPage, LoadingPage } from '../../'
-import { useSessionActivities } from '../../../hooks/useSessionActivities'
-import { useCompleteSession } from '../../../hooks/useCompleteSession'
-import { Activity, ActivityStatus } from '../types'
-import { ActivityContext, ActivityContextInterface } from './ActivityContext'
-import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import useLocalStorage from 'use-local-storage'
+import { ErrorPage, LoadingPage } from '../../'
+import { useCompleteSession } from '../../../hooks/useCompleteSession'
 import { useHostedSession } from '../../../hooks/useHostedSession'
-import { logger, LogEvent } from '../../../utils/logging'
+import { useSessionActivities } from '../../../hooks/useSessionActivities'
+import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
 import {
   HostedSessionError,
   captureHostedSessionError,
 } from '../../../utils/errors'
+import { LogEvent, logger } from '../../../utils/logging'
+import { Activity, ActivityStatus } from '../types'
+import { ActivityContext, ActivityContextInterface } from './ActivityContext'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
 const POLLING_TIMEOUT = 30000 // 30 seconds
@@ -75,10 +74,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
     // get current from the list, it may be updated
     const current = activities.find(({ id }) => id === currentActivity?.id)
     logger.info('Activities list changed', LogEvent.ACTIVITIES_LIST_CHANGED, {
-      sessionId: session?.id,
-      pathwayId: session?.pathway_id,
-      stakeholderId: session?.stakeholder?.id,
-      sessionStatus: session?.status,
       activities,
       prevCurrentActivity: currentActivity,
       nextCurrentActivity: current,
@@ -114,10 +109,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
             `No active activity found after ${POLLING_TIMEOUT}ms, setting state to no-active-activity`,
             LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
             {
-              sessionId: session?.id,
-              pathwayId: session?.pathway_id,
-              stakeholderId: session?.stakeholder?.id,
-              sessionStatus: session?.status,
               currentActivity,
               activities,
             }
@@ -135,10 +126,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
             `No active activity found after ${AGENT_ACTIVITY_POLLING_TIMEOUT}ms, setting state to no-active-activity`,
             LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
             {
-              sessionId: session?.id,
-              pathwayId: session?.pathway_id,
-              stakeholderId: session?.stakeholder?.id,
-              sessionStatus: session?.status,
               currentActivity,
               activities,
             }
@@ -165,10 +152,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       `Current activity changed to ${currentActivity?.id} (${currentActivity?.object.type} - ${currentActivity?.object.name})`,
       LogEvent.ACTIVITY_CHANGED,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         currentActivity,
       }
     )
@@ -214,10 +197,6 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
       'Failed to load activities',
       LogEvent.ACTIVITIES_FETCH_FAILED,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         error: error || 'Unknown error',
       }
     )

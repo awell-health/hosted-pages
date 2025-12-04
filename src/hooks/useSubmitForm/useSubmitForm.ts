@@ -1,17 +1,17 @@
+import { isNil } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { useTranslation } from 'next-i18next'
-import type { Activity, AnswerInput } from './types'
-import { useSubmitFormResponseMutation } from './types'
-import * as Sentry from '@sentry/nextjs'
-import { isNil } from 'lodash'
-import { getErrorMessage } from './utils'
-import { useHostedSession } from '../useHostedSession'
-import { logger, LogEvent } from '../../utils/logging'
 import {
   HostedSessionError,
   captureHostedSessionError,
+  serializeError,
 } from '../../utils/errors'
+import { LogEvent, logger } from '../../utils/logging'
+import { useHostedSession } from '../useHostedSession'
+import type { Activity, AnswerInput } from './types'
+import { useSubmitFormResponseMutation } from './types'
+import { getErrorMessage } from './utils'
 interface UseFormActivityHook {
   onSubmit: (response: Array<AnswerInput>) => Promise<boolean>
   isSubmitting: boolean
@@ -43,10 +43,6 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       `Trying to submit a form response for activity ${activity.object.name}`,
       LogEvent.FORM_SUBMITTING,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         activity,
       }
     )
@@ -64,10 +60,6 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
         `Form response ${activity.object.name} submitted successfully`,
         LogEvent.FORM_SUBMITTED,
         {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
           activity,
         }
       )
@@ -99,13 +91,9 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
         `Failed to submit form response for activity ${activity.object.name}`,
         LogEvent.FORM_SUBMISSION_FAILED,
         {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
           response,
           activity,
-          error: error instanceof Error ? error.message : String(error),
+          error: serializeError(error),
         }
       )
       setIsSubmitting(false)

@@ -1,15 +1,14 @@
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { useTranslation } from 'next-i18next'
-import type { Activity } from './types'
-import { useSubmitChecklistMutation } from './types'
-import * as Sentry from '@sentry/nextjs'
-import { useHostedSession } from '../useHostedSession'
-import { logger, LogEvent } from '../../utils/logging'
 import {
   HostedSessionError,
   captureHostedSessionError,
+  serializeError,
 } from '../../utils/errors'
+import { LogEvent, logger } from '../../utils/logging'
+import type { Activity } from './types'
+import { useSubmitChecklistMutation } from './types'
 
 interface UseChecklistHook {
   onSubmit: () => Promise<void>
@@ -21,7 +20,6 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
   const { id: activity_id } = activity
   const [submitChecklist] = useSubmitChecklistMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { session } = useHostedSession()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -34,10 +32,6 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
       `Submitting checklist for activity ${activity.object.name}`,
       LogEvent.CHECKLIST_SUBMITTING,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         activity,
         variables,
       }
@@ -48,10 +42,6 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
         `Checklist ${activity.object.name} submitted successfully`,
         LogEvent.CHECKLIST_SUBMITTED,
         {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
           activity,
         }
       )
@@ -77,13 +67,9 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
         `Failed to submit checklist for activity ${activity.object.name}`,
         LogEvent.CHECKLIST_SUBMITTING_FAILED,
         {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
           activity,
           variables,
-          error: error instanceof Error ? error.message : String(error),
+          error: serializeError(error),
         }
       )
       setIsSubmitting(false)

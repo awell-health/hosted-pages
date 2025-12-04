@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react'
-import { Activity, ActivityObjectType } from './types'
 import { useTranslation } from 'next-i18next'
-import { Form } from '../Form'
-import { Message } from '../Message'
+import { useEffect } from 'react'
+import { useHostedSession } from '../../hooks/useHostedSession'
+import { LogEvent, logger } from '../../utils/logging'
 import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
 import { Extension } from '../Extension'
-import { useHostedSession } from '../../hooks/useHostedSession'
-import { logger, LogEvent } from '../../utils/logging'
+import { Form } from '../Form'
+import { Message } from '../Message'
+import { Activity, ActivityObjectType } from './types'
 
 export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
   const { t } = useTranslation()
@@ -18,10 +18,6 @@ export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
       `Loading activity ${activity?.id} (${activity?.object.type} - ${activity?.object.name}) in UI`,
       LogEvent.ACTIVITY_LOADING,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         activity,
       }
     )

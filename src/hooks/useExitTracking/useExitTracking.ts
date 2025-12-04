@@ -37,9 +37,6 @@ export const useExitTracking = () => {
       }
 
       logger.warn('Session exit detected', LogEvent.SESSION_EXIT, {
-        sessionId: currentSession?.id,
-        pathwayId: currentSession?.pathway_id,
-        stakeholderId: currentSession?.stakeholder?.id,
         sessionStatus: currentSession?.status,
         exit_type: exitType,
         activity_id: activity?.id,

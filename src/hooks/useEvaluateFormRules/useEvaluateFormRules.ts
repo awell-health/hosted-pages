@@ -1,13 +1,12 @@
-import type { AnswerInput, QuestionRuleResult } from './types'
-import { useEvaluateFormRulesMutation } from './types'
-import * as Sentry from '@sentry/nextjs'
 import { GraphQLError } from 'graphql'
-import { useHostedSession } from '../useHostedSession'
-import { logger, LogEvent } from '../../utils/logging'
 import {
   HostedSessionError,
   captureHostedSessionError,
+  serializeError,
 } from '../../utils/errors'
+import { LogEvent, logger } from '../../utils/logging'
+import type { AnswerInput, QuestionRuleResult } from './types'
+import { useEvaluateFormRulesMutation } from './types'
 
 interface UseEvaluateFormRulesHook {
   evaluateFormRules: (
@@ -19,7 +18,6 @@ export const useEvaluateFormRules = (
   form_id: string
 ): UseEvaluateFormRulesHook => {
   const [evaluateFormRulesMutation] = useEvaluateFormRulesMutation()
-  const { session } = useHostedSession()
 
   const handleError = (
     errors: any | GraphQLError[],
@@ -31,9 +29,9 @@ export const useEvaluateFormRules = (
       : errors
 
     const hostedSessionError = new HostedSessionError(
-      `Error evaluating form rules for form ${form_id}: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
+      `Error evaluating form rules for form ${form_id}: ${serializeError(
+        error
+      )}`,
       {
         errorType: 'FORM_RULE_EVALUATION_FAILED',
         operation: 'EvaluateFormRules',
@@ -62,10 +60,6 @@ export const useEvaluateFormRules = (
       }`,
       LogEvent.FORM_RULE_EVALUATION_FAILED,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         form_id,
         answers,
         errors: Array.isArray(errors) ? JSON.stringify(errors) : errors,

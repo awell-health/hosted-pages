@@ -1,15 +1,12 @@
-import { toast } from 'react-toastify'
 import { useTranslation } from 'next-i18next'
-import type { Activity, Message } from './types'
-import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
-import * as Sentry from '@sentry/nextjs'
-import { GraphQLError } from 'graphql'
-import { useHostedSession } from '../useHostedSession'
-import { logger, LogEvent } from '../../utils/logging'
+import { toast } from 'react-toastify'
 import {
   HostedSessionError,
   captureHostedSessionError,
 } from '../../utils/errors'
+import { LogEvent, logger } from '../../utils/logging'
+import type { Activity, Message } from './types'
+import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
 interface UseMessageActivityHook {
   loading: boolean
   message?: Message
@@ -25,7 +22,6 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
     object: { id: message_id },
   } = activity
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
-  const { session } = useHostedSession()
 
   const variables = { id: message_id }
   const { data, loading, error, refetch } = useGetMessageQuery({
@@ -69,10 +65,6 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
         `Message ${message_id} marked as read successfully for activity ${activity.object.name}`,
         LogEvent.MESSAGE_MARKED_AS_READ,
         {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
           activity,
         }
       )
@@ -97,10 +89,6 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
         `Failed to mark message ${message_id} as read for activity ${activity.object.name}`,
         LogEvent.MESSAGE_MARKING_AS_READ_FAILED,
         {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
           activity,
           error: error instanceof Error ? error.message : String(error),
         }

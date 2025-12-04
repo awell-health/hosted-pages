@@ -1,12 +1,12 @@
-import { FC, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
-import { LoadingPage } from '../LoadingPage'
-import { ActivityFactory } from './ActivityFactory'
-import { useCurrentActivity } from './hooks'
-import { SuccessPage } from '../SuccessPage'
+import { FC, useEffect } from 'react'
 import { useExitTracking } from '../../hooks/useExitTracking'
 import { useHostedSession } from '../../hooks/useHostedSession'
-import { logger, LogEvent } from '../../utils/logging'
+import { LogEvent, logger } from '../../utils/logging'
+import { LoadingPage } from '../LoadingPage'
+import { SuccessPage } from '../SuccessPage'
+import { ActivityFactory } from './ActivityFactory'
+import { useCurrentActivity } from './hooks'
 /**
  * This component is used to display the activities for a hosted session.
  * It will display a loading page if the activities are not yet available.
@@ -24,12 +24,7 @@ export const Activities: FC = () => {
       logger.info(
         'No active activity found, displaying success page',
         LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
-        {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
-        }
+        {}
       )
     }
   }, [state])

@@ -1,27 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import isNil from 'lodash/isNil'
-import { useEffect, useMemo } from 'react'
-import {
-  Activity,
-  useGetHostedSessionActivitiesQuery,
-  ActivityStatus,
-  OnSessionActivityCreatedDocument,
-  OnSessionActivityCompletedDocument,
-  OnSessionActivityExpiredDocument,
-} from './types'
-import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
+import { useEffect, useMemo } from 'react'
 import {
   OnSessionActivityCompletedSubscription,
   OnSessionActivityCreatedSubscription,
   OnSessionActivityExpiredSubscription,
 } from '../../types/generated/types-orchestration'
-import { useHostedSession } from '../useHostedSession'
-import { logger, LogEvent } from '../../utils/logging'
+import { LogEvent, logger } from '../../utils/logging'
 import {
-  HostedSessionError,
-  captureHostedSessionError,
-} from '../../utils/errors'
+  Activity,
+  ActivityStatus,
+  OnSessionActivityCompletedDocument,
+  OnSessionActivityCreatedDocument,
+  OnSessionActivityExpiredDocument,
+  useGetHostedSessionActivitiesQuery,
+} from './types'
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
@@ -37,7 +31,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     only_stakeholder_activities: true,
   }
   const router = useRouter()
-  const { session } = useHostedSession()
   const {
     data,
     error,
@@ -75,10 +68,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
               `Activity ${newActivity.id} already exists, skipping duplicate`,
               LogEvent.SUBSCRIPTION_ACTIVITY_DUPLICATE,
               {
-                sessionId: session?.id,
-                pathwayId: session?.pathway_id,
-                stakeholderId: session?.stakeholder?.id,
-                sessionStatus: session?.status,
                 activityId: newActivity.id,
                 activityType: newActivity.object.type,
               }
@@ -90,10 +79,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
             `New activity created via subscription: ${newActivity.id} (${newActivity.object.type} - ${newActivity.object.name})`,
             LogEvent.SUBSCRIPTION_ACTIVITY_CREATED,
             {
-              sessionId: session?.id,
-              pathwayId: session?.pathway_id,
-              stakeholderId: session?.stakeholder?.id,
-              sessionStatus: session?.status,
               activityId: newActivity.id,
               activityType: newActivity.object.type,
               activityName: newActivity.object.name,
@@ -129,10 +114,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
             `Activity completed via subscription: ${completedActivity.id} (${completedActivity.object.type} - ${completedActivity.object.name})`,
             LogEvent.SUBSCRIPTION_ACTIVITY_COMPLETED,
             {
-              sessionId: session?.id,
-              pathwayId: session?.pathway_id,
-              stakeholderId: session?.stakeholder?.id,
-              sessionStatus: session?.status,
               activityId: completedActivity.id,
               activityType: completedActivity.object.type,
               activityName: completedActivity.object.name,
@@ -169,10 +150,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
             `Activity expired via subscription: ${expiredActivity.id} (${expiredActivity.object.type} - ${expiredActivity.object.name})`,
             LogEvent.SUBSCRIPTION_ACTIVITY_EXPIRED,
             {
-              sessionId: session?.id,
-              pathwayId: session?.pathway_id,
-              stakeholderId: session?.stakeholder?.id,
-              sessionStatus: session?.status,
               activityId: expiredActivity.id,
               activityType: expiredActivity.object.type,
               activityName: expiredActivity.object.name,

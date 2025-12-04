@@ -1,20 +1,20 @@
 import {
-  type GetProvidersResponseType,
-  type GetAvailabilitiesResponseType,
-  type GetProvidersInputType,
-  type GetAvailabilitiesInputType,
   type BookAppointmentInputType,
   type BookAppointmentResponseType,
+  type GetAvailabilitiesInputType,
+  type GetAvailabilitiesResponseType,
   type GetProviderInputType,
   type GetProviderResponseType,
+  type GetProvidersInputType,
+  type GetProvidersResponseType,
   GetAvailabilitiesResponseSchema,
   GetProviderResponseSchema,
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
-import { SolApiResponseError } from './helpers/error'
 import type { HostedSession } from '../../../../../hooks/useHostedSession/types'
 import { type SessionMetadata } from '../../../../../types/generated/types-orchestration'
-import { logger, LogEvent } from '../../../../../utils/logging'
+import { LogEvent, logger } from '../../../../../utils/logging'
+import { SolApiResponseError } from './helpers/error'
 
 interface RequestOptions {
   baseUrl: string
@@ -61,15 +61,10 @@ export const fetchProviders = async ({
     throw error
   } finally {
     const timeEnd = new Date().valueOf()
-    const session = requestOptions.logContext?.session
     logger.info(
       `SOL: Fetch Providers: ${timeEnd - timeStart} milliseconds`,
       LogEvent.SOL_API_REQUEST,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         time: timeEnd - timeStart,
         api: 'fetchProviders',
       }
@@ -111,15 +106,10 @@ export const fetchProvider = async ({
     throw error
   } finally {
     const timeEnd = new Date().valueOf()
-    const session = requestOptions.logContext?.session
     logger.info(
       `SOL: Fetch Provider: ${timeEnd - timeStart} milliseconds`,
       LogEvent.SOL_API_REQUEST,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         time: timeEnd - timeStart,
         api: 'fetchProvider',
       }
@@ -161,15 +151,10 @@ export const fetchAvailability = async ({
     throw error
   } finally {
     const timeEnd = new Date().valueOf()
-    const session = requestOptions.logContext?.session
     logger.info(
       `SOL: Fetch Availability: ${timeEnd - timeStart} milliseconds`,
       LogEvent.SOL_API_REQUEST,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         time: timeEnd - timeStart,
         api: 'fetchAvailability',
       }
@@ -184,13 +169,8 @@ export const bookAppointment = async ({
   requestOptions: RequestOptions
 }): Promise<BookAppointmentResponseType> => {
   const timeStart = new Date().valueOf()
-  const session = requestOptions.logContext?.session
   try {
     logger.info(`SOL: Book Appointment request`, LogEvent.SOL_API_REQUEST, {
-      sessionId: session?.id,
-      pathwayId: session?.pathway_id,
-      stakeholderId: session?.stakeholder?.id,
-      sessionStatus: session?.status,
       body: input,
       requestOptions,
       api: 'bookAppointment',
@@ -219,10 +199,6 @@ export const bookAppointment = async ({
       `SOL: Book Appointment: ${timeEnd - timeStart} milliseconds`,
       LogEvent.SOL_API_REQUEST,
       {
-        sessionId: session?.id,
-        pathwayId: session?.pathway_id,
-        stakeholderId: session?.stakeholder?.id,
-        sessionStatus: session?.status,
         time: timeEnd - timeStart,
         api: 'bookAppointment',
       }

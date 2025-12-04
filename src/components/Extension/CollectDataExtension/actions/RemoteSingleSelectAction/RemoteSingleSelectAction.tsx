@@ -1,26 +1,26 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { mapActionFieldsToObject } from '../../../utils'
-import activityClasses from '../../../../../../styles/ActivityLayout.module.css'
-import classes from './remoteSingleSelectAction.module.css'
-import type { RemoteSingleSelectActionFields } from '../../types'
-import type { ExtensionActivityRecord } from '../../../types'
-import { useRemoteSingleSelectAction } from './hooks/useRemoteSingleSelectAction'
 import {
   Button,
   HostedPageFooter,
   Option,
   Select,
 } from '@awell-health/ui-library'
+import { debounce, isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { isNil, debounce } from 'lodash'
-import { OptionSchema, type SelectOption } from './types'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { z, ZodError } from 'zod'
-import { LogEvent, logger } from '../../../../../utils/logging'
+import activityClasses from '../../../../../../styles/ActivityLayout.module.css'
 import { useHostedSession } from '../../../../../hooks/useHostedSession'
 import {
-  HostedSessionError,
   captureHostedSessionError,
+  HostedSessionError,
 } from '../../../../../utils/errors'
+import { LogEvent, logger } from '../../../../../utils/logging'
+import type { ExtensionActivityRecord } from '../../../types'
+import { mapActionFieldsToObject } from '../../../utils'
+import type { RemoteSingleSelectActionFields } from '../../types'
+import { useRemoteSingleSelectAction } from './hooks/useRemoteSingleSelectAction'
+import classes from './remoteSingleSelectAction.module.css'
+import { OptionSchema, type SelectOption } from './types'
 
 interface RemoteSingleSelectActionProps {
   activityDetails: ExtensionActivityRecord
@@ -72,10 +72,6 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
           `Failed to parse options for remote single select in activity ${activityDetails.id}`,
           LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
           {
-            sessionId: session?.id,
-            pathwayId: session?.pathway_id,
-            stakeholderId: session?.stakeholder?.id,
-            sessionStatus: session?.status,
             activity: activityDetails,
             error: parsedOptions.error,
             response,
@@ -89,10 +85,6 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
           `No options found for remote single select in activity ${activityDetails.id}`,
           LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
           {
-            sessionId: session?.id,
-            pathwayId: session?.pathway_id,
-            stakeholderId: session?.stakeholder?.id,
-            sessionStatus: session?.status,
             activity: activityDetails,
             response,
           }
@@ -104,10 +96,6 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
         `Options found for remote single select in activity ${activityDetails.id}`,
         LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
         {
-          sessionId: session?.id,
-          pathwayId: session?.pathway_id,
-          stakeholderId: session?.stakeholder?.id,
-          sessionStatus: session?.status,
           activity: activityDetails,
           response,
         }
@@ -149,10 +137,6 @@ export const RemoteSingleSelectAction: FC<RemoteSingleSelectActionProps> = ({
           `Failed to fetch options for remote single select in activity ${activityDetails.id}`,
           LogEvent.REMOTE_SINGLE_SELECT_OPTIONS,
           {
-            sessionId: session?.id,
-            pathwayId: session?.pathway_id,
-            stakeholderId: session?.stakeholder?.id,
-            sessionStatus: session?.status,
             activity: activityDetails,
             error: error instanceof Error ? error.message : String(error),
           }

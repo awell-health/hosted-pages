@@ -50,24 +50,9 @@ export enum LogEvent {
 }
 
 /**
- * Required session context for client-side log entries.
- * This ensures consistent querying and filtering in Sentry.
- */
-export interface SessionLogContext {
-  /** Session ID */
-  sessionId?: string | null
-  /** Pathway ID */
-  pathwayId?: string | null
-  /** Stakeholder ID */
-  stakeholderId?: string | null
-  /** Session status */
-  sessionStatus?: string | null
-}
-
-/**
  * Attributes for a log entry.
  */
-export interface LogAttributes extends SessionLogContext {
+export interface LogAttributes {
   /** Event type identifier (from LogEvent enum or string) */
   event_type: LogEvent | string
   /** Timestamp (automatically added) */
@@ -76,26 +61,31 @@ export interface LogAttributes extends SessionLogContext {
   [key: string]: unknown
 }
 
+const getLogAttributesFromSessionStore = (): Record<string, unknown> => {
+  try {
+    const logContext = sessionStorage.getItem('log-context')
+    if (!logContext) return {}
+
+    return JSON.parse(logContext)
+  } catch {
+    return {}
+  }
+}
+
 /**
  * Unified logging utility that works for both client and server-side code.
  *
  * Sentry automatically handles the distinction between client and server logs,
  * so we don't need separate utilities.
  *
- * Usage (client-side with session context):
+ * The logger automatically includes session context tags (sessionId, pathwayId,
+ * stakeholderId, organization_slug) from Sentry scope when available.
+ *
+ * Usage (client-side - session context automatically included from scope):
  * ```typescript
- * const { session } = useHostedSession()
- * logger.info(
- *   'Form submitted successfully',
- *   LogEvent.FORM_SUBMITTED,
- *   {
- *     sessionId: session?.id,
- *     pathwayId: session?.pathway_id,
- *     stakeholderId: session?.stakeholder?.id,
- *     sessionStatus: session?.status,
- *     activity: { id: '123' }
- *   }
- * )
+ * logger.info('Form submitted successfully', LogEvent.FORM_SUBMITTED, {
+ *   activity: { id: '123' }
+ * })
  * ```
  *
  * Usage (server-side without session context):
@@ -103,6 +93,7 @@ export interface LogAttributes extends SessionLogContext {
  * logger.info('API request completed', LogEvent.SOL_API_REQUEST, {
  *   endpoint: '/api/sol/providers',
  *   duration: 123,
+ *   organization_slug: result.organization_slug,
  * })
  * ```
  */
@@ -112,9 +103,11 @@ export const logger = {
     eventType: LogEvent | string,
     context: Record<string, unknown> = {}
   ) => {
+    const sessionContext = getLogAttributesFromSessionStore()
     Sentry.logger.info(message, {
       event_type: eventType,
       timestamp: new Date().toISOString(),
+      ...sessionContext,
       ...context,
     } as LogAttributes)
   },
@@ -124,9 +117,11 @@ export const logger = {
     eventType: LogEvent | string,
     context: Record<string, unknown> = {}
   ) => {
+    const sessionContext = getLogAttributesFromSessionStore()
     Sentry.logger.warn(message, {
       event_type: eventType,
       timestamp: new Date().toISOString(),
+      ...sessionContext,
       ...context,
     } as LogAttributes)
   },
@@ -136,9 +131,11 @@ export const logger = {
     eventType: LogEvent | string,
     context: Record<string, unknown> = {}
   ) => {
+    const sessionContext = getLogAttributesFromSessionStore()
     Sentry.logger.error(message, {
       event_type: eventType,
       timestamp: new Date().toISOString(),
+      ...sessionContext,
       ...context,
     } as LogAttributes)
   },

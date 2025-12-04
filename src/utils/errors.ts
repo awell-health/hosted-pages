@@ -91,7 +91,7 @@ export const serializeError = (error: unknown): string => {
  *   // some operation
  * } catch (error) {
  *   const hostedSessionError = new HostedSessionError(
- *     error instanceof Error ? error.message : String(error),
+ *     error instanceof Error ? error.message : "MY MESSAGE",
  *     {
  *       errorType: 'GRAPHQL_OPERATION_FAILED',
  *       operation: 'SubmitForm',
