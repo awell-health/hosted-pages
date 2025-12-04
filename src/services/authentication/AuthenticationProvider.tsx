@@ -56,9 +56,10 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.token])
 
+  // Log invalid URL when condition is met
   useEffect(() => {
     if (isClient && router.isReady && !router.query.sessionId) {
-      Sentry.logger.warn('Invalid URL', {
+      Sentry.logger.warn('Invalid URL - missing sessionId', {
         category: 'navigation',
         url: router.asPath,
         sessionId: router.query.sessionId,
@@ -66,15 +67,28 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     }
   }, [isClient, router.isReady, router.query.sessionId, router.asPath])
 
+  // Log router readiness state
   useEffect(() => {
-    if (!router.isReady || tokenLoading) {
-      Sentry.logger.info('Preparing router and/or token', {
+    Sentry.logger.info(
+      router.isReady ? 'Router is ready' : 'Router is not ready',
+      {
         category: 'navigation',
         url: router.asPath,
         sessionId: router.query.sessionId,
-      })
-    }
-  }, [router.isReady, tokenLoading, router.asPath, router.query.sessionId])
+      }
+    )
+  }, [router.isReady, router.asPath, router.query.sessionId])
+
+  // Log token loading state
+  useEffect(() => {
+    Sentry.logger.info(
+      tokenLoading ? 'Token is loading' : 'Token loading completed',
+      {
+        category: 'authentication',
+        sessionId: router.query.sessionId,
+      }
+    )
+  }, [tokenLoading, router.query.sessionId])
 
   const authenticationContext = {
     isAuthenticated: accessToken !== '',

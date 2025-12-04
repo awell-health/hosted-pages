@@ -125,7 +125,46 @@ export async function startHostedPathwaySession(
       }
     }
 
-    const session_url = data?.startHostedPathwaySessionFromLink.session_url
+    const session_url = data?.startHostedPathwaySessionFromLink?.session_url
+
+    // Validate that session_url exists and is not null/undefined
+    if (isNil(session_url)) {
+      const errorMessage = 'Session URL is missing from GraphQL response'
+
+      // Log and report error to Sentry
+      Sentry.logger.error('Missing session_url in GraphQL response', {
+        category: 'hosted_pathway_error',
+        hostedPagesLinkId,
+        patient_identifier,
+        track_id,
+        activity_id,
+      })
+
+      const hostedSessionError = new HostedSessionError(
+        `Failed to start hosted pathway session: ${errorMessage}`,
+        {
+          errorType: 'HOSTED_PATHWAY_SESSION_START_FAILED',
+          operation: 'StartHostedPathwaySessionFromLink',
+          contexts: {
+            session: {
+              hostedPagesLinkId,
+              patient_identifier,
+              track_id,
+              activity_id,
+            },
+            graphql: {
+              query: 'StartHostedPathwaySessionFromLink',
+              response_data: JSON.stringify(data),
+            },
+          },
+        }
+      )
+      captureHostedSessionError(hostedSessionError)
+
+      return {
+        error: errorMessage,
+      }
+    }
 
     let additionalParams = ''
     if (!isNil(activity_id)) {

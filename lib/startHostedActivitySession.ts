@@ -111,7 +111,46 @@ export async function startHostedActivitySession(
     }
 
     const { session_id, session_url } =
-      data?.startHostedActivitySessionViaHostedPagesLink
+      data?.startHostedActivitySessionViaHostedPagesLink ?? {}
+
+    // Validate that session_url exists and is not null/undefined
+    if (isNil(session_url)) {
+      const errorMessage = 'Session URL is missing from GraphQL response'
+
+      // Log and report error to Sentry
+      Sentry.logger.error('Missing session_url in GraphQL response', {
+        category: 'hosted_activity_error',
+        hostedPagesLinkId,
+        session_id,
+        track_id,
+        activity_id,
+      })
+
+      const hostedSessionError = new HostedSessionError(
+        `Failed to start hosted activity session: ${errorMessage}`,
+        {
+          errorType: 'HOSTED_ACTIVITY_SESSION_START_FAILED',
+          operation: 'StartHostedActivitySessionViaHostedPagesLink',
+          contexts: {
+            session: {
+              hostedPagesLinkId,
+              session_id,
+              track_id,
+              activity_id,
+            },
+            graphql: {
+              query: 'StartHostedActivitySessionViaHostedPagesLink',
+              response_data: JSON.stringify(data),
+            },
+          },
+        }
+      )
+      captureHostedSessionError(hostedSessionError)
+
+      return {
+        error: errorMessage,
+      }
+    }
 
     let additionalParams = ''
     if (!isNil(activity_id)) {
