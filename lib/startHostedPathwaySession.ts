@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken'
 import { isNil } from 'lodash'
 import { environment } from '../types'
 import { JwtFeature } from './jwt-feature'
-import { StartHostedCareflowSessionParams } from '../pages/api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
 import {
   HostedSessionError,
   captureHostedSessionError,
@@ -11,6 +10,7 @@ import * as Sentry from '@sentry/nextjs'
 
 export type StartHostedPathwaySessionSuccess = {
   sessionUrl: string
+  organization_slug?: string | null
 }
 
 export type StartHostedPathwaySessionError = {
@@ -35,9 +35,12 @@ const decodePatientIdentifier = (
  * Extracted from API route to be reusable in getServerSideProps.
  * All error logging and reporting happens here - single source of truth.
  */
-export async function startHostedPathwaySession(
-  params: StartHostedCareflowSessionParams
-): Promise<StartHostedPathwaySessionResult> {
+export async function startHostedPathwaySession(params: {
+  hostedPagesLinkId: string
+  patient_identifier?: string
+  track_id?: string
+  activity_id?: string
+}): Promise<StartHostedPathwaySessionResult> {
   const { hostedPagesLinkId, patient_identifier, track_id, activity_id } =
     params
 
@@ -74,6 +77,7 @@ export async function startHostedPathwaySession(
           mutation StartHostedPathwaySessionFromLink($input: StartHostedPathwaySessionFromLinkInput!) {
             startHostedPathwaySessionFromLink(input: $input) {
               session_url
+              organization_slug
             }
           }
         `,
@@ -88,6 +92,10 @@ export async function startHostedPathwaySession(
         errors[0].message ??
         'Unknown error'
 
+      // Try to extract organization_slug from response if available
+      const organization_slug =
+        data?.startHostedPathwaySessionFromLink?.organization_slug
+
       // Log and report error to Sentry
       Sentry.logger.error('Error with hosted pathway link', {
         category: 'hosted_pathway_error',
@@ -96,6 +104,7 @@ export async function startHostedPathwaySession(
         patient_identifier,
         track_id,
         activity_id,
+        organization_slug,
       })
 
       const hostedSessionError = new HostedSessionError(
@@ -104,6 +113,7 @@ export async function startHostedPathwaySession(
           errorType: 'HOSTED_PATHWAY_SESSION_START_FAILED',
           operation: 'StartHostedPathwaySessionFromLink',
           originalError: errors[0],
+          tags: organization_slug ? { organization_slug } : undefined,
           contexts: {
             session: {
               hostedPagesLinkId,
@@ -111,6 +121,9 @@ export async function startHostedPathwaySession(
               track_id,
               activity_id,
             },
+            ...(organization_slug
+              ? { organization_slug: { organization_slug } }
+              : {}),
             graphql: {
               query: 'StartHostedPathwaySessionFromLink',
               errors: JSON.stringify(errors),
@@ -126,6 +139,8 @@ export async function startHostedPathwaySession(
     }
 
     const session_url = data?.startHostedPathwaySessionFromLink?.session_url
+    const organization_slug =
+      data?.startHostedPathwaySessionFromLink?.organization_slug
 
     // Validate that session_url exists and is not null/undefined
     if (isNil(session_url)) {
@@ -138,6 +153,7 @@ export async function startHostedPathwaySession(
         patient_identifier,
         track_id,
         activity_id,
+        organization_slug,
       })
 
       const hostedSessionError = new HostedSessionError(
@@ -145,6 +161,7 @@ export async function startHostedPathwaySession(
         {
           errorType: 'HOSTED_PATHWAY_SESSION_START_FAILED',
           operation: 'StartHostedPathwaySessionFromLink',
+          tags: organization_slug ? { organization_slug } : undefined,
           contexts: {
             session: {
               hostedPagesLinkId,
@@ -152,6 +169,9 @@ export async function startHostedPathwaySession(
               track_id,
               activity_id,
             },
+            ...(organization_slug
+              ? { organization_slug: { organization_slug } }
+              : {}),
             graphql: {
               query: 'StartHostedPathwaySessionFromLink',
               response_data: JSON.stringify(data),
@@ -175,7 +195,7 @@ export async function startHostedPathwaySession(
 
     const sessionUrl = `${session_url}${additionalParams}`
 
-    return { sessionUrl }
+    return { sessionUrl, organization_slug }
   } catch (error) {
     // Handle unexpected errors (network failures, JSON parsing errors, etc.)
     const errorMessage =
@@ -189,6 +209,7 @@ export async function startHostedPathwaySession(
       patient_identifier,
       track_id,
       activity_id,
+      // organization_slug not available in catch block as mutation hasn't completed
     })
 
     const hostedSessionError = new HostedSessionError(

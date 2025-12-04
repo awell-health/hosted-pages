@@ -46,6 +46,8 @@ export const useHostedSession = (): UseHostedSessionHook => {
   const { data, loading, error, refetch, stopPolling, startPolling } =
     useGetHostedSessionQuery({
       onError: (error) => {
+        // organization_slug will be automatically included from Sentry scope
+        // if session was previously loaded (set by useHostedSession useEffect)
         const hostedSessionError = new HostedSessionError(
           'Failed to get hosted session',
           {
@@ -112,12 +114,14 @@ export const useHostedSession = (): UseHostedSessionHook => {
       Sentry.setTags({
         pathway: hostedSession?.pathway_id,
         stakeholder: hostedSession?.stakeholder.id,
+        organization_slug: hostedSession?.organization_slug,
       })
       Sentry.setContext('session', {
         id: hostedSession?.id,
         pathway_id: hostedSession?.pathway_id,
         success_url: hostedSession?.success_url,
         cancel_url: hostedSession?.cancel_url,
+        organization_slug: hostedSession?.organization_slug,
       })
       Sentry.setContext('stakeholder', {
         id: hostedSession?.stakeholder.id,

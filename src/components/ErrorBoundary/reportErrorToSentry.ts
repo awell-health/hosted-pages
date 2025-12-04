@@ -8,6 +8,8 @@ export const reportErrorToSentry = (
   error: Error,
   errorInfo: ErrorInfo
 ): void => {
+  // organization_slug will be automatically included from Sentry scope
+  // if session was previously loaded (set by useHostedSession useEffect)
   const hostedSessionError = new HostedSessionError(
     error.message || 'React Error Boundary caught an error',
     {

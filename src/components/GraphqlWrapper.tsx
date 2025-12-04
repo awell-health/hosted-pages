@@ -38,6 +38,8 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
           })
         }
 
+        // organization_slug will be automatically included from Sentry scope
+        // if session was previously loaded (set by useHostedSession useEffect)
         // Capture in Sentry with enhanced context using custom error class
         const hostedSessionError = new HostedSessionError(
           networkError.message || 'GraphQL network error',

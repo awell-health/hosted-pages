@@ -62,6 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     category: 'navigation',
     hostedPagesLinkId: params.hostedPagesLinkId,
     sessionUrl: result.sessionUrl,
+    organization_slug: result.organization_slug,
   })
 
   // Redirect server-side

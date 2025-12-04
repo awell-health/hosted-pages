@@ -7,7 +7,6 @@ import { startHostedPathwaySession } from '../../lib'
 import { ErrorPage } from '../../src/components/ErrorPage'
 import { useTranslation } from 'next-i18next'
 import * as Sentry from '@sentry/nextjs'
-import { StartHostedCareflowSessionParams } from '../api/startHostedPathwaySessionFromLink/[hostedPagesLinkId]'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'goto.awell.health/c/<hostedCareflowLinkId>?patient_identifier=system|id'
@@ -44,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     patient_identifier: query.patient_identifier as string | undefined,
     track_id: query.track_id as string | undefined,
     activity_id: query.activity_id as string | undefined,
-  } as StartHostedCareflowSessionParams
+  }
 
   const result = await startHostedPathwaySession(params)
 
@@ -63,6 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     category: 'navigation',
     hostedPagesLinkId: params.hostedPagesLinkId,
     sessionUrl: result.sessionUrl,
+    organization_slug: result.organization_slug,
   })
 
   // Redirect server-side

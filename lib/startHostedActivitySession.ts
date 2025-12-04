@@ -12,6 +12,7 @@ import * as Sentry from '@sentry/nextjs'
 export type StartHostedActivitySessionSuccess = {
   sessionId: string
   sessionUrl: string
+  organization_slug?: string | null
 }
 
 export type StartHostedActivitySessionError = {
@@ -57,6 +58,7 @@ export async function startHostedActivitySession(
             startHostedActivitySessionViaHostedPagesLink(input: $input) {
               session_id
               session_url
+              organization_slug
             }
           }
           `,
@@ -75,6 +77,10 @@ export async function startHostedActivitySession(
         errors[0].message ??
         'Unknown error'
 
+      // Try to extract organization_slug from response if available
+      const organization_slug =
+        data?.startHostedActivitySessionViaHostedPagesLink?.organization_slug
+
       // Log and report error to Sentry
       Sentry.logger.error('Error with hosted activity link', {
         category: 'hosted_activity_error',
@@ -82,6 +88,7 @@ export async function startHostedActivitySession(
         error: errorMessage,
         track_id,
         activity_id,
+        organization_slug,
       })
 
       const hostedSessionError = new HostedSessionError(
@@ -90,12 +97,16 @@ export async function startHostedActivitySession(
           errorType: 'HOSTED_ACTIVITY_SESSION_START_FAILED',
           operation: 'StartHostedActivitySessionViaHostedPagesLink',
           originalError: errors[0],
+          tags: organization_slug ? { organization_slug } : undefined,
           contexts: {
             session: {
               hostedPagesLinkId,
               track_id,
               activity_id,
             },
+            ...(organization_slug
+              ? { organization_slug: { organization_slug } }
+              : {}),
             graphql: {
               query: 'StartHostedActivitySessionViaHostedPagesLink',
               errors: JSON.stringify(errors),
@@ -110,7 +121,7 @@ export async function startHostedActivitySession(
       }
     }
 
-    const { session_id, session_url } =
+    const { session_id, session_url, organization_slug } =
       data?.startHostedActivitySessionViaHostedPagesLink ?? {}
 
     // Validate that session_url exists and is not null/undefined
@@ -124,6 +135,7 @@ export async function startHostedActivitySession(
         session_id,
         track_id,
         activity_id,
+        organization_slug,
       })
 
       const hostedSessionError = new HostedSessionError(
@@ -131,6 +143,7 @@ export async function startHostedActivitySession(
         {
           errorType: 'HOSTED_ACTIVITY_SESSION_START_FAILED',
           operation: 'StartHostedActivitySessionViaHostedPagesLink',
+          tags: organization_slug ? { organization_slug } : undefined,
           contexts: {
             session: {
               hostedPagesLinkId,
@@ -138,6 +151,9 @@ export async function startHostedActivitySession(
               track_id,
               activity_id,
             },
+            ...(organization_slug
+              ? { organization_slug: { organization_slug } }
+              : {}),
             graphql: {
               query: 'StartHostedActivitySessionViaHostedPagesLink',
               response_data: JSON.stringify(data),
@@ -160,7 +176,7 @@ export async function startHostedActivitySession(
     }
     const sessionUrl = `${session_url}${additionalParams}`
 
-    return { sessionId: session_id, sessionUrl }
+    return { sessionId: session_id, sessionUrl, organization_slug }
   } catch (error) {
     // Handle unexpected errors (network failures, JSON parsing errors, etc.)
     const errorMessage =
@@ -173,6 +189,7 @@ export async function startHostedActivitySession(
       error: errorMessage,
       track_id,
       activity_id,
+      // organization_slug not available in catch block as mutation hasn't completed
     })
 
     const hostedSessionError = new HostedSessionError(

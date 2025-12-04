@@ -16,7 +16,6 @@ Sentry.init({
   // Enable Sentry Logs for structured logging
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/logs/
   enableLogs: true,
-  // This sets the sample rate to be 50% for all transactions
   tracesSampleRate: 0,
   // This sets the sample rate to be 10%. You may want this to be 100% while
   // in development and sample at a lower rate in production
