@@ -1,6 +1,9 @@
 import type { ChecklistItem, Activity } from './types'
 import { useGetChecklistQuery } from './types'
-import { captureException } from '@sentry/nextjs'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 interface UseChecklistHook {
   loading: boolean
   error?: string
@@ -21,20 +24,28 @@ export const useChecklist = (activity: Activity): UseChecklistHook => {
   const { data, loading, error, refetch } = useGetChecklistQuery({
     variables,
     onError: (error) => {
-      captureException(error, {
-        contexts: {
-          checklist: {
-            checklist_id,
+      const hostedSessionError = new HostedSessionError(
+        'Failed to get checklist',
+        {
+          errorType: 'CHECKLIST_FETCH_FAILED',
+          operation: 'GetChecklist',
+          activityId: activity.id,
+          originalError: error,
+          contexts: {
+            checklist: {
+              checklist_id,
+            },
+            activity: {
+              ...activity,
+            },
+            graphql: {
+              query: 'GetChecklist',
+              variables: JSON.stringify(variables),
+            },
           },
-          activity: {
-            ...activity,
-          },
-          graphql: {
-            query: 'GetChecklist',
-            variables: JSON.stringify(variables),
-          },
-        },
-      })
+        }
+      )
+      captureHostedSessionError(hostedSessionError)
     },
   })
 

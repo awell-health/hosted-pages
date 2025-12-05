@@ -7,11 +7,10 @@ import useLocalStorage from 'use-local-storage'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import { useFileUpload } from '../../hooks/useFileUpload'
 import { useHostedSession } from '../../hooks/useHostedSession'
-import { useLogging } from '../../hooks/useLogging'
-import { LogEvent } from '../../hooks/useLogging/types'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
-import { addSentryBreadcrumb, masker } from '../../services/ErrorReporter'
-import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import { logger, LogEvent } from '../../utils/logging'
+import { masker } from '../../services/ErrorReporter'
+import * as Sentry from '@sentry/nextjs'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
 import {
@@ -57,8 +56,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { t } = useTranslation()
   const { evaluateFormRules } = useEvaluateFormRules(activity.object.id)
   const { onSubmit, isSubmitting } = useSubmitForm(activity)
-  const { branding, theme } = useHostedSession()
-  const { errorLog } = useLogging()
+  const { branding, theme, session } = useHostedSession()
   const [getGcsSignedUrl] = useFileUpload()
 
   useEffect(() => {
@@ -96,12 +94,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
     async (
       response: Array<AnswerInput>
     ): Promise<Array<QuestionRuleResult>> => {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.EVALUATE_FORM_RULES,
-        data: {
-          form_id: activity.object.id,
-          response: masker(response),
-        },
+      Sentry.logger.info('Evaluating form rules', {
+        category: 'evaluate_form_rules',
+        form_id: activity.object.id,
+        response: masker(response),
       })
       return evaluateFormRules(response)
     },
@@ -110,12 +106,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   const handleSubmit = useCallback(
     async (response: Array<any>) => {
-      addSentryBreadcrumb({
-        category: BreadcrumbCategory.SUBMIT_FORM,
-        data: {
-          form_id: activity.object.id,
-          response: masker(response),
-        },
+      Sentry.logger.info('Submitting form', {
+        category: 'submit_form',
+        form_id: activity.object.id,
+        response: masker(response),
       })
 
       const isSubmitted = await onSubmit(response)
@@ -254,15 +248,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
     activity.form_display_mode === FormDisplayMode.Regular
 
   if (isNil(form)) {
-    errorLog(
-      `Form ${activity.object.name} fetch failed`,
-      {
-        activity,
-        form,
-      },
-      'Form is null',
-      LogEvent.FORM_FETCH_FAILED
-    )
     return <ErrorPage title={t('activities.form.loading_error')} />
   }
   if (isSubmitting) {

@@ -6,6 +6,10 @@ import { ProvidersResponse, type ActionFields, type Provider } from './types'
 import '@awell-health/sol-scheduling/style.css'
 import { useHostedSession } from '../../../../../hooks/useHostedSession'
 import { isNil } from 'lodash'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../../../../utils/errors'
 import classes from './RequestingProviderLookUp.module.css'
 import {
   type Option,
@@ -131,7 +135,30 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
       const options = (await response.json()) as ProvidersResponse
       return options
     } catch (error) {
-      console.log(error)
+      // Try to extract siteId from patient if available
+      let siteId: string | undefined
+      try {
+        const patientObject = JSON.parse(patient)
+        siteId = patientObject?.site?.Id
+      } catch {
+        // Ignore parsing errors
+      }
+
+      const hostedSessionError = new HostedSessionError(
+        'Failed to fetch requesting providers',
+        {
+          errorType: 'WP_REQUESTING_PROVIDER_FETCH_FAILED',
+          activityId: activityDetails.id,
+          originalError: error,
+          contexts: {
+            activity: activityDetails,
+            wp: {
+              siteId,
+            },
+          },
+        }
+      )
+      captureHostedSessionError(hostedSessionError)
     } finally {
       setLoading(false)
     }

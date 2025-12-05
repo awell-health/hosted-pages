@@ -9,4 +9,5 @@ fragment HostedSession on HostedSession {
     type
     name
   }
+  organization_slug
 }
