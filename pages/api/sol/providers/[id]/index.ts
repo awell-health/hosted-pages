@@ -3,7 +3,7 @@ import { getAccessToken } from '../../../../../src/utils'
 import { type GetProviderResponseType } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../../utils'
 import { omit } from 'lodash'
-import { log } from '../../../../../src/utils/logging'
+import { logger, LogEvent } from '../../../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,36 +35,11 @@ export default async function handler(
 
     if (!response.ok) {
       const responseBody = await response.json()
-      log(
-        `${logMessage}: failed`,
-        {
-          queryParams: req.query,
-          responseBody,
-          errorCode: response.status,
-          responseText: response.statusText,
-          url,
-          performance: new Date().valueOf() - startTime,
-          context: {
-            session: {
-              id: session,
-              pathway_id: pathway,
-            },
-          },
-        },
-        'ERROR'
-      )
-      return res.status(response.status).json({
-        error: `Request failed with status ${response.status}`,
-        errorCode: String(response.status),
-      })
-    }
-
-    const jsonRes: GetProviderResponseType = await response.json()
-    log(
-      `${logMessage}: success`,
-      {
+      logger.error(`${logMessage}: failed`, LogEvent.SOL_API_REQUEST, {
         queryParams: req.query,
-        responseBody: jsonRes,
+        responseBody,
+        errorCode: response.status,
+        responseText: response.statusText,
         url,
         performance: new Date().valueOf() - startTime,
         context: {
@@ -73,20 +48,37 @@ export default async function handler(
             pathway_id: pathway,
           },
         },
+      })
+      return res.status(response.status).json({
+        error: `Request failed with status ${response.status}`,
+        errorCode: String(response.status),
+      })
+    }
+
+    const jsonRes: GetProviderResponseType = await response.json()
+    logger.info(`${logMessage}: success`, LogEvent.SOL_API_REQUEST, {
+      queryParams: req.query,
+      responseBody: jsonRes,
+      url,
+      performance: new Date().valueOf() - startTime,
+      context: {
+        session: {
+          id: session,
+          pathway_id: pathway,
+        },
       },
-      'INFO'
-    )
+    })
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
-    log(
+    logger.error(
       `${logMessage}: failed - ${errMessage}`,
+      LogEvent.SOL_API_REQUEST,
       {
         queryParams: req.query,
         providerId: req.query,
         error,
-      },
-      'ERROR'
+      }
     )
     return res.status(500).json({
       error: errMessage,

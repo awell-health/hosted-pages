@@ -6,7 +6,7 @@ import {
 } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from './utils'
 import { omit } from 'lodash'
-import { log } from '../../../src/utils/logging'
+import { logger, LogEvent } from '../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,15 +25,19 @@ export default async function handler(
     const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
 
     const bodyValidation = BookAppointmentInputSchema.safeParse(input)
-    log(
-      `${logMessage}: parsing body`,
-      {
+    if (bodyValidation.success) {
+      logger.info(`${logMessage}: parsing body`, LogEvent.SOL_API_REQUEST, {
         requestBody: input,
         bodyValidation,
         context: logContext,
-      },
-      bodyValidation.success ? 'INFO' : 'ERROR'
-    )
+      })
+    } else {
+      logger.error(`${logMessage}: parsing body`, LogEvent.SOL_API_REQUEST, {
+        requestBody: input,
+        bodyValidation,
+        context: logContext,
+      })
+    }
 
     if (!bodyValidation.success) {
       const { errors } = bodyValidation.error
@@ -54,20 +58,16 @@ export default async function handler(
 
     if (!response.ok) {
       const responseBody = await response.json()
-      log(
-        `${logMessage}: failed`,
-        {
-          requestBody: input,
-          validatedRequestBody: bodyValidation.data,
-          responseBody,
-          errorCode: response.status,
-          responseText: response.statusText,
-          url,
-          performance: new Date().valueOf() - startTime,
-          context: logContext,
-        },
-        'ERROR'
-      )
+      logger.error(`${logMessage}: failed`, LogEvent.SOL_API_REQUEST, {
+        requestBody: input,
+        validatedRequestBody: bodyValidation.data,
+        responseBody,
+        errorCode: response.status,
+        responseText: response.statusText,
+        url,
+        performance: new Date().valueOf() - startTime,
+        context: logContext,
+      })
       return res.status(response.status).json({
         error: `Request failed with status ${response.status}`,
         errorCode: String(response.status),
@@ -76,28 +76,24 @@ export default async function handler(
 
     const jsonRes: BookAppointmentResponseType = await response.json()
 
-    log(
-      `${logMessage}: success`,
-      {
-        requestBody: input,
-        responseBody: jsonRes,
-        url,
-        performance: new Date().valueOf() - startTime,
-        context: logContext,
-      },
-      'INFO'
-    )
+    logger.info(`${logMessage}: success`, LogEvent.SOL_API_REQUEST, {
+      requestBody: input,
+      responseBody: jsonRes,
+      url,
+      performance: new Date().valueOf() - startTime,
+      context: logContext,
+    })
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
-    log(
+    logger.error(
       `${logMessage}: failed - ${errMessage}`,
+      LogEvent.SOL_API_REQUEST,
       {
         requestBody: input,
         error,
         context: logContext,
-      },
-      'ERROR'
+      }
     )
     return res.status(500).json({
       error: errMessage,

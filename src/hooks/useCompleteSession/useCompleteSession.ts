@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-toastify'
-import { captureException } from '@sentry/nextjs'
 import { useCompleteSessionMutation } from './types'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 
 interface UseCompleteSessionHook {
   onCompleteSession: (session_id: string) => Promise<void>
@@ -27,17 +30,24 @@ export const useCompleteSession = (): UseCompleteSessionHook => {
           await completeSession({ variables })
         } catch (error) {
           toast.error(t('session.completion_error'))
-          captureException(error, {
-            contexts: {
-              session: {
-                session_id,
+          const hostedSessionError = new HostedSessionError(
+            'Failed to complete session',
+            {
+              errorType: 'SESSION_COMPLETION_FAILED',
+              operation: 'CompleteSession',
+              originalError: error,
+              contexts: {
+                session: {
+                  session_id,
+                },
+                graphql: {
+                  query: 'CompleteSession',
+                  variables: JSON.stringify(variables),
+                },
               },
-              graphql: {
-                query: 'CompleteSession',
-                variables: JSON.stringify(variables),
-              },
-            },
-          })
+            }
+          )
+          captureHostedSessionError(hostedSessionError)
         } finally {
           setIsCompleting(false)
         }
