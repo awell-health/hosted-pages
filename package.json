@@ -21,7 +21,7 @@
     "@google-cloud/logging": "^11.0.0",
     "@localazy/cli": "^1.7.5",
     "@module-federation/runtime": "^0.18.4",
-    "@sentry/nextjs": "^8.52.0",
+    "@sentry/nextjs": "^10.28.0",
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.0",
     "date-fns": "^2.29.3",

@@ -1,20 +1,20 @@
 import {
-  type GetProvidersResponseType,
-  type GetAvailabilitiesResponseType,
-  type GetProvidersInputType,
-  type GetAvailabilitiesInputType,
   type BookAppointmentInputType,
   type BookAppointmentResponseType,
+  type GetAvailabilitiesInputType,
+  type GetAvailabilitiesResponseType,
   type GetProviderInputType,
   type GetProviderResponseType,
+  type GetProvidersInputType,
+  type GetProvidersResponseType,
   GetAvailabilitiesResponseSchema,
   GetProviderResponseSchema,
   GetProvidersResponseSchema,
 } from '@awell-health/sol-scheduling'
-import { SolApiResponseError } from './helpers/error'
 import type { HostedSession } from '../../../../../hooks/useHostedSession/types'
 import { type SessionMetadata } from '../../../../../types/generated/types-orchestration'
-import { LogEvent, LogSeverity } from '../../../../../hooks/useLogging/types'
+import { LogEvent, logger } from '../../../../../utils/logging'
+import { SolApiResponseError } from './helpers/error'
 
 interface RequestOptions {
   baseUrl: string
@@ -24,21 +24,12 @@ interface RequestOptions {
   }
 }
 
-type LogRequest = (
-  message: string,
-  params: {},
-  severity: LogSeverity,
-  event: LogEvent
-) => void
-
 export const fetchProviders = async ({
   input,
   requestOptions,
-  log,
 }: {
   input: GetProvidersInputType
   requestOptions: RequestOptions
-  log: LogRequest
 }): Promise<GetProvidersResponseType> => {
   const timeStart = new Date().valueOf()
   try {
@@ -70,14 +61,13 @@ export const fetchProviders = async ({
     throw error
   } finally {
     const timeEnd = new Date().valueOf()
-    log(
+    logger.info(
       `SOL: Fetch Providers: ${timeEnd - timeStart} milliseconds`,
+      LogEvent.SOL_API_REQUEST,
       {
         time: timeEnd - timeStart,
         api: 'fetchProviders',
-      },
-      'INFO',
-      LogEvent.SOL_API_REQUEST
+      }
     )
   }
 }
@@ -85,11 +75,9 @@ export const fetchProviders = async ({
 export const fetchProvider = async ({
   input,
   requestOptions,
-  log,
 }: {
   input: GetProviderInputType
   requestOptions: RequestOptions
-  log: LogRequest
 }): Promise<GetProviderResponseType> => {
   const timeStart = new Date().valueOf()
   try {
@@ -118,14 +106,13 @@ export const fetchProvider = async ({
     throw error
   } finally {
     const timeEnd = new Date().valueOf()
-    log(
+    logger.info(
       `SOL: Fetch Provider: ${timeEnd - timeStart} milliseconds`,
+      LogEvent.SOL_API_REQUEST,
       {
         time: timeEnd - timeStart,
         api: 'fetchProvider',
-      },
-      'INFO',
-      LogEvent.SOL_API_REQUEST
+      }
     )
   }
 }
@@ -133,11 +120,9 @@ export const fetchProvider = async ({
 export const fetchAvailability = async ({
   input,
   requestOptions,
-  log,
 }: {
   input: GetAvailabilitiesInputType
   requestOptions: RequestOptions
-  log: LogRequest
 }): Promise<GetAvailabilitiesResponseType> => {
   const timeStart = new Date().valueOf()
   try {
@@ -166,38 +151,30 @@ export const fetchAvailability = async ({
     throw error
   } finally {
     const timeEnd = new Date().valueOf()
-    log(
+    logger.info(
       `SOL: Fetch Availability: ${timeEnd - timeStart} milliseconds`,
+      LogEvent.SOL_API_REQUEST,
       {
         time: timeEnd - timeStart,
         api: 'fetchAvailability',
-      },
-      'INFO',
-      LogEvent.SOL_API_REQUEST
+      }
     )
   }
 }
 export const bookAppointment = async ({
   input,
   requestOptions,
-  log,
 }: {
   input: BookAppointmentInputType
   requestOptions: RequestOptions
-  log: LogRequest
 }): Promise<BookAppointmentResponseType> => {
   const timeStart = new Date().valueOf()
   try {
-    log(
-      `SOL: Book Appointment request`,
-      {
-        body: input,
-        requestOptions,
-        api: 'bookAppointment',
-      },
-      'INFO',
-      LogEvent.SOL_API_REQUEST
-    )
+    logger.info(`SOL: Book Appointment request`, LogEvent.SOL_API_REQUEST, {
+      body: input,
+      requestOptions,
+      api: 'bookAppointment',
+    })
     const response = await fetch(`/api/sol/appointments`, {
       method: 'POST',
       headers: {
@@ -218,14 +195,13 @@ export const bookAppointment = async ({
     throw error
   } finally {
     const timeEnd = new Date().valueOf()
-    log(
+    logger.info(
       `SOL: Book Appointment: ${timeEnd - timeStart} milliseconds`,
+      LogEvent.SOL_API_REQUEST,
       {
         time: timeEnd - timeStart,
         api: 'bookAppointment',
-      },
-      'INFO',
-      LogEvent.SOL_API_REQUEST
+      }
     )
   }
 }

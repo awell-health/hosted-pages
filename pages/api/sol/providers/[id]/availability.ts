@@ -3,7 +3,7 @@ import { getAccessToken } from '../../../../../src/utils'
 import { type GetAvailabilitiesResponseType } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../../utils'
 import { omit, isEmpty } from 'lodash'
-import { log } from '../../../../../src/utils/logging'
+import { logger, LogEvent } from '../../../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,24 +37,20 @@ export default async function handler(
 
     if (!response.ok) {
       const responseBody = await response.json()
-      log(
-        `${logMessage}: failed`,
-        {
-          queryParams: req.query,
-          responseBody,
-          errorCode: response.status,
-          responseText: response.statusText,
-          url,
-          performance: new Date().valueOf() - startTime,
-          context: {
-            session: {
-              id: session,
-              pathway_id: pathway,
-            },
+      logger.error(`${logMessage}: failed`, LogEvent.SOL_API_REQUEST, {
+        queryParams: req.query,
+        responseBody,
+        errorCode: response.status,
+        responseText: response.statusText,
+        url,
+        performance: new Date().valueOf() - startTime,
+        context: {
+          session: {
+            id: session,
+            pathway_id: pathway,
           },
         },
-        'ERROR'
-      )
+      })
       return res.status(response.status).json({
         error: `Request failed with status ${response.status}`,
         errorCode: String(response.status),
@@ -64,8 +60,9 @@ export default async function handler(
     const jsonRes: GetAvailabilitiesResponseType = await response.json()
 
     if (isEmpty(jsonRes.data?.[id as string])) {
-      log(
+      logger.warn(
         `${logMessage}: failed - no data returned`,
+        LogEvent.SOL_API_REQUEST,
         {
           queryParams: req.query,
           requestBody,
@@ -80,32 +77,28 @@ export default async function handler(
               pathway_id: pathway,
             },
           },
-        },
-        'WARNING'
+        }
       )
       return res.status(404).json({ data: [] })
     }
-    log(
-      `${logMessage}: success`,
-      {
-        queryParams: req.query,
-        responseBody: jsonRes,
-        url,
-        performance: new Date().valueOf() - startTime,
-        context: {
-          session: {
-            id: session,
-            pathway_id: pathway,
-          },
+    logger.info(`${logMessage}: success`, LogEvent.SOL_API_REQUEST, {
+      queryParams: req.query,
+      responseBody: jsonRes,
+      url,
+      performance: new Date().valueOf() - startTime,
+      context: {
+        session: {
+          id: session,
+          pathway_id: pathway,
         },
       },
-      'INFO'
-    )
+    })
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
-    log(
+    logger.error(
       `${logMessage}: failed - ${errMessage}`,
+      LogEvent.SOL_API_REQUEST,
       {
         error,
         queryParams: req.query,
@@ -115,8 +108,7 @@ export default async function handler(
             pathway_id: pathway,
           },
         },
-      },
-      'ERROR'
+      }
     )
     return res.status(500).json({
       error: errMessage,

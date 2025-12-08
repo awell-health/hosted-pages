@@ -6,8 +6,7 @@ import { useMessage, Activity } from '../../hooks/useMessage'
 import { LoadingPage } from '../LoadingPage'
 import { ErrorPage } from '../ErrorPage'
 import attachmentIcon from './../../assets/link.svg'
-import { addSentryBreadcrumb } from '../../services/ErrorReporter'
-import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import * as Sentry from '@sentry/nextjs'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { isEmpty } from 'lodash'
 interface MessageProps {
@@ -34,11 +33,9 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
   }
 
   const handleReadMessage = () => {
-    addSentryBreadcrumb({
-      category: BreadcrumbCategory.READ_MESSAGE,
-      data: {
-        message: message?.id,
-      },
+    Sentry.logger.info('Reading message', {
+      category: 'read_message',
+      message: message?.id,
     })
     onRead()
   }

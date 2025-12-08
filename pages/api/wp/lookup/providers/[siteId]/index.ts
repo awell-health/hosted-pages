@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAccessToken } from '../../auth'
 import { isEmpty } from 'lodash'
-import { log } from '../../../../../../src/utils/logging'
 import { getWpEnvSettings, API_METHODS, API_ROUTES } from '../../../settings'
 import { ProvidersResponse } from '../../../../../../src/components/Extension/PrivateExtensions/WP/RequestingProviderLookUp/types'
+import { logger, LogEvent } from '../../../../../../src/utils/logging'
 
 export default async function handler(
   req: NextApiRequest,
@@ -36,23 +36,19 @@ export default async function handler(
 
     if (!response.ok) {
       const responseBody = await response.json()
-      log(
-        `${logMessage}: failed`,
-        {
-          requestUrl: url,
-          responseBody,
-          errorCode: response.status,
-          responseText: response.statusText,
-          context: {
-            session: {
-              id: session,
-              pathway_id: pathway,
-            },
-            tenant,
+      logger.error(`${logMessage}: failed`, LogEvent.WP_API_REQUEST, {
+        requestUrl: url,
+        responseBody,
+        errorCode: response.status,
+        responseText: response.statusText,
+        context: {
+          session: {
+            id: session,
+            pathway_id: pathway,
           },
+          tenant,
         },
-        'ERROR'
-      )
+      })
       return res.status(response.status).json({
         error: `Request failed with status ${response.status}`,
         errorCode: String(response.status),
@@ -62,8 +58,9 @@ export default async function handler(
     const jsonRes: ProvidersResponse = await response.json()
 
     if (isEmpty(jsonRes.data)) {
-      log(
+      logger.warn(
         `${logMessage}: failed - no data returned`,
+        LogEvent.WP_API_REQUEST,
         {
           requestUrl: url,
           responseBody: jsonRes,
@@ -76,31 +73,27 @@ export default async function handler(
             },
             tenant,
           },
-        },
-        'WARNING'
+        }
       )
       return res.status(404).json({ data: [] })
     }
-    log(
-      `${logMessage}: success`,
-      {
-        requestUrl: url,
-        responseBody: jsonRes,
-        context: {
-          session: {
-            id: session,
-            pathway_id: pathway,
-          },
-          tenant,
+    logger.info(`${logMessage}: success`, LogEvent.WP_API_REQUEST, {
+      requestUrl: url,
+      responseBody: jsonRes,
+      context: {
+        session: {
+          id: session,
+          pathway_id: pathway,
         },
+        tenant,
       },
-      'INFO'
-    )
+    })
     return res.status(200).json(jsonRes)
   } catch (error) {
     const errMessage = 'Internal Server Error'
-    log(
+    logger.error(
       `${logMessage}: failed - ${errMessage}`,
+      LogEvent.WP_API_REQUEST,
       {
         requestUrl: url,
         error,
@@ -111,8 +104,7 @@ export default async function handler(
           },
           tenant,
         },
-      },
-      'ERROR'
+      }
     )
     return res.status(500).json({
       error: errMessage,

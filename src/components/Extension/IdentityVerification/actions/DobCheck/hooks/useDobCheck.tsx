@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react'
 import { isEmpty } from 'lodash'
 import { useCompleteExtensionActivity } from '../../../types'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../../../../../utils/errors'
 
 type UseDobCheckHook = ({
   pathway_id,
@@ -59,7 +63,21 @@ export const useDobCheck: UseDobCheckHook = ({ pathway_id, activity_id }) => {
 
         handleActivityCompletion({ activityId: activity_id })
       } catch (error) {
-        console.error('Error checking dob:', error)
+        const hostedSessionError = new HostedSessionError(
+          'Failed to check date of birth',
+          {
+            errorType: 'DOB_CHECK_FAILED',
+            activityId: activity_id,
+            originalError: error,
+            contexts: {
+              dobCheck: {
+                pathway_id,
+                activity_id,
+              },
+            },
+          }
+        )
+        captureHostedSessionError(hostedSessionError)
         throw error
       }
     },

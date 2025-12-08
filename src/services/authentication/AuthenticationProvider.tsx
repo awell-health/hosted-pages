@@ -5,8 +5,7 @@ import { useRouter } from 'next/router'
 import useSwr from 'swr'
 import { ErrorPage, LoadingPage } from '../../components'
 import { useTranslation } from 'next-i18next'
-import { addBreadcrumb } from '@sentry/nextjs'
-import { BreadcrumbCategory } from '../ErrorReporter/addSentryBreadcrumb'
+import * as Sentry from '@sentry/nextjs'
 interface AuthenticationProviderProps {
   children?: React.ReactNode
 }
@@ -30,6 +29,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   } = useSessionStorage('accessToken', '')
   const router = useRouter()
   const [tokenLoading, setTokenLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
 
   const { data, error } = useSwr(
     router.query.sessionId ? `/api/session/${router.query.sessionId}` : null,
@@ -43,6 +43,11 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Set client-side flag after hydration to prevent hydration mismatches
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   useEffect(() => {
     if (data?.token) {
       setAccessToken(data?.token)
@@ -51,34 +56,53 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.token])
 
+  // Log invalid URL when condition is met
+  useEffect(() => {
+    if (isClient && router.isReady && !router.query.sessionId) {
+      Sentry.logger.warn('Invalid URL - missing sessionId', {
+        category: 'navigation',
+        url: router.asPath,
+        sessionId: router.query.sessionId,
+      })
+    }
+  }, [isClient, router.isReady, router.query.sessionId, router.asPath])
+
+  // Log router readiness state
+  useEffect(() => {
+    Sentry.logger.info(
+      router.isReady ? 'Router is ready' : 'Router is not ready',
+      {
+        category: 'navigation',
+        url: router.asPath,
+        sessionId: router.query.sessionId,
+      }
+    )
+  }, [router.isReady, router.asPath, router.query.sessionId])
+
+  // Log token loading state
+  useEffect(() => {
+    Sentry.logger.info(
+      tokenLoading ? 'Token is loading' : 'Token loading completed',
+      {
+        category: 'authentication',
+        sessionId: router.query.sessionId,
+      }
+    )
+  }, [tokenLoading, router.query.sessionId])
+
   const authenticationContext = {
     isAuthenticated: accessToken !== '',
     accessToken,
     error,
   }
 
-  if (router.isReady && !router.query.sessionId) {
-    addBreadcrumb({
-      category: BreadcrumbCategory.NAVIGATION,
-      message: 'Invalid URL',
-      data: {
-        url: router.asPath,
-        sessionId: router.query.sessionId,
-      },
-    })
+  // Only check for missing sessionId on client-side after hydration
+  if (isClient && router.isReady && !router.query.sessionId) {
     return <ErrorPage title={t('session.invalid_url')} />
   }
 
   // Wait while token is being generated
   if (!router.isReady || tokenLoading) {
-    addBreadcrumb({
-      category: BreadcrumbCategory.NAVIGATION,
-      message: 'Preparing router and/or token',
-      data: {
-        url: router.asPath,
-        sessionId: router.query.sessionId,
-      },
-    })
     return <LoadingPage showLogoBox={true} />
   }
 
