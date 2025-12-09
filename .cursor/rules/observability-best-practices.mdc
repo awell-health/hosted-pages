@@ -8,23 +8,28 @@ alwaysApply: true
 
 1. **Never log during render** - Logging statements in component render functions execute on every re-render, creating duplicate logs. Use `useEffect` with dependencies to log state transitions instead.
 
-   ❌ Bad: `if (condition) { Sentry.logger.info('...') }` in render
-   ✅ Good: `useEffect(() => { if (condition) Sentry.logger.info('...') }, [condition])`
+   ❌ Bad: `if (condition) { Sentry.logger?.info('...') }` in render
+   ✅ Good: `useEffect(() => { if (condition) Sentry.logger?.info('...') }, [condition])`
 
 2. **Always include error details** - Error logs must include the actual error message and relevant context (IDs, parameters, state).
 
-   ❌ Bad: `Sentry.logger.error('Error occurred', { category: 'error' })`
-   ✅ Good: `Sentry.logger.error('Error occurred', { category: 'error', error: data.error, id: id })`
+   ❌ Bad: `Sentry.logger?.error('Error occurred', { category: 'error' })`
+   ✅ Good: `Sentry.logger?.error('Error occurred', { category: 'error', error: data.error, id: id })`
+
+3. **Always use optional chaining for logger calls** - Some clients may block the loading of the Sentry SDK, so the logger may not be available. All logger calls must use optional chaining (`?.`) to prevent runtime errors.
+
+   ❌ Bad: `Sentry.logger.info('Message')` or `Sentry.logger.error('Error')`
+   ✅ Good: `Sentry.logger?.info('Message')` or `Sentry.logger?.error('Error')`
 
 ## Error Reporting
 
-3. **Avoid duplicate error reporting** - Don't report the same error from multiple layers (e.g., global ErrorLink + query-specific `onError`). Prefer global handlers. If multiple handlers are needed, use the same `errorType` so Sentry groups them correctly.
+4. **Avoid duplicate error reporting** - Don't report the same error from multiple layers (e.g., global ErrorLink + query-specific `onError`). Prefer global handlers. If multiple handlers are needed, use the same `errorType` so Sentry groups them correctly.
 
    ❌ Bad: Reporting `GRAPHQL_ERROR` in ErrorLink and `SESSION_INITIALIZATION_FAILED` in query `onError` for the same error
    ✅ Good: Use global ErrorLink only
 
-   **Note**: `Sentry.logger.error` (structured logging) and `captureHostedSessionError` (error reporting) serve different purposes and are NOT duplicates. They can be used together:
-   - `Sentry.logger.error` - For structured logging/events in Sentry Logs
+   **Note**: `Sentry.logger?.error` (structured logging) and `captureHostedSessionError` (error reporting) serve different purposes and are NOT duplicates. They can be used together:
+   - `Sentry.logger?.error` - For structured logging/events in Sentry Logs
    - `captureHostedSessionError` - For error reporting/exceptions in Sentry Issues
 
-4. **Use consistent errorType values** - Related errors should use the same `errorType` to group correctly in Sentry. Different `errorType` values create separate issues.
+5. **Use consistent errorType values** - Related errors should use the same `errorType` to group correctly in Sentry. Different `errorType` values create separate issues.

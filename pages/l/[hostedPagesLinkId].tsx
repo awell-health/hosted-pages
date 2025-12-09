@@ -58,7 +58,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   // Log successful redirect server-side
-  Sentry.logger.info('Navigation: Redirecting to hosted session', {
+  Sentry.logger?.info('Navigation: Redirecting to hosted session', {
     category: 'navigation',
     hostedPagesLinkId: params.hostedPagesLinkId,
     sessionUrl: result.sessionUrl,

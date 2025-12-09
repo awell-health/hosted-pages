@@ -56,7 +56,7 @@ export const ConnectivityProvider = ({
 
       // Note: Using Sentry.logger directly because ConnectivityContext doesn't have session context
       // This is a low-level infrastructure component that runs before session is available
-      Sentry.logger.info('Network connectivity restored', {
+      Sentry.logger?.info('Network connectivity restored', {
         event_type: 'CONNECTIVITY_ONLINE',
         timestamp: new Date().toISOString(),
       })
@@ -66,7 +66,7 @@ export const ConnectivityProvider = ({
       pollingTasksRef.current.forEach((t) => t.stop())
 
       // Note: Using Sentry.logger directly because ConnectivityContext doesn't have session context
-      Sentry.logger.warn('Network connectivity lost', {
+      Sentry.logger?.warn('Network connectivity lost', {
         event_type: 'CONNECTIVITY_OFFLINE',
         timestamp: new Date().toISOString(),
       })
