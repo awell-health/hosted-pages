@@ -59,7 +59,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   // Log invalid URL when condition is met
   useEffect(() => {
     if (isClient && router.isReady && !router.query.sessionId) {
-      Sentry.logger.warn('Invalid URL - missing sessionId', {
+      Sentry.logger?.warn('Invalid URL - missing sessionId', {
         category: 'navigation',
         url: router.asPath,
         sessionId: router.query.sessionId,
@@ -69,7 +69,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
 
   // Log router readiness state
   useEffect(() => {
-    Sentry.logger.info(
+    Sentry.logger?.info(
       router.isReady ? 'Router is ready' : 'Router is not ready',
       {
         category: 'navigation',
@@ -81,7 +81,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
 
   // Log token loading state
   useEffect(() => {
-    Sentry.logger.info(
+    Sentry.logger?.info(
       tokenLoading ? 'Token is loading' : 'Token loading completed',
       {
         category: 'authentication',

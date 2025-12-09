@@ -16,7 +16,7 @@ export const InvalidSessionPage: FC<InvalidSessionPageProps> = ({
 
   useEffect(() => {
     // Track invalid session page view in Sentry
-    Sentry.logger.warn('Invalid Session Page Viewed', {
+    Sentry.logger?.warn('Invalid Session Page Viewed', {
       page: 'invalid_session',
       session: sessionId,
       error_type: errorType,

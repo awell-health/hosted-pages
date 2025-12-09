@@ -104,7 +104,7 @@ export const logger = {
     context: Record<string, unknown> = {}
   ) => {
     const sessionContext = getLogAttributesFromSessionStore()
-    Sentry.logger.info(message, {
+    Sentry.logger?.info(message, {
       event_type: eventType,
       timestamp: new Date().toISOString(),
       ...sessionContext,
@@ -118,7 +118,7 @@ export const logger = {
     context: Record<string, unknown> = {}
   ) => {
     const sessionContext = getLogAttributesFromSessionStore()
-    Sentry.logger.warn(message, {
+    Sentry.logger?.warn(message, {
       event_type: eventType,
       timestamp: new Date().toISOString(),
       ...sessionContext,
@@ -132,7 +132,7 @@ export const logger = {
     context: Record<string, unknown> = {}
   ) => {
     const sessionContext = getLogAttributesFromSessionStore()
-    Sentry.logger.error(message, {
+    Sentry.logger?.error(message, {
       event_type: eventType,
       timestamp: new Date().toISOString(),
       ...sessionContext,
