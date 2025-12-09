@@ -5,9 +5,7 @@ import { Activities } from './Activities'
 export const ActivitiesContainer = () => {
   return (
     <ActivityProvider>
-      <div className="sentry-mask">
-        <Activities />
-      </div>
+      <Activities />
     </ActivityProvider>
   )
 }

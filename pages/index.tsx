@@ -91,7 +91,7 @@ const Home: NextPageWithLayout = () => {
         setNetworkError(false)
         setShowInvalidSession(false)
 
-        Sentry.logger.info('Network error retry successful', {
+        Sentry.logger?.info('Network error retry successful', {
           category: 'generic',
           message: 'Network error retry successful',
         })
@@ -104,7 +104,7 @@ const Home: NextPageWithLayout = () => {
     } catch (err) {
       setNetworkError(true)
 
-      Sentry.logger.error('Network error retry failed', {
+      Sentry.logger?.error('Network error retry failed', {
         category: 'generic',
         message: 'Network error retry failed',
         error: serializeError(err),
@@ -134,7 +134,7 @@ const Home: NextPageWithLayout = () => {
   }
 
   const onCloseHostedSession = () => {
-    Sentry.logger.info('Session cancelled', {
+    Sentry.logger?.info('Session cancelled', {
       category: 'session_cancel',
     })
     router.push(session?.cancel_url ?? 'https://awell.health')
@@ -146,7 +146,7 @@ const Home: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (isNil(session?.status)) {
-      Sentry.logger.warn('Session status is null', {
+      Sentry.logger?.warn('Session status is null', {
         category: 'generic',
         session,
         message: 'Session status is null',
@@ -155,7 +155,7 @@ const Home: NextPageWithLayout = () => {
       return
     }
     if (typeof window === 'undefined') {
-      Sentry.logger.warn('Window is undefined', {
+      Sentry.logger?.warn('Window is undefined', {
         category: 'generic',
         message: 'Window is undefined',
       })
@@ -168,7 +168,7 @@ const Home: NextPageWithLayout = () => {
           sessionStatus: session?.status,
           session,
         })
-        Sentry.logger.info('Session completed', {
+        Sentry.logger?.info('Session completed', {
           category: 'session_complete',
         })
         if (shouldRedirect) {
@@ -181,7 +181,7 @@ const Home: NextPageWithLayout = () => {
           sessionStatus: session?.status,
           session,
         })
-        Sentry.logger.info('Session expired', {
+        Sentry.logger?.info('Session expired', {
           category: 'session_expire',
         })
         if (shouldRedirect) {
@@ -342,14 +342,14 @@ function useRedirectAfterSession(params: {
       }, REDIRECT_DELAY_MS)
 
       const slow10sId = window.setTimeout(() => {
-        Sentry.logger.warn('Slow redirect at session end', {
+        Sentry.logger?.warn('Slow redirect at session end', {
           category: 'slow_redirect',
           message: 'Redirect took at least 10 seconds',
         })
       }, SLOW_REDIRECT_10S_MS)
 
       const slow15sId = window.setTimeout(() => {
-        Sentry.logger.warn('Slow redirect at session end', {
+        Sentry.logger?.warn('Slow redirect at session end', {
           category: 'slow_redirect',
           message: 'Redirect took at least 15 seconds',
         })

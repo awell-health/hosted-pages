@@ -82,7 +82,7 @@ export async function startHostedActivitySession(
         data?.startHostedActivitySessionViaHostedPagesLink?.organization_slug
 
       // Log and report error to Sentry
-      Sentry.logger.error('Error with hosted activity link', {
+      Sentry.logger?.error('Error with hosted activity link', {
         category: 'hosted_activity_error',
         hostedPagesLinkId,
         error: errorMessage,
@@ -129,7 +129,7 @@ export async function startHostedActivitySession(
       const errorMessage = 'Session URL is missing from GraphQL response'
 
       // Log and report error to Sentry
-      Sentry.logger.error('Missing session_url in GraphQL response', {
+      Sentry.logger?.error('Missing session_url in GraphQL response', {
         category: 'hosted_activity_error',
         hostedPagesLinkId,
         session_id,
@@ -183,7 +183,7 @@ export async function startHostedActivitySession(
       error instanceof Error ? error.message : 'Failed to start session'
 
     // Log and report error to Sentry
-    Sentry.logger.error('Unexpected error starting hosted activity session', {
+    Sentry.logger?.error('Unexpected error starting hosted activity session', {
       category: 'hosted_activity_error',
       hostedPagesLinkId,
       error: errorMessage,
