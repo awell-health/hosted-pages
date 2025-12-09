@@ -116,14 +116,14 @@ export const createClient = ({
         // This is infrastructure-level logging that doesn't have access to React hooks
         on: {
           connected: () => {
-            Sentry.logger.info('GraphQL WebSocket connected', {
+            Sentry.logger?.info('GraphQL WebSocket connected', {
               event_type: 'GRAPHQL_WS_CONNECTED',
               ws_url: wsUri,
               timestamp: new Date().toISOString(),
             })
           },
           error: (error) => {
-            Sentry.logger.error('GraphQL WebSocket error', {
+            Sentry.logger?.error('GraphQL WebSocket error', {
               event_type: 'GRAPHQL_WS_ERROR',
               ws_url: wsUri,
               error_message: serializeError(error),
@@ -131,7 +131,7 @@ export const createClient = ({
             })
           },
           closed: (event) => {
-            Sentry.logger.warn('GraphQL WebSocket disconnected', {
+            Sentry.logger?.warn('GraphQL WebSocket disconnected', {
               event_type: 'GRAPHQL_WS_DISCONNECTED',
               ws_url: wsUri,
               close_code: (event as CloseEvent)?.code,
