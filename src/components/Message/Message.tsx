@@ -33,7 +33,7 @@ export const Message = ({ activity }: MessageProps): JSX.Element => {
   }
 
   const handleReadMessage = () => {
-    Sentry.logger.info('Reading message', {
+    Sentry.logger?.info('Reading message', {
       category: 'read_message',
       message: message?.id,
     })
