@@ -1,6 +1,10 @@
 import { isNil } from 'lodash'
 import { useGetSignedUrlLazyQuery } from './types'
 import type { GetSignedUrlQueryVariables } from './types'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 
 export const useFileUpload = (): [
   (args: GetSignedUrlQueryVariables) => Promise<{
@@ -47,7 +51,26 @@ export const useFileUpload = (): [
 
         return data.getSignedUrl
       } catch (error) {
-        console.error('useFileUpload - Error getting signed URL:', error)
+        const hostedSessionError = new HostedSessionError(
+          'Failed to get signed URL for file upload',
+          {
+            errorType: 'FILE_UPLOAD_SIGNED_URL_FAILED',
+            operation: 'GetSignedUrl',
+            originalError: error,
+            contexts: {
+              fileUpload: {
+                content_type: args.content_type,
+                file_name: args.file_name,
+                config_slug: args.config_slug,
+                activity_id: args.activity_id,
+              },
+              graphql: {
+                query: 'GetSignedUrl',
+              },
+            },
+          }
+        )
+        captureHostedSessionError(hostedSessionError)
         return {
           upload_url: '',
           file_url: '',

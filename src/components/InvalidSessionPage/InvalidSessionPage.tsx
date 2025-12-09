@@ -16,21 +16,14 @@ export const InvalidSessionPage: FC<InvalidSessionPageProps> = ({
 
   useEffect(() => {
     // Track invalid session page view in Sentry
-    Sentry.captureMessage('Invalid Session Page Viewed', {
-      level: 'warning',
-      tags: {
-        page: 'invalid_session',
-        session: sessionId,
-        error_type: errorType,
-      },
-      contexts: {
-        page: {
-          name: 'InvalidSessionPage',
-          sessionId: sessionId,
-          errorType: errorType,
-          url: window?.location?.href,
-        },
-      },
+    Sentry.logger.warn('Invalid Session Page Viewed', {
+      page: 'invalid_session',
+      session: sessionId,
+      error_type: errorType,
+      page_name: 'InvalidSessionPage',
+      sessionId: sessionId,
+      errorType: errorType,
+      url: window?.location?.href,
     })
   }, [sessionId, errorType])
 

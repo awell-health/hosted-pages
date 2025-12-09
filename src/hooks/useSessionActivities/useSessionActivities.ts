@@ -1,23 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import isNil from 'lodash/isNil'
-import { useEffect, useMemo } from 'react'
-import {
-  Activity,
-  useGetHostedSessionActivitiesQuery,
-  ActivityStatus,
-  OnSessionActivityCreatedDocument,
-  OnSessionActivityCompletedDocument,
-  OnSessionActivityExpiredDocument,
-} from './types'
-import { captureException } from '@sentry/nextjs'
 import { useRouter } from 'next/router'
-import { useLogging } from '../useLogging'
-import { LogEvent } from '../useLogging/types'
+import { useEffect, useMemo } from 'react'
 import {
   OnSessionActivityCompletedSubscription,
   OnSessionActivityCreatedSubscription,
   OnSessionActivityExpiredSubscription,
 } from '../../types/generated/types-orchestration'
+import { LogEvent, logger } from '../../utils/logging'
+import {
+  Activity,
+  ActivityStatus,
+  OnSessionActivityCompletedDocument,
+  OnSessionActivityCreatedDocument,
+  OnSessionActivityExpiredDocument,
+  useGetHostedSessionActivitiesQuery,
+} from './types'
 interface UsePathwayActivitiesHook {
   loading: boolean
   activities: Array<Activity>
@@ -33,7 +31,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     only_stakeholder_activities: true,
   }
   const router = useRouter()
-  const { infoLog, warningLog } = useLogging()
   const {
     data,
     error,
@@ -44,16 +41,6 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     subscribeToMore,
   } = useGetHostedSessionActivitiesQuery({
     variables,
-    onError: (error) => {
-      captureException(error, {
-        contexts: {
-          graphql: {
-            query: 'GetHostedSessionActivities',
-            variables: JSON.stringify(variables),
-          },
-        },
-      })
-    },
   })
 
   /**
@@ -72,30 +59,31 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
 
           const subData = subscriptionData.data
           const newActivity = subData.sessionActivityCreated
-          const existingActivities = prev.hostedSessionActivities.activities
+          const existingActivities =
+            prev.hostedSessionActivities?.activities ?? []
 
           // Check if activity already exists to avoid duplicates
           if (existingActivities.some((a) => a.id === newActivity.id)) {
-            warningLog(
+            logger.warn(
               `Activity ${newActivity.id} already exists, skipping duplicate`,
+              LogEvent.SUBSCRIPTION_ACTIVITY_DUPLICATE,
               {
                 activityId: newActivity.id,
                 activityType: newActivity.object.type,
-              },
-              LogEvent.SUBSCRIPTION_ACTIVITY_DUPLICATE
+              }
             )
             return prev
           }
 
-          infoLog(
+          logger.info(
             `New activity created via subscription: ${newActivity.id} (${newActivity.object.type} - ${newActivity.object.name})`,
+            LogEvent.SUBSCRIPTION_ACTIVITY_CREATED,
             {
               activityId: newActivity.id,
               activityType: newActivity.object.type,
               activityName: newActivity.object.name,
               status: newActivity.status,
-            },
-            LogEvent.SUBSCRIPTION_ACTIVITY_CREATED
+            }
           )
 
           // Add new activity to the array
@@ -119,17 +107,18 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
 
           const subData = subscriptionData.data
           const completedActivity = subData.sessionActivityCompleted
-          const existingActivities = prev.hostedSessionActivities.activities
+          const existingActivities =
+            prev.hostedSessionActivities?.activities ?? []
 
-          infoLog(
+          logger.info(
             `Activity completed via subscription: ${completedActivity.id} (${completedActivity.object.type} - ${completedActivity.object.name})`,
+            LogEvent.SUBSCRIPTION_ACTIVITY_COMPLETED,
             {
               activityId: completedActivity.id,
               activityType: completedActivity.object.type,
               activityName: completedActivity.object.name,
               status: completedActivity.status,
-            },
-            LogEvent.SUBSCRIPTION_ACTIVITY_COMPLETED
+            }
           )
 
           // Update the activity in the array with the new status
@@ -154,17 +143,18 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
           if (!subscriptionData.data) return prev
           const subData = subscriptionData.data
           const expiredActivity = subData.sessionActivityExpired
-          const existingActivities = prev.hostedSessionActivities.activities
+          const existingActivities =
+            prev.hostedSessionActivities?.activities ?? []
 
-          infoLog(
+          logger.info(
             `Activity expired via subscription: ${expiredActivity.id} (${expiredActivity.object.type} - ${expiredActivity.object.name})`,
+            LogEvent.SUBSCRIPTION_ACTIVITY_EXPIRED,
             {
               activityId: expiredActivity.id,
               activityType: expiredActivity.object.type,
               activityName: expiredActivity.object.name,
               status: expiredActivity.status,
-            },
-            LogEvent.SUBSCRIPTION_ACTIVITY_EXPIRED
+            }
           )
 
           // Update the activity in the array with the new status

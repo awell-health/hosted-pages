@@ -1,9 +1,12 @@
+import { GraphQLError } from 'graphql'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+  serializeError,
+} from '../../utils/errors'
+import { LogEvent, logger } from '../../utils/logging'
 import type { AnswerInput, QuestionRuleResult } from './types'
 import { useEvaluateFormRulesMutation } from './types'
-import { captureException } from '@sentry/nextjs'
-import { useLogging } from '../useLogging'
-import { LogEvent } from '../useLogging/types'
-import { GraphQLError } from 'graphql'
 
 interface UseEvaluateFormRulesHook {
   evaluateFormRules: (
@@ -15,7 +18,6 @@ export const useEvaluateFormRules = (
   form_id: string
 ): UseEvaluateFormRulesHook => {
   const [evaluateFormRulesMutation] = useEvaluateFormRulesMutation()
-  const { errorLog } = useLogging()
 
   const handleError = (
     errors: any | GraphQLError[],
@@ -26,33 +28,43 @@ export const useEvaluateFormRules = (
       ? new Error('A graphql error occurred while evaluating form rules')
       : errors
 
-    errorLog(
-      `Error evaluating form rules for form ${form_id}: ${error.message}`,
+    const hostedSessionError = new HostedSessionError(
+      `Error evaluating form rules for form ${form_id}: ${serializeError(
+        error
+      )}`,
+      {
+        errorType: 'FORM_RULE_EVALUATION_FAILED',
+        operation: 'EvaluateFormRules',
+        originalError: error,
+        contexts: {
+          form: {
+            form_id,
+          },
+          answers: {
+            ...answers,
+          },
+          graphql: {
+            query: 'EvaluateFormRules',
+            variables: contextVariables
+              ? JSON.stringify(contextVariables)
+              : undefined,
+            errors: JSON.stringify(errors),
+          },
+        },
+      }
+    )
+    captureHostedSessionError(hostedSessionError)
+    logger.error(
+      `Error evaluating form rules for form ${form_id}: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      LogEvent.FORM_RULE_EVALUATION_FAILED,
       {
         form_id,
         answers,
-        errors,
-      },
-      error,
-      LogEvent.FORM_RULE_EVALUATION_FAILED
+        errors: Array.isArray(errors) ? JSON.stringify(errors) : errors,
+      }
     )
-    captureException(error, {
-      contexts: {
-        form: {
-          form_id,
-        },
-        answers: {
-          ...answers,
-        },
-        graphql: {
-          query: 'EvaluateFormRules',
-          variables: contextVariables
-            ? JSON.stringify(contextVariables)
-            : undefined,
-          errors: JSON.stringify(errors),
-        },
-      },
-    })
   }
 
   const evaluateFormRules = async (

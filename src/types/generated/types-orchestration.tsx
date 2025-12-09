@@ -844,8 +844,8 @@ export type DecisionTableActivityInputs = ActivityInputs & {
 export type DecisionTableActivityOutputs = ActivityOutputs & {
   __typename?: 'DecisionTableActivityOutputs';
   decision_table_outputs?: Maybe<Scalars['JSON']>;
-  matched_rule_id?: Maybe<Scalars['String']>;
-  matched_rule_priority?: Maybe<Scalars['Float']>;
+  matched_rule_ids?: Maybe<Array<Scalars['String']>>;
+  matched_rule_priorities?: Maybe<Array<Scalars['Float']>>;
   type: ActivityOutputType;
 };
 
@@ -1261,6 +1261,7 @@ export type HostedSession = {
   created_at: Scalars['String'];
   expires_at: Scalars['String'];
   id: Scalars['ID'];
+  organization_slug?: Maybe<Scalars['String']>;
   pathway_id: Scalars['String'];
   stakeholder: HostedSessionStakeholder;
   status: HostedSessionStatus;
@@ -2686,6 +2687,7 @@ export type StartHostedActivitySessionPayload = Payload & {
   __typename?: 'StartHostedActivitySessionPayload';
   code: Scalars['String'];
   language?: Maybe<Scalars['String']>;
+  organization_slug?: Maybe<Scalars['String']>;
   session_id: Scalars['String'];
   session_url: Scalars['String'];
   success: Scalars['Boolean'];
@@ -2704,6 +2706,7 @@ export type StartHostedPathwaySessionFromLinkInput = {
 export type StartHostedPathwaySessionFromLinkPayload = Payload & {
   __typename?: 'StartHostedPathwaySessionFromLinkPayload';
   code: Scalars['String'];
+  organization_slug?: Maybe<Scalars['String']>;
   session_url: Scalars['String'];
   success: Scalars['Boolean'];
 };
@@ -2729,6 +2732,7 @@ export type StartHostedPathwaySessionInput = {
 export type StartHostedPathwaySessionPayload = Payload & {
   __typename?: 'StartHostedPathwaySessionPayload';
   code: Scalars['String'];
+  organization_slug?: Maybe<Scalars['String']>;
   pathway_id: Scalars['String'];
   session_id: Scalars['String'];
   session_url: Scalars['String'];
@@ -3264,22 +3268,22 @@ export type GetSignedUrlQueryVariables = Exact<{
 
 export type GetSignedUrlQuery = { __typename?: 'Query', getSignedUrl: { __typename?: 'FileUploadGCSPayload', upload_url: string, file_url: string, required_headers?: any | null } };
 
-export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
+export type HostedSessionFragment = { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, organization_slug?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } };
 
 export type OnHostedSessionCompletedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OnHostedSessionCompletedSubscription = { __typename?: 'Subscription', sessionCompleted: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
+export type OnHostedSessionCompletedSubscription = { __typename?: 'Subscription', sessionCompleted: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, organization_slug?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
 
 export type OnHostedSessionExpiredSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', sessionExpired: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
+export type OnHostedSessionExpiredSubscription = { __typename?: 'Subscription', sessionExpired: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, organization_slug?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } } };
 
 export type GetHostedSessionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } }, branding?: { __typename?: 'BrandingSettings', logo_url?: string | null, hosted_page_title?: string | null, accent_color?: string | null, hosted_page_auto_progress?: boolean | null, hosted_page_autosave?: boolean | null, custom_theme?: string | null } | null, metadata?: { __typename?: 'SessionMetadata', pathway_definition_id?: string | null, tenant_id?: string | null } | null } };
+export type GetHostedSessionQuery = { __typename?: 'Query', hostedSession: { __typename?: 'HostedSessionPayload', session: { __typename?: 'HostedSession', id: string, pathway_id: string, status: HostedSessionStatus, success_url?: string | null, cancel_url?: string | null, organization_slug?: string | null, stakeholder: { __typename?: 'HostedSessionStakeholder', id: string, type: HostedSessionStakeholderType, name: string } }, branding?: { __typename?: 'BrandingSettings', logo_url?: string | null, hosted_page_title?: string | null, accent_color?: string | null, hosted_page_auto_progress?: boolean | null, hosted_page_autosave?: boolean | null, custom_theme?: string | null } | null, metadata?: { __typename?: 'SessionMetadata', pathway_definition_id?: string | null, tenant_id?: string | null } | null } };
 
 export type GetMessageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -3368,6 +3372,7 @@ export const HostedSessionFragmentDoc = gql`
     type
     name
   }
+  organization_slug
 }
     `;
 export const RuleFragmentDoc = gql`

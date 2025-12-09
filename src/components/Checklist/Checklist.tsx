@@ -5,8 +5,7 @@ import { useSubmitChecklist } from '../../hooks/useSubmitChecklist'
 import { LoadingPage } from '../LoadingPage'
 import { ErrorPage } from '../ErrorPage'
 import { useTranslation } from 'next-i18next'
-import { addSentryBreadcrumb } from '../../services/ErrorReporter'
-import { BreadcrumbCategory } from '../../services/ErrorReporter/addSentryBreadcrumb'
+import * as Sentry from '@sentry/nextjs'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { isEmpty } from 'lodash'
 
@@ -34,11 +33,9 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   }
 
   const handleSubmit = () => {
-    addSentryBreadcrumb({
-      category: BreadcrumbCategory.SUBMIT_CHECKLIST,
-      data: {
-        checklist_id: activity.object.id,
-      },
+    Sentry.logger.info('Submitting checklist', {
+      category: 'submit_checklist',
+      checklist_id: activity.object.id,
     })
     onSubmit()
   }
