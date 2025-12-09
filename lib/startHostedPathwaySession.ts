@@ -97,7 +97,7 @@ export async function startHostedPathwaySession(params: {
         data?.startHostedPathwaySessionFromLink?.organization_slug
 
       // Log and report error to Sentry
-      Sentry.logger.error('Error with hosted pathway link', {
+      Sentry.logger?.error('Error with hosted pathway link', {
         category: 'hosted_pathway_error',
         hostedPagesLinkId,
         error: errorMessage,
@@ -147,7 +147,7 @@ export async function startHostedPathwaySession(params: {
       const errorMessage = 'Session URL is missing from GraphQL response'
 
       // Log and report error to Sentry
-      Sentry.logger.error('Missing session_url in GraphQL response', {
+      Sentry.logger?.error('Missing session_url in GraphQL response', {
         category: 'hosted_pathway_error',
         hostedPagesLinkId,
         patient_identifier,
@@ -202,7 +202,7 @@ export async function startHostedPathwaySession(params: {
       error instanceof Error ? error.message : 'Failed to start session'
 
     // Log and report error to Sentry
-    Sentry.logger.error('Unexpected error starting hosted pathway session', {
+    Sentry.logger?.error('Unexpected error starting hosted pathway session', {
       category: 'hosted_pathway_error',
       hostedPagesLinkId,
       error: errorMessage,
