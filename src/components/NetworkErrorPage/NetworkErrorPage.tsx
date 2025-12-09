@@ -22,7 +22,7 @@ export const NetworkErrorPage: FC<NetworkErrorPageProps> = ({
 
   useEffect(() => {
     // Track network error page view in Sentry
-    Sentry.logger.info('Network Error Page Viewed', {
+    Sentry.logger?.info('Network Error Page Viewed', {
       page: 'network_error',
       session: sessionId,
       page_name: 'NetworkErrorPage',
@@ -34,7 +34,7 @@ export const NetworkErrorPage: FC<NetworkErrorPageProps> = ({
   const handleRetry = async () => {
     setIsRetrying(true)
 
-    Sentry.logger.info('User clicked retry on network error page', {
+    Sentry.logger?.info('User clicked retry on network error page', {
       category: 'network',
       sessionId,
     })

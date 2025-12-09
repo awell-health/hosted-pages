@@ -30,7 +30,7 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
           // Log network connectivity error
           // organization_slug will be automatically included from Sentry scope
           // if session was previously loaded (set by useHostedSession useEffect)
-          Sentry.logger.error('Network connectivity error detected', {
+          Sentry.logger?.error('Network connectivity error detected', {
             category: 'network',
             operation: operation.operationName,
             error: networkError.message,

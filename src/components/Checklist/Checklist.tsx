@@ -33,7 +33,7 @@ export const Checklist: FC<ChecklistProps> = ({ activity }) => {
   }
 
   const handleSubmit = () => {
-    Sentry.logger.info('Submitting checklist', {
+    Sentry.logger?.info('Submitting checklist', {
       category: 'submit_checklist',
       checklist_id: activity.object.id,
     })

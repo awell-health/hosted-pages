@@ -94,7 +94,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
     async (
       response: Array<AnswerInput>
     ): Promise<Array<QuestionRuleResult>> => {
-      Sentry.logger.info('Evaluating form rules', {
+      Sentry.logger?.info('Evaluating form rules', {
         category: 'evaluate_form_rules',
         form_id: activity.object.id,
         response: masker(response),
@@ -106,7 +106,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   const handleSubmit = useCallback(
     async (response: Array<any>) => {
-      Sentry.logger.info('Submitting form', {
+      Sentry.logger?.info('Submitting form', {
         category: 'submit_form',
         form_id: activity.object.id,
         response: masker(response),
