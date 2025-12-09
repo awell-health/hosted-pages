@@ -3,6 +3,10 @@ import { FC, useEffect, useState } from 'react'
 import { Button } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import * as Sentry from '@sentry/nextjs'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../utils/errors'
 
 interface NetworkErrorPageProps {
   onRetry: () => Promise<void>
@@ -18,30 +22,21 @@ export const NetworkErrorPage: FC<NetworkErrorPageProps> = ({
 
   useEffect(() => {
     // Track network error page view in Sentry
-    Sentry.captureMessage('Network Error Page Viewed', {
-      level: 'info',
-      tags: {
-        page: 'network_error',
-        session: sessionId,
-      },
-      contexts: {
-        page: {
-          name: 'NetworkErrorPage',
-          sessionId: sessionId,
-          url: window?.location?.href,
-        },
-      },
+    Sentry.logger.info('Network Error Page Viewed', {
+      page: 'network_error',
+      session: sessionId,
+      page_name: 'NetworkErrorPage',
+      sessionId: sessionId,
+      url: window?.location?.href,
     })
   }, [sessionId])
 
   const handleRetry = async () => {
     setIsRetrying(true)
 
-    Sentry.addBreadcrumb({
+    Sentry.logger.info('User clicked retry on network error page', {
       category: 'network',
-      message: 'User clicked retry on network error page',
-      level: 'info',
-      data: { sessionId },
+      sessionId,
     })
 
     try {
@@ -49,14 +44,20 @@ export const NetworkErrorPage: FC<NetworkErrorPageProps> = ({
       // If retry succeeds, the parent component will handle navigation
     } catch (error) {
       // If retry fails, keep showing the error page
-      Sentry.captureException(error, {
-        contexts: {
-          retry: {
-            sessionId,
-            message: 'Retry failed on network error page',
+      const hostedSessionError = new HostedSessionError(
+        'Retry failed on network error page',
+        {
+          errorType: 'NETWORK_RETRY_FAILED',
+          originalError: error,
+          contexts: {
+            retry: {
+              sessionId,
+              message: 'Retry failed on network error page',
+            },
           },
-        },
-      })
+        }
+      )
+      captureHostedSessionError(hostedSessionError)
     } finally {
       setIsRetrying(false)
     }

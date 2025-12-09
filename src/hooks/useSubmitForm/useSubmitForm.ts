@@ -1,12 +1,16 @@
+import { isNil } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { useTranslation } from 'next-i18next'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+  serializeError,
+} from '../../utils/errors'
+import { LogEvent, logger } from '../../utils/logging'
+import { useHostedSession } from '../useHostedSession'
 import type { Activity, AnswerInput } from './types'
 import { useSubmitFormResponseMutation } from './types'
-import { captureException } from '@sentry/nextjs'
-import { useLogging } from '../useLogging'
-import { LogEvent } from '../useLogging/types'
-import { isNil } from 'lodash'
 import { getErrorMessage } from './utils'
 interface UseFormActivityHook {
   onSubmit: (response: Array<AnswerInput>) => Promise<boolean>
@@ -19,7 +23,7 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
 
   const [submitFormResponse] = useSubmitFormResponseMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { infoLog, errorLog } = useLogging()
+  const { session } = useHostedSession()
 
   /**
    *
@@ -35,12 +39,12 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       },
     }
 
-    infoLog(
+    logger.info(
       `Trying to submit a form response for activity ${activity.object.name}`,
+      LogEvent.FORM_SUBMITTING,
       {
         activity,
-      },
-      LogEvent.FORM_SUBMITTING
+      }
     )
     try {
       const { errors } = await submitFormResponse({ variables })
@@ -52,23 +56,45 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
         )
       }
 
-      infoLog(
+      logger.info(
         `Form response ${activity.object.name} submitted successfully`,
-        { activity },
-        LogEvent.FORM_SUBMITTED
+        LogEvent.FORM_SUBMITTED,
+        {
+          activity,
+        }
       )
       setIsSubmitting(false)
 
       return true
     } catch (error: any) {
-      errorLog(
+      const hostedSessionError = new HostedSessionError(
         `Failed to submit form response for activity ${activity.object.name}`,
+        {
+          errorType: 'FORM_SUBMISSION_FAILED',
+          operation: 'SubmitFormResponse',
+          activityId: activity.id,
+          originalError: error,
+          contexts: {
+            activity,
+            form: {
+              response: JSON.stringify(variables),
+            },
+            graphql: {
+              query: 'SubmitFormResponse',
+              variables: JSON.stringify(variables),
+            },
+          },
+        }
+      )
+      captureHostedSessionError(hostedSessionError)
+      logger.error(
+        `Failed to submit form response for activity ${activity.object.name}`,
+        LogEvent.FORM_SUBMISSION_FAILED,
         {
           response,
           activity,
-        },
-        error,
-        LogEvent.FORM_SUBMISSION_FAILED
+          error: serializeError(error),
+        }
       )
       setIsSubmitting(false)
       const errorText = getErrorMessage(
@@ -76,18 +102,6 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
         t('activities.form.saving_error')
       )
       toast.error(errorText)
-      captureException(error, {
-        contexts: {
-          activity,
-          form: {
-            response: JSON.stringify(variables),
-          },
-          graphql: {
-            query: 'SubmitFormResponse',
-            variables: JSON.stringify(variables),
-          },
-        },
-      })
       return false
     }
   }

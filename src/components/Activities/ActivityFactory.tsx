@@ -1,23 +1,25 @@
-import React, { useEffect } from 'react'
-import { Activity, ActivityObjectType } from './types'
 import { useTranslation } from 'next-i18next'
-import { Form } from '../Form'
-import { Message } from '../Message'
+import { useEffect } from 'react'
+import { useHostedSession } from '../../hooks/useHostedSession'
+import { LogEvent, logger } from '../../utils/logging'
 import { Checklist } from '../Checklist'
 import { ErrorPage } from '../ErrorPage'
 import { Extension } from '../Extension'
-import { useLogging } from '../../hooks/useLogging'
-import { LogEvent } from '../../hooks/useLogging/types'
+import { Form } from '../Form'
+import { Message } from '../Message'
+import { Activity, ActivityObjectType } from './types'
 
 export const ActivityFactory = ({ activity }: { activity?: Activity }) => {
   const { t } = useTranslation()
-  const { infoLog } = useLogging()
+  const { session } = useHostedSession()
 
   useEffect(() => {
-    infoLog(
+    logger.info(
       `Loading activity ${activity?.id} (${activity?.object.type} - ${activity?.object.name}) in UI`,
-      { activity },
-      LogEvent.ACTIVITY_LOADING
+      LogEvent.ACTIVITY_LOADING,
+      {
+        activity,
+      }
     )
   }, [])
 
