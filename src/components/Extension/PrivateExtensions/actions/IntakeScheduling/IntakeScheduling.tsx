@@ -25,7 +25,6 @@ import { useTheme } from '@awell-health/ui-library'
 import '@awell-health/sol-scheduling/style.css'
 import { SalesforcePreferencesType } from '@awell-health/sol-scheduling/dist/lib/utils/preferences'
 import { useHostedSession } from '../../../../../hooks/useHostedSession'
-import { useLogging } from '../../../../../hooks/useLogging'
 
 interface IntakeSchedulingProps {
   activityDetails: ExtensionActivityRecord
@@ -36,7 +35,6 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
 }) => {
   const { activity_id, fields, settings } = activityDetails
   const { session, metadata } = useHostedSession()
-  const { log } = useLogging()
 
   const { providerId, patientName, salesforceLeadId, ...providerPrefs } =
     mapActionFieldsToObject<ActionFields>(fields)
@@ -77,11 +75,10 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       const provider = await fetchProvider({
         input: { providerId },
         requestOptions: { baseUrl, logContext },
-        log,
       })
       return provider
     },
-    [baseUrl, logContext, log]
+    [baseUrl, logContext]
   )
 
   const fetchProvidersFn = useCallback(
@@ -89,11 +86,10 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
       const providers = await fetchProviders({
         input: prefs,
         requestOptions: { baseUrl, logContext },
-        log,
       })
       return providers
     },
-    [baseUrl, logContext, log]
+    [baseUrl, logContext]
   )
 
   const fetchAvailabilityFn = useCallback(
@@ -103,10 +99,9 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
           providerId: [_providerId],
         },
         requestOptions: { baseUrl, logContext },
-        log,
       })
     },
-    [baseUrl, logContext, log]
+    [baseUrl, logContext]
   )
 
   const bookAppointmentFn = useCallback(
@@ -122,10 +117,9 @@ export const IntakeScheduling: FC<IntakeSchedulingProps> = ({
           locationType: _slot.confirmedLocation,
         },
         requestOptions: { baseUrl, logContext },
-        log,
       })
     },
-    [patientName, salesforceLeadId, baseUrl, logContext, log]
+    [patientName, salesforceLeadId, baseUrl, logContext]
   )
 
   const completeActivity = useCallback(

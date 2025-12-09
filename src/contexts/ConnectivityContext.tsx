@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import * as Sentry from '@sentry/nextjs'
 
 type Connectivity = {
   isOnline: boolean
@@ -51,13 +52,24 @@ export const ConnectivityProvider = ({
     if (typeof window === 'undefined') return
     const handleOnline = () => {
       setIsOnline(true)
-      // Start all registered pollers
       pollingTasksRef.current.forEach((t) => t.start())
+
+      // Note: Using Sentry.logger directly because ConnectivityContext doesn't have session context
+      // This is a low-level infrastructure component that runs before session is available
+      Sentry.logger.info('Network connectivity restored', {
+        event_type: 'CONNECTIVITY_ONLINE',
+        timestamp: new Date().toISOString(),
+      })
     }
     const handleOffline = () => {
       setIsOnline(false)
-      // Stop all registered pollers
       pollingTasksRef.current.forEach((t) => t.stop())
+
+      // Note: Using Sentry.logger directly because ConnectivityContext doesn't have session context
+      Sentry.logger.warn('Network connectivity lost', {
+        event_type: 'CONNECTIVITY_OFFLINE',
+        timestamp: new Date().toISOString(),
+      })
     }
     const handleVisibility = () => {
       const visible = document.visibilityState === 'visible'
