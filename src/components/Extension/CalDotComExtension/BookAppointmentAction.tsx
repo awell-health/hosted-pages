@@ -1,9 +1,14 @@
 import React, { FC, useCallback, useEffect, useMemo } from 'react'
-import { CalDotComScheduling, useTheme } from '@awell-health/ui-library'
-import { mapActionFieldsToObject } from '../utils'
+import { useTheme } from '@awell-health/ui-library'
+import { CalDotComSchedulingWithOrigin } from './CalDotComSchedulingWithOrigin'
+import { mapActionFieldsToObject, mapSettingsToObject } from '../utils'
 import { useCompleteBookAppointment } from './useCompleteBookAppointment'
 
-import type { BookAppointmentFields, BookingSuccessfulFunction } from './types'
+import type {
+  BookAppointmentFields,
+  BookingSuccessfulFunction,
+  CalDotComExtensionSettings,
+} from './types'
 import type { ExtensionActivityRecord } from '../types'
 
 interface BookAppointmentActionProps {
@@ -14,12 +19,17 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   activityDetails,
 }) => {
   const { updateLayoutMode, resetLayoutMode } = useTheme()
-  const { activity_id, fields, pathway_id } = activityDetails
+  const { activity_id, fields, settings, pathway_id } = activityDetails
   const { onSubmit } = useCompleteBookAppointment()
 
   const { calLink } = useMemo(
     () => mapActionFieldsToObject<BookAppointmentFields>(fields),
     [fields]
+  )
+
+  const { calOrigin } = useMemo(
+    () => mapSettingsToObject<CalDotComExtensionSettings>(settings),
+    [settings]
   )
 
   const onBookingSuccessful: BookingSuccessfulFunction = useCallback(
@@ -39,8 +49,9 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   }, [])
 
   return (
-    <CalDotComScheduling
+    <CalDotComSchedulingWithOrigin
       calLink={calLink}
+      calOrigin={calOrigin}
       metadata={{
         awellPathwayId: pathway_id,
         awellActivityId: activity_id,
