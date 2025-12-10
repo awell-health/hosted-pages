@@ -116,6 +116,9 @@
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
     "session_completed_or_expired": "Your session has been completed or expired.",
+    "token_cleared_description": "Er ging iets mis. Geen zorgen, je eerdere antwoorden zijn opgeslagen. Klik op de knop hieronder om verder te gaan.",
+    "token_cleared_title": "Laten we verdergaan",
+    "fetch_new_token": "Doorgaan",
     "try_again": "Opnieuw proberen"
   }
 }

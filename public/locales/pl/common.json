@@ -116,6 +116,9 @@
     "redirecting_to_next_page": "Przekierowanie cię za chwilę...",
     "session_canceled": "Twoja sesja została odwołana.",
     "session_completed_or_expired": "Twoja sesja została zakończona lub wygasła.",
+    "token_cleared_description": "Coś przerwało Twój postęp. Nie martw się, Twoje poprzednie odpowiedzi zostały zapisane. Kliknij poniższy przycisk, aby kontynuować.",
+    "token_cleared_title": "Wróćmy do tego",
+    "fetch_new_token": "Kontynuuj",
     "try_again": "Spróbuj ponownie"
   }
 }

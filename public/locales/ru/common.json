@@ -116,6 +116,9 @@
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "session_canceled": "Ваша сессия истекла.",
     "session_completed_or_expired": "Your session has been completed or expired.",
+    "token_cleared_description": "Что-то прервало ваш прогресс. Не волнуйтесь, ваши предыдущие ответы сохранены. Нажмите кнопку ниже, чтобы продолжить.",
+    "token_cleared_title": "Давайте продолжим",
+    "fetch_new_token": "Продолжить",
     "try_again": "Попробуйте снова"
   }
 }

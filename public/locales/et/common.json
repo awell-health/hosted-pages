@@ -116,6 +116,9 @@
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "session_canceled": "Teie sessioon on katkestatud.",
     "session_completed_or_expired": "Your session has been completed or expired.",
+    "token_cleared_description": "Midagi katkestas teie edenemise. Ärge muretsege, teie varasemad vastused on salvestatud. Jätkamiseks klõpsake alloleval nupul.",
+    "token_cleared_title": "Jätkame sealt, kus pooleli jäite",
+    "fetch_new_token": "Jätka",
     "try_again": "Proovi uuesti"
   }
 }

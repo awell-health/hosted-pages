@@ -116,6 +116,9 @@
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "session_canceled": "Sesiunea ta a fost anulata.",
     "session_completed_or_expired": "Your session has been completed or expired.",
+    "token_cleared_description": "Ceva a întrerupt progresul dumneavoastră. Nu vă faceți griji, răspunsurile anterioare sunt salvate. Faceți clic pe butonul de mai jos pentru a continua.",
+    "token_cleared_title": "Să continuăm",
+    "fetch_new_token": "Continuați",
     "try_again": "Încercați din nou"
   }
 }

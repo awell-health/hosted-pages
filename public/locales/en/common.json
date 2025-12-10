@@ -126,6 +126,9 @@
     "session_canceled": "Your session has been cancelled.",
     "session_completed_or_expired": "Your session has been completed or expired.",
     "session_id": "Session ID",
+    "token_cleared_description": "Something interrupted your progress. Don't worry, your previous answers are saved. Click the button below to continue.",
+    "token_cleared_title": "Let's get you back on track",
+    "fetch_new_token": "Continue",
     "try_again": "Try again",
     "unauthorized_description": "You don't have permission to access this session. It may have been completed, expired, or cancelled.",
     "unauthorized_title": "Access denied"

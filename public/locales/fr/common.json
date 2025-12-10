@@ -116,6 +116,9 @@
     "redirecting_to_next_page": "Redirection dans un instant.",
     "session_canceled": "Votre session a été annulée.",
     "session_completed_or_expired": "Your session has been completed or expired.",
+    "token_cleared_description": "Quelque chose a interrompu votre progression. Ne vous inquiétez pas, vos réponses précédentes sont enregistrées. Cliquez sur le bouton ci-dessous pour continuer.",
+    "token_cleared_title": "Reprenons où vous en étiez",
+    "fetch_new_token": "Continuer",
     "try_again": "Réessayer"
   }
 }

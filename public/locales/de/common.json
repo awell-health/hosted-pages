@@ -116,6 +116,9 @@
     "redirecting_to_next_page": "Ich werde dich gleich umleiten...",
     "session_canceled": "Ihre Sitzung wurde abgesagt.",
     "session_completed_or_expired": "Your session has been completed or expired.",
+    "token_cleared_description": "Etwas hat Ihren Fortschritt unterbrochen. Keine Sorge, Ihre bisherigen Antworten wurden gespeichert. Klicken Sie auf die Schaltfläche unten, um fortzufahren.",
+    "token_cleared_title": "Lassen Sie uns weitermachen",
+    "fetch_new_token": "Weiter",
     "try_again": "Erneut versuchen"
   }
 }
