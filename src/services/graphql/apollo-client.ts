@@ -59,6 +59,13 @@ export const createClient = ({
     // function from the GraphqlWrapper component?
     const accessToken = sessionStorage.getItem('accessToken')
 
+    if (!accessToken) {
+      Sentry.logger?.warn('GraphQL request without authorization token', {
+        category: 'authentication',
+        operation: operation.operationName,
+      })
+    }
+
     operation.setContext({
       headers: {
         authorization: accessToken ? `Bearer ${accessToken}` : '',
