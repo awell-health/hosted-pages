@@ -111,11 +111,11 @@
     "expired_subtitle": "Su sesión ha caducado por inactividad.",
     "expired_title": "La sesión ha caducado",
     "invalid_url": "URL no válida: la URL debe contener el parámetro `SessionId`.",
-    "loading_error": "Algo interrumpió tu progreso. No te preocupes, tus respuestas anteriores están guardadas. Por favor, inténtalo de nuevo.",
+    "loading_error": "Algo interrumpió tu progreso. No te preocupes, tus respuestas anteriores están guardadas.",
     "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Te redirigiré en un momento...",
     "session_canceled": "Se ha cancelado tu sesión.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Intentar de nuevo"
+    "try_again": "Vamos a intentarlo de nuevo"
   }
 }

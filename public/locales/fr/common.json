@@ -111,11 +111,11 @@
     "expired_subtitle": "Your session has expired due to inactivity.",
     "expired_title": "Session expired",
     "invalid_url": "URL invalide : l'URL doit contenir le paramètre `sessionId`.",
-    "loading_error": "Quelque chose a interrompu votre progression. Ne vous inquiétez pas, vos réponses précédentes sont enregistrées. Veuillez réessayer.",
+    "loading_error": "Quelque chose a interrompu votre progression. Ne vous inquiétez pas, vos réponses précédentes sont enregistrées.",
     "no_more_pending_activities": "Tout est en ordre. Il n’y a plus d activités en attente. Vous pouvez fermer cette page.",
     "redirecting_to_next_page": "Redirection dans un instant.",
     "session_canceled": "Votre session a été annulée.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Réessayer"
+    "try_again": "Réessayons"
   }
 }

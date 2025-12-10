@@ -111,11 +111,11 @@
     "expired_subtitle": "Twoja sesja wygasła z powodu braku aktywności.",
     "expired_title": "Sesja wygasła",
     "invalid_url": "Nieprawidłowy adres URL: adres URL musi zawierać parametr `sessionId`.",
-    "loading_error": "Coś przerwało Twój postęp. Nie martw się, Twoje poprzednie odpowiedzi zostały zapisane. Spróbuj ponownie.",
+    "loading_error": "Coś przerwało Twój postęp. Nie martw się, Twoje poprzednie odpowiedzi zostały zapisane.",
     "no_more_pending_activities": "W tej chwili nie ma już żadnych oczekujących zadań. Możesz zamknąć tę stronę.",
     "redirecting_to_next_page": "Przekierowanie cię za chwilę...",
     "session_canceled": "Twoja sesja została odwołana.",
     "session_completed_or_expired": "Twoja sesja została zakończona lub wygasła.",
-    "try_again": "Spróbuj ponownie"
+    "try_again": "Spróbujmy jeszcze raz"
   }
 }

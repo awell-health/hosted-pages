@@ -111,11 +111,11 @@
     "expired_subtitle": "Teie seanss on tegevusetuse tõttu aegunud.",
     "expired_title": "Seanss lõppes",
     "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
-    "loading_error": "Midagi katkestas teie edenemise. Ärge muretsege, teie varasemad vastused on salvestatud. Palun proovige uuesti.",
+    "loading_error": "Midagi katkestas teie edenemise. Ärge muretsege, teie varasemad vastused on salvestatud.",
     "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
     "session_canceled": "Teie sessioon on katkestatud.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Proovi uuesti"
+    "try_again": "Proovime uuesti"
   }
 }

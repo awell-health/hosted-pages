@@ -111,11 +111,11 @@
     "expired_subtitle": "Your session has expired due to inactivity.",
     "expired_title": "Срок действия сеанса истек",
     "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId”.",
-    "loading_error": "Что-то прервало ваш прогресс. Не волнуйтесь, ваши предыдущие ответы сохранены. Пожалуйста, попробуйте снова.",
+    "loading_error": "Что-то прервало ваш прогресс. Не волнуйтесь, ваши предыдущие ответы сохранены.",
     "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
     "session_canceled": "Ваша сессия истекла.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Попробуйте снова"
+    "try_again": "Давайте попробуем ещё раз"
   }
 }
