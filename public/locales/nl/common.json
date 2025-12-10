@@ -111,14 +111,11 @@
     "expired_subtitle": "Je sessie is vervallen door inactiviteit.",
     "expired_title": "Sessie vervallen",
     "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
-    "loading_error": "Er is iets misgelopen bij het laden van de sessie.",
+    "loading_error": "Er ging iets mis. Geen zorgen, je eerdere antwoorden zijn opgeslagen. Probeer het opnieuw.",
     "no_more_pending_activities": "Er zijn geen openstaande activiteiten. U kunt deze pagina sluiten.",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
     "session_canceled": "Je sessie werd geannuleerd.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "token_cleared_description": "Er ging iets mis. Geen zorgen, je eerdere antwoorden zijn opgeslagen. Klik op de knop hieronder om verder te gaan.",
-    "token_cleared_title": "Laten we verdergaan",
-    "fetch_new_token": "Doorgaan",
     "try_again": "Opnieuw proberen"
   }
 }

@@ -3,7 +3,7 @@ import { AuthenticationContext } from './AuthenticationContext'
 import { useSessionStorage } from '../../hooks/useSessionStorage'
 import { useRouter } from 'next/router'
 import useSwr from 'swr'
-import { ErrorPage, LoadingPage, TokenClearedErrorPage } from '../../components'
+import { ErrorPage, LoadingPage } from '../../components'
 import { useTranslation } from 'next-i18next'
 import * as Sentry from '@sentry/nextjs'
 interface AuthenticationProviderProps {
@@ -27,7 +27,6 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   const router = useRouter()
   const [tokenLoading, setTokenLoading] = useState(true)
   const [isClient, setIsClient] = useState(false)
-  const [tokenWasCleared, setTokenWasCleared] = useState(false)
   const previousTokenRef = useRef<string | null>(null)
 
   const { data, error } = useSwr(
@@ -82,10 +81,9 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     )
   }, [tokenLoading, router.query.sessionId])
 
-  // Detect unexpected token clearing
+  // Log unexpected token clearing for observability
   useEffect(() => {
     if (previousTokenRef.current && !accessToken) {
-      setTokenWasCleared(true)
       Sentry.logger?.error('Access token was unexpectedly cleared', {
         category: 'authentication',
         sessionId: router.query.sessionId,
@@ -98,13 +96,6 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     isAuthenticated: accessToken !== '',
     accessToken,
     error,
-  }
-
-  // Show error page if token was unexpectedly cleared
-  if (tokenWasCleared) {
-    return (
-      <TokenClearedErrorPage sessionId={router.query.sessionId as string} />
-    )
   }
 
   // Only check for missing sessionId on client-side after hydration

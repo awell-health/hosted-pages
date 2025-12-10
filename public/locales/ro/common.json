@@ -111,14 +111,11 @@
     "expired_subtitle": "Your session has expired due to inactivity.",
     "expired_title": "Session expired",
     "invalid_url": "URL invalid: URL-ul trebuie să conțină parametrul `sessionId`.",
-    "loading_error": "A apărut o problemă in timpul încărcării sesiunii tale.",
+    "loading_error": "Ceva a întrerupt progresul dumneavoastră. Nu vă faceți griji, răspunsurile anterioare sunt salvate. Vă rugăm să încercați din nou.",
     "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
     "session_canceled": "Sesiunea ta a fost anulata.",
     "session_completed_or_expired": "Your session has been completed or expired.",
-    "token_cleared_description": "Ceva a întrerupt progresul dumneavoastră. Nu vă faceți griji, răspunsurile anterioare sunt salvate. Faceți clic pe butonul de mai jos pentru a continua.",
-    "token_cleared_title": "Să continuăm",
-    "fetch_new_token": "Continuați",
     "try_again": "Încercați din nou"
   }
 }
