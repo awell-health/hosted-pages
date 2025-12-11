@@ -1,7 +1,9 @@
 'use client'
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'next-i18next'
 import { LoadingPage } from '../LoadingPage'
+import { ErrorPage } from '../ErrorPage'
 import type { ExtensionActivityRecord } from './types'
 import {
   fetchComponentsManifest,
@@ -13,7 +15,6 @@ import { useCompleteExtensionActivity } from '../../hooks/useCompleteExtensionAc
 type RemoteExtensionLoaderProps = {
   componentId?: string | null
   activityDetails: ExtensionActivityRecord
-  fallback: React.ReactNode
 }
 
 type ComponentProps = {
@@ -21,16 +22,15 @@ type ComponentProps = {
   onSubmit: (dataPoints: Record<string, unknown>) => void
 }
 
-type LoadStatus = 'loading' | 'available' | 'not_in_manifest' | 'load_error'
-
 export const RemoteExtensionLoader: FC<RemoteExtensionLoaderProps> = ({
   componentId,
   activityDetails,
-  fallback,
 }) => {
+  const { t } = useTranslation()
   const [Component, setComponent] =
     useState<React.ComponentType<ComponentProps> | null>(null)
-  const [status, setStatus] = useState<LoadStatus>('loading')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   const { onSubmit } = useCompleteExtensionActivity()
 
@@ -54,7 +54,6 @@ export const RemoteExtensionLoader: FC<RemoteExtensionLoaderProps> = ({
     },
     [onSubmit, activityDetails.activity_id, componentId]
   )
-
   const normalizedId = useMemo(() => {
     if (!componentId) return null
     return componentId.trim()
@@ -62,56 +61,40 @@ export const RemoteExtensionLoader: FC<RemoteExtensionLoaderProps> = ({
 
   useEffect(() => {
     let cancelled = false
-
     async function load() {
-      setStatus('loading')
-      setComponent(null)
-
-      if (!normalizedId) {
-        setStatus('not_in_manifest')
-        return
-      }
-
+      setLoading(true)
+      setError(null)
       try {
         const manifest = await fetchComponentsManifest()
         if (cancelled) return
-
-        // Check if component exists in manifest before trying to load
-        const isInManifest = manifest.components.some(
-          (c) => c.id === normalizedId
-        )
-        if (!isInManifest) {
-          setStatus('not_in_manifest')
-          return
+        if (!normalizedId) {
+          throw new Error('Missing extension component id')
         }
-
         const Comp = (await loadActionComponent(
           manifest,
           normalizedId
         )) as ActionComponent<ComponentProps>
         if (cancelled) return
-
         setComponent(() => Comp as unknown as FC<ComponentProps>)
-        setStatus('available')
-      } catch {
-        if (cancelled) return
-        setStatus('load_error')
+      } catch (e) {
+        const message =
+          e instanceof Error ? e.message : 'Failed to load extension component'
+        setError(message)
+      } finally {
+        setLoading(false)
       }
     }
-
     void load()
     return () => {
       cancelled = true
     }
   }, [normalizedId])
 
-  if (status === 'loading') {
+  if (loading) {
     return <LoadingPage />
   }
-
-  // If not in manifest or failed to load, use fallback
-  if (status === 'not_in_manifest' || status === 'load_error' || !Component) {
-    return <>{fallback}</>
+  if (error || !Component) {
+    return <ErrorPage title={t('activities.activity_not_supported')} />
   }
 
   return <Component activityDetails={activityDetails} onSubmit={handleSubmit} />
