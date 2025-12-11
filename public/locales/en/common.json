@@ -114,7 +114,7 @@
     "invalid_session_description": "This session is not valid or cannot be found. Please check your link or contact support.",
     "invalid_session_title": "Invalid session",
     "invalid_url": "Invalid URL: URL must contain `sessionId` parameter.",
-    "loading_error": "Something went wrong while loading your session.",
+    "loading_error": "Something interrupted your progress. Don't worry, your previous answers are saved.",
     "network_error_description": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
     "network_error_title": "Network connection error",
     "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
@@ -126,7 +126,7 @@
     "session_canceled": "Your session has been cancelled.",
     "session_completed_or_expired": "Your session has been completed or expired.",
     "session_id": "Session ID",
-    "try_again": "Try again",
+    "try_again": "Let's try again",
     "unauthorized_description": "You don't have permission to access this session. It may have been completed, expired, or cancelled.",
     "unauthorized_title": "Access denied"
   }
