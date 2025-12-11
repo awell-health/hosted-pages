@@ -48,9 +48,10 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
     }
   }, [])
 
-  const calOrigin = !isNil(customDomain)
-    ? `https://${customDomain}.cal.com`
-    : undefined
+  const calOrigin =
+    !isNil(customDomain) && customDomain.length > 0
+      ? `https://${customDomain}.cal.com`
+      : undefined
 
   return (
     <CalDotComScheduling
