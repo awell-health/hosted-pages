@@ -119,7 +119,6 @@ const Home: NextPageWithLayout = () => {
   ])
 
   const { redirectAfterSession, shouldRedirect } = useRedirectAfterSession({
-    removeAccessToken,
     setLogoOverride,
     router,
     session,
@@ -171,6 +170,8 @@ const Home: NextPageWithLayout = () => {
         Sentry.logger?.info('Session completed', {
           category: 'session_complete',
         })
+        // Remove access token when session is completed
+        removeAccessToken()
         if (shouldRedirect) {
           redirectAfterSession(session.success_url as string)
         }
@@ -184,6 +185,8 @@ const Home: NextPageWithLayout = () => {
         Sentry.logger?.info('Session expired', {
           category: 'session_expire',
         })
+        // Remove access token when session is expired
+        removeAccessToken()
         if (shouldRedirect) {
           redirectAfterSession(session.cancel_url as string)
         }
@@ -196,7 +199,7 @@ const Home: NextPageWithLayout = () => {
         return
       }
     }
-  }, [session, shouldRedirect, redirectAfterSession])
+  }, [session, shouldRedirect, redirectAfterSession, removeAccessToken])
 
   // content now handled by SessionRouter component
   const logo = useLogo(theme, branding, logoOverride)
@@ -261,7 +264,7 @@ const Home: NextPageWithLayout = () => {
                   ? t('session.session_completed_or_expired')
                   : t('session.loading_error')
               }
-              onRetry={refetch}
+              onRetry={() => window.location.reload()}
             />
           )}
           <ToastContainer
@@ -308,12 +311,11 @@ const SLOW_REDIRECT_15S_MS = 15001
 
 // Returns a stable redirect function with timeout cleanup and a derived shouldRedirect flag
 function useRedirectAfterSession(params: {
-  removeAccessToken: () => void
   setLogoOverride: any
   router: ReturnType<typeof useRouter>
   session: any
 }) {
-  const { removeAccessToken, setLogoOverride, router, session } = params
+  const { setLogoOverride, router, session } = params
   const timeoutIdsRef = useRef<number[]>([])
 
   const shouldRedirect = useMemo(() => {
@@ -336,7 +338,6 @@ function useRedirectAfterSession(params: {
       clearAllTimeouts()
 
       const redirectId = window.setTimeout(() => {
-        removeAccessToken()
         setLogoOverride('')
         router.push(url)
       }, REDIRECT_DELAY_MS)
@@ -357,7 +358,7 @@ function useRedirectAfterSession(params: {
 
       timeoutIdsRef.current.push(redirectId, slow10sId, slow15sId)
     },
-    [clearAllTimeouts, removeAccessToken, setLogoOverride, router, session]
+    [clearAllTimeouts, setLogoOverride, router, session]
   )
 
   useEffect(() => {
