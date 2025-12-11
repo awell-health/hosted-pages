@@ -1,17 +1,12 @@
 import React, { FC } from 'react'
-import { useTranslation, TFunction } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { ErrorPage } from '../ErrorPage'
 import { CalDotComExtension } from './CalDotComExtension'
 import { useExtensionActivity } from '../../hooks/useExtensionActivity'
 import { LoadingPage } from '../LoadingPage'
 
-import {
-  type Activity,
-  type ExtensionActivityRecord,
-  ExtensionKey,
-  AnonymousActionKeys,
-} from './types'
+import { type Activity, ExtensionKey, AnonymousActionKeys } from './types'
 import { FormsortExtension } from './FormsortExtension'
 import { DropboxSignExtension } from './DropboxSignExtension'
 import { CloudinaryExtension } from './CloudinaryExtension'
@@ -35,17 +30,28 @@ interface ExtensionProps {
   activity: Activity
 }
 
-/**
- * Fallback component used when the extension is not available in the remote manifest.
- * This includes legacy extensions with local implementations and private/anonymous actions.
- */
-const ExtensionFallback: FC<{
-  activity: Activity
-  extensionActivityDetails: ExtensionActivityRecord
-  t: TFunction
-}> = ({ activity, extensionActivityDetails, t }) => {
-  // Private/anonymous action handlers
-  const getPrivateActionComponent = () => {
+export const Extension: FC<ExtensionProps> = ({ activity }) => {
+  const { t } = useTranslation()
+  const { loading, extensionActivityDetails, error, refetch } =
+    useExtensionActivity(activity.object.id)
+
+  if (loading) {
+    return <LoadingPage />
+  }
+
+  if (error || !extensionActivityDetails) {
+    return (
+      <ErrorPage
+        title={t('activities.checklist.loading_error', { error })}
+        onRetry={refetch}
+      />
+    )
+  }
+
+  /**
+   * FOR PRIVATE EXTENSIONS
+   */
+  const getDefaultReturnValue = () => {
     switch (extensionActivityDetails.plugin_action_key) {
       case AnonymousActionKeys.COLLECT_MEDICATION:
         return (
@@ -73,12 +79,18 @@ const ExtensionFallback: FC<{
             activityDetails={extensionActivityDetails}
           />
         )
+      // TODO add a specific case for the new plugin action
       default:
-        return null
+        return <ErrorPage title={t('activities.activity_not_supported')} />
     }
   }
 
-  // Legacy extensions with local implementations
+  // If we don't recognize the extension key and it's not an anonymous/private action,
+  // we'll try to load the extension via module federation as a fallback.
+  const isAnonymousKey = Object.values(AnonymousActionKeys).includes(
+    extensionActivityDetails.plugin_action_key as unknown as AnonymousActionKeys
+  )
+
   switch (activity?.indirect_object?.id) {
     case ExtensionKey.CAL_DOT_COM:
       return <CalDotComExtension activityDetails={extensionActivityDetails} />
@@ -102,55 +114,18 @@ const ExtensionFallback: FC<{
       )
     case ExtensionKey.SHELLY:
       return <ShellyExtension activityDetails={extensionActivityDetails} />
-    default: {
-      // Check for private/anonymous actions
-      const privateComponent = getPrivateActionComponent()
-      if (privateComponent) {
-        return privateComponent
+    default:
+      if (!isAnonymousKey) {
+        const componentId = `${extensionActivityDetails?.plugin_key}.${extensionActivityDetails?.plugin_action_key}`
+        return (
+          <RemoteExtensionLoader
+            componentId={componentId}
+            activityDetails={extensionActivityDetails}
+          />
+        )
       }
-      return (
-        <ErrorPage title={String(t('activities.activity_not_supported'))} />
-      )
-    }
+      return getDefaultReturnValue()
   }
-}
-
-export const Extension: FC<ExtensionProps> = ({ activity }) => {
-  const { t } = useTranslation()
-  const { loading, extensionActivityDetails, error, refetch } =
-    useExtensionActivity(activity.object.id)
-
-  if (loading) {
-    return <LoadingPage />
-  }
-
-  if (error || !extensionActivityDetails) {
-    return (
-      <ErrorPage
-        title={t('activities.checklist.loading_error', { error })}
-        onRetry={refetch}
-      />
-    )
-  }
-
-  const componentId = `${extensionActivityDetails.plugin_key}.${extensionActivityDetails.plugin_action_key}`
-
-  // Always try to load from remote manifest first.
-  // If not available in manifest, fall back to legacy local implementations.
-  return (
-    <RemoteExtensionLoader
-      componentId={componentId}
-      activityDetails={extensionActivityDetails}
-      fallback={
-        <ExtensionFallback
-          activity={activity}
-          extensionActivityDetails={extensionActivityDetails}
-          t={t}
-        />
-      }
-      key={activity.id}
-    />
-  )
 }
 
 Extension.displayName = 'Extension'
