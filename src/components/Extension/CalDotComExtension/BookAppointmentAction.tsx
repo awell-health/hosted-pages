@@ -27,7 +27,7 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
     [fields]
   )
 
-  const { calOrigin } = useMemo(
+  const { customDomain } = useMemo(
     () => mapSettingsToObject<CalDotComExtensionSettings>(settings),
     [settings]
   )
@@ -51,7 +51,7 @@ export const BookAppointmentAction: FC<BookAppointmentActionProps> = ({
   return (
     <CalDotComSchedulingWithOrigin
       calLink={calLink}
-      calOrigin={calOrigin}
+      customDomain={customDomain}
       metadata={{
         awellPathwayId: pathway_id,
         awellActivityId: activity_id,

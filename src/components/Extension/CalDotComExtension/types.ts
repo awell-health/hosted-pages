@@ -15,7 +15,7 @@ export type BookAppointmentFields = {
 
 export type CalDotComExtensionSettings = {
   apiKey: string
-  calOrigin?: string
+  customDomain?: string
 }
 
 export type BookingSuccessfulFunction = ComponentProps<
