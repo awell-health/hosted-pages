@@ -13,6 +13,11 @@ export type BookAppointmentFields = {
   calLink: string
 }
 
+export type CalDotComExtensionSettings = {
+  apiKey: string
+  customDomain?: string
+}
+
 export type BookingSuccessfulFunction = ComponentProps<
   typeof CalDotComScheduling
 >['onBookingSuccessful']
