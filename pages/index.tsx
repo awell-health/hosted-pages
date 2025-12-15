@@ -169,6 +169,7 @@ const Home: NextPageWithLayout = () => {
         })
         Sentry.logger?.info('Session completed', {
           category: 'session_complete',
+          organization_slug: session?.organization_slug,
         })
         // Remove access token when session is completed
         removeAccessToken()
@@ -184,6 +185,7 @@ const Home: NextPageWithLayout = () => {
         })
         Sentry.logger?.info('Session expired', {
           category: 'session_expire',
+          organization_slug: session?.organization_slug,
         })
         // Remove access token when session is expired
         removeAccessToken()
@@ -346,6 +348,7 @@ function useRedirectAfterSession(params: {
         Sentry.logger?.warn('Slow redirect at session end', {
           category: 'slow_redirect',
           message: 'Redirect took at least 10 seconds',
+          organization_slug: session?.organization_slug,
         })
       }, SLOW_REDIRECT_10S_MS)
 
@@ -353,6 +356,7 @@ function useRedirectAfterSession(params: {
         Sentry.logger?.warn('Slow redirect at session end', {
           category: 'slow_redirect',
           message: 'Redirect took at least 15 seconds',
+          organization_slug: session?.organization_slug,
         })
       }, SLOW_REDIRECT_15S_MS)
 
