@@ -1,8 +1,8 @@
 import { ConversationalForm, TraditionalForm } from '@awell-health/ui-library'
 import { ErrorLabels } from '@awell-health/ui-library/dist/types/hooks/useForm/types'
-import { isEmpty, isNil } from 'lodash'
+import { debounce, isEmpty, isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useLocalStorage from 'use-local-storage'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import { useFileUpload } from '../../hooks/useFileUpload'
@@ -98,11 +98,42 @@ export const Form: FC<FormProps> = ({ activity }) => {
         category: 'evaluate_form_rules',
         form_id: activity.object.id,
         response: masker(response),
+        session_id: session?.id,
+        organization_slug: session?.organization_slug,
       })
       return evaluateFormRules(response)
     },
-    []
+    [evaluateFormRules, activity.object.id]
   )
+
+  // Debounce evaluateFormRules for traditional forms to avoid calling on every keystroke
+  const debouncedEvaluateFormRules = useMemo(
+    () => debounce(handleEvaluateFormRules, 300, { trailing: true }),
+    [handleEvaluateFormRules]
+  )
+
+  const handleEvaluateFormRulesDebounced = useMemo<
+    (response: Array<AnswerInput>) => Promise<Array<QuestionRuleResult>>
+  >(() => {
+    // Wrap to handle undefined return (replace with empty array promise)
+    return async (
+      response: Array<AnswerInput>
+    ): Promise<Array<QuestionRuleResult>> => {
+      const result = await debouncedEvaluateFormRules(response)
+      return result ?? []
+    }
+  }, [debouncedEvaluateFormRules])
+
+  // Cleanup debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedEvaluateFormRules.cancel()
+    }
+  }, [debouncedEvaluateFormRules])
+
+  const renderTraditionalForm =
+    activity.form_display_mode &&
+    activity.form_display_mode === FormDisplayMode.Regular
 
   const handleSubmit = useCallback(
     async (response: Array<any>) => {
@@ -110,6 +141,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
         category: 'submit_form',
         form_id: activity.object.id,
         response: masker(response),
+        session_id: session?.id,
+        organization_slug: session?.organization_slug,
       })
 
       const isSubmitted = await onSubmit(response)
@@ -243,10 +276,6 @@ export const Form: FC<FormProps> = ({ activity }) => {
     []
   )
 
-  const renderTraditionalForm =
-    activity.form_display_mode &&
-    activity.form_display_mode === FormDisplayMode.Regular
-
   if (isNil(form)) {
     return <ErrorPage title={t('activities.form.loading_error')} />
   }
@@ -263,7 +292,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
           buttonLabels={button_labels}
           errorLabels={error_labels}
           onSubmit={handleSubmit}
-          evaluateDisplayConditions={handleEvaluateFormRules}
+          evaluateDisplayConditions={handleEvaluateFormRulesDebounced}
           storedAnswers={initialAnswersFromLocalStorage}
           onAnswersChange={handleOnAnswersChange}
           autosaveAnswers={branding?.hosted_page_autosave ?? true}
