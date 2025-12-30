@@ -2,13 +2,12 @@ import { ConversationalForm, TraditionalForm } from '@awell-health/ui-library'
 import { ErrorLabels } from '@awell-health/ui-library/dist/types/hooks/useForm/types'
 import { debounce, isEmpty, isNil } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import useLocalStorage from 'use-local-storage'
 import { useEvaluateFormRules } from '../../hooks/useEvaluateFormRules'
 import { useFileUpload } from '../../hooks/useFileUpload'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
-import { logger, LogEvent } from '../../utils/logging'
 import { masker } from '../../services/ErrorReporter'
 import * as Sentry from '@sentry/nextjs'
 import { ErrorPage } from '../ErrorPage'
@@ -103,7 +102,12 @@ export const Form: FC<FormProps> = ({ activity }) => {
       })
       return evaluateFormRules(response)
     },
-    [evaluateFormRules, activity.object.id]
+    [
+      evaluateFormRules,
+      activity.object.id,
+      session?.id,
+      session?.organization_slug,
+    ]
   )
 
   // Debounce evaluateFormRules for traditional forms to avoid calling on every keystroke
@@ -113,7 +117,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
   )
 
   const handleEvaluateFormRulesDebounced = useMemo<
-    (response: Array<AnswerInput>) => Promise<Array<QuestionRuleResult>>
+    (_response: Array<AnswerInput>) => Promise<Array<QuestionRuleResult>>
   >(() => {
     // Wrap to handle undefined return (replace with empty array promise)
     return async (
@@ -152,7 +156,13 @@ export const Form: FC<FormProps> = ({ activity }) => {
         setPersistedFormAnswers(undefined)
       }
     },
-    [onSubmit, activity.object.id, setPersistedFormAnswers]
+    [
+      onSubmit,
+      activity.object.id,
+      setPersistedFormAnswers,
+      session?.id,
+      session?.organization_slug,
+    ]
   )
 
   const handleOnAnswersChange = useCallback(
@@ -220,7 +230,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
         throw error
       }
     },
-    []
+    [activity.id, getGcsSignedUrl]
   )
 
   const labels = {
@@ -273,7 +283,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       numberOutOfRange: t('activities.form.number_out_of_range'),
       emailInvalidFormat: t('activities.form.email_invalid_format'),
     }),
-    []
+    [t]
   )
 
   if (isNil(form)) {
