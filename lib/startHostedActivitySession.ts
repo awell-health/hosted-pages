@@ -8,6 +8,7 @@ import {
   captureHostedSessionError,
 } from '../src/utils/errors'
 import * as Sentry from '@sentry/nextjs'
+import { TrackingInput } from '../src/utils/extractTrackingParams'
 
 export type StartHostedActivitySessionSuccess = {
   sessionId: string
@@ -65,6 +66,7 @@ export async function startHostedActivitySession(
         variables: {
           input: {
             hosted_pages_link_id: hostedPagesLinkId,
+            ...(params.tracking && { tracking: params.tracking }),
           },
         },
       }),
