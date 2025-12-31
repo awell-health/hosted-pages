@@ -9,6 +9,7 @@
   "possibleTypes": {
     "ActivityInputs": [
       "CalculationActivityInputs",
+      "CodeBlockActivityInputs",
       "DecisionTableActivityInputs",
       "DynamicFormActivityInputs",
       "ExtensionActivityInputs",
@@ -17,10 +18,14 @@
     ],
     "ActivityOutputs": [
       "CalculationActivityOutputs",
+      "CodeBlockActivityOutputs",
       "DecisionTableActivityOutputs",
       "DynamicFormActivityOutputs",
+      "EnrollmentTriggerActivityOutputs",
       "ExtensionActivityOutputs",
-      "FormActivityOutputs"
+      "FormActivityOutputs",
+      "TimerActivityOutputs",
+      "TrackTriggerActivityOutputs"
     ],
     "PaginationAndSortingPayload": [
       "ActivitiesPayload",

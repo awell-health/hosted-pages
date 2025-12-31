@@ -7,6 +7,7 @@ import {
   captureHostedSessionError,
 } from '../src/utils/errors'
 import * as Sentry from '@sentry/nextjs'
+import { TrackingInput } from '../src/utils/extractTrackingParams'
 
 export type StartHostedPathwaySessionSuccess = {
   sessionUrl: string
@@ -40,9 +41,15 @@ export async function startHostedPathwaySession(params: {
   patient_identifier?: string
   track_id?: string
   activity_id?: string
+  tracking?: TrackingInput
 }): Promise<StartHostedPathwaySessionResult> {
-  const { hostedPagesLinkId, patient_identifier, track_id, activity_id } =
-    params
+  const {
+    hostedPagesLinkId,
+    patient_identifier,
+    track_id,
+    activity_id,
+    tracking,
+  } = params
 
   try {
     const token = jwt.sign(
@@ -59,12 +66,15 @@ export async function startHostedPathwaySession(params: {
 
     const hasPatientIdentifier =
       !isNil(patient_identifier) && patient_identifier !== 'undefined'
-    const input = hasPatientIdentifier
-      ? {
-          id: hostedPagesLinkId,
-          patient_identifier: decodePatientIdentifier(patient_identifier),
-        }
-      : { id: hostedPagesLinkId }
+    const input = {
+      ...(hasPatientIdentifier
+        ? {
+            id: hostedPagesLinkId,
+            patient_identifier: decodePatientIdentifier(patient_identifier),
+          }
+        : { id: hostedPagesLinkId }),
+      ...(tracking && { tracking }),
+    }
 
     const response = await fetch(environment.orchestrationApiUrl, {
       method: 'POST',
