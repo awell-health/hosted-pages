@@ -8,6 +8,7 @@ import { startHostedActivitySession } from '../../lib'
 import { ErrorPage } from '../../src/components/ErrorPage'
 import { useTranslation } from 'next-i18next'
 import * as Sentry from '@sentry/nextjs'
+import { extractTrackingParams } from '../../src/utils/extractTrackingParams'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'hosted-pages.awellhealth.com/l/<hostedPagesLinkId>'
@@ -39,10 +40,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { locale, query } = context
   const validatedLocale = validateLocale(locale || 'en')
 
+  const tracking = extractTrackingParams(query)
+
   const params = {
     hostedPagesLinkId: query.hostedPagesLinkId as string,
     track_id: query.track_id as string | undefined,
     activity_id: query.activity_id as string | undefined,
+    ...(tracking && { tracking }),
   } as StartHostedActivitySessionParams
 
   const result = await startHostedActivitySession(params)
