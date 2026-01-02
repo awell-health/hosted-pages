@@ -7,6 +7,7 @@ import { startHostedPathwaySession } from '../../lib'
 import { ErrorPage } from '../../src/components/ErrorPage'
 import { useTranslation } from 'next-i18next'
 import * as Sentry from '@sentry/nextjs'
+import { extractTrackingParams } from '../../src/utils/extractTrackingParams'
 
 /**
  * Purpose of this page is to support shortened URLs i.e. 'goto.awell.health/c/<hostedCareflowLinkId>?patient_identifier=system|id'
@@ -38,11 +39,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { locale, query } = context
   const validatedLocale = validateLocale(locale || 'en')
 
+  const tracking = extractTrackingParams(query)
+
   const params = {
     hostedPagesLinkId: query.hostedPagesLinkId as string,
     patient_identifier: query.patient_identifier as string | undefined,
     track_id: query.track_id as string | undefined,
     activity_id: query.activity_id as string | undefined,
+    ...(tracking && { tracking }),
   }
 
   const result = await startHostedPathwaySession(params)
