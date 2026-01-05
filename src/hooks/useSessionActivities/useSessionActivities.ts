@@ -27,9 +27,12 @@ interface UsePathwayActivitiesHook {
 }
 
 export const useSessionActivities = (): UsePathwayActivitiesHook => {
-  const variables = {
-    only_stakeholder_activities: true,
-  }
+  const variables = useMemo(
+    () => ({
+      only_stakeholder_activities: true,
+    }),
+    []
+  )
   const router = useRouter()
   const {
     data,
@@ -47,8 +50,20 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
    * Set up subscriptions to automatically update the activities array in the cache
    * when activities are created, completed, or expired.
    * Using subscribeToMore ensures the subscription data is properly merged into the query result.
+   *
+   * Subscriptions are only enabled after the initial query returns at least one activity
+   * to prevent race conditions where subscription events arrive before the initial data,
+   * which could cause the wrong activity to be marked as current.
    */
   useEffect(() => {
+    // Only enable subscriptions after initial query returns at least one activity
+    const hasActivities =
+      (data?.hostedSessionActivities?.activities?.length ?? 0) > 0
+
+    if (loading || !hasActivities) {
+      return // Don't set up subscriptions yet
+    }
+
     // Subscribe to new activities being created
     const unsubscribeCreated =
       subscribeToMore<OnSessionActivityCreatedSubscription>({
@@ -170,13 +185,13 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
         },
       })
 
-    // Cleanup subscriptions on unmount
+    // Cleanup subscriptions on unmount or when dependencies change
     return () => {
       unsubscribeCreated()
       unsubscribeCompleted()
       unsubscribeExpired()
     }
-  }, [])
+  }, [data, loading, subscribeToMore, variables])
 
   const filterActivity = (activity: Activity): boolean => {
     if (!isNil(router.query.activity_id)) {
