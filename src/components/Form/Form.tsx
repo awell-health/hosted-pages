@@ -112,7 +112,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   // Debounce evaluateFormRules for traditional forms to avoid calling on every keystroke
   const debouncedEvaluateFormRules = useMemo(
-    () => debounce(handleEvaluateFormRules, 300, { trailing: true }),
+    () =>
+      debounce(handleEvaluateFormRules, 300, { leading: true, trailing: true }),
     [handleEvaluateFormRules]
   )
 
