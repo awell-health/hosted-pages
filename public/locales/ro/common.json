@@ -7,41 +7,41 @@
       "saving_error": "Trimiterea listei de verificare a eșuat."
     },
     "cloudinary": {
-      "cta_upload_files": "Upload files",
-      "file_attachment": "View file",
-      "file_count_one": "You have uploaded 1 file.",
-      "file_count_other": "You have uploaded {{count}} files.",
-      "file_count_zero": "You have not uploaded any files yet.",
-      "link_attachment": "Open link",
-      "no_files": "You have not uploaded any files yet.",
+      "cta_upload_files": "Încărcați fișiere",
+      "file_attachment": "Vizualizați fișierul",
+      "file_count_one": "Ați încărcat 1 fișier.",
+      "file_count_other": "Ați încărcat {{count}} fișiere.",
+      "file_count_zero": "Nu ați încărcat încă niciun fișier.",
+      "link_attachment": "Deschideți link",
+      "no_files": "Nu ați încărcat încă niciun fișier.",
       "single_file_upload_action": {
-        "cta_upload_file": "Upload file",
-        "file_uploaded": "You have successfully uploaded a file.",
-        "no_file_uploaded": "You have not uploaded a file yet.",
-        "subject_single_file_upload": "Upload file"
+        "cta_upload_file": "Încărcați fișier",
+        "file_uploaded": "Ați încărcat cu succes un fișier.",
+        "no_file_uploaded": "Nu ați încărcat încă un fișier.",
+        "subject_single_file_upload": "Încărcați fișier"
       },
-      "subject": "Upload files",
-      "video_attachment": "Open video"
+      "subject": "Încărcați fișiere",
+      "video_attachment": "Deschideți videoclipul"
     },
     "collect_medication": {
-      "add_medication_button": "Add medication",
-      "medication_dose": "Dose",
-      "medication_instructions": "Instructions",
-      "medication_name": "Name",
-      "submit_button": "Submit"
+      "add_medication_button": "Adăugați medicament",
+      "medication_dose": "Doză",
+      "medication_instructions": "Instrucțiuni",
+      "medication_name": "Nume",
+      "submit_button": "Trimiteți"
     },
-    "cta_done": "Done",
+    "cta_done": "Terminat",
     "docu_sign": {
-      "cta_sign_document": "Sign document",
-      "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "cta_sign_document": "Semnați documentul",
+      "expired_sign_document": "Linkul de semnare a expirat.",
+      "failed_sign_document": "Linkul de semnare a eșuat."
     },
     "form": {
       "cta_submit": "Trimiteți",
       "date_cannot_be_in_the_future": "Data nu poate fi în viitor.",
       "date_cannot_be_in_the_past": "Data nu poate fi în trecut.",
       "date_cannot_be_today": "Data nu poate fi astăzi.",
-      "email_invalid_format": "Email is in invalid format.",
+      "email_invalid_format": "E-mailul are un format invalid.",
       "form_has_errors": "Vă rugăm să corectați erorile din formular înainte de a trimite",
       "invalid_phone_number": "Numărul de telefon este invalid.",
       "loading_error": "Ceva nu a mers bine în timpul încărcării formularului.",
@@ -52,16 +52,16 @@
       "question_required_error": "Această întrebare este obligatorie.",
       "questions": {
         "select": {
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue",
-          "loading": "Loading...",
+          "icd_10_catalogue_description": "Pentru o navigare mai ușoară, deschideți catalogul ICD într-o filă nouă. Odată ce găsiți codul de care aveți nevoie, reveniți pentru a-l introduce aici.",
+          "icd_10_catalogue_link": "Deschideți catalogul ICD",
+          "loading": "Se încarcă...",
           "no_options": "Nu s-au găsit opțiuni",
-          "search_icd_placeholder": "Start typing to search a medical condition",
+          "search_icd_placeholder": "Începeți să tastați pentru a căuta o afecțiune medicală",
           "search_placeholder": "Căutați o opțiune",
-          "type_to_search": "Type to search"
+          "type_to_search": "Tastați pentru a căuta"
         },
         "slider": {
-          "tooltip_guide": "Touch to indicate your answer"
+          "tooltip_guide": "Atingeți pentru a indica răspunsul dvs."
         },
         "yes_no": {
           "no_answer": "Nu",
@@ -72,8 +72,11 @@
       "slider_not_touched_error": "Vă rugam să mutați cursorul pentru a indica răspunsul dumneavoastră."
     },
     "identity_verification": {
-      "cta": "Confirm",
-      "default_label": "Enter your date of birth to verify your identity"
+      "cta": "Confirmați",
+      "default_label": "Introduceți data nașterii pentru a vă verifica identitatea",
+      "error_empty": "Vă rugăm să introduceți o dată a nașterii",
+      "error_no_match": "Data nașterii nu corespunde cu înregistrările noastre",
+      "error_failed": "Verificarea a eșuat. Vă rugăm să încercați din nou."
     },
     "loading_error": "Ceva nu a mers bine în timp ce încărcam activitățile tale.",
     "message": {
@@ -100,22 +103,34 @@
     "title": "Activități Awell"
   },
   "session": {
-    "all_activities_completed_subtitle": "You can close this page now.",
-    "all_activities_completed_title": "You're all done!",
+    "all_activities_completed_subtitle": "Puteți închide această pagină acum.",
+    "all_activities_completed_title": "Ați terminat totul!",
     "close_modal": {
       "cancel_button_label": "Nu, continuă",
       "confirm_button_label": "Da, anulează sesiunea.",
       "description": "Mai sunt câteva activități pe care trebuie să le finalizezi. Dacă anulezi sesiunea, s-ar putea să pierzi date pe care nu le-ai trimis încă.",
       "title": "Ești sigur că vrei să anulezi sesiunea ta?"
     },
-    "expired_subtitle": "Your session has expired due to inactivity.",
-    "expired_title": "Session expired",
+    "expired_description": "Sesiunea dvs. a expirat și nu mai este accesibilă. Vă rugăm să contactați asistența dacă aveți nevoie de ajutor.",
+    "expired_subtitle": "Sesiunea dvs. a expirat din cauza inactivității.",
+    "expired_title": "Sesiunea a expirat",
+    "invalid_session_description": "Această sesiune nu este validă sau nu poate fi găsită. Vă rugăm să verificați linkul sau să contactați asistența.",
+    "invalid_session_title": "Sesiune invalidă",
     "invalid_url": "URL invalid: URL-ul trebuie să conțină parametrul `sessionId`.",
     "loading_error": "Ceva a întrerupt progresul dumneavoastră. Nu vă faceți griji, răspunsurile anterioare sunt salvate.",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
+    "network_error_description": "Avem probleme cu conectarea la serverele noastre. Vă rugăm să verificați conexiunea la internet și să încercați din nou.",
+    "network_error_title": "Eroare de conexiune la rețea",
+    "no_more_pending_activities": "Nu mai sunt activități în așteptare pentru dvs. în acest moment. Puteți închide această pagină.",
+    "not_found_description": "Sesiunea pe care o căutați nu a putut fi găsită. Este posibil să fi fost eliminată sau linkul este incorect.",
+    "not_found_title": "Sesiune negăsită",
     "redirecting_to_next_page": "Te redirecționăm intr-un moment.",
+    "retry": "Reîncercați",
+    "retrying": "Se reîncearcă...",
     "session_canceled": "Sesiunea ta a fost anulata.",
-    "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Să încercăm din nou"
+    "session_completed_or_expired": "Sesiunea dvs. a fost finalizată sau a expirat.",
+    "session_id": "ID sesiune",
+    "try_again": "Să încercăm din nou",
+    "unauthorized_description": "Nu aveți permisiunea de a accesa această sesiune. Este posibil să fi fost finalizată, expirată sau anulată.",
+    "unauthorized_title": "Acces refuzat"
   }
 }

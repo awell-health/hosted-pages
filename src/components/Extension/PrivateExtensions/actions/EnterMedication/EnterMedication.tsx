@@ -14,6 +14,7 @@ import {
 import { isEmpty } from 'lodash'
 import { mapActionFieldsToObject } from '../../../utils'
 import { ActionFields } from './types'
+import { useTranslation } from 'next-i18next'
 
 interface EnterMedicationProps {
   activityDetails: ExtensionActivityRecord
@@ -28,6 +29,7 @@ type Medication = {
 export const EnterMedication: FC<EnterMedicationProps> = ({
   activityDetails,
 }) => {
+  const { t } = useTranslation()
   const [medications, setMedications] = useState<Medication[]>([])
   const { activity_id, fields } = activityDetails
   const { updateLayoutMode, resetLayoutMode } = useTheme()
@@ -89,55 +91,59 @@ export const EnterMedication: FC<EnterMedicationProps> = ({
         <div
           className={`${classes.container} ${classes.groupMedsListContainer}`}
         >
-          {!questionLabel && (
+          {questionLabel && (
             <div className={classes.label}>
-              <QuestionLabel label="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." />
+              <QuestionLabel label={questionLabel} />
             </div>
           )}
           {medications.map((medication, index) => (
             <div className={classes.singleMedsListContainer} key={index}>
               <InputField
                 id="name"
-                label="Name"
+                label={t('activities.collect_medication.medication_name')}
                 type="text"
                 value={medication.name}
                 onChange={(e) =>
                   updateMedication(index, 'name', e.target.value)
                 }
-                placeholder="Medication Name"
+                placeholder={t('activities.collect_medication.medication_name')}
               />
               <InputField
                 id="dose"
-                label="Dose"
+                label={t('activities.collect_medication.medication_dose')}
                 type="text"
                 value={medication.dose}
                 onChange={(e) =>
                   updateMedication(index, 'dose', e.target.value)
                 }
-                placeholder="Dose"
+                placeholder={t('activities.collect_medication.medication_dose')}
               />
               <InputField
                 id="instructions"
-                label="Instructions"
+                label={t(
+                  'activities.collect_medication.medication_instructions'
+                )}
                 type="text"
                 value={medication.instructions || ''}
                 onChange={(e) =>
                   updateMedication(index, 'instructions', e.target.value)
                 }
-                placeholder="Instructions"
+                placeholder={t(
+                  'activities.collect_medication.medication_instructions'
+                )}
               />
               <Button
                 variant="tertiary"
                 onClick={() => removeMedication(index)}
               >
-                X
+                ✕
               </Button>
             </div>
           ))}
         </div>
         <div className={`${classes.container} ${classes.addMedsButton}`}>
           <Button onClick={addMedication} variant="secondary">
-            Add Medication
+            {t('activities.collect_medication.add_medication_button')}
           </Button>
         </div>
       </main>
@@ -146,7 +152,7 @@ export const EnterMedication: FC<EnterMedicationProps> = ({
           className={`${activityClasses.button_wrapper} ${classes.container}`}
         >
           <Button variant="primary" onClick={handleSubmit}>
-            Next
+            {t('activities.collect_medication.submit_button')}
           </Button>
         </div>
       </HostedPageFooter>
