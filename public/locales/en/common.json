@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Confirm",
-      "default_label": "Enter your date of birth to verify your identity"
+      "default_label": "Enter your date of birth to verify your identity",
+      "error_empty": "Please enter a date of birth",
+      "error_no_match": "Date of birth does not match our records",
+      "error_failed": "Verification failed. Please try again."
     },
     "loading_error": "Something went wrong while loading your activities.",
     "message": {

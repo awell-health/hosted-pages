@@ -7,32 +7,32 @@
       "saving_error": "Nimekirja esitamine ebaõnnestus."
     },
     "cloudinary": {
-      "cta_upload_files": "Upload files",
-      "file_attachment": "View file",
-      "file_count_one": "You have uploaded 1 file.",
-      "file_count_other": "You have uploaded {{count}} files.",
-      "file_count_zero": "You have not uploaded any files yet.",
-      "link_attachment": "Open link",
-      "no_files": "You have not uploaded any files yet.",
+      "cta_upload_files": "Laadi failid üles",
+      "file_attachment": "Vaata faili",
+      "file_count_one": "Oled üles laadinud 1 faili.",
+      "file_count_other": "Oled üles laadinud {{count}} faili.",
+      "file_count_zero": "Sa ei ole veel ühtegi faili üles laadinud.",
+      "link_attachment": "Ava link",
+      "no_files": "Sa ei ole veel ühtegi faili üles laadinud.",
       "single_file_upload_action": {
-        "cta_upload_file": "Upload file",
-        "file_uploaded": "You have successfully uploaded a file.",
-        "no_file_uploaded": "You have not uploaded a file yet.",
-        "subject_single_file_upload": "Upload file"
+        "cta_upload_file": "Laadi fail üles",
+        "file_uploaded": "Oled edukalt faili üles laadinud.",
+        "no_file_uploaded": "Sa ei ole veel faili üles laadinud.",
+        "subject_single_file_upload": "Laadi fail üles"
       },
-      "subject": "Upload files",
-      "video_attachment": "Open video"
+      "subject": "Laadi failid üles",
+      "video_attachment": "Ava video"
     },
     "collect_medication": {
-      "add_medication_button": "Add medication",
-      "medication_dose": "Dose",
-      "medication_instructions": "Instructions",
-      "medication_name": "Name",
-      "submit_button": "Submit"
+      "add_medication_button": "Lisa ravim",
+      "medication_dose": "Annus",
+      "medication_instructions": "Juhised",
+      "medication_name": "Nimi",
+      "submit_button": "Esita vastused"
     },
     "cta_done": "Valmis",
     "docu_sign": {
-      "cta_sign_document": "Sign document",
+      "cta_sign_document": "Allkirjasta dokument",
       "expired_sign_document": "Allkirjastamise link on aegunud.",
       "failed_sign_document": "Allkirjastamise link ebaõnnestus."
     },
@@ -41,7 +41,7 @@
       "date_cannot_be_in_the_future": "Kuupäev ei saa olla tulevikus.",
       "date_cannot_be_in_the_past": "Kuupäev ei saa olla minevikus.",
       "date_cannot_be_today": "Kuupäev ei saa olla täna.",
-      "email_invalid_format": "Email is in invalid format.",
+      "email_invalid_format": "E-posti aadress on vigases vormingus.",
       "form_has_errors": "Palun paranda vormis olevad vead enne esitamist.",
       "invalid_phone_number": "Telefoninumber pole õige.",
       "loading_error": "Vormi laadimisel läks midagi valesti.",
@@ -52,16 +52,16 @@
       "question_required_error": "See küsimus on kohustuslik.",
       "questions": {
         "select": {
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue",
+          "icd_10_catalogue_description": "Lihtsamaks sirvimiseks ava ICD kataloog uuel vahekaardil. Kui oled leidnud vajaliku koodi, tule tagasi, et sisestada see siia.",
+          "icd_10_catalogue_link": "Ava ICD kataloog",
           "loading": "Laadimine...",
           "no_options": "Vasteid ei leitud",
-          "search_icd_placeholder": "Start typing to search a medical condition",
+          "search_icd_placeholder": "Alusta tippimist, et otsida meditsiinilist seisundit",
           "search_placeholder": "Otsi valikut",
-          "type_to_search": "Type to search"
+          "type_to_search": "Kirjuta otsimiseks"
         },
         "slider": {
-          "tooltip_guide": "Touch to indicate your answer"
+          "tooltip_guide": "Puuduta, et näidata oma vastust"
         },
         "yes_no": {
           "no_answer": "Ei",
@@ -72,8 +72,11 @@
       "slider_not_touched_error": "Palun liigutage oma vastuse märkimiseks liugurit."
     },
     "identity_verification": {
-      "cta": "Confirm",
-      "default_label": "Enter your date of birth to verify your identity"
+      "cta": "Kinnita",
+      "default_label": "Sisesta oma sünnikuupäev, et tõendada oma isikut",
+      "error_empty": "Palun sisesta sünnikuupäev",
+      "error_no_match": "Sünnikuupäev ei vasta meie andmetele",
+      "error_failed": "Kontrollimine ebaõnnestus. Palun proovi uuesti."
     },
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "message": {
@@ -108,14 +111,26 @@
       "description": "Kui täitmise katkestad, siis arstikeskus sinu pöördumist kätte ei saa.",
       "title": "Soovid pöördumise täitmise pooleli jätta?"
     },
+    "expired_description": "Teie seanss on aegunud ja pole enam kättesaadav. Palun võtke tugiteenusega ühendust, kui vajate abi.",
     "expired_subtitle": "Teie seanss on tegevusetuse tõttu aegunud.",
     "expired_title": "Seanss lõppes",
-    "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
+    "invalid_session_description": "See seanss ei kehti või seda ei leitud. Palun kontrollige oma linki või võtke tugiteenusega ühendust.",
+    "invalid_session_title": "Kehtetu seanss",
+    "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId",
     "loading_error": "Midagi katkestas teie edenemise. Ärge muretsege, teie varasemad vastused on salvestatud.",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
+    "network_error_description": "Meil on raskusi meie serveritega ühenduse loomisel. Palun kontrollige oma internetiühendust ja proovige uuesti.",
+    "network_error_title": "Võrguühenduse viga",
+    "no_more_pending_activities": "Praegu pole teile enam ootel tegevusi. Võite selle lehe sulgeda.",
+    "not_found_description": "Otsitavat seanssi ei leitud. See võib olla eemaldatud või link on vale.",
+    "not_found_title": "Seanssi ei leitud",
     "redirecting_to_next_page": "Teid suunatakse hetke pärast ümber.",
+    "retry": "Proovi uuesti",
+    "retrying": "Proovin uuesti...",
     "session_canceled": "Teie sessioon on katkestatud.",
-    "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Proovime uuesti"
+    "session_completed_or_expired": "Teie seanss on lõpetatud või aegunud.",
+    "session_id": "Seansi ID",
+    "try_again": "Proovime uuesti",
+    "unauthorized_description": "Teil puudub õigus sellele seansile juurde pääseda. See võib olla lõpetatud, aegunud või tühistatud.",
+    "unauthorized_title": "Juurdepääs keelatud"
   }
 }
