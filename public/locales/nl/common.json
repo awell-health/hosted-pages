@@ -41,7 +41,7 @@
       "date_cannot_be_in_the_future": "De datum kan niet in de toekomst liggen.",
       "date_cannot_be_in_the_past": "De datum mag niet in het verleden liggen.",
       "date_cannot_be_today": "De datum kan niet vandaag zijn.",
-      "email_invalid_format": "Email is in invalid format.",
+      "email_invalid_format": "Het e-mailadres heeft een ongeldig formaat.",
       "form_has_errors": "Gelieve de fouten in het formulier te verbeteren voor je het verzendt.",
       "invalid_phone_number": "Telefoonnummer is ongeldig.",
       "loading_error": "Er is iets misgelopen bij het ophalen van de vragenlijst.",
@@ -56,7 +56,7 @@
           "icd_10_catalogue_link": "Open ICD catalogus",
           "loading": "Laden...",
           "no_options": "Geen matches gevonden",
-          "search_icd_placeholder": "Begin te typen om een medische aandoening te zoeken",
+          "search_icd_placeholder": "Begin te typen om een medische aandoening te zoeke",
           "search_placeholder": "Zoek een optie",
           "type_to_search": "Typ om te zoeken"
         },
@@ -75,8 +75,8 @@
       "cta": "Bevestigen",
       "default_label": "Voer je geboortedatum in om je identiteit te verifiëren",
       "error_empty": "Voer een geboortedatum in",
-      "error_no_match": "Geboortedatum komt niet overeen met onze gegevens",
-      "error_failed": "Verificatie mislukt. Probeer het opnieuw."
+      "error_failed": "Verificatie mislukt. Probeer het opnieuw.",
+      "error_no_match": "Geboortedatum komt niet overeen met onze gegevens"
     },
     "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
     "message": {
@@ -116,7 +116,7 @@
     "expired_title": "Sessie vervallen",
     "invalid_session_description": "Deze sessie is niet geldig of kan niet worden gevonden. Controleer je link of neem contact op met de ondersteuning.",
     "invalid_session_title": "Ongeldige sessie",
-    "invalid_url": "Ongeldige URL: URL moet een `sessionId` bevatten.",
+    "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
     "loading_error": "Er ging iets mis. Geen zorgen, je eerdere antwoorden zijn opgeslagen.",
     "network_error_description": "We hebben problemen met de verbinding naar onze servers. Controleer je internetverbinding en probeer het opnieuw.",
     "network_error_title": "Netwerkverbindingsfout",
