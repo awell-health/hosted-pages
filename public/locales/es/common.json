@@ -41,7 +41,7 @@
       "date_cannot_be_in_the_future": "La fecha no puede estar en el futuro.",
       "date_cannot_be_in_the_past": "La fecha no puede estar en el pasado.",
       "date_cannot_be_today": "La fecha no puede ser hoy.",
-      "email_invalid_format": "Email is in invalid format.",
+      "email_invalid_format": "El correo electrónico tiene un formato no válido.",
       "form_has_errors": "Corrija los errores del formulario antes de enviarlo",
       "invalid_phone_number": "El número de teléfono no es válido.",
       "loading_error": "Se ha producido un error al cargar el formulario.",
@@ -52,11 +52,11 @@
       "question_required_error": "Esta pregunta es obligatoria.",
       "questions": {
         "select": {
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue",
+          "icd_10_catalogue_description": "Para facilitar la navegación, abra el catálogo ICD en una nueva pestaña. Una vez que encuentres el código que necesitas, regresa para introducirlo aquí.",
+          "icd_10_catalogue_link": "Abrir catálogo ICD",
           "loading": "Cargando…",
           "no_options": "No se encontraron coincidencias",
-          "search_icd_placeholder": "Start typing to search a medical condition",
+          "search_icd_placeholder": "Empieza a escribir para buscar una condición médica",
           "search_placeholder": "Busca una opción",
           "type_to_search": "Escriba para buscar"
         },
@@ -72,8 +72,11 @@
       "slider_not_touched_error": "Mueva el control deslizante para indicar su respuesta."
     },
     "identity_verification": {
-      "cta": "Confirm",
-      "default_label": "Enter your date of birth to verify your identity"
+      "cta": "Confirmar",
+      "default_label": "Introduce tu fecha de nacimiento para verificar tu identidad",
+      "error_empty": "Por favor introduce una fecha de nacimiento",
+      "error_no_match": "La fecha de nacimiento no coincide con nuestros registros",
+      "error_failed": "Verificación fallida. Por favor inténtalo de nuevo."
     },
     "loading_error": "Se ha producido un error al cargar tus actividades.",
     "message": {
@@ -108,14 +111,26 @@
       "description": "Aún quedan algunas actividades por completar. Si cancelas la sesión, es posible que pierdas los datos que aún no has enviado.",
       "title": "¿Está seguro de que desea cancelar la sesión?"
     },
+    "expired_description": "Tu sesión ha caducado y ya no es accesible. Contacta con soporte si necesitas ayuda.",
     "expired_subtitle": "Su sesión ha caducado por inactividad.",
     "expired_title": "La sesión ha caducado",
+    "invalid_session_description": "Esta sesión no es válida o no se puede encontrar. Verifica tu enlace o contacta con soporte.",
+    "invalid_session_title": "Sesión no válida",
     "invalid_url": "URL no válida: la URL debe contener el parámetro `SessionId`.",
     "loading_error": "Algo interrumpió tu progreso. No te preocupes, tus respuestas anteriores están guardadas.",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
+    "network_error_description": "Estamos teniendo problemas para conectarnos a nuestros servidores. Verifica tu conexión a Internet e inténtalo de nuevo.",
+    "network_error_title": "Error de conexión de red",
+    "no_more_pending_activities": "No hay más actividades pendientes en este momento. Puedes cerrar esta página.",
+    "not_found_description": "No se pudo encontrar la sesión que buscas. Puede haber sido eliminada o el enlace es incorrecto.",
+    "not_found_title": "Sesión no encontrada",
     "redirecting_to_next_page": "Te redirigiré en un momento...",
+    "retry": "Reintentar",
+    "retrying": "Reintentando...",
     "session_canceled": "Se ha cancelado tu sesión.",
-    "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Vamos a intentarlo de nuevo"
+    "session_completed_or_expired": "Tu sesión ha sido completada o ha caducado.",
+    "session_id": "ID de sesión",
+    "try_again": "Vamos a intentarlo de nuevo",
+    "unauthorized_description": "No tienes permiso para acceder a esta sesión. Puede haber sido completada, caducada o cancelada.",
+    "unauthorized_title": "Acceso denegado"
   }
 }

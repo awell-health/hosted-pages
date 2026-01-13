@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { isEmpty } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { useCompleteExtensionActivity } from '../../../types'
 import {
   HostedSessionError,
@@ -19,6 +20,7 @@ type UseDobCheckHook = ({
 }
 
 export const useDobCheck: UseDobCheckHook = ({ pathway_id, activity_id }) => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const { isSubmitting, onSubmit: _onSubmit } = useCompleteExtensionActivity()
 
@@ -32,8 +34,7 @@ export const useDobCheck: UseDobCheckHook = ({ pathway_id, activity_id }) => {
   const onSubmit = useCallback(
     async (dob: string) => {
       if (isEmpty(dob)) {
-        // Prettify this later
-        alert('Please enter a date of birth')
+        alert(t('activities.identity_verification.error_empty'))
         return
       }
 
@@ -56,13 +57,13 @@ export const useDobCheck: UseDobCheckHook = ({ pathway_id, activity_id }) => {
         const jsonRes = await response.json()
 
         if (!jsonRes?.success) {
-          // Prettify this later
-          alert('No match')
+          alert(t('activities.identity_verification.error_no_match'))
           return
         }
 
         handleActivityCompletion({ activityId: activity_id })
       } catch (error) {
+        setLoading(false)
         const hostedSessionError = new HostedSessionError(
           'Failed to check date of birth',
           {
@@ -78,10 +79,10 @@ export const useDobCheck: UseDobCheckHook = ({ pathway_id, activity_id }) => {
           }
         )
         captureHostedSessionError(hostedSessionError)
-        throw error
+        alert(t('activities.identity_verification.error_failed'))
       }
     },
-    [pathway_id, activity_id, handleActivityCompletion]
+    [pathway_id, activity_id, handleActivityCompletion, t]
   )
 
   return {

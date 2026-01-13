@@ -8,7 +8,6 @@ import {
   captureHostedSessionError,
 } from '../src/utils/errors'
 import * as Sentry from '@sentry/nextjs'
-import { TrackingInput } from '../src/utils/extractTrackingParams'
 
 export type StartHostedActivitySessionSuccess = {
   sessionId: string
