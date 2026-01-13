@@ -52,11 +52,11 @@
       "question_required_error": "Deze vraag is verplicht.",
       "questions": {
         "select": {
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue",
+          "icd_10_catalogue_description": "Voor makkelijker browsen, open de ICD catalogus in een nieuw tabblad. Zodra je de code vindt die je nodig hebt, keer terug om deze hier in te voeren.",
+          "icd_10_catalogue_link": "Open ICD catalogus",
           "loading": "Laden...",
           "no_options": "Geen matches gevonden",
-          "search_icd_placeholder": "Start typing to search a medical condition",
+          "search_icd_placeholder": "Begin te typen om een medische aandoening te zoeken",
           "search_placeholder": "Zoek een optie",
           "type_to_search": "Typ om te zoeken"
         },
@@ -72,8 +72,8 @@
       "slider_not_touched_error": "Verplaats het bolletje om je antwoord aan te duiden."
     },
     "identity_verification": {
-      "cta": "Confirm",
-      "default_label": "Enter your date of birth to verify your identity"
+      "cta": "Bevestigen",
+      "default_label": "Voer je geboortedatum in om je identiteit te verifiëren"
     },
     "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
     "message": {
@@ -108,14 +108,26 @@
       "description": "Er zijn nog activiteiten voor jou. Als je de sessie sluit verlies je mogelijk ook alle data die nog niet verzonden is.",
       "title": "Ben je zeker dat je de sessie wil afsluiten?"
     },
+    "expired_description": "Je sessie is vervallen en is niet langer toegankelijk. Neem contact op met de ondersteuning als je hulp nodig hebt.",
     "expired_subtitle": "Je sessie is vervallen door inactiviteit.",
     "expired_title": "Sessie vervallen",
-    "invalid_url": "Ongeldige URL:Invalid URL: URL moet een `sessionId` bevatten.",
+    "invalid_session_description": "Deze sessie is niet geldig of kan niet worden gevonden. Controleer je link of neem contact op met de ondersteuning.",
+    "invalid_session_title": "Ongeldige sessie",
+    "invalid_url": "Ongeldige URL: URL moet een `sessionId` bevatten.",
     "loading_error": "Er ging iets mis. Geen zorgen, je eerdere antwoorden zijn opgeslagen.",
+    "network_error_description": "We hebben problemen met de verbinding naar onze servers. Controleer je internetverbinding en probeer het opnieuw.",
+    "network_error_title": "Netwerkverbindingsfout",
     "no_more_pending_activities": "Er zijn geen openstaande activiteiten. U kunt deze pagina sluiten.",
+    "not_found_description": "De sessie die je zoekt kan niet worden gevonden. Deze is mogelijk verwijderd of de link is onjuist.",
+    "not_found_title": "Sessie niet gevonden",
     "redirecting_to_next_page": "Je wordt meteen doorverwezen.",
+    "retry": "Opnieuw proberen",
+    "retrying": "Opnieuw proberen...",
     "session_canceled": "Je sessie werd geannuleerd.",
-    "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Opnieuw proberen"
+    "session_completed_or_expired": "Je sessie is voltooid of vervallen.",
+    "session_id": "Sessie-ID",
+    "try_again": "Opnieuw proberen",
+    "unauthorized_description": "Je hebt geen toestemming om toegang te krijgen tot deze sessie. Deze is mogelijk voltooid, vervallen of geannuleerd.",
+    "unauthorized_title": "Toegang geweigerd"
   }
 }

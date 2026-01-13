@@ -15,33 +15,33 @@
       "link_attachment": "Открыть ссылку",
       "no_files": "Вы ещё не загрузили ни один файл.",
       "single_file_upload_action": {
-        "cta_upload_file": "Upload file",
-        "file_uploaded": "You have successfully uploaded a file.",
-        "no_file_uploaded": "You have not uploaded a file yet.",
-        "subject_single_file_upload": "Upload file"
+        "cta_upload_file": "Загрузить файл",
+        "file_uploaded": "Вы успешно загрузили файл.",
+        "no_file_uploaded": "Вы ещё не загрузили файл.",
+        "subject_single_file_upload": "Загрузить файл"
       },
       "subject": "Загрузить файлы",
       "video_attachment": "Открыть видео"
     },
     "collect_medication": {
-      "add_medication_button": "Add medication",
-      "medication_dose": "Dose",
-      "medication_instructions": "Instructions",
-      "medication_name": "Name",
-      "submit_button": "Submit"
+      "add_medication_button": "Добавить лекарство",
+      "medication_dose": "Доза",
+      "medication_instructions": "Инструкции",
+      "medication_name": "Название",
+      "submit_button": "Подать"
     },
     "cta_done": "Готово",
     "docu_sign": {
-      "cta_sign_document": "Sign document",
-      "expired_sign_document": "Signing link has expired.",
-      "failed_sign_document": "Signing link has failed."
+      "cta_sign_document": "Подписать документ",
+      "expired_sign_document": "Срок действия ссылки для подписания истёк.",
+      "failed_sign_document": "Ссылка для подписания не удалась."
     },
     "form": {
       "cta_submit": "Подать",
       "date_cannot_be_in_the_future": "Дата не может быть в будущем.",
       "date_cannot_be_in_the_past": "Дата не может быть в прошлом.",
       "date_cannot_be_today": "Дата не может быть сегодняшней.",
-      "email_invalid_format": "Email is in invalid format.",
+      "email_invalid_format": "Формат адреса электронной почты неверный.",
       "form_has_errors": "Пожалуйста, исправьте ошибки в форме перед подачей",
       "invalid_phone_number": "Номер телефона недействительный.",
       "loading_error": "Во время загрузки формы что-то пошло не так.",
@@ -52,16 +52,16 @@
       "question_required_error": "Ответ на этот вопрос обязателен.",
       "questions": {
         "select": {
-          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
-          "icd_10_catalogue_link": "Open ICD catalogue",
-          "loading": "Loading...",
+          "icd_10_catalogue_description": "Для облегчения просмотра откройте каталог МКБ в новой вкладке. Как только вы найдёте нужный код, вернитесь, чтобы ввести его здесь.",
+          "icd_10_catalogue_link": "Открыть каталог МКБ",
+          "loading": "Загрузка...",
           "no_options": "Опции не найдены",
-          "search_icd_placeholder": "Start typing to search a medical condition",
+          "search_icd_placeholder": "Начните вводить текст для поиска медицинского состояния",
           "search_placeholder": "Поиск опции",
-          "type_to_search": "Type to search"
+          "type_to_search": "Введите для поиска"
         },
         "slider": {
-          "tooltip_guide": "Touch to indicate your answer"
+          "tooltip_guide": "Коснитесь, чтобы указать свой ответ"
         },
         "yes_no": {
           "no_answer": "Нет",
@@ -72,8 +72,8 @@
       "slider_not_touched_error": "Используйте ползунок, чтобы выбрать ответ."
     },
     "identity_verification": {
-      "cta": "Confirm",
-      "default_label": "Enter your date of birth to verify your identity"
+      "cta": "Подтвердить",
+      "default_label": "Введите дату рождения для подтверждения вашей личности"
     },
     "loading_error": "Во время загрузки действия что-то пошло не так.",
     "message": {
@@ -108,14 +108,26 @@
       "description": "Некоторые действия остались незавершенными. Если Вы закроете сессию, Вы можете потерять данные, которые Вы ещё не подали.",
       "title": "Вы уверены, что хотите закрыть сессию?"
     },
-    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_description": "Срок действия вашего сеанса истёк, и он больше недоступен. Пожалуйста, свяжитесь со службой поддержки, если вам нужна помощь.",
+    "expired_subtitle": "Срок действия вашего сеанса истёк из-за неактивности.",
     "expired_title": "Срок действия сеанса истек",
-    "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId”.",
+    "invalid_session_description": "Этот сеанс недействителен или не может быть найден. Пожалуйста, проверьте вашу ссылку или свяжитесь со службой поддержки.",
+    "invalid_session_title": "Недействительный сеанс",
+    "invalid_url": "Неверный URL: URL должен содержать параметр „sessionId",
     "loading_error": "Что-то прервало ваш прогресс. Не волнуйтесь, ваши предыдущие ответы сохранены.",
-    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
+    "network_error_description": "У нас возникли проблемы с подключением к нашим серверам. Проверьте подключение к Интернету и повторите попытку.",
+    "network_error_title": "Ошибка сетевого подключения",
+    "no_more_pending_activities": "На данный момент для вас больше нет ожидающих действий. Вы можете закрыть эту страницу.",
+    "not_found_description": "Сеанс, который вы ищете, не найден. Возможно, он был удалён или ссылка неверна.",
+    "not_found_title": "Сеанс не найден",
     "redirecting_to_next_page": "Через несколько секунд мы автоматически перенаправим Вас на новый адрес. ",
+    "retry": "Повторить",
+    "retrying": "Повторная попытка...",
     "session_canceled": "Ваша сессия истекла.",
-    "session_completed_or_expired": "Your session has been completed or expired.",
-    "try_again": "Давайте попробуем ещё раз"
+    "session_completed_or_expired": "Ваш сеанс был завершён или истёк.",
+    "session_id": "Идентификатор сеанса",
+    "try_again": "Давайте попробуем ещё раз",
+    "unauthorized_description": "У вас нет разрешения на доступ к этому сеансу. Он может быть завершён, истёк или отменён.",
+    "unauthorized_title": "Доступ запрещён"
   }
 }
