@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Confirmer",
-      "default_label": "Entrez votre date de naissance pour vérifier votre identité"
+      "default_label": "Entrez votre date de naissance pour vérifier votre identité",
+      "error_empty": "Veuillez entrer une date de naissance",
+      "error_no_match": "La date de naissance ne correspond pas à nos dossiers",
+      "error_failed": "Échec de la vérification. Veuillez réessayer."
     },
     "loading_error": "Quelque chose s'est mal passé lors du chargement des activités.",
     "message": {

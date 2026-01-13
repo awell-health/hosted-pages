@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Bevestigen",
-      "default_label": "Voer je geboortedatum in om je identiteit te verifiëren"
+      "default_label": "Voer je geboortedatum in om je identiteit te verifiëren",
+      "error_empty": "Voer een geboortedatum in",
+      "error_no_match": "Geboortedatum komt niet overeen met onze gegevens",
+      "error_failed": "Verificatie mislukt. Probeer het opnieuw."
     },
     "loading_error": "Er is iets misgelopen bij het ophalen van de volgende aciviteit.",
     "message": {

@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Kinnita",
-      "default_label": "Sisesta oma sünnikuupäev, et tõendada oma isikut"
+      "default_label": "Sisesta oma sünnikuupäev, et tõendada oma isikut",
+      "error_empty": "Palun sisesta sünnikuupäev",
+      "error_no_match": "Sünnikuupäev ei vasta meie andmetele",
+      "error_failed": "Kontrollimine ebaõnnestus. Palun proovi uuesti."
     },
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "message": {

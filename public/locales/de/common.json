@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Bestätigen",
-      "default_label": "Geben Sie Ihr Geburtsdatum ein, um Ihre Identität zu verifizieren"
+      "default_label": "Geben Sie Ihr Geburtsdatum ein, um Ihre Identität zu verifizieren",
+      "error_empty": "Bitte geben Sie ein Geburtsdatum ein",
+      "error_no_match": "Geburtsdatum stimmt nicht mit unseren Aufzeichnungen überein",
+      "error_failed": "Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut."
     },
     "loading_error": "Beim Laden Ihrer Aktivitäten ist etwas schief gelaufen.",
     "message": {

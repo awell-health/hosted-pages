@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Potwierdź",
-      "default_label": "Wprowadź swoją datę urodzenia, aby zweryfikować swoją tożsamość"
+      "default_label": "Wprowadź swoją datę urodzenia, aby zweryfikować swoją tożsamość",
+      "error_empty": "Proszę podać datę urodzenia",
+      "error_no_match": "Data urodzenia nie pasuje do naszych zapisów",
+      "error_failed": "Weryfikacja nie powiodła się. Spróbuj ponownie."
     },
     "loading_error": "Coś poszło nie tak podczas ładowania twoich działań.",
     "message": {

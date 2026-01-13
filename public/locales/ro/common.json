@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Confirmați",
-      "default_label": "Introduceți data nașterii pentru a vă verifica identitatea"
+      "default_label": "Introduceți data nașterii pentru a vă verifica identitatea",
+      "error_empty": "Vă rugăm să introduceți o dată a nașterii",
+      "error_no_match": "Data nașterii nu corespunde cu înregistrările noastre",
+      "error_failed": "Verificarea a eșuat. Vă rugăm să încercați din nou."
     },
     "loading_error": "Ceva nu a mers bine în timp ce încărcam activitățile tale.",
     "message": {

@@ -73,7 +73,10 @@
     },
     "identity_verification": {
       "cta": "Confirmar",
-      "default_label": "Introduce tu fecha de nacimiento para verificar tu identidad"
+      "default_label": "Introduce tu fecha de nacimiento para verificar tu identidad",
+      "error_empty": "Por favor introduce una fecha de nacimiento",
+      "error_no_match": "La fecha de nacimiento no coincide con nuestros registros",
+      "error_failed": "Verificación fallida. Por favor inténtalo de nuevo."
     },
     "loading_error": "Se ha producido un error al cargar tus actividades.",
     "message": {
