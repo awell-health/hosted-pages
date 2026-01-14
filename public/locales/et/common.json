@@ -2,7 +2,7 @@
   "activities": {
     "activity_not_supported": "Tegevuse tüüpi ei toetata.",
     "checklist": {
-      "cta_submit": "Esita vastused",
+      "cta_submit": "Jätka",
       "loading_error": "Midagi läks nimekirja laadimisel valesti.",
       "saving_error": "Nimekirja esitamine ebaõnnestus."
     },
@@ -61,7 +61,7 @@
           "type_to_search": "Kirjuta otsimiseks"
         },
         "slider": {
-          "tooltip_guide": "Puuduta, et näidata oma vastust"
+          "tooltip_guide": "Vali sobiv vastus"
         },
         "yes_no": {
           "no_answer": "Ei",
@@ -75,8 +75,8 @@
       "cta": "Kinnita",
       "default_label": "Sisesta oma sünnikuupäev, et tõendada oma isikut",
       "error_empty": "Palun sisesta sünnikuupäev",
-      "error_no_match": "Sünnikuupäev ei vasta meie andmetele",
-      "error_failed": "Kontrollimine ebaõnnestus. Palun proovi uuesti."
+      "error_failed": "Kontrollimine ebaõnnestus. Palun proovi uuesti.",
+      "error_no_match": "Sünnikuupäev ei vasta meie andmetele"
     },
     "loading_error": "Midagi läks tegevuste laadimisel valesti.",
     "message": {
@@ -116,7 +116,7 @@
     "expired_title": "Seanss lõppes",
     "invalid_session_description": "See seanss ei kehti või seda ei leitud. Palun kontrollige oma linki või võtke tugiteenusega ühendust.",
     "invalid_session_title": "Kehtetu seanss",
-    "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId",
+    "invalid_url": "Kehtetu URL: URL peab sisaldama parameetrit „sessionId”.",
     "loading_error": "Midagi katkestas teie edenemise. Ärge muretsege, teie varasemad vastused on salvestatud.",
     "network_error_description": "Meil on raskusi meie serveritega ühenduse loomisel. Palun kontrollige oma internetiühendust ja proovige uuesti.",
     "network_error_title": "Võrguühenduse viga",
@@ -129,7 +129,7 @@
     "session_canceled": "Teie sessioon on katkestatud.",
     "session_completed_or_expired": "Teie seanss on lõpetatud või aegunud.",
     "session_id": "Seansi ID",
-    "try_again": "Proovime uuesti",
+    "try_again": "Proovi uuesti",
     "unauthorized_description": "Teil puudub õigus sellele seansile juurde pääseda. See võib olla lõpetatud, aegunud või tühistatud.",
     "unauthorized_title": "Juurdepääs keelatud"
   }
