@@ -64,8 +64,8 @@
           "tooltip_guide": "Dotknij, aby wskazać odpowiedź"
         },
         "yes_no": {
-          "no_answer": "Nie",
-          "yes_answer": "Tak"
+          "no_answer": "No",
+          "yes_answer": "Yes"
         }
       },
       "saving_error": "Złożenie formularza nie powiodło się.",
@@ -75,8 +75,8 @@
       "cta": "Potwierdź",
       "default_label": "Wprowadź swoją datę urodzenia, aby zweryfikować swoją tożsamość",
       "error_empty": "Proszę podać datę urodzenia",
-      "error_no_match": "Data urodzenia nie pasuje do naszych zapisów",
-      "error_failed": "Weryfikacja nie powiodła się. Spróbuj ponownie."
+      "error_failed": "Weryfikacja nie powiodła się. Spróbuj ponownie.",
+      "error_no_match": "Data urodzenia nie pasuje do naszych zapisów"
     },
     "loading_error": "Coś poszło nie tak podczas ładowania twoich działań.",
     "message": {
@@ -117,7 +117,7 @@
     "invalid_session_description": "Ta sesja jest nieprawidłowa lub nie można jej znaleźć. Sprawdź swój link lub skontaktuj się z pomocą techniczną.",
     "invalid_session_title": "Nieprawidłowa sesja",
     "invalid_url": "Nieprawidłowy adres URL: adres URL musi zawierać parametr `sessionId`.",
-    "loading_error": "Coś przerwało Twój postęp. Nie martw się, Twoje poprzednie odpowiedzi zostały zapisane.",
+    "loading_error": "Coś poszło nie tak podczas ładowania listy.",
     "network_error_description": "Mamy problem z połączeniem z naszymi serwerami. Sprawdź swoje połączenie internetowe i spróbuj ponownie.",
     "network_error_title": "Błąd połączenia sieciowego",
     "no_more_pending_activities": "W tej chwili nie ma już żadnych oczekujących zadań. Możesz zamknąć tę stronę.",
@@ -129,7 +129,7 @@
     "session_canceled": "Twoja sesja została odwołana.",
     "session_completed_or_expired": "Twoja sesja została zakończona lub wygasła.",
     "session_id": "Identyfikator sesji",
-    "try_again": "Spróbujmy jeszcze raz",
+    "try_again": "Spróbuj ponownie",
     "unauthorized_description": "Nie masz uprawnień dostępu do tej sesji. Mogła zostać zakończona, wygasnąć lub zostać anulowana.",
     "unauthorized_title": "Odmowa dostępu"
   }
