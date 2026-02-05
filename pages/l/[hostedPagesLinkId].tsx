@@ -46,6 +46,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     hostedPagesLinkId: query.hostedPagesLinkId as string,
     track_id: query.track_id as string | undefined,
     activity_id: query.activity_id as string | undefined,
+    pollingTimeout: query.pollingTimeout as string | undefined,
     ...(tracking && { tracking }),
   } as StartHostedActivitySessionParams
 
