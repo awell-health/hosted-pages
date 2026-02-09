@@ -18,8 +18,26 @@ import { Activity, ActivityStatus } from '../types'
 import { ActivityContext, ActivityContextInterface } from './ActivityContext'
 
 const POLLING_INTERVAL = 5000 // 5 seconds
-const POLLING_TIMEOUT = 30000 // 30 seconds
-const AGENT_ACTIVITY_POLLING_TIMEOUT = 300000 // 5 minutes
+const DEFAULT_POLLING_TIMEOUT = 30000 // 30 seconds
+const MAX_POLLING_TIMEOUT = 300000 // 5 minutes (maximum allowed override, also used for agent activities)
+
+/**
+ * Parse and validate the pollingTimeout query parameter.
+ * Returns a value between DEFAULT_POLLING_TIMEOUT and MAX_POLLING_TIMEOUT.
+ */
+const getPollingTimeout = (pollingTimeoutParam: string | undefined): number => {
+  if (!pollingTimeoutParam) {
+    return DEFAULT_POLLING_TIMEOUT
+  }
+
+  const parsed = parseInt(pollingTimeoutParam, 10)
+  if (isNaN(parsed) || parsed <= 0) {
+    return DEFAULT_POLLING_TIMEOUT
+  }
+
+  // Clamp to maximum allowed value
+  return Math.min(parsed, MAX_POLLING_TIMEOUT)
+}
 
 interface ActivityProviderProps {
   children?: React.ReactNode
@@ -39,6 +57,11 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   const [currentActivity, setCurrentActivity] = useState<Activity>()
   const [state, setState] =
     useState<ActivityContextInterface['state']>('polling')
+
+  // Get polling timeout from query parameter (supports per-session override for demos)
+  const pollingTimeout = getPollingTimeout(
+    router.query.pollingTimeout as string | undefined
+  )
   const {
     activities,
     loading,
@@ -106,24 +129,25 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         startPolling(POLLING_INTERVAL)
         const timer = setTimeout(() => {
           logger.info(
-            `No active activity found after ${POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            `No active activity found after ${pollingTimeout}ms, setting state to no-active-activity`,
             LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
             {
               currentActivity,
               activities,
+              pollingTimeout,
             }
           )
           setState('no-active-activity')
-        }, POLLING_TIMEOUT)
+        }, pollingTimeout)
         return () => {
           clearTimeout(timer)
         }
       }
       case 'polling-extended': {
-        startPolling(AGENT_ACTIVITY_POLLING_TIMEOUT)
+        startPolling(MAX_POLLING_TIMEOUT)
         const timer = setTimeout(() => {
           logger.info(
-            `No active activity found after ${AGENT_ACTIVITY_POLLING_TIMEOUT}ms, setting state to no-active-activity`,
+            `No active activity found after ${MAX_POLLING_TIMEOUT}ms, setting state to no-active-activity`,
             LogEvent.ACTIVITY_NO_ACTIVE_FOUND,
             {
               currentActivity,
@@ -131,7 +155,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
             }
           )
           setState('no-active-activity')
-        }, AGENT_ACTIVITY_POLLING_TIMEOUT)
+        }, MAX_POLLING_TIMEOUT)
         return () => {
           clearTimeout(timer)
         }
@@ -145,7 +169,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         break
       }
     }
-  }, [state])
+  }, [state, pollingTimeout])
 
   useEffect(() => {
     logger.info(

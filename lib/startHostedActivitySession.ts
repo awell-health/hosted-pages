@@ -31,7 +31,7 @@ export type StartHostedActivitySessionResult =
 export async function startHostedActivitySession(
   params: StartHostedActivitySessionParams
 ): Promise<StartHostedActivitySessionResult> {
-  const { hostedPagesLinkId, track_id, activity_id } = params
+  const { hostedPagesLinkId, track_id, activity_id, pollingTimeout } = params
 
   try {
     const token = jwt.sign(
@@ -174,6 +174,9 @@ export async function startHostedActivitySession(
       additionalParams += `&activity_id=${activity_id}`
     } else if (!isNil(track_id)) {
       additionalParams += `&track_id=${track_id}`
+    }
+    if (!isNil(pollingTimeout)) {
+      additionalParams += `&pollingTimeout=${pollingTimeout}`
     }
     const sessionUrl = `${session_url}${additionalParams}`
 
