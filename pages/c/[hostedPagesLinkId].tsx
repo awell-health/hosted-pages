@@ -46,6 +46,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     patient_identifier: query.patient_identifier as string | undefined,
     track_id: query.track_id as string | undefined,
     activity_id: query.activity_id as string | undefined,
+    pollingTimeout: query.pollingTimeout as string | undefined,
     ...(tracking && { tracking }),
   }
 

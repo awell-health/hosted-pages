@@ -42,6 +42,7 @@ export async function startHostedPathwaySession(params: {
   track_id?: string
   activity_id?: string
   tracking?: TrackingInput
+  pollingTimeout?: string
 }): Promise<StartHostedPathwaySessionResult> {
   const {
     hostedPagesLinkId,
@@ -49,6 +50,7 @@ export async function startHostedPathwaySession(params: {
     track_id,
     activity_id,
     tracking,
+    pollingTimeout,
   } = params
 
   try {
@@ -201,6 +203,9 @@ export async function startHostedPathwaySession(params: {
       additionalParams += `&activity_id=${activity_id}`
     } else if (!isNil(track_id)) {
       additionalParams += `&track_id=${track_id}`
+    }
+    if (!isNil(pollingTimeout)) {
+      additionalParams += `&pollingTimeout=${pollingTimeout}`
     }
 
     const sessionUrl = `${session_url}${additionalParams}`

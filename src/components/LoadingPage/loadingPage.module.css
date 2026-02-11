@@ -23,16 +23,6 @@
   animation: wave 1.2s infinite;
 }
 
-/* Hide the logo box on screens smaller than 336px */
-@media (max-width: 399px) {
-  .logo_shadow {
-     display: none;
-  }
-  .logo_box {
-     display: none;
-  }
-}
-
 .loading_indicators {
   display: flex;
   flex-direction: column;

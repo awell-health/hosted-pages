@@ -75,8 +75,8 @@
       "cta": "Confirmar",
       "default_label": "Introduce tu fecha de nacimiento para verificar tu identidad",
       "error_empty": "Por favor introduce una fecha de nacimiento",
-      "error_no_match": "La fecha de nacimiento no coincide con nuestros registros",
-      "error_failed": "Verificación fallida. Por favor inténtalo de nuevo."
+      "error_failed": "Verificación fallida. Por favor inténtalo de nuevo.",
+      "error_no_match": "La fecha de nacimiento no coincide con nuestros registros"
     },
     "loading_error": "Se ha producido un error al cargar tus actividades.",
     "message": {
@@ -129,7 +129,7 @@
     "session_canceled": "Se ha cancelado tu sesión.",
     "session_completed_or_expired": "Tu sesión ha sido completada o ha caducado.",
     "session_id": "ID de sesión",
-    "try_again": "Vamos a intentarlo de nuevo",
+    "try_again": "Intentar de nuevo",
     "unauthorized_description": "No tienes permiso para acceder a esta sesión. Puede haber sido completada, caducada o cancelada.",
     "unauthorized_title": "Acceso denegado"
   }
