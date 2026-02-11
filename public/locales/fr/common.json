@@ -75,8 +75,8 @@
       "cta": "Confirmer",
       "default_label": "Entrez votre date de naissance pour vérifier votre identité",
       "error_empty": "Veuillez entrer une date de naissance",
-      "error_no_match": "La date de naissance ne correspond pas à nos dossiers",
-      "error_failed": "Échec de la vérification. Veuillez réessayer."
+      "error_failed": "Échec de la vérification. Veuillez réessayer.",
+      "error_no_match": "La date de naissance ne correspond pas à nos dossiers"
     },
     "loading_error": "Quelque chose s'est mal passé lors du chargement des activités.",
     "message": {
@@ -117,10 +117,10 @@
     "invalid_session_description": "Cette session n'est pas valide ou ne peut pas être trouvée. Veuillez vérifier votre lien ou contacter le support.",
     "invalid_session_title": "Session invalide",
     "invalid_url": "URL invalide : l'URL doit contenir le paramètre `sessionId`.",
-    "loading_error": "Quelque chose a interrompu votre progression. Ne vous inquiétez pas, vos réponses précédentes sont enregistrées.",
+    "loading_error": "Quelque chose s'est mal passé lors du chargement de la session.",
     "network_error_description": "Nous avons des difficultés à nous connecter à nos serveurs. Veuillez vérifier votre connexion Internet et réessayer.",
     "network_error_title": "Erreur de connexion réseau",
-    "no_more_pending_activities": "Tout est en ordre. Il n'y a plus d activités en attente. Vous pouvez fermer cette page.",
+    "no_more_pending_activities": "Tout est en ordre. Il n’y a plus d activités en attente. Vous pouvez fermer cette page.",
     "not_found_description": "La session que vous recherchez est introuvable. Elle a peut-être été supprimée ou le lien est incorrect.",
     "not_found_title": "Session introuvable",
     "redirecting_to_next_page": "Redirection dans un instant.",
@@ -129,7 +129,7 @@
     "session_canceled": "Votre session a été annulée.",
     "session_completed_or_expired": "Votre session a été terminée ou a expiré.",
     "session_id": "ID de session",
-    "try_again": "Réessayons",
+    "try_again": "Réessayer",
     "unauthorized_description": "Vous n'avez pas la permission d'accéder à cette session. Elle a peut-être été terminée, expirée ou annulée.",
     "unauthorized_title": "Accès refusé"
   }
