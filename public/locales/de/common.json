@@ -24,11 +24,11 @@
       "video_attachment": "Video öffnen"
     },
     "collect_medication": {
-      "add_medication_button": "Medikament hinzufügen",
-      "medication_dose": "Dosis",
-      "medication_instructions": "Anweisungen",
+      "add_medication_button": "Add medication",
+      "medication_dose": "Dose",
+      "medication_instructions": "Instructions",
       "medication_name": "Name",
-      "submit_button": "Absenden"
+      "submit_button": "Submit"
     },
     "cta_done": "Fertig",
     "docu_sign": {
@@ -38,25 +38,25 @@
     },
     "form": {
       "cta_submit": "Absenden",
-      "date_cannot_be_in_the_future": "Das Datum darf nicht in der Zukunft liegen.",
-      "date_cannot_be_in_the_past": "Das Datum darf nicht in der Vergangenheit liegen.",
-      "date_cannot_be_today": "Das Datum darf nicht heute sein.",
-      "email_invalid_format": "E-Mail hat ein ungültiges Format.",
+      "date_cannot_be_in_the_future": "Date cannot be in the future.",
+      "date_cannot_be_in_the_past": "Date cannot be in the past.",
+      "date_cannot_be_today": "Date cannot be today.",
+      "email_invalid_format": "Email is in invalid format.",
       "form_has_errors": "Bitte korrigieren Sie die Fehler im Formular vor dem Absenden",
       "invalid_phone_number": "Telefonnummer ist ungültig",
       "loading_error": "Beim Laden des Formulars ist etwas schief gelaufen.",
       "next_question_label": "Weiter",
-      "not_a_number": "Bitte geben Sie eine Zahl ein.",
-      "number_out_of_range": "Die Zahl liegt außerhalb des Bereichs.",
+      "not_a_number": "Please enter a number.",
+      "number_out_of_range": "Number is out of range.",
       "previous_question_label": "Vorheriger",
       "question_required_error": "Diese Frage ist erforderlich.",
       "questions": {
         "select": {
-          "icd_10_catalogue_description": "Für eine einfachere Navigation öffnen Sie den ICD-Katalog in einem neuen Tab. Sobald Sie den benötigten Code gefunden haben, kehren Sie zurück, um ihn hier einzugeben.",
-          "icd_10_catalogue_link": "ICD-Katalog öffnen",
-          "loading": "Lädt...",
+          "icd_10_catalogue_description": "For easier browsing, open the ICD catalogue in a new tab. Once you find the code you need, return to enter it here.",
+          "icd_10_catalogue_link": "Open ICD catalogue",
+          "loading": "Loading...",
           "no_options": "Keine Optionen gefunden",
-          "search_icd_placeholder": "Beginnen Sie mit der Eingabe, um nach einer medizinischen Erkrankung zu suchen",
+          "search_icd_placeholder": "Start typing to search a medical condition",
           "search_placeholder": "Suche nach einer Option",
           "type_to_search": "Beginnen Sie mit der Eingabe zur Suche"
         },
@@ -72,11 +72,11 @@
       "slider_not_touched_error": "Bitte bewegen Sie den Schieberegler, um Ihre Antwort anzuzeigen."
     },
     "identity_verification": {
-      "cta": "Bestätigen",
-      "default_label": "Geben Sie Ihr Geburtsdatum ein, um Ihre Identität zu verifizieren",
-      "error_empty": "Bitte geben Sie ein Geburtsdatum ein",
-      "error_no_match": "Geburtsdatum stimmt nicht mit unseren Aufzeichnungen überein",
-      "error_failed": "Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut."
+      "cta": "Confirm",
+      "default_label": "Enter your date of birth to verify your identity",
+      "error_empty": "Please enter a date of birth",
+      "error_failed": "Verification failed. Please try again.",
+      "error_no_match": "Date of birth does not match our records"
     },
     "loading_error": "Beim Laden Ihrer Aktivitäten ist etwas schief gelaufen.",
     "message": {
@@ -103,34 +103,34 @@
     "title": "Awell Aktivitäten"
   },
   "session": {
-    "all_activities_completed_subtitle": "Sie können diese Seite jetzt schließen.",
-    "all_activities_completed_title": "Alles erledigt!",
+    "all_activities_completed_subtitle": "You can close this page now.",
+    "all_activities_completed_title": "You're all done!",
     "close_modal": {
       "cancel_button_label": "Nein, weiter",
       "confirm_button_label": "Ja, Sitzung stornieren",
       "description": "Es gibt noch einige Aktivitäten, die Sie abschließen müssen. Wenn Sie Ihre Sitzung stornieren, verlieren Sie möglicherweise Daten, die Sie noch nicht übermittelt haben.",
       "title": "Bist du sicher, dass du deine Sitzung stornieren möchtest?"
     },
-    "expired_description": "Ihre Sitzung ist abgelaufen und nicht mehr zugänglich. Bitte kontaktieren Sie den Support, wenn Sie Hilfe benötigen.",
-    "expired_subtitle": "Ihre Sitzung ist aufgrund von Inaktivität abgelaufen.",
-    "expired_title": "Sitzung abgelaufen",
-    "invalid_session_description": "Diese Sitzung ist ungültig oder kann nicht gefunden werden. Bitte überprüfen Sie Ihren Link oder kontaktieren Sie den Support.",
-    "invalid_session_title": "Ungültige Sitzung",
+    "expired_description": "Your session has expired and is no longer accessible. Please contact support if you need assistance.",
+    "expired_subtitle": "Your session has expired due to inactivity.",
+    "expired_title": "Session expired",
+    "invalid_session_description": "This session is not valid or cannot be found. Please check your link or contact support.",
+    "invalid_session_title": "Invalid session",
     "invalid_url": "Ungültige URL: Die URL muss den Parameter `sessionID` enthalten.",
-    "loading_error": "Etwas hat Ihren Fortschritt unterbrochen. Keine Sorge, Ihre bisherigen Antworten wurden gespeichert.",
-    "network_error_description": "Wir haben Probleme, eine Verbindung zu unseren Servern herzustellen. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
-    "network_error_title": "Netzwerkverbindungsfehler",
-    "no_more_pending_activities": "Es gibt derzeit keine weiteren ausstehenden Aktivitäten für Sie. Sie können diese Seite schließen.",
-    "not_found_description": "Die gesuchte Sitzung konnte nicht gefunden werden. Sie wurde möglicherweise entfernt oder der Link ist falsch.",
-    "not_found_title": "Sitzung nicht gefunden",
+    "loading_error": "Beim Laden Ihrer Sitzung ist ein Fehler aufgetreten.",
+    "network_error_description": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
+    "network_error_title": "Network connection error",
+    "no_more_pending_activities": "There are no more pending activities for you at this time. You can close this page.",
+    "not_found_description": "The session you're looking for could not be found. It may have been removed or the link is incorrect.",
+    "not_found_title": "Session not found",
     "redirecting_to_next_page": "Ich werde dich gleich umleiten...",
-    "retry": "Erneut versuchen",
-    "retrying": "Erneuter Versuch...",
+    "retry": "Retry",
+    "retrying": "Retrying...",
     "session_canceled": "Ihre Sitzung wurde abgesagt.",
-    "session_completed_or_expired": "Ihre Sitzung wurde abgeschlossen oder ist abgelaufen.",
-    "session_id": "Sitzungs-ID",
-    "try_again": "Nochmal versuchen",
-    "unauthorized_description": "Sie haben keine Berechtigung, auf diese Sitzung zuzugreifen. Sie wurde möglicherweise abgeschlossen, ist abgelaufen oder wurde abgebrochen.",
-    "unauthorized_title": "Zugriff verweigert"
+    "session_completed_or_expired": "Your session has been completed or expired.",
+    "session_id": "Session ID",
+    "try_again": "Erneut versuchen",
+    "unauthorized_description": "You don't have permission to access this session. It may have been completed, expired, or cancelled.",
+    "unauthorized_title": "Access denied"
   }
 }

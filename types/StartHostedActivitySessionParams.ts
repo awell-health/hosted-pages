@@ -5,4 +5,5 @@ export type StartHostedActivitySessionParams = {
   track_id?: string
   activity_id?: string
   tracking?: TrackingInput
+  pollingTimeout?: string
 }
