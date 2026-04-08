@@ -41,9 +41,12 @@ export const createClient = ({
     attempts: {
       max: 3,
       retryIf: (error) => {
-        // Only retry on network errors, not GraphQL errors
-        // Network errors indicate connectivity issues that might be transient
-        return !!error && !error.result
+        if (!error) return false
+        // Retry on network connectivity errors (no response received)
+        if (!error.result) return true
+        // Retry on server errors (5xx) which are often transient
+        if (error.statusCode >= 500) return true
+        return false
       },
     },
   })
@@ -163,8 +166,8 @@ export const createClient = ({
   const defaultLink = ApolloLink.from([
     authenticationLink,
     ...extraLinks,
-    retryLink,
     errorHandlingLink,
+    retryLink,
     httpLink,
   ])
 
