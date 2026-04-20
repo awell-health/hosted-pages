@@ -30,7 +30,7 @@
     "he": "^1.2.0",
     "hellosign-embedded": "^2.10.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.21",
+    "lodash": "4.18.1",
     "next": "^14.2.35",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^11.3.0",
@@ -73,5 +73,8 @@
     "prettier": "^2.7.1",
     "typescript": "4.7.4"
   },
-  "packageManager": "yarn@1.22.22+sha256.c17d3797fb9a9115bf375e31bfd30058cac6bc9c3b8807a3d8cb2094794b51ca"
+  "packageManager": "yarn@1.22.22+sha256.c17d3797fb9a9115bf375e31bfd30058cac6bc9c3b8807a3d8cb2094794b51ca",
+  "resolutions": {
+    "lodash": "4.18.1"
+  }
 }
