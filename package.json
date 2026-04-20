@@ -1,6 +1,6 @@
 {
   "name": "hosted-pages",
-  "version": "0.0.84",
+  "version": "0.0.85",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@apollo/client": "^3.8.6",
     "@awell-health/sol-scheduling": "0.5.0",
-    "@awell-health/ui-library": "0.1.134",
+    "@awell-health/ui-library": "0.1.139",
     "@formsort/react-embed": "^3.1.1",
     "@google-cloud/logging": "^11.0.0",
     "@localazy/cli": "^1.7.5",
