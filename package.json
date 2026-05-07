@@ -76,6 +76,9 @@
   "packageManager": "yarn@1.22.22+sha256.c17d3797fb9a9115bf375e31bfd30058cac6bc9c3b8807a3d8cb2094794b51ca",
   "resolutions": {
     "lodash": "4.18.1",
-    "axios": "1.15.2"
+    "axios": "1.15.2",
+    "@types/request/form-data": "2.5.4",
+    "extract-files/form-data": "3.0.4",
+    "jsdom/form-data": "4.0.4"
   }
 }
