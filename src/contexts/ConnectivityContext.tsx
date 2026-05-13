@@ -10,14 +10,18 @@ import * as Sentry from '@sentry/nextjs'
 
 import { LogEvent } from '../utils/logging'
 
+type PollingMode = 'visible' | 'hidden'
+
+type PollingTask = {
+  start: (_mode: PollingMode) => void
+  stop: () => void
+}
+
 type Connectivity = {
   isOnline: boolean
   isVisible: boolean
   isConnected: boolean
-  registerPollingTask: (task: {
-    start: () => void
-    stop: () => void
-  }) => () => void
+  registerPollingTask: (_task: PollingTask) => () => void
 }
 
 const ConnectivityContext = createContext<Connectivity | undefined>(undefined)
@@ -31,14 +35,16 @@ export const ConnectivityProvider = ({
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const registerPollingTask = useCallback(
-    (task: { start: () => void; stop: () => void }) => {
+    (task: PollingTask) => {
+      const pollingMode: PollingMode = isVisible ? 'visible' : 'hidden'
       Sentry.logger?.info('Polling task registered', {
         event_type: LogEvent.SESSION_POLLING_TASK_REGISTERED,
         timestamp: new Date().toISOString(),
         isOnline,
         isVisible,
+        pollingMode,
       })
-      if (isOnline && isVisible) task.start()
+      if (isOnline) task.start(pollingMode)
       return () => {
         try {
           task.stop()
@@ -126,7 +132,7 @@ export const ConnectivityProvider = ({
   }, [isOnline])
 
   const value = useMemo<Connectivity>(() => {
-    const isConnected = isOnline && isVisible
+    const isConnected = isOnline
     return { isOnline, isVisible, isConnected, registerPollingTask }
   }, [isOnline, isVisible, registerPollingTask])
 
