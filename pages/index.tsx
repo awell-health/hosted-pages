@@ -73,13 +73,50 @@ const Home: NextPageWithLayout = () => {
     useState(false)
   const [showInvalidSession, setShowInvalidSession] = useState(false)
 
+  // Keep refs to the latest Apollo polling controls so the registration effect
+  // does not have to re-run (and thereby tear down the polling task) when
+  // Apollo recreates the underlying ObservableQuery and rebinds these methods.
+  const startPollingRef = useRef(startPolling)
+  const stopPollingRef = useRef(stopPolling)
+  useEffect(() => {
+    startPollingRef.current = startPolling
+    stopPollingRef.current = stopPolling
+  })
+
   // Register hosted session polling with connectivity so it starts when connected and stops when offline/hidden
   useEffect(() => {
-    return registerPollingTask({
-      start: () => startPolling(2000),
-      stop: () => stopPolling(),
+    Sentry.logger?.info('Session polling effect ran', {
+      category: 'session_polling',
+      event_type: LogEvent.SESSION_POLLING_EFFECT_RAN,
+      sessionId: router.query.sessionId,
     })
-  }, [registerPollingTask, startPolling, stopPolling])
+
+    const cleanup = registerPollingTask({
+      start: () => {
+        Sentry.logger?.info('Session startPolling called', {
+          category: 'session_polling',
+          event_type: LogEvent.SESSION_START_POLLING,
+        })
+        startPollingRef.current(2000)
+      },
+      stop: () => {
+        Sentry.logger?.info('Session stopPolling called', {
+          category: 'session_polling',
+          event_type: LogEvent.SESSION_STOP_POLLING,
+        })
+        stopPollingRef.current()
+      },
+    })
+
+    return () => {
+      Sentry.logger?.info('Session polling effect cleanup', {
+        category: 'session_polling',
+        event_type: LogEvent.SESSION_POLLING_EFFECT_CLEANUP,
+        sessionId: router.query.sessionId,
+      })
+      cleanup()
+    }
+  }, [registerPollingTask, router.query.sessionId])
 
   const handleNetworkErrorRetry = useCallback(async () => {
     try {
