@@ -4,10 +4,11 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react'
 import * as Sentry from '@sentry/nextjs'
+
+import { LogEvent } from '../utils/logging'
 
 type Connectivity = {
   isOnline: boolean
@@ -28,31 +29,60 @@ export const ConnectivityProvider = ({
 }) => {
   const [isOnline, setIsOnline] = useState<boolean>(true)
   const [isVisible, setIsVisible] = useState<boolean>(true)
-  const pollingTasksRef = useRef(
-    new Set<{ start: () => void; stop: () => void }>()
-  )
 
   const registerPollingTask = useCallback(
     (task: { start: () => void; stop: () => void }) => {
-      pollingTasksRef.current.add(task)
-      // If currently connected, start immediately
+      Sentry.logger?.info('Polling task registered', {
+        event_type: LogEvent.SESSION_POLLING_TASK_REGISTERED,
+        timestamp: new Date().toISOString(),
+        isOnline,
+        isVisible,
+      })
       if (isOnline && isVisible) task.start()
       return () => {
         try {
           task.stop()
         } finally {
-          pollingTasksRef.current.delete(task)
+          Sentry.logger?.info('Polling task unregistered', {
+            event_type: LogEvent.SESSION_POLLING_TASK_UNREGISTERED,
+            timestamp: new Date().toISOString(),
+            isOnline,
+            isVisible,
+          })
         }
       }
     },
     [isOnline, isVisible]
   )
 
+  // Log provider mount/unmount exactly once
+  useEffect(() => {
+    Sentry.logger?.info('ConnectivityProvider mounted', {
+      event_type: LogEvent.CONNECTIVITY_PROVIDER_MOUNTED,
+      timestamp: new Date().toISOString(),
+    })
+    return () => {
+      Sentry.logger?.info('ConnectivityProvider unmounted', {
+        event_type: LogEvent.CONNECTIVITY_PROVIDER_UNMOUNTED,
+        timestamp: new Date().toISOString(),
+      })
+    }
+  }, [])
+
+  // Log connectivity state transitions independent of where they originated
+  useEffect(() => {
+    Sentry.logger?.info('Connectivity state changed', {
+      event_type: LogEvent.CONNECTIVITY_STATE_CHANGED,
+      timestamp: new Date().toISOString(),
+      isOnline,
+      isVisible,
+    })
+  }, [isOnline, isVisible])
+
   useEffect(() => {
     if (typeof window === 'undefined') return
     const handleOnline = () => {
       setIsOnline(true)
-      pollingTasksRef.current.forEach((t) => t.start())
 
       // Note: Using Sentry.logger directly because ConnectivityContext doesn't have session context
       // This is a low-level infrastructure component that runs before session is available
@@ -63,7 +93,6 @@ export const ConnectivityProvider = ({
     }
     const handleOffline = () => {
       setIsOnline(false)
-      pollingTasksRef.current.forEach((t) => t.stop())
 
       // Note: Using Sentry.logger directly because ConnectivityContext doesn't have session context
       Sentry.logger?.warn('Network connectivity lost', {
@@ -74,19 +103,16 @@ export const ConnectivityProvider = ({
     const handleVisibility = () => {
       const visible = document.visibilityState === 'visible'
       setIsVisible(visible)
-      // Toggle pollers with visibility as well
-      if (visible && isOnline) {
-        pollingTasksRef.current.forEach((t) => t.start())
-      } else {
-        pollingTasksRef.current.forEach((t) => t.stop())
-      }
+      Sentry.logger?.info('Visibility changed', {
+        event_type: LogEvent.CONNECTIVITY_VISIBILITY_CHANGED,
+        timestamp: new Date().toISOString(),
+        isVisible: visible,
+        isOnline,
+      })
     }
 
     setIsOnline(navigator.onLine)
     setIsVisible(document.visibilityState === 'visible')
-    if (navigator.onLine && document.visibilityState === 'visible') {
-      pollingTasksRef.current.forEach((t) => t.start())
-    }
 
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
