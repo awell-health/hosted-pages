@@ -41,19 +41,19 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<ErrorType | undefined>(undefined)
   const [providers, setProviders] = useState<Provider[]>([])
-  const [selectedProviderId, setSelectedProviderId] =
+  const [selectedProviderReference, setSelectedProviderReference] =
     useState<Provider['reference']>()
 
   const { patient, label, required } =
     mapActionFieldsToObject<ActionFields>(fields)
 
   const selectedProvider = useMemo(() => {
-    if (selectedProviderId === undefined) return undefined
+    if (selectedProviderReference === undefined) return undefined
 
-    return providers?.find((provider) =>
-      provider.reference.includes(selectedProviderId)
+    return providers?.find(
+      (provider) => provider.reference === selectedProviderReference
     )
-  }, [providers, selectedProviderId])
+  }, [providers, selectedProviderReference])
 
   const providerOptions = useMemo((): Array<Option> => {
     return providers?.map((provider) => {
@@ -63,7 +63,7 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
         id: provider.reference,
         label: provider.provider,
         value: Number(providerId),
-        value_string: providerId,
+        value_string: provider.reference,
       }
     })
   }, [providers])
@@ -162,7 +162,7 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
     } finally {
       setLoading(false)
     }
-  }, [patient, session, metadata])
+  }, [patient, session, metadata, activityDetails])
 
   useEffect(() => {
     async function fetchData() {
@@ -193,12 +193,14 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
               loading={loading}
               options={providerOptions}
               type="single"
-              value={selectedProviderId}
+              value={selectedProviderReference}
               onChange={(value) => {
                 const selectedOption = providerOptions.find(
-                  (option) => option.value.toString() === value.toString()
+                  (option) =>
+                    option.value_string === value.toString() ||
+                    option.value.toString() === value.toString()
                 )
-                setSelectedProviderId(selectedOption?.value_string)
+                setSelectedProviderReference(selectedOption?.value_string)
               }}
               mandatory={isRequired}
               filtering
