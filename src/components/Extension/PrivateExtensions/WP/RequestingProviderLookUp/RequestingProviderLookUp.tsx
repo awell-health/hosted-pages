@@ -11,12 +11,8 @@ import {
   captureHostedSessionError,
 } from '../../../../../utils/errors'
 import classes from './RequestingProviderLookUp.module.css'
-import {
-  type Option,
-  Select,
-  Button,
-  HostedPageFooter,
-} from '@awell-health/ui-library'
+import { Button, HostedPageFooter } from '@awell-health/ui-library'
+import { Select, type SelectItem } from '@awell-health/design-system'
 import { useTranslation } from 'next-i18next'
 import activityClasses from '../../../../../../styles/ActivityLayout.module.css'
 
@@ -41,32 +37,34 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<ErrorType | undefined>(undefined)
   const [providers, setProviders] = useState<Provider[]>([])
-  const [selectedProviderId, setSelectedProviderId] =
+  const [selectedProviderReference, setSelectedProviderReference] =
     useState<Provider['reference']>()
 
   const { patient, label, required } =
     mapActionFieldsToObject<ActionFields>(fields)
 
   const selectedProvider = useMemo(() => {
-    if (selectedProviderId === undefined) return undefined
+    if (selectedProviderReference === undefined) return undefined
 
-    return providers?.find((provider) =>
-      provider.reference.includes(selectedProviderId)
+    return providers?.find(
+      (provider) => provider.reference === selectedProviderReference
     )
-  }, [providers, selectedProviderId])
+  }, [providers, selectedProviderReference])
 
-  const providerOptions = useMemo((): Array<Option> => {
+  const providerOptions = useMemo((): Array<SelectItem> => {
     return providers?.map((provider) => {
-      const providerId = provider.reference.split('/')[1]
-
       return {
-        id: provider.reference,
+        value: provider.reference,
         label: provider.provider,
-        value: Number(providerId),
-        value_string: providerId,
       }
     })
   }, [providers])
+
+  const selectedProviderOption = useMemo(() => {
+    return providerOptions.find(
+      (option) => option.value === selectedProviderReference
+    )
+  }, [providerOptions, selectedProviderReference])
 
   /**
    * If there's an API error, we allow the user to submit the activity
@@ -162,7 +160,7 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
     } finally {
       setLoading(false)
     }
-  }, [patient, session, metadata])
+  }, [patient, session, metadata, activityDetails])
 
   useEffect(() => {
     async function fetchData() {
@@ -181,27 +179,28 @@ export const RequestingProviderLookUp: FC<ActivityProps> = ({
         <div className={classes.container}>
           <div>
             <Select
-              id="select"
-              labels={{
-                questionLabel: label,
-                noOptions: t('activities.form.questions.select.no_options'),
-                placeholder: t(
-                  'activities.form.questions.select.type_to_search'
-                ),
-                loading: t('activities.form.questions.select.loading'),
-              }}
-              loading={loading}
+              label={label}
+              placeholder={
+                loading
+                  ? t('activities.form.questions.select.loading')
+                  : t('activities.form.questions.select.type_to_search')
+              }
               options={providerOptions}
-              type="single"
-              value={selectedProviderId}
+              value={selectedProviderOption}
               onChange={(value) => {
-                const selectedOption = providerOptions.find(
-                  (option) => option.value.toString() === value.toString()
-                )
-                setSelectedProviderId(selectedOption?.value_string)
+                if (Array.isArray(value)) {
+                  setSelectedProviderReference(undefined)
+                  return
+                }
+
+                const selectedOption = value as SelectItem | null
+                setSelectedProviderReference(selectedOption?.value)
               }}
-              mandatory={isRequired}
-              filtering
+              required={isRequired}
+              disabled={loading}
+              hasError={!isNil(error)}
+              isSearchable
+              isClearable
             />
             {!isNil(error) && (
               <div className={classes.error}>
