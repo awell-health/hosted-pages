@@ -163,10 +163,10 @@
     tailwindcss-animate "^1.0.7"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.142":
-  version "0.1.142"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.142.tgz#e9a8d2b462241f1febb763b35245e309b9fc8f2d"
-  integrity sha512-1lVaepv5Ob3BsjFvf+0/XMYuK8+OwJxTDLCNSBRjZf0rgdhi+qeFDBC0F21qlWQEgJQP2fhjK1Kk8An4h8NLVw==
+"@awell-health/ui-library@0.1.145":
+  version "0.1.145"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.145.tgz#3aca5a96632b7d7b6892e7f2e63a752da3de2783"
+  integrity sha512-DeyJWLM59qZEAdUiV2RIPmWx/jpqYSTFZL5G7/ryQ4Jd7MjX1mjbTCWfndDWxxDXyXPKokGJL5HqDz5RDU4vbg==
   dependencies:
     "@awell-health/design-system" "0.15.4"
     "@calcom/embed-react" "^1.5.1"
