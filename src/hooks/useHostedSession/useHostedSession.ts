@@ -204,6 +204,10 @@ export const useHostedSession = (): UseHostedSessionHook => {
       (err) => err.extensions?.code === 'UNAUTHORIZED'
     )
 
+    if (!unauthorizedError) {
+      Sentry.captureException(error)
+    }
+
     const message = unauthorizedError ? 'UNAUTHORIZED' : error.message
 
     return {
