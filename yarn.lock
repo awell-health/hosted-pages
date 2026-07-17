@@ -120,10 +120,10 @@
     tailwind-merge "^3.3.0"
     tailwindcss-animate "^1.0.7"
 
-"@awell-health/design-system@0.16.6":
-  version "0.16.6"
-  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.16.6.tgz#1371fdd08f88d157fcd6938e56b3f35ea5c61972"
-  integrity sha512-JpuADoew7PXuXuPJ7YQcESjCiaCFwvYVluSxlqtK19kUQ2G7glGcGi2u2uWfTDmB5mJKLpT9fVjbx9qf3fecKw==
+"@awell-health/design-system@0.16.7":
+  version "0.16.7"
+  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.16.7.tgz#cef8a718c0a7eb9c8981deb5879de2e45faf33a7"
+  integrity sha512-OaNTH0TF6HS5BQrZeffwGRNYHPsN/kayxkeVLPwTQpT3UgxT4t7B4plG6VSWFw7lmnGk3zm2LYwa7XdkIm6ePw==
   dependencies:
     "@mdxeditor/editor" "^3.40.0"
     "@remixicon/react" "^4.6.0"
@@ -164,12 +164,12 @@
     tailwindcss-animate "^1.0.7"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.149":
-  version "0.1.149"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.149.tgz#cad684b41e5a279365bbbcb69867c31af6865072"
-  integrity sha512-kEAk90Puriro1GFhl6MwEET9SDg+j8rsWv1jvCYv3SnkknTeztRuJqxqBinBPJyxe5o8kIq/86S5WG1eY+dsjA==
+"@awell-health/ui-library@0.1.150":
+  version "0.1.150"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.150.tgz#ee3468fe274f3b2f0e81c8e969582c146e145e9b"
+  integrity sha512-ENe+aUX2254+nYBf3aOEbCSmmkJDiq/cE4RBvvFTv7D73ltbI9Ks+0vjkuVR6/JVCrPs/9n88kQ1udkVYHrRbg==
   dependencies:
-    "@awell-health/design-system" "0.16.6"
+    "@awell-health/design-system" "0.16.7"
     "@calcom/embed-react" "^1.5.1"
     "@heroicons/react" "^2.1.3"
     axios "^1.7.7"
