@@ -1,4 +1,8 @@
 import { isNil } from 'lodash'
+import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
 import { useGetSignedUrlLazyQuery } from './types'
 import type { GetSignedUrlQueryVariables } from './types'
 import {
@@ -51,6 +55,13 @@ export const useFileUpload = (): [
 
         return data.getSignedUrl
       } catch (error) {
+        if (
+          isGraphQLRequestCancellation(error) ||
+          isGraphQLMissingAuthorizationError(error)
+        ) {
+          throw error
+        }
+
         const hostedSessionError = new HostedSessionError(
           'Failed to get signed URL for file upload',
           {

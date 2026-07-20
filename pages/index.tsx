@@ -33,8 +33,12 @@ import { useConnectivity } from '../src/contexts/ConnectivityContext'
 import { useNetworkError } from '../src/contexts/NetworkErrorContext'
 import { useHostedSession } from '../src/hooks/useHostedSession'
 import { HostedSession } from '../src/hooks/useHostedSession/types'
-import { useSessionStorage } from '../src/hooks/useSessionStorage'
 import { HostedSessionLayout } from '../src/layouts'
+import { useAuthentication } from '../src/services/authentication'
+import {
+  finalizeTerminalGraphQLRequests,
+  useGraphQLRequestLifecycle,
+} from '../src/services/graphql'
 import { HostedSessionStatus } from '../src/types/generated/types-orchestration'
 import { validateLocale } from '../src/utils'
 import { serializeError } from '../src/utils/errors'
@@ -55,8 +59,9 @@ const Home: NextPageWithLayout = () => {
     startPolling,
     stopPolling,
   } = useHostedSession()
+  const requestLifecycle = useGraphQLRequestLifecycle()
   const { registerPollingTask } = useConnectivity()
-  const { removeItem: removeAccessToken } = useSessionStorage('accessToken', '')
+  const { clearAccessToken } = useAuthentication()
   const [logoOverride, setLogoOverride] = useLocalStorage(
     'awell-hp-logo-override',
     ''
@@ -72,19 +77,42 @@ const Home: NextPageWithLayout = () => {
   const [isCloseHostedSessionModalOpen, setIsCloseHostedSessionModalOpen] =
     useState(false)
   const [showInvalidSession, setShowInvalidSession] = useState(false)
+  const [terminalWriteError, setTerminalWriteError] = useState<
+    'failed' | 'timed-out'
+  >()
+  const terminalFinalizationRef = useRef<string>()
+  const isMountedRef = useRef(true)
+  const isSessionActive = session?.status === HostedSessionStatus.Active
+  const isSessionTerminal =
+    session?.status === HostedSessionStatus.Completed ||
+    session?.status === HostedSessionStatus.Expired
+
+  useEffect(() => {
+    isMountedRef.current = true
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
 
   // Keep refs to the latest Apollo polling controls so the registration effect
   // does not have to re-run (and thereby tear down the polling task) when
   // Apollo recreates the underlying ObservableQuery and rebinds these methods.
   const startPollingRef = useRef(startPolling)
   const stopPollingRef = useRef(stopPolling)
+  const isSessionActiveRef = useRef(isSessionActive)
   useEffect(() => {
     startPollingRef.current = startPolling
     stopPollingRef.current = stopPolling
+    isSessionActiveRef.current = isSessionActive
   })
 
   // Register hosted session polling with connectivity so it starts when connected and stops when offline/hidden
   useEffect(() => {
+    if (!isSessionActive) {
+      stopPollingRef.current()
+      return
+    }
+
     Sentry.logger?.info('Session polling effect ran', {
       category: 'session_polling',
       event_type: LogEvent.SESSION_POLLING_EFFECT_RAN,
@@ -93,6 +121,9 @@ const Home: NextPageWithLayout = () => {
 
     const cleanup = registerPollingTask({
       start: () => {
+        if (!isSessionActiveRef.current) {
+          return
+        }
         Sentry.logger?.info('Session startPolling called', {
           category: 'session_polling',
           event_type: LogEvent.SESSION_START_POLLING,
@@ -116,7 +147,7 @@ const Home: NextPageWithLayout = () => {
       })
       cleanup()
     }
-  }, [registerPollingTask, router.query.sessionId])
+  }, [registerPollingTask, router.query.sessionId, isSessionActive])
 
   const handleNetworkErrorRetry = useCallback(async () => {
     try {
@@ -147,13 +178,7 @@ const Home: NextPageWithLayout = () => {
         error: serializeError(err),
       })
     }
-  }, [
-    refetch,
-    resetNetworkErrorCount,
-    setNetworkError,
-    setShowInvalidSession,
-    router.query.sessionId,
-  ])
+  }, [refetch, resetNetworkErrorCount, setNetworkError, setShowInvalidSession])
 
   const { redirectAfterSession, shouldRedirect } = useRedirectAfterSession({
     setLogoOverride,
@@ -197,9 +222,54 @@ const Home: NextPageWithLayout = () => {
       })
       return
     }
+    if (terminalWriteError) {
+      return
+    }
+
+    const finishTerminalSession = async (redirectUrl?: string) => {
+      const terminalKey = `${session?.id}:${session?.status}`
+      if (terminalFinalizationRef.current === terminalKey) {
+        return
+      }
+      terminalFinalizationRef.current = terminalKey
+      const isCurrentFinalization = () =>
+        isMountedRef.current && terminalFinalizationRef.current === terminalKey
+
+      // New operations are already blocked. Do not clear authentication or
+      // navigate away until patient-data mutations have either settled or the
+      // patient has been shown a safe terminal error.
+      const result = await finalizeTerminalGraphQLRequests({
+        requestLifecycle,
+        clearAccessToken,
+        isCurrent: isCurrentFinalization,
+      })
+      if (!isCurrentFinalization()) {
+        return
+      }
+      if (result.status !== 'settled') {
+        Sentry.logger?.error(
+          'Terminal session could not safely finalize patient writes',
+          {
+            category: 'graphql_request_teardown',
+            sessionId: session?.id,
+            terminalStatus: session?.status,
+            result: result.status,
+            operations: result.operations,
+          }
+        )
+        setTerminalWriteError(result.status)
+        return
+      }
+      if (shouldRedirect && redirectUrl) {
+        redirectAfterSession(redirectUrl)
+      }
+    }
 
     switch (session?.status) {
       case HostedSessionStatus.Completed: {
+        resetNetworkErrorCount()
+        setNetworkError(false)
+        setShowInvalidSession(false)
         logger.info('Hosted session is completed', LogEvent.SESSION_COMPLETED, {
           sessionStatus: session?.status,
           session,
@@ -208,14 +278,13 @@ const Home: NextPageWithLayout = () => {
           category: 'session_complete',
           organization_slug: session?.organization_slug,
         })
-        // Remove access token when session is completed
-        removeAccessToken()
-        if (shouldRedirect) {
-          redirectAfterSession(session.success_url as string)
-        }
+        void finishTerminalSession(session.success_url as string)
         return
       }
       case HostedSessionStatus.Expired: {
+        resetNetworkErrorCount()
+        setNetworkError(false)
+        setShowInvalidSession(false)
         logger.info('Hosted session is expired', LogEvent.SESSION_EXPIRED, {
           sessionStatus: session?.status,
           session,
@@ -224,27 +293,38 @@ const Home: NextPageWithLayout = () => {
           category: 'session_expire',
           organization_slug: session?.organization_slug,
         })
-        // Remove access token when session is expired
-        removeAccessToken()
-        if (shouldRedirect) {
-          redirectAfterSession(session.cancel_url as string)
-        }
+        void finishTerminalSession(session.cancel_url as string)
         return
       }
       default: {
+        terminalFinalizationRef.current = undefined
+        setTerminalWriteError(undefined)
         logger.info('Hosted session is ongoing', LogEvent.SESSION_ONGOING, {
           session,
         })
         return
       }
     }
-  }, [session, shouldRedirect, redirectAfterSession, removeAccessToken])
+  }, [
+    session,
+    shouldRedirect,
+    redirectAfterSession,
+    clearAccessToken,
+    resetNetworkErrorCount,
+    requestLifecycle,
+    setNetworkError,
+    terminalWriteError,
+  ])
 
   // content now handled by SessionRouter component
   const logo = useLogo(theme, branding, logoOverride)
 
+  if (terminalWriteError) {
+    return <ErrorPage title={t('session.completion_error')} />
+  }
+
   // Show network error page if retry link failed after 3 attempts
-  if (hasNetworkError && networkErrorCount >= 3) {
+  if (!isSessionTerminal && hasNetworkError && networkErrorCount >= 3) {
     const sessionId = router.query.sessionId as string | undefined
     return (
       <NetworkErrorGate
@@ -259,7 +339,7 @@ const Home: NextPageWithLayout = () => {
   }
 
   // Show invalid session page after successful retry but no valid session
-  if (showInvalidSession) {
+  if (!isSessionTerminal && showInvalidSession) {
     const sessionId = router.query.sessionId as string | undefined
     const errorType = error === 'UNAUTHORIZED' ? 'unauthorized' : 'not_found'
     return (
