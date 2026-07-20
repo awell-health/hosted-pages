@@ -1,8 +1,12 @@
-import { useTranslation } from 'react-i18next'
 import { useGetExtensionActivityDetailsQuery } from './types'
 import type { ExtensionActivityRecord } from './types'
 import { isNil } from 'lodash'
-import { useEffect } from 'react'
+import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
+import { HostedSessionStatus } from '../../types/generated/types-orchestration'
+import { useHostedSession } from '../useHostedSession'
 
 interface UseExtensionActivityHook {
   loading: boolean
@@ -12,7 +16,7 @@ interface UseExtensionActivityHook {
 }
 
 export const useExtensionActivity = (id: string): UseExtensionActivityHook => {
-  const { t } = useTranslation()
+  const { session } = useHostedSession()
 
   const { data, loading, error, refetch } = useGetExtensionActivityDetailsQuery(
     {
@@ -20,14 +24,15 @@ export const useExtensionActivity = (id: string): UseExtensionActivityHook => {
         id,
       },
       nextFetchPolicy: 'cache-first',
+      skip: session?.status !== HostedSessionStatus.Active,
     }
   )
 
-  useEffect(() => {
-    void refetch()
-  }, [id])
-
-  if (!isNil(error)) {
+  if (
+    !isNil(error) &&
+    !isGraphQLRequestCancellation(error) &&
+    !isGraphQLMissingAuthorizationError(error)
+  ) {
     return { loading: false, error: error.message, refetch }
   }
   if (loading) {
