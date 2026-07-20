@@ -93,10 +93,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@awell-health/design-system@0.15.4":
-  version "0.15.4"
-  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.15.4.tgz#d2d0696c18f3cc46a573401ba599781b4a8f1678"
-  integrity sha512-wY27Uz/f16sta+hYbU2mfH+pM3jo4Rj1gzmg6Rakswv/jt+4tt7knO3+Dug7xrN9yyL7Ae1bEI6owkmRaGnKAw==
+"@awell-health/design-system@0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.16.2.tgz#ad4ba74783e3575f35917f58592843952f863a59"
+  integrity sha512-pMUMNGNVijRMowd50deNRgkqceNGUXnCMzkQfYTbi+5iiuG53K1WYeNv5GJXGwExt3qYD13n9WtSF+SbNb1Omg==
   dependencies:
     "@mdxeditor/editor" "^3.40.0"
     "@remixicon/react" "^4.6.0"
@@ -111,6 +111,7 @@
     clsx "^2.1.1"
     date-fns "^4.1.0"
     react-day-picker "^9.5.0"
+    react-international-phone "^4.8.0"
     react-select "^5.8.0"
     react-tooltip "^5.28.0"
     react-use "^17.5.1"
@@ -119,10 +120,10 @@
     tailwind-merge "^3.3.0"
     tailwindcss-animate "^1.0.7"
 
-"@awell-health/design-system@0.16.2":
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.16.2.tgz#ad4ba74783e3575f35917f58592843952f863a59"
-  integrity sha512-pMUMNGNVijRMowd50deNRgkqceNGUXnCMzkQfYTbi+5iiuG53K1WYeNv5GJXGwExt3qYD13n9WtSF+SbNb1Omg==
+"@awell-health/design-system@0.16.9":
+  version "0.16.9"
+  resolved "https://registry.yarnpkg.com/@awell-health/design-system/-/design-system-0.16.9.tgz#7e4a151260e1f050660d20705aa6ff245c95b208"
+  integrity sha512-oScPUoUABKFgvRQ6uVZOwdp5B/8hY4vMIXWHDNKblN3TDKyZ9fAAuWDeScFmD80cB9tWpsY10tEj3VuWFNwHTg==
   dependencies:
     "@mdxeditor/editor" "^3.40.0"
     "@remixicon/react" "^4.6.0"
@@ -163,12 +164,12 @@
     tailwindcss-animate "^1.0.7"
     zod "^3.21.4"
 
-"@awell-health/ui-library@0.1.145":
-  version "0.1.145"
-  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.145.tgz#3aca5a96632b7d7b6892e7f2e63a752da3de2783"
-  integrity sha512-DeyJWLM59qZEAdUiV2RIPmWx/jpqYSTFZL5G7/ryQ4Jd7MjX1mjbTCWfndDWxxDXyXPKokGJL5HqDz5RDU4vbg==
+"@awell-health/ui-library@0.1.152":
+  version "0.1.152"
+  resolved "https://registry.yarnpkg.com/@awell-health/ui-library/-/ui-library-0.1.152.tgz#d886928a9ca35eb9b41f335b6eb40a93b484a6db"
+  integrity sha512-r+BmUTouNUBEHG7I7srP0hguv5f1AbrmsmglNqLRcxs35m4G2l5n3IK2cDsgQAI35a/3QGDb4NmQ/5e5s6LW1g==
   dependencies:
-    "@awell-health/design-system" "0.15.4"
+    "@awell-health/design-system" "0.16.9"
     "@calcom/embed-react" "^1.5.1"
     "@heroicons/react" "^2.1.3"
     axios "^1.7.7"

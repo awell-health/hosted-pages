@@ -3,8 +3,22 @@
 import { type ApolloQueryResult, useApolloClient } from '@apollo/client'
 import * as Sentry from '@sentry/nextjs'
 import { isNil } from 'lodash'
-import { useEffect, useState } from 'react'
-import { updateQuery } from '../../services/graphql'
+import {
+  createContext,
+  createElement,
+  type FC,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+  updateQuery,
+  useGraphQLRequestLifecycle,
+} from '../../services/graphql'
 import { Maybe } from '../../types'
 import {
   HostedSessionStatus,
@@ -32,7 +46,13 @@ const getOrganizationsWithAutoReplay = (): string[] => {
     .filter(Boolean)
 }
 
-interface UseHostedSessionHook {
+const isTerminalSessionStatus = (
+  status: HostedSessionStatus | undefined
+): boolean =>
+  status === HostedSessionStatus.Completed ||
+  status === HostedSessionStatus.Expired
+
+export interface UseHostedSessionHook {
   loading: boolean
   session?: HostedSession
   metadata?: SessionMetadata | null
@@ -40,17 +60,48 @@ interface UseHostedSessionHook {
   theme: CustomTheme
   error?: string
   refetch?: () => Promise<ApolloQueryResult<GetHostedSessionQuery>> | undefined
-  startPolling: (pollInterval: number) => void
+  startPolling: (_pollInterval: number) => void
   stopPolling: () => void
 }
 
-export const useHostedSession = (): UseHostedSessionHook => {
+const HostedSessionContext = createContext<UseHostedSessionHook | undefined>(
+  undefined
+)
+
+const useHostedSessionValue = (): UseHostedSessionHook => {
   const defaultTheme = getTheme()
 
   const [isSessionCompleted, setIsSessionCompleted] = useState(false)
+  const handledTerminalSessionRef = useRef<string | undefined>()
+  const stopPollingRef = useRef<() => void>(() => undefined)
+  const requestLifecycle = useGraphQLRequestLifecycle()
+
+  const handleTerminalSession = (updatedHostedSession: HostedSession) => {
+    if (!isTerminalSessionStatus(updatedHostedSession.status)) {
+      return
+    }
+
+    const terminalSessionKey = `${updatedHostedSession.id}:${updatedHostedSession.status}`
+    if (handledTerminalSessionRef.current === terminalSessionKey) {
+      return
+    }
+
+    handledTerminalSessionRef.current = terminalSessionKey
+    setIsSessionCompleted(true)
+    stopPollingRef.current()
+    requestLifecycle.cancelPendingRequests()
+  }
 
   const { data, loading, error, refetch, stopPolling, startPolling } =
-    useGetHostedSessionQuery()
+    useGetHostedSessionQuery({
+      onCompleted: (completedData) => {
+        const completedSession = completedData.hostedSession?.session
+        if (completedSession) {
+          handleTerminalSession(completedSession)
+        }
+      },
+    })
+  stopPollingRef.current = stopPolling
   const client = useApolloClient()
 
   const onHostedSessionCompleted = useOnHostedSessionCompletedSubscription()
@@ -61,8 +112,13 @@ export const useHostedSession = (): UseHostedSessionHook => {
   }: {
     updatedHostedSession: HostedSession
   }) => {
+    handleTerminalSession(updatedHostedSession)
+
+    const cachedQuery = client.readQuery<GetHostedSessionQuery>({
+      query: GetHostedSessionDocument,
+    })
     const updatedQuery = updateQuery<GetHostedSessionQuery, HostedSession>(
-      data as GetHostedSessionQuery,
+      (cachedQuery ?? data) as GetHostedSessionQuery,
       ['hostedSession', 'session'],
       updatedHostedSession
     )
@@ -70,13 +126,6 @@ export const useHostedSession = (): UseHostedSessionHook => {
       query: GetHostedSessionDocument,
       data: updatedQuery,
     })
-
-    if (
-      updatedHostedSession.status === HostedSessionStatus.Completed ||
-      updatedHostedSession.status === HostedSessionStatus.Expired
-    ) {
-      setIsSessionCompleted(true)
-    }
   }
 
   const hostedSession = data?.hostedSession?.session
@@ -167,13 +216,10 @@ export const useHostedSession = (): UseHostedSessionHook => {
   // Handle session completion/expiration status
   // Only runs when session status changes
   useEffect(() => {
-    if (
-      sessionStatus === HostedSessionStatus.Completed ||
-      sessionStatus === HostedSessionStatus.Expired
-    ) {
-      setIsSessionCompleted(true)
+    if (isTerminalSessionStatus(sessionStatus) && hostedSession) {
+      handleTerminalSession(hostedSession)
     }
-  }, [sessionStatus])
+  }, [sessionStatus, hostedSession])
 
   useEffect(() => {
     if (isSessionCompleted) {
@@ -199,16 +245,24 @@ export const useHostedSession = (): UseHostedSessionHook => {
     return { loading: true, theme: defaultTheme, startPolling, stopPolling }
   }
 
-  if (error) {
+  if (
+    error &&
+    !isGraphQLRequestCancellation(error) &&
+    !isTerminalSessionStatus(sessionStatus)
+  ) {
     const unauthorizedError = error.graphQLErrors?.find(
       (err) => err.extensions?.code === 'UNAUTHORIZED'
     )
+    const missingAuthorizationError = isGraphQLMissingAuthorizationError(error)
 
-    if (!unauthorizedError) {
+    if (!unauthorizedError && !missingAuthorizationError) {
       Sentry.captureException(error)
     }
 
-    const message = unauthorizedError ? 'UNAUTHORIZED' : error.message
+    const message =
+      unauthorizedError || missingAuthorizationError
+        ? 'UNAUTHORIZED'
+        : error.message
 
     return {
       loading: false,
@@ -230,4 +284,24 @@ export const useHostedSession = (): UseHostedSessionHook => {
     startPolling,
     stopPolling,
   }
+}
+
+export const HostedSessionProvider: FC<{ children?: ReactNode }> = ({
+  children,
+}) => {
+  const value = useHostedSessionValue()
+
+  return createElement(HostedSessionContext.Provider, { value }, children)
+}
+
+export const useHostedSession = (): UseHostedSessionHook => {
+  const hostedSession = useContext(HostedSessionContext)
+
+  if (!hostedSession) {
+    throw new Error(
+      'useHostedSession must be used within HostedSessionProvider'
+    )
+  }
+
+  return hostedSession
 }
