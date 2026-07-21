@@ -261,6 +261,13 @@ export const Form: FC<FormProps> = ({ activity }) => {
         if (!response.ok) {
           const errorText = await response.text()
           console.error(`Failed to upload file ${file.name}: ${errorText}`)
+
+          if (response.status === 403) {
+            throw new Error(
+              'A file with this name may have been uploaded. Please rename the file and try again.'
+            )
+          }
+
           throw new Error(
             `Failed to upload file: ${response.status} ${response.statusText}`
           )
@@ -330,42 +337,42 @@ export const Form: FC<FormProps> = ({ activity }) => {
   if (isNil(form)) {
     return <ErrorPage title={t('activities.form.loading_error')} />
   }
-  if (isSubmitting) {
-    return <LoadingPage />
-  }
 
   return (
     <>
-      {renderTraditionalForm && (
-        <TraditionalForm
-          form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
-          questionLabels={labels}
-          buttonLabels={button_labels}
-          errorLabels={error_labels}
-          onSubmit={handleSubmit}
-          evaluateDisplayConditions={handleEvaluateFormRulesDebounced}
-          storedAnswers={initialAnswersFromLocalStorage}
-          onAnswersChange={handleOnAnswersChange}
-          autosaveAnswers={branding?.hosted_page_autosave ?? true}
-          onFileUpload={handleFileUpload}
-        />
-      )}
-      {!renderTraditionalForm && (
-        <ConversationalForm
-          form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
-          questionLabels={labels}
-          buttonLabels={button_labels}
-          errorLabels={error_labels}
-          onSubmit={handleSubmit}
-          evaluateDisplayConditions={handleEvaluateFormRules}
-          storedAnswers={initialAnswersFromLocalStorage}
-          onAnswersChange={handleOnAnswersChange}
-          autoProgress={branding?.hosted_page_auto_progress ?? false}
-          autosaveAnswers={branding?.hosted_page_autosave ?? true}
-          showProgressBar={theme.form.showProgressBar}
-          onFileUpload={handleFileUpload}
-        />
-      )}
+      {isSubmitting && <LoadingPage />}
+      <div hidden={isSubmitting}>
+        {renderTraditionalForm && (
+          <TraditionalForm
+            form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
+            questionLabels={labels}
+            buttonLabels={button_labels}
+            errorLabels={error_labels}
+            onSubmit={handleSubmit}
+            evaluateDisplayConditions={handleEvaluateFormRulesDebounced}
+            storedAnswers={initialAnswersFromLocalStorage}
+            onAnswersChange={handleOnAnswersChange}
+            autosaveAnswers={branding?.hosted_page_autosave ?? true}
+            onFileUpload={handleFileUpload}
+          />
+        )}
+        {!renderTraditionalForm && (
+          <ConversationalForm
+            form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
+            questionLabels={labels}
+            buttonLabels={button_labels}
+            errorLabels={error_labels}
+            onSubmit={handleSubmit}
+            evaluateDisplayConditions={handleEvaluateFormRules}
+            storedAnswers={initialAnswersFromLocalStorage}
+            onAnswersChange={handleOnAnswersChange}
+            autoProgress={branding?.hosted_page_auto_progress ?? false}
+            autosaveAnswers={branding?.hosted_page_autosave ?? true}
+            showProgressBar={theme.form.showProgressBar}
+            onFileUpload={handleFileUpload}
+          />
+        )}
+      </div>
     </>
   )
 }
