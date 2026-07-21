@@ -341,7 +341,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
   return (
     <>
       {isSubmitting && <LoadingPage />}
-      <div hidden={isSubmitting}>
+      <div
+        hidden={isSubmitting}
+        style={{ display: isSubmitting ? undefined : 'contents' }}
+      >
         {renderTraditionalForm && (
           <TraditionalForm
             form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
