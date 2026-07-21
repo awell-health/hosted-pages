@@ -261,6 +261,13 @@ export const Form: FC<FormProps> = ({ activity }) => {
         if (!response.ok) {
           const errorText = await response.text()
           console.error(`Failed to upload file ${file.name}: ${errorText}`)
+
+          if (response.status === 403) {
+            throw new Error(
+              'A file with this name may have been uploaded. Please rename the file and try again.'
+            )
+          }
+
           throw new Error(
             `Failed to upload file: ${response.status} ${response.statusText}`
           )
