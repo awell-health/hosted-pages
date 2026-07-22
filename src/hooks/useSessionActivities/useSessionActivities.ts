@@ -3,11 +3,17 @@ import isNil from 'lodash/isNil'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo } from 'react'
 import {
+  HostedSessionStatus,
   OnSessionActivityCompletedSubscription,
   OnSessionActivityCreatedSubscription,
   OnSessionActivityExpiredSubscription,
 } from '../../types/generated/types-orchestration'
 import { LogEvent, logger } from '../../utils/logging'
+import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
+import { useHostedSession } from '../useHostedSession'
 import {
   Activity,
   ActivityStatus,
@@ -27,6 +33,7 @@ interface UsePathwayActivitiesHook {
 }
 
 export const useSessionActivities = (): UsePathwayActivitiesHook => {
+  const { session } = useHostedSession()
   const variables = useMemo(
     () => ({
       only_stakeholder_activities: true,
@@ -44,6 +51,7 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     subscribeToMore,
   } = useGetHostedSessionActivitiesQuery({
     variables,
+    skip: session?.status !== HostedSessionStatus.Active,
   })
 
   /**
@@ -233,7 +241,12 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     activities,
     loading,
     isActivityComplete,
-    error: error?.message,
+    error:
+      error &&
+      !isGraphQLRequestCancellation(error) &&
+      !isGraphQLMissingAuthorizationError(error)
+        ? error.message
+        : undefined,
     refetch,
     startPolling,
     stopPolling,
