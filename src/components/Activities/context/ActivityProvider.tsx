@@ -8,7 +8,10 @@ import { ErrorPage, LoadingPage } from '../../'
 import { useCompleteSession } from '../../../hooks/useCompleteSession'
 import { useHostedSession } from '../../../hooks/useHostedSession'
 import { useSessionActivities } from '../../../hooks/useSessionActivities'
-import { ActivityReferenceType } from '../../../types/generated/types-orchestration'
+import {
+  ActivityReferenceType,
+  HostedSessionStatus,
+} from '../../../types/generated/types-orchestration'
 import {
   HostedSessionError,
   captureHostedSessionError,
@@ -73,6 +76,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   } = useSessionActivities()
   const { session } = useHostedSession()
   const { onCompleteSession, isCompleting } = useCompleteSession()
+  const isSessionActive = session?.status === HostedSessionStatus.Active
 
   // Array of strings combining activity id and status.
   // Used as a dependency for the effect to ensure it only runs when the set or status of activities changes,
@@ -86,6 +90,11 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
   // this useEffect drives whole AHP logic, only by activities being changed in apollo cache
   // and base on their status do we determine what to show to the user
   useEffect(() => {
+    if (!isSessionActive) {
+      stopPolling()
+      return
+    }
+
     const activityWithLogoOverride = activities.find(
       (a) => a.status === ActivityStatus.Active && a.metadata?.ahp_logo_override
     )
@@ -121,9 +130,14 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         stopPolling()
       }
     }
-  }, [activityKeys])
+  }, [activityKeys, isSessionActive])
 
   useEffect(() => {
+    if (!isSessionActive) {
+      stopPolling()
+      return
+    }
+
     switch (state) {
       case 'polling': {
         startPolling(POLLING_INTERVAL)
@@ -141,6 +155,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         }, pollingTimeout)
         return () => {
           clearTimeout(timer)
+          stopPolling()
         }
       }
       case 'polling-extended': {
@@ -158,6 +173,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         }, MAX_POLLING_TIMEOUT)
         return () => {
           clearTimeout(timer)
+          stopPolling()
         }
       }
       case 'active-activity-found': {
@@ -169,7 +185,7 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
         break
       }
     }
-  }, [state, pollingTimeout])
+  }, [state, pollingTimeout, isSessionActive])
 
   useEffect(() => {
     logger.info(
@@ -186,10 +202,16 @@ export const ActivityProvider: FC<ActivityProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // we're only handling individual activities here --
-    if (isActivityComplete && !isCompleting && router.query.sessionId) {
+    if (
+      isSessionActive &&
+      isActivityComplete &&
+      !isCompleting &&
+      router.query.sessionId
+    ) {
       void onCompleteSession(router.query.sessionId as string)
     }
   }, [
+    isSessionActive,
     isActivityComplete,
     isCompleting,
     router.query.sessionId,
