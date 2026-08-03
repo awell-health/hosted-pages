@@ -1,11 +1,16 @@
 import { ApolloProvider, ServerError, ServerParseError } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
 import * as Sentry from '@sentry/nextjs'
-import React, { FC, useCallback, useMemo } from 'react'
-import { createClient } from '../services/graphql'
+import React, { FC, useCallback, useEffect, useMemo } from 'react'
+import {
+  createClient,
+  createGraphQLRequestLifecycle,
+  GraphQLRequestLifecycleContext,
+} from '../services/graphql'
 import fragmentTypes from '../types/generated/fragment-types'
 import { useNetworkError } from '../contexts/NetworkErrorContext'
 import { HostedSessionError, captureHostedSessionError } from '../utils/errors'
+import { useAuthentication } from '../services/authentication'
 
 interface GraphqlWrapperProps {
   children?: React.ReactNode
@@ -13,6 +18,7 @@ interface GraphqlWrapperProps {
 
 const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
   const { incrementNetworkErrorCount, setNetworkError } = useNetworkError()
+  const requestLifecycle = useMemo(createGraphQLRequestLifecycle, [])
 
   const onNetworkError: ErrorLink.ErrorHandler = useCallback(
     ({ operation, networkError }) => {
@@ -108,13 +114,27 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
         cacheConfig: {
           possibleTypes: fragmentTypes.possibleTypes,
         },
+        requestLifecycle,
       }),
-    [onNetworkError]
+    [onNetworkError, requestLifecycle]
   )
 
-  return <ApolloProvider client={client}>{children}</ApolloProvider>
+  useEffect(() => {
+    return () => {
+      requestLifecycle.cancelPendingRequests({ abortSettling: true })
+      client.stop()
+    }
+  }, [client, requestLifecycle])
+
+  return (
+    <GraphQLRequestLifecycleContext.Provider value={requestLifecycle}>
+      <ApolloProvider client={client}>{children}</ApolloProvider>
+    </GraphQLRequestLifecycleContext.Provider>
+  )
 }
 
 export const GraphqlWrapper: FC<GraphqlWrapperProps> = ({ children }) => {
-  return <GraphqlWrapperInner>{children}</GraphqlWrapperInner>
+  const { sessionId } = useAuthentication()
+
+  return <GraphqlWrapperInner key={sessionId}>{children}</GraphqlWrapperInner>
 }

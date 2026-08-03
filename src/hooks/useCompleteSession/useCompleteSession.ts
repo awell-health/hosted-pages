@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-toastify'
+import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
 import { useCompleteSessionMutation } from './types'
 import {
   HostedSessionError,
@@ -27,8 +31,20 @@ export const useCompleteSession = (): UseCompleteSessionHook => {
           },
         }
         try {
-          await completeSession({ variables })
+          await completeSession({
+            variables,
+            context: {
+              requestLifecyclePolicy: 'settle',
+            },
+          })
         } catch (error) {
+          if (
+            isGraphQLRequestCancellation(error) ||
+            isGraphQLMissingAuthorizationError(error)
+          ) {
+            return
+          }
+
           toast.error(t('session.completion_error'))
           const hostedSessionError = new HostedSessionError(
             'Failed to complete session',

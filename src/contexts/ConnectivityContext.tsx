@@ -8,11 +8,15 @@ import {
 } from 'react'
 import * as Sentry from '@sentry/nextjs'
 
+import type { PollingMode } from '../config/polling'
 import { LogEvent } from '../utils/logging'
 
-type PollingMode = 'visible' | 'hidden'
-
-type PollingTask = {
+export type PollingTask = {
+  /**
+   * Called with the mode that applies right now. Re-invoked with a new mode when
+   * visibility changes, so consumers can pick a different interval rather than
+   * having their polling torn down.
+   */
   start: (_mode: PollingMode) => void
   stop: () => void
 }
@@ -31,8 +35,18 @@ export const ConnectivityProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [isOnline, setIsOnline] = useState<boolean>(true)
-  const [isVisible, setIsVisible] = useState<boolean>(true)
+  // Read the real state on the first render rather than assuming online/visible.
+  // Assuming otherwise makes the very first registration fire a fast-interval poll
+  // that is immediately torn down — a wasted request when the page is loaded
+  // offline, and a needless 2s burst when it is restored into a background tab.
+  const [isOnline, setIsOnline] = useState<boolean>(() =>
+    typeof navigator === 'undefined' ? true : navigator.onLine
+  )
+  const [isVisible, setIsVisible] = useState<boolean>(() =>
+    typeof document === 'undefined'
+      ? true
+      : document.visibilityState === 'visible'
+  )
 
   const registerPollingTask = useCallback(
     (task: PollingTask) => {
@@ -44,6 +58,7 @@ export const ConnectivityProvider = ({
         isVisible,
         pollingMode,
       })
+      // Visibility only selects the interval; being offline is what stops polling.
       if (isOnline) task.start(pollingMode)
       return () => {
         try {

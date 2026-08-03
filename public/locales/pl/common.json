@@ -64,8 +64,8 @@
           "tooltip_guide": "Dotknij, aby wskazać odpowiedź"
         },
         "yes_no": {
-          "no_answer": "No",
-          "yes_answer": "Yes"
+          "no_answer": "Nie",
+          "yes_answer": "Tak"
         }
       },
       "saving_error": "Złożenie formularza nie powiodło się.",

@@ -1,10 +1,16 @@
 import { GraphQLError } from 'graphql'
+import { HostedSessionStatus } from '../../types/generated/types-orchestration'
+import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
 import {
   HostedSessionError,
   captureHostedSessionError,
   serializeError,
 } from '../../utils/errors'
 import { LogEvent, logger } from '../../utils/logging'
+import { useHostedSession } from '../useHostedSession'
 import type { AnswerInput, QuestionRuleResult } from './types'
 import { useEvaluateFormRulesMutation } from './types'
 
@@ -18,6 +24,7 @@ export const useEvaluateFormRules = (
   form_id: string
 ): UseEvaluateFormRulesHook => {
   const [evaluateFormRulesMutation] = useEvaluateFormRulesMutation()
+  const { session } = useHostedSession()
 
   const handleError = (
     errors: any | GraphQLError[],
@@ -70,6 +77,10 @@ export const useEvaluateFormRules = (
   const evaluateFormRules = async (
     answers: Array<AnswerInput>
   ): Promise<Array<QuestionRuleResult>> => {
+    if (session?.status !== HostedSessionStatus.Active) {
+      return []
+    }
+
     const variables = {
       input: {
         form_id,
@@ -91,6 +102,13 @@ export const useEvaluateFormRules = (
       }
       return data.evaluateFormRules.results
     } catch (error) {
+      if (
+        isGraphQLRequestCancellation(error) ||
+        isGraphQLMissingAuthorizationError(error)
+      ) {
+        return []
+      }
+
       handleError(error, answers, variables)
       return []
     }

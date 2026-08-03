@@ -2,11 +2,17 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
+import {
   HostedSessionError,
   captureHostedSessionError,
   serializeError,
 } from '../../utils/errors'
 import { LogEvent, logger } from '../../utils/logging'
+import { HostedSessionStatus } from '../../types/generated/types-orchestration'
+import { useHostedSession } from '../useHostedSession'
 import type { Activity } from './types'
 import { useSubmitChecklistMutation } from './types'
 
@@ -20,8 +26,13 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
   const { id: activity_id } = activity
   const [submitChecklist] = useSubmitChecklistMutation()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { session } = useHostedSession()
 
   const onSubmit = async () => {
+    if (session?.status !== HostedSessionStatus.Active) {
+      return
+    }
+
     setIsSubmitting(true)
     const variables = {
       input: {
@@ -37,7 +48,12 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
       }
     )
     try {
-      await submitChecklist({ variables })
+      await submitChecklist({
+        variables,
+        context: {
+          requestLifecyclePolicy: 'settle',
+        },
+      })
       logger.info(
         `Checklist ${activity.object.name} submitted successfully`,
         LogEvent.CHECKLIST_SUBMITTED,
@@ -46,6 +62,14 @@ export const useSubmitChecklist = (activity: Activity): UseChecklistHook => {
         }
       )
     } catch (error: any) {
+      if (
+        isGraphQLRequestCancellation(error) ||
+        isGraphQLMissingAuthorizationError(error)
+      ) {
+        setIsSubmitting(false)
+        return
+      }
+
       const hostedSessionError = new HostedSessionError(
         `Failed to submit checklist for activity ${activity.object.name}`,
         {

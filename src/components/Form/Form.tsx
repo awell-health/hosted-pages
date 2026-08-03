@@ -9,6 +9,7 @@ import { useFileUpload } from '../../hooks/useFileUpload'
 import { useHostedSession } from '../../hooks/useHostedSession'
 import { useSubmitForm } from '../../hooks/useSubmitForm'
 import { masker } from '../../services/ErrorReporter'
+import { useGraphQLRequestLifecycle } from '../../services/graphql'
 import * as Sentry from '@sentry/nextjs'
 import { ErrorPage } from '../ErrorPage'
 import { LoadingPage } from '../LoadingPage'
@@ -25,6 +26,7 @@ import { mapForm } from './mapper'
 import {
   ActivityInputType,
   DynamicFormActivityInputs,
+  HostedSessionStatus,
 } from '../../types/generated/types-orchestration'
 
 interface FormProps {
@@ -57,6 +59,8 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const { onSubmit, isSubmitting } = useSubmitForm(activity)
   const { branding, theme, session } = useHostedSession()
   const [getGcsSignedUrl] = useFileUpload()
+  const requestLifecycle = useGraphQLRequestLifecycle()
+  const isSessionActive = session?.status === HostedSessionStatus.Active
 
   useEffect(() => {
     if (activity.inputs?.type === ActivityInputType.Form) {
@@ -93,6 +97,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
     async (
       response: Array<AnswerInput>
     ): Promise<Array<QuestionRuleResult>> => {
+      if (!isSessionActive) {
+        return []
+      }
+
       Sentry.logger?.info('Evaluating form rules', {
         category: 'evaluate_form_rules',
         form_id: activity.object.id,
@@ -107,6 +115,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       activity.object.id,
       session?.id,
       session?.organization_slug,
+      isSessionActive,
     ]
   )
 
@@ -131,10 +140,14 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   // Cleanup debounced function on unmount
   useEffect(() => {
+    if (!isSessionActive) {
+      debouncedEvaluateFormRules.cancel()
+    }
+
     return () => {
       debouncedEvaluateFormRules.cancel()
     }
-  }, [debouncedEvaluateFormRules])
+  }, [debouncedEvaluateFormRules, isSessionActive])
 
   const renderTraditionalForm =
     activity.form_display_mode &&
@@ -142,6 +155,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
 
   const handleSubmit = useCallback(
     async (response: Array<any>) => {
+      if (!isSessionActive) {
+        return
+      }
+
       Sentry.logger?.info('Submitting form', {
         category: 'submit_form',
         form_id: activity.object.id,
@@ -163,6 +180,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       setPersistedFormAnswers,
       session?.id,
       session?.organization_slug,
+      isSessionActive,
     ]
   )
 
@@ -179,6 +197,10 @@ export const Form: FC<FormProps> = ({ activity }) => {
   const handleFileUpload = useCallback(
     async (file: File, config_slug?: string): Promise<string> => {
       try {
+        if (!isSessionActive) {
+          throw new Error('Cannot upload file for an inactive session')
+        }
+
         if (isNil(config_slug)) {
           throw new Error('Config ID is required')
         }
@@ -205,22 +227,47 @@ export const Form: FC<FormProps> = ({ activity }) => {
           console.warn('Error parsing URL:', e)
         }
 
-        const response = await fetch(upload_url, {
-          method: 'PUT',
-          body: file,
-          headers: {
-            'Content-Type': contentType,
-            'Content-Length': file.size.toString(),
-            Origin: window.location.origin,
-            ...(required_headers || {}),
-          },
-          credentials: 'omit',
-          mode: 'cors',
-        })
+        const uploadController = new AbortController()
+        requestLifecycle.trackRequest(
+          uploadController,
+          'settle',
+          `UploadFormFile:${activity.id}:${crypto.randomUUID()}`
+        )
+
+        let response: Response
+        try {
+          response = await fetch(upload_url, {
+            method: 'PUT',
+            body: file,
+            headers: {
+              'Content-Type': contentType,
+              'Content-Length': file.size.toString(),
+              Origin: window.location.origin,
+              ...(required_headers || {}),
+            },
+            credentials: 'omit',
+            mode: 'cors',
+            signal: uploadController.signal,
+          })
+          requestLifecycle.releaseRequest(
+            uploadController,
+            response.ok ? 'succeeded' : 'failed'
+          )
+        } catch (error) {
+          requestLifecycle.releaseRequest(uploadController, 'failed')
+          throw error
+        }
 
         if (!response.ok) {
           const errorText = await response.text()
           console.error(`Failed to upload file ${file.name}: ${errorText}`)
+
+          if (response.status === 403) {
+            throw new Error(
+              'A file with this name may have been uploaded. Please rename the file and try again.'
+            )
+          }
+
           throw new Error(
             `Failed to upload file: ${response.status} ${response.statusText}`
           )
@@ -231,7 +278,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
         throw error
       }
     },
-    [activity.id, getGcsSignedUrl]
+    [activity.id, getGcsSignedUrl, isSessionActive, requestLifecycle]
   )
 
   const labels = {
@@ -290,42 +337,45 @@ export const Form: FC<FormProps> = ({ activity }) => {
   if (isNil(form)) {
     return <ErrorPage title={t('activities.form.loading_error')} />
   }
-  if (isSubmitting) {
-    return <LoadingPage />
-  }
 
   return (
     <>
-      {renderTraditionalForm && (
-        <TraditionalForm
-          form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
-          questionLabels={labels}
-          buttonLabels={button_labels}
-          errorLabels={error_labels}
-          onSubmit={handleSubmit}
-          evaluateDisplayConditions={handleEvaluateFormRulesDebounced}
-          storedAnswers={initialAnswersFromLocalStorage}
-          onAnswersChange={handleOnAnswersChange}
-          autosaveAnswers={branding?.hosted_page_autosave ?? true}
-          onFileUpload={handleFileUpload}
-        />
-      )}
-      {!renderTraditionalForm && (
-        <ConversationalForm
-          form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
-          questionLabels={labels}
-          buttonLabels={button_labels}
-          errorLabels={error_labels}
-          onSubmit={handleSubmit}
-          evaluateDisplayConditions={handleEvaluateFormRules}
-          storedAnswers={initialAnswersFromLocalStorage}
-          onAnswersChange={handleOnAnswersChange}
-          autoProgress={branding?.hosted_page_auto_progress ?? false}
-          autosaveAnswers={branding?.hosted_page_autosave ?? true}
-          showProgressBar={theme.form.showProgressBar}
-          onFileUpload={handleFileUpload}
-        />
-      )}
+      {isSubmitting && <LoadingPage />}
+      <div
+        hidden={isSubmitting}
+        style={{ display: isSubmitting ? undefined : 'contents' }}
+      >
+        {renderTraditionalForm && (
+          <TraditionalForm
+            form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
+            questionLabels={labels}
+            buttonLabels={button_labels}
+            errorLabels={error_labels}
+            onSubmit={handleSubmit}
+            evaluateDisplayConditions={handleEvaluateFormRulesDebounced}
+            storedAnswers={initialAnswersFromLocalStorage}
+            onAnswersChange={handleOnAnswersChange}
+            autosaveAnswers={branding?.hosted_page_autosave ?? true}
+            onFileUpload={handleFileUpload}
+          />
+        )}
+        {!renderTraditionalForm && (
+          <ConversationalForm
+            form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
+            questionLabels={labels}
+            buttonLabels={button_labels}
+            errorLabels={error_labels}
+            onSubmit={handleSubmit}
+            evaluateDisplayConditions={handleEvaluateFormRules}
+            storedAnswers={initialAnswersFromLocalStorage}
+            onAnswersChange={handleOnAnswersChange}
+            autoProgress={branding?.hosted_page_auto_progress ?? false}
+            autosaveAnswers={branding?.hosted_page_autosave ?? true}
+            showProgressBar={theme.form.showProgressBar}
+            onFileUpload={handleFileUpload}
+          />
+        )}
+      </div>
     </>
   )
 }

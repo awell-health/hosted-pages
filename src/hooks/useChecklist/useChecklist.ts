@@ -1,6 +1,10 @@
 import type { ChecklistItem, Activity } from './types'
 import { useGetChecklistQuery } from './types'
 import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
+import {
   HostedSessionError,
   captureHostedSessionError,
 } from '../../utils/errors'
@@ -24,6 +28,13 @@ export const useChecklist = (activity: Activity): UseChecklistHook => {
   const { data, loading, error, refetch } = useGetChecklistQuery({
     variables,
     onError: (error) => {
+      if (
+        isGraphQLRequestCancellation(error) ||
+        isGraphQLMissingAuthorizationError(error)
+      ) {
+        return
+      }
+
       const hostedSessionError = new HostedSessionError(
         'Failed to get checklist',
         {
@@ -55,7 +66,11 @@ export const useChecklist = (activity: Activity): UseChecklistHook => {
     }
   }
 
-  if (error) {
+  if (
+    error &&
+    !isGraphQLRequestCancellation(error) &&
+    !isGraphQLMissingAuthorizationError(error)
+  ) {
     return {
       loading: false,
       error: error.message,
@@ -63,8 +78,15 @@ export const useChecklist = (activity: Activity): UseChecklistHook => {
     }
   }
 
-  // @ts-expect-error
-  const { items = [], title = '' } = data?.checklist.checklist
+  if (
+    error &&
+    (isGraphQLRequestCancellation(error) ||
+      isGraphQLMissingAuthorizationError(error))
+  ) {
+    return { loading: false, refetch }
+  }
+
+  const { items = [], title = '' } = data?.checklist?.checklist ?? {}
 
   const formatted_items = items.map((item: string, index: number) => {
     return { id: index.toString(), label: item }

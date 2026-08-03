@@ -3,6 +3,11 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
+import { HostedSessionStatus } from '../../types/generated/types-orchestration'
+import {
   HostedSessionError,
   captureHostedSessionError,
   serializeError,
@@ -31,6 +36,10 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
    * @returns true if the form response was successfully submitted
    */
   const onSubmit = async (response: Array<AnswerInput>): Promise<boolean> => {
+    if (session?.status !== HostedSessionStatus.Active) {
+      return false
+    }
+
     setIsSubmitting(true)
     const variables = {
       input: {
@@ -47,7 +56,12 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
       }
     )
     try {
-      const { errors } = await submitFormResponse({ variables })
+      const { errors } = await submitFormResponse({
+        variables,
+        context: {
+          requestLifecyclePolicy: 'settle',
+        },
+      })
 
       if (!isNil(errors) && errors.length > 0) {
         throw new Error(
@@ -67,6 +81,14 @@ export const useSubmitForm = (activity: Activity): UseFormActivityHook => {
 
       return true
     } catch (error: any) {
+      if (
+        isGraphQLRequestCancellation(error) ||
+        isGraphQLMissingAuthorizationError(error)
+      ) {
+        setIsSubmitting(false)
+        return false
+      }
+
       const hostedSessionError = new HostedSessionError(
         `Failed to submit form response for activity ${activity.object.name}`,
         {

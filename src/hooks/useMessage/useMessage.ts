@@ -1,10 +1,16 @@
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-toastify'
 import {
+  isGraphQLMissingAuthorizationError,
+  isGraphQLRequestCancellation,
+} from '../../services/graphql'
+import {
   HostedSessionError,
   captureHostedSessionError,
 } from '../../utils/errors'
 import { LogEvent, logger } from '../../utils/logging'
+import { HostedSessionStatus } from '../../types/generated/types-orchestration'
+import { useHostedSession } from '../useHostedSession'
 import type { Activity, Message } from './types'
 import { useGetMessageQuery, useMarkMessageAsReadMutation } from './types'
 interface UseMessageActivityHook {
@@ -22,11 +28,20 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
     object: { id: message_id },
   } = activity
   const [markMessageAsRead] = useMarkMessageAsReadMutation()
+  const { session } = useHostedSession()
 
   const variables = { id: message_id }
   const { data, loading, error, refetch } = useGetMessageQuery({
     variables,
+    skip: session?.status !== HostedSessionStatus.Active,
     onError: (error) => {
+      if (
+        isGraphQLRequestCancellation(error) ||
+        isGraphQLMissingAuthorizationError(error)
+      ) {
+        return
+      }
+
       const hostedSessionError = new HostedSessionError(
         'Failed to get message',
         {
@@ -53,6 +68,10 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
   })
 
   const onRead = async () => {
+    if (session?.status !== HostedSessionStatus.Active) {
+      return
+    }
+
     const markMessageAsReadVariables = {
       input: {
         activity_id,
@@ -60,7 +79,12 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
     }
 
     try {
-      await markMessageAsRead({ variables: markMessageAsReadVariables })
+      await markMessageAsRead({
+        variables: markMessageAsReadVariables,
+        context: {
+          requestLifecyclePolicy: 'settle',
+        },
+      })
       logger.info(
         `Message ${message_id} marked as read successfully for activity ${activity.object.name}`,
         LogEvent.MESSAGE_MARKED_AS_READ,
@@ -69,6 +93,13 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
         }
       )
     } catch (error: any) {
+      if (
+        isGraphQLRequestCancellation(error) ||
+        isGraphQLMissingAuthorizationError(error)
+      ) {
+        return
+      }
+
       const hostedSessionError = new HostedSessionError(
         `Failed to mark message ${message_id} as read for activity ${activity.object.name}`,
         {
@@ -104,7 +135,11 @@ export const useMessage = (activity: Activity): UseMessageActivityHook => {
     }
   }
 
-  if (error) {
+  if (
+    error &&
+    !isGraphQLRequestCancellation(error) &&
+    !isGraphQLMissingAuthorizationError(error)
+  ) {
     return {
       error: error.message,
       loading: false,

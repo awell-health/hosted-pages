@@ -6,6 +6,7 @@ import { NoSSRComponent } from '../components/NoSSR'
 import { ErrorBoundary } from '../components/ErrorBoundary'
 import { NetworkErrorProvider } from '../contexts/NetworkErrorContext'
 import { ConnectivityProvider } from '../contexts/ConnectivityContext'
+import { HostedSessionProvider } from '../hooks/useHostedSession'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -26,10 +27,13 @@ export const HostedSessionLayout: FC<LayoutProps> = ({ children }) => {
               <GraphqlWrapper>
                 <NoSSRComponent>
                   {/*
-                    Styles need to be applied to the ErrorBoundary
-                    to make sure layout is rendered correctly.
+                    Keep session initialization inside the ErrorBoundary so
+                    malformed session or branding data renders the safe error
+                    page instead of crashing the application.
                   */}
-                  <ErrorBoundary>{children}</ErrorBoundary>
+                  <ErrorBoundary>
+                    <HostedSessionProvider>{children}</HostedSessionProvider>
+                  </ErrorBoundary>
                 </NoSSRComponent>
               </GraphqlWrapper>
             </ConnectivityProvider>
