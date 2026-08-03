@@ -31,7 +31,10 @@ import { SuccessPage } from '../src/components/SuccessPage'
 import { AWELL_BRAND_COLOR } from '../src/config'
 import { useConnectivity } from '../src/contexts/ConnectivityContext'
 import { useNetworkError } from '../src/contexts/NetworkErrorContext'
-import { useHostedSession } from '../src/hooks/useHostedSession'
+import {
+  shouldRedirectAfterSession,
+  useHostedSession,
+} from '../src/hooks/useHostedSession'
 import { HostedSession } from '../src/hooks/useHostedSession/types'
 import { HostedSessionLayout } from '../src/layouts'
 import { useAuthentication } from '../src/services/authentication'
@@ -437,15 +440,10 @@ function useRedirectAfterSession(params: {
   const { setLogoOverride, router, session } = params
   const timeoutIdsRef = useRef<number[]>([])
 
-  const shouldRedirect = useMemo(() => {
-    const hasSuccess =
-      session?.status === HostedSessionStatus.Completed &&
-      !isNil(session?.success_url)
-    const hasCancel =
-      session?.status === HostedSessionStatus.Expired &&
-      !isNil(session?.cancel_url)
-    return hasSuccess || hasCancel
-  }, [session])
+  const shouldRedirect = useMemo(
+    () => shouldRedirectAfterSession(session),
+    [session]
+  )
 
   const clearAllTimeouts = useCallback(() => {
     timeoutIdsRef.current.forEach((id) => clearTimeout(id))
