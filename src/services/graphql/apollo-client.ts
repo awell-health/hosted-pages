@@ -59,7 +59,10 @@ interface SettlingRequest {
 }
 
 export const createGraphQLRequestLifecycle = (): GraphQLRequestLifecycle => {
-  const abortableRequestControllers = new Set<AbortController>()
+  // Keyed by controller so teardown can name the operations it aborted. An
+  // aborted request produces no error UI and no further network traffic, so the
+  // operation names are the only trace it leaves behind.
+  const abortableRequestControllers = new Map<AbortController, string>()
   const settlingRequestControllers = new Map<AbortController, SettlingRequest>()
   const failedSettlingOperations = new Map<string, number>()
   const latestSuccessfulAttempts = new Map<string, number>()
@@ -104,7 +107,7 @@ export const createGraphQLRequestLifecycle = (): GraphQLRequestLifecycle => {
           attempt,
         })
       } else {
-        abortableRequestControllers.add(controller)
+        abortableRequestControllers.set(controller, operationIdentity)
       }
     },
     releaseRequest: (controller, outcome = 'succeeded') => {
@@ -153,10 +156,26 @@ export const createGraphQLRequestLifecycle = (): GraphQLRequestLifecycle => {
     cancelPendingRequests: ({ abortSettling = false } = {}) => {
       isTerminated = true
 
-      abortableRequestControllers.forEach((controller) => {
+      const abortedOperations = Array.from(abortableRequestControllers.values())
+      abortableRequestControllers.forEach((_operationIdentity, controller) => {
         controller.abort()
       })
       abortableRequestControllers.clear()
+
+      // Aborting an in-flight read leaves the corresponding Apollo observable
+      // parked: no result, no error, and no retry (new requests are blocked from
+      // here on). Without this line the client simply goes silent.
+      if (abortedOperations.length > 0) {
+        logger.warn(
+          'Aborted in-flight GraphQL requests during teardown',
+          LogEvent.GRAPHQL_REQUESTS_ABORTED,
+          {
+            aborted_request_count: abortedOperations.length,
+            operations: abortedOperations,
+            abort_settling: abortSettling,
+          }
+        )
+      }
 
       if (abortSettling) {
         settlingRequestControllers.forEach((request, controller) => {

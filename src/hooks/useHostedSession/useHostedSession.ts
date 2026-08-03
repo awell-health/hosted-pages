@@ -20,11 +20,10 @@ import {
   useGraphQLRequestLifecycle,
 } from '../../services/graphql'
 import { Maybe } from '../../types'
-import {
-  HostedSessionStatus,
-  SessionMetadata,
-} from '../../types/generated/types-orchestration'
+import { SessionMetadata } from '../../types/generated/types-orchestration'
+import { LogEvent, logger } from '../../utils/logging'
 import { type CustomTheme, getTheme } from './branding'
+import { isTerminalSessionStatus } from './terminalSession'
 import type { HostedSession } from './types'
 import {
   BrandingSettings,
@@ -46,11 +45,9 @@ const getOrganizationsWithAutoReplay = (): string[] => {
     .filter(Boolean)
 }
 
-const isTerminalSessionStatus = (
-  status: HostedSessionStatus | undefined
-): boolean =>
-  status === HostedSessionStatus.Completed ||
-  status === HostedSessionStatus.Expired
+// Three 2s poll intervals (see the polling registration in pages/index.tsx).
+// Past this point the query observable is not slow, it is stuck.
+const STALLED_SESSION_QUERY_MS = 6000
 
 export interface UseHostedSessionHook {
   loading: boolean
@@ -72,6 +69,10 @@ const useHostedSessionValue = (): UseHostedSessionHook => {
   const defaultTheme = getTheme()
 
   const [isSessionCompleted, setIsSessionCompleted] = useState(false)
+  // The terminal session is held in React state so the page never depends on the
+  // query observable resolving to learn that the session ended. See the comment
+  // on the resolved `session` below.
+  const [terminalSession, setTerminalSession] = useState<HostedSession>()
   const handledTerminalSessionRef = useRef<string | undefined>()
   const stopPollingRef = useRef<() => void>(() => undefined)
   const requestLifecycle = useGraphQLRequestLifecycle()
@@ -87,6 +88,9 @@ const useHostedSessionValue = (): UseHostedSessionHook => {
     }
 
     handledTerminalSessionRef.current = terminalSessionKey
+    // Capture the payload before tearing anything down. `cancelPendingRequests()`
+    // is a one-way door: after it, no request can ever deliver this status again.
+    setTerminalSession(updatedHostedSession)
     setIsSessionCompleted(true)
     stopPollingRef.current()
     requestLifecycle.cancelPendingRequests()
@@ -112,8 +116,11 @@ const useHostedSessionValue = (): UseHostedSessionHook => {
   }: {
     updatedHostedSession: HostedSession
   }) => {
-    handleTerminalSession(updatedHostedSession)
-
+    // Land the new session in the cache *before* `handleTerminalSession` tears
+    // the transport down, so the UI can never lose a race against its own
+    // teardown. (Necessary but not sufficient on its own: Apollo suppresses
+    // cache-driven notifications while a request is in flight, so the resolved
+    // `session` below is what actually gets the status to the page.)
     const cachedQuery = client.readQuery<GetHostedSessionQuery>({
       query: GetHostedSessionDocument,
     })
@@ -126,12 +133,32 @@ const useHostedSessionValue = (): UseHostedSessionHook => {
       query: GetHostedSessionDocument,
       data: updatedQuery,
     })
+
+    handleTerminalSession(updatedHostedSession)
   }
 
-  const hostedSession = data?.hostedSession?.session
+  const queriedSession = data?.hostedSession?.session
+  const queriedSessionStatus = queriedSession?.status
+
+  // A terminal status, once known from any source, must reach the page.
+  //
+  // The query observable cannot be relied on for this. When the `sessionCompleted`
+  // frame lands while a `GetHostedSession` poll is in flight, `handleTerminalSession`
+  // aborts that poll; Apollo parks the observable on the resulting cancellation
+  // (networkStatus `error`) and keeps serving the last pre-completion snapshot.
+  // Because `isTerminated` blocks every subsequent request, nothing ever refreshes
+  // it — so `data` stays ACTIVE forever even though the cache says COMPLETED.
+  // Preferring the terminal payload here makes the redirect independent of the
+  // query resolving at all.
+  const hasStaleQueriedSession =
+    !isNil(terminalSession) && !isTerminalSessionStatus(queriedSessionStatus)
+  const hostedSession = hasStaleQueriedSession
+    ? terminalSession
+    : queriedSession
+  const hasTerminalSession = isTerminalSessionStatus(hostedSession?.status)
+
   const sessionId = hostedSession?.id
   const organizationSlug = hostedSession?.organization_slug
-  const sessionStatus = hostedSession?.status
   const pathwayId = hostedSession?.pathway_id
   const stakeholderId = hostedSession?.stakeholder?.id
   const stakeholderName = hostedSession?.stakeholder?.name
@@ -214,12 +241,14 @@ const useHostedSessionValue = (): UseHostedSessionHook => {
   }, [organizationSlug])
 
   // Handle session completion/expiration status
-  // Only runs when session status changes
+  // Only runs when session status changes.
+  // Deliberately keyed on the *queried* session: this is the poll path noticing a
+  // terminal status. The push path calls handleTerminalSession directly.
   useEffect(() => {
-    if (isTerminalSessionStatus(sessionStatus) && hostedSession) {
-      handleTerminalSession(hostedSession)
+    if (isTerminalSessionStatus(queriedSessionStatus) && queriedSession) {
+      handleTerminalSession(queriedSession)
     }
-  }, [sessionStatus, hostedSession])
+  }, [queriedSessionStatus, queriedSession])
 
   useEffect(() => {
     if (isSessionCompleted) {
@@ -241,15 +270,57 @@ const useHostedSessionValue = (): UseHostedSessionHook => {
     }
   }, [client, onHostedSessionExpired.data])
 
-  if (loading) {
+  // The fingerprint of the deadlock this hook used to sit in: the push path knows
+  // the session ended, the query observable still reports the old status, and no
+  // request will ever reconcile them. The session below is resolved from the push
+  // payload, so this is a warning about the transport, not a broken page.
+  useEffect(() => {
+    if (!hasStaleQueriedSession) return
+
+    logger.warn(
+      'Hosted session query is serving a stale status after session completion',
+      LogEvent.SESSION_TERMINAL_STATUS_DIVERGED,
+      {
+        session_id: terminalSession?.id,
+        terminal_session_status: terminalSession?.status,
+        queried_session_status: queriedSessionStatus ?? null,
+        query_loading: loading,
+        query_error: error?.message,
+        request_lifecycle_terminated: requestLifecycle.isTerminated,
+      }
+    )
+  }, [hasStaleQueriedSession])
+
+  // No request can settle once the lifecycle is terminated, so a query that is
+  // still loading past a few poll intervals is wedged rather than slow.
+  useEffect(() => {
+    if (!loading) return
+
+    const timeout = setTimeout(() => {
+      logger.warn(
+        'Hosted session query has not settled',
+        LogEvent.SESSION_QUERY_STALLED,
+        {
+          stalled_for_ms: STALLED_SESSION_QUERY_MS,
+          session_id: sessionId,
+          queried_session_status: queriedSessionStatus ?? null,
+          has_terminal_session: hasTerminalSession,
+          request_lifecycle_terminated: requestLifecycle.isTerminated,
+        }
+      )
+    }, STALLED_SESSION_QUERY_MS)
+
+    return () => clearTimeout(timeout)
+  }, [loading, queriedSessionStatus, hasTerminalSession])
+
+  // A cancelled request must not look like an error (below) — and must not look
+  // like `loading` either. Either way, a session we already know to be terminal
+  // has to be returned so the page can redirect.
+  if (loading && !hasTerminalSession) {
     return { loading: true, theme: defaultTheme, startPolling, stopPolling }
   }
 
-  if (
-    error &&
-    !isGraphQLRequestCancellation(error) &&
-    !isTerminalSessionStatus(sessionStatus)
-  ) {
+  if (error && !isGraphQLRequestCancellation(error) && !hasTerminalSession) {
     const unauthorizedError = error.graphQLErrors?.find(
       (err) => err.extensions?.code === 'UNAUTHORIZED'
     )
@@ -276,7 +347,7 @@ const useHostedSessionValue = (): UseHostedSessionHook => {
 
   return {
     loading: false,
-    session: data?.hostedSession?.session,
+    session: hostedSession,
     metadata: data?.hostedSession?.metadata,
     branding: data?.hostedSession?.branding,
     theme: getTheme(data?.hostedSession?.branding?.custom_theme),

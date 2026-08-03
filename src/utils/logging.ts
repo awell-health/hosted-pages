@@ -16,6 +16,10 @@ export enum LogEvent {
   SESSION_EXPIRED = 'SESSION_EXPIRED',
   SESSION_COMPLETED = 'SESSION_COMPLETED',
   SESSION_EXIT = 'SESSION_EXIT',
+  /** A terminal status was known from the push path while the query still reported an older one. */
+  SESSION_TERMINAL_STATUS_DIVERGED = 'SESSION_TERMINAL_STATUS_DIVERGED',
+  /** `useGetHostedSessionQuery` stayed in a loading state past several poll intervals. */
+  SESSION_QUERY_STALLED = 'SESSION_QUERY_STALLED',
 
   MESSAGE_MARKING_AS_READ = 'MESSAGE_MARKING_AS_READ',
   MESSAGE_MARKED_AS_READ = 'MESSAGE_MARKED_AS_READ',
@@ -62,6 +66,8 @@ export enum LogEvent {
   GRAPHQL_WS_PONG = 'GRAPHQL_WS_PONG',
   GRAPHQL_WS_KEEPALIVE_TIMEOUT = 'GRAPHQL_WS_KEEPALIVE_TIMEOUT',
   GRAPHQL_WS_MESSAGE = 'GRAPHQL_WS_MESSAGE',
+  /** `cancelPendingRequests()` aborted one or more in-flight requests. */
+  GRAPHQL_REQUESTS_ABORTED = 'GRAPHQL_REQUESTS_ABORTED',
 
   REMOTE_SINGLE_SELECT_OPTIONS = 'REMOTE_SINGLE_SELECT_OPTIONS',
 
