@@ -1,0 +1,91 @@
+# Source-repo docs-contract workflow
+#
+# Copy this file into each source repo (awell-next, panels, extensions, hosted-pages)
+# as .github/workflows/docs-contract.yml. It is identical across repos — only the
+# origin_repo literal below differs (or derive it from github.repository).
+#
+# What it does:
+#   1. validate — runs on PR open/edit/synchronize. Calls the awell-docs reusable
+#      validator to check the [DOCUMENTATION] block (or accept the docs-skip label).
+#      Make this job a REQUIRED status check in branch protection.
+#   2. notify  — runs only when the PR is closed AND merged. Calls the awell-docs
+#      reusable sender, which fires repository_dispatch at awell-docs.
+#
+# Prerequisites (awell-docs is a PRIVATE repo):
+#   - In awell-docs → Settings → Actions → General → Access, allow these reusable
+#     workflows to be used by repos in the awell-health org. Without this, the
+#     `uses:` references below fail with a not-found/permission error.
+#   - A token with contents:read on awell-docs (for the validator's checkout) AND
+#     permission to dispatch workflows on awell-docs. The org secret
+#     CONTENTS_AND_WORKFLOWS_TOKEN already covers both and is available to these
+#     repos, so it is mapped into the reusable-workflow inputs below. Swap it for
+#     a dedicated least-privilege token later if desired — only the mapping changes,
+#     not the reusable workflows.
+#   - ANTHROPIC_API_KEY — for the draft job (the agent that drafts a [DOCUMENTATION]
+#     block from the diff when a PR has none). Add it as a repo or org secret.
+#
+# See awell-docs/skills/triggering-doc-updates/SETUP.md for the full contract.
+
+name: docs-contract
+
+on:
+  pull_request:
+    # labeled/unlabeled are included so applying (or removing) the `docs-skip`
+    # label re-runs `validate` — without them, adding the label doesn't re-trigger
+    # the check and it stays red until you push a commit. Only validate re-runs on
+    # a label change; draft (opened/reopened) and notify (closed) don't.
+    types: [opened, edited, reopened, synchronize, closed, labeled, unlabeled]
+
+# The draft job edits the PR body and the validate job posts a comment, so the
+# token needs pull-requests: write. Set here at the top level so it applies
+# regardless of the repo's default GITHUB_TOKEN permissions.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  draft:
+    name: Draft [DOCUMENTATION] block
+    # Only on open/reopen: if the PR has no block, an agent drafts one from the
+    # diff so the author starts from a real draft. It never overwrites an
+    # existing block (the reusable workflow gates on that).
+    if: github.event.action == 'opened' || github.event.action == 'reopened'
+    uses: awell-health/awell-docs/.github/workflows/draft-doc-block.yml@main
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_labels: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      base_ref: ${{ github.event.pull_request.base.ref }}
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      DOCS_READ_TOKEN: ${{ secrets.CONTENTS_AND_WORKFLOWS_TOKEN }}
+
+  validate:
+    name: Validate [DOCUMENTATION] block
+    if: github.event.action != 'closed'
+    uses: awell-health/awell-docs/.github/workflows/validate-doc-block.yml@main
+    with:
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_labels: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      pr_number: ${{ github.event.pull_request.number }}
+    secrets:
+      DOCS_READ_TOKEN: ${{ secrets.CONTENTS_AND_WORKFLOWS_TOKEN }}
+
+  notify:
+    name: Notify awell-docs of merge
+    # No `needs: validate` here: on a merge the action is `closed`, so the
+    # validate job is SKIPPED, and a job that `needs` a skipped job is itself
+    # skipped — which would stop notify from ever firing. Validation already
+    # gated the merge as a required status check on earlier events, so notify
+    # just fires on the merge.
+    if: github.event.action == 'closed' && github.event.pull_request.merged
+    uses: awell-health/awell-docs/.github/workflows/notify-doc-update.yml@main
+    with:
+      origin_repo: hosted-pages  # ← change per repo (awell-next | panels | extensions | hosted-pages)
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_url: ${{ github.event.pull_request.html_url }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      author: ${{ github.event.pull_request.user.login }}
+    secrets:
+      DOCS_DISPATCH_TOKEN: ${{ secrets.CONTENTS_AND_WORKFLOWS_TOKEN }}
