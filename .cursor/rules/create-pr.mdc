@@ -1,0 +1,25 @@
+---
+description: Create a PR (slash command) — use gh to open a pull request
+alwaysApply: false
+---
+# Create PR
+
+When the user runs this command: push the current branch if needed, then run:
+
+```bash
+gh pr create --fill
+```
+
+Offer `--draft` or `--web` if relevant.
+
+## Documentation section
+
+Awell source repos require every PR to either carry a `[DOCUMENTATION]` block in its description or
+carry the `docs-skip` label. Fold that choice into the `gh pr create` call above — append the block
+to the body for customer-facing changes, or add `--label docs-skip` for non-customer-facing ones.
+
+For the contract (block fields, opt-out rules), load the author-facing skill from `awell-docs`:
+
+```bash
+gh api repos/awell-health/awell-docs/contents/skills/triggering-doc-updates/SKILL.md --jq '.content' | base64 -d
+```
