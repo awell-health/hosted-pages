@@ -177,6 +177,37 @@ file contents match exactly. Confirm which branch you are reasoning about — an
 paths (`git diff main origin/production -- src pages`) over comparing SHAs — before concluding
 "the code doesn't do that".
 
+## Documentation
+
+When a PR merges here, `.github/workflows/notify-docs.yml` tells
+`awell-health/awell-docs`. An agent there reads the merged change and, if
+there's something worth documenting, opens a docs PR for a human to review.
+
+**Nothing in this repo is gated** — no validator, no required check, nothing
+that can block your merge. You don't have to do anything.
+
+Two things you can optionally do:
+
+**Apply the `docs-skip` label** when a PR has no customer-facing impact — a
+refactor, tests, CI, a dependency bump. awell-docs then skips the run
+entirely: no agent, no cost, no Slack message. This is the one worth
+remembering. Without it, an agent spends a few minutes working out there was
+nothing to write.
+
+**Add a `[DOCUMENTATION]` block** to the description when you want to steer
+what gets written. It's guidance, not a gate: with one, the agent writes to
+the impact you describe; without one, it reads the merged code and decides for
+itself. Nothing validates it and nothing fails if it's malformed — a broken
+block is silently ignored and you lose the steering, so it's worth either
+getting right or leaving out.
+
+The block's fields and rules live in awell-docs:
+
+```bash
+gh api repos/awell-health/awell-docs/contents/skills/triggering-doc-updates/SKILL.md \
+  --jq '.content' | base64 -d
+```
+
 ## Diagnosing a red Checkly check
 
 The Checkly CLI is the fastest path from a red check to root cause (`npx checkly whoami` to confirm
