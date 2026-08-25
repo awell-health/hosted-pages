@@ -1,0 +1,115 @@
+# Notify awell-docs when a PR merges (GitHub source repos)
+#
+# WHAT IT DOES
+#   On a merged pull request, POSTs a `doc-update` repository_dispatch event to the
+#   private repo awell-health/awell-docs. The docs agent runs over there: it reads the
+#   merged PR and opens a docs PR for a human to review. Nothing else happens in this
+#   repo — no checkout, no build, no status check, no gate on your merge.
+#
+#   A dispatch POST (not a `uses:` reference to a reusable workflow) is deliberate:
+#   awell-docs is private, and a public repo such as hosted-pages cannot call a
+#   reusable workflow that lives in a private repo. Any repo can POST to a private
+#   repo's dispatch endpoint with a token, so this file works everywhere.
+#
+# WHERE TO COPY IT
+#   .github/workflows/notify-docs.yml in the source repo.
+#   This file is byte-identical in every GitHub source repo — the repo name and URL
+#   are derived from the GitHub context, so there is no per-repo literal to edit and
+#   nothing to get wrong. Copy it verbatim.
+#
+# SECRETS
+#   CONTENTS_AND_WORKFLOWS_TOKEN — a token allowed to dispatch on awell-health/awell-docs.
+#   This org secret already exists and is already available to the source repos, so
+#   there is usually nothing to set up. To use a dedicated least-privilege token
+#   instead, change only the `TOKEN:` line below.
+#
+# THE [DOCUMENTATION] BLOCK IS OPTIONAL
+#   There is no validator, no required status check, and no template to paste. If the
+#   PR description contains a [DOCUMENTATION] block, the docs agent treats it as your
+#   guidance on what to write. If it doesn't, the agent reads the merged code itself.
+#   Writing a block is a way to steer the docs, never a hoop to jump through.
+
+name: notify-docs
+
+on:
+  pull_request:
+    types: [closed]
+
+# Nothing here needs GITHUB_TOKEN: no checkout, no API call against this repo.
+permissions: {}
+
+jobs:
+  notify:
+    name: Notify awell-docs of merge
+    # `closed` fires on both merge and plain close. Only a merge is a doc event.
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fire repository_dispatch at awell-docs
+        # Every value is passed as an env var and the JSON is built with `jq -n --arg`,
+        # never by interpolating ${{ … }} into a JSON string or a shell command. jq owns
+        # the quoting and escaping, so a PR title or body containing quotes, newlines,
+        # backticks, `$(…)`, or `${{`-like text cannot break the JSON or inject shell.
+        env:
+          TOKEN: ${{ secrets.CONTENTS_AND_WORKFLOWS_TOKEN }}
+          REPO: ${{ github.repository }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          URL: ${{ github.event.pull_request.html_url }}
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          MERGED_AT: ${{ github.event.pull_request.merged_at }}
+        run: |
+          set -euo pipefail
+
+          # DO NOT FLATTEN THIS. GitHub's repository_dispatch API allows at most
+          # 10 TOP-LEVEL properties in client_payload and rejects the POST with
+          # HTTP 422 ("No more than 10 properties are allowed") when there are
+          # more. A flat payload of these same fields is 11 and fails — that is
+          # a real production failure, not a hypothetical. The limit counts only
+          # top-level keys, so the human-authored fields (url, title, body,
+          # author, merged_at) are grouped under `pr`, which costs nothing and
+          # buys permanent headroom. Top-level count today: 7 of 10. Anything
+          # new that describes the PR itself belongs inside `pr`, not beside it.
+          jq -n \
+            --arg host "github" \
+            --arg repo "$REPO" \
+            --arg repo_url "$REPO_URL" \
+            --arg number "$NUMBER" \
+            --arg merge_sha "$MERGE_SHA" \
+            --arg labels "$LABELS" \
+            --arg url "$URL" \
+            --arg title "$TITLE" \
+            --arg body "$BODY" \
+            --arg author "$AUTHOR" \
+            --arg merged_at "$MERGED_AT" \
+            '{
+              event_type: "doc-update",
+              client_payload: {
+                host: $host,
+                repo: $repo,
+                repo_url: $repo_url,
+                number: $number,
+                merge_sha: $merge_sha,
+                labels: $labels,
+                pr: {
+                  url: $url,
+                  title: $title,
+                  body: $body,
+                  author: $author,
+                  merged_at: $merged_at
+                }
+              }
+            }' > "$RUNNER_TEMP/payload.json"
+
+          curl -sS --fail-with-body -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/awell-health/awell-docs/dispatches \
+            --data @"$RUNNER_TEMP/payload.json"
+
+          echo "Dispatched doc-update for $REPO#$NUMBER to awell-health/awell-docs."
