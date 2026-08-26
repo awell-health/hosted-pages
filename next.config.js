@@ -4,7 +4,6 @@ const { withSentryConfig } = require('@sentry/nextjs')
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   i18n,
   images: {
     domains: ['res.cloudinary.com'],

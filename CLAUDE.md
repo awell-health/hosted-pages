@@ -30,10 +30,10 @@ Commits run `lint-staged` (typecheck + eslint + `vitest related`) via husky. CI 
 
 Session status reaches the UI two ways. They look redundant. **They are not.**
 
-| Path     | Mechanism                                                                                                                           | Where                                                                            |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| **Poll** | `useGetHostedSessionQuery` + Apollo `startPolling(2000)`, registered through `ConnectivityContext` so it pauses when offline/hidden | `pages/index.tsx` (polling registration), `src/contexts/ConnectivityContext.tsx` |
-| **Push** | `useOnHostedSessionCompletedSubscription` / `…ExpiredSubscription` → `client.writeQuery`                                            | `src/hooks/useHostedSession/useHostedSession.ts`                                 |
+| Path     | Mechanism                                                                                                                                           | Where                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Poll** | `useGetHostedSessionQuery` + Apollo `startPolling(…)`, registered through `ConnectivityContext`, which picks the interval and stops it when offline | `pages/index.tsx` (polling registration), `src/contexts/ConnectivityContext.tsx` |
+| **Push** | `useOnHostedSessionCompletedSubscription` / `…ExpiredSubscription` → `client.writeQuery`                                                            | `src/hooks/useHostedSession/useHostedSession.ts`                                 |
 
 The push path only writes to the Apollo **cache**. The page reads the session exclusively from the
 value `useHostedSession()` returns. So whenever the query observable is wedged, the push path is
@@ -50,6 +50,29 @@ non-terminal status. Don't "simplify" that back to reading `data` alone — see 
 `useSessionActivities` is the pattern to copy for new hooks: it returns `activities` and `loading`
 side by side, never early-returns, and merges subscription data with Apollo's own `subscribeToMore`
 rather than a manual `writeQuery`.
+
+### Visibility selects the interval; connectivity decides whether to poll at all
+
+`registerPollingTask({ start(mode), stop() })` calls `start` with a `PollingMode` of `visible` or
+`hidden`, and re-invokes it with the new mode whenever visibility flips. Intervals live in
+`src/config/polling.ts` (`SESSION_POLL_INTERVAL_MS`): 2 s visible, 60 s hidden.
+
+- **A hidden tab keeps polling, slower.** Backgrounding is not abandonment — the session can still
+  complete or expire while the patient is elsewhere, and a missed subscription frame has to be
+  reconcilable. `SESSION_HIDDEN` is logged at info level for this; `SESSION_EXIT` (warn) is
+  `beforeunload` only.
+- **Only `!isOnline` stops polling**, because offline no request can succeed anyway. `isConnected`
+  therefore tracks `isOnline` alone.
+- The 60 s hidden interval sits at the browser's background-timer floor (Chrome throttles hidden-tab
+  timers to about once a minute); asking for less just queues deferred work. Apollo itself does _not_
+  pause polling on hidden tabs — verified against 3.8.6, there is no `visibilityState` handling in
+  its core — so this is entirely our policy to set.
+- The provider seeds `isOnline`/`isVisible` from `navigator.onLine` / `document.visibilityState` on
+  first render. Don't revert those to `useState(true)`: optimistic defaults make the first
+  registration start a fast poll that is torn down a tick later, wasting a request when the page is
+  loaded offline and firing a 2 s burst when it is restored into a background tab.
+
+Contract tests: `src/contexts/ConnectivityContext.test.tsx`.
 
 ## `cancelPendingRequests()` is a one-way door
 
@@ -153,6 +176,37 @@ So a Sentry `release` SHA points at a merge commit that does **not** exist on `m
 file contents match exactly. Confirm which branch you are reasoning about — and prefer diffing
 paths (`git diff main origin/production -- src pages`) over comparing SHAs — before concluding
 "the code doesn't do that".
+
+## Documentation
+
+When a PR merges here, `.github/workflows/notify-docs.yml` tells
+`awell-health/awell-docs`. An agent there reads the merged change and, if
+there's something worth documenting, opens a docs PR for a human to review.
+
+**Nothing in this repo is gated** — no validator, no required check, nothing
+that can block your merge. You don't have to do anything.
+
+Two things you can optionally do:
+
+**Apply the `docs-skip` label** when a PR has no customer-facing impact — a
+refactor, tests, CI, a dependency bump. awell-docs then skips the run
+entirely: no agent, no cost, no Slack message. This is the one worth
+remembering. Without it, an agent spends a few minutes working out there was
+nothing to write.
+
+**Add a `[DOCUMENTATION]` block** to the description when you want to steer
+what gets written. It's guidance, not a gate: with one, the agent writes to
+the impact you describe; without one, it reads the merged code and decides for
+itself. Nothing validates it and nothing fails if it's malformed — a broken
+block is silently ignored and you lose the steering, so it's worth either
+getting right or leaving out.
+
+The block's fields and rules live in awell-docs:
+
+```bash
+gh api repos/awell-health/awell-docs/contents/skills/triggering-doc-updates/SKILL.md \
+  --jq '.content' | base64 -d
+```
 
 ## Diagnosing a red Checkly check
 
