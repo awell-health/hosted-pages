@@ -19,6 +19,7 @@ import {
   updateQuery,
   useGraphQLRequestLifecycle,
 } from '../../services/graphql'
+import { SESSION_POLL_INTERVAL_MS } from '../../config/polling'
 import { Maybe } from '../../types'
 import { SessionMetadata } from '../../types/generated/types-orchestration'
 import { LogEvent, logger } from '../../utils/logging'
@@ -45,9 +46,10 @@ const getOrganizationsWithAutoReplay = (): string[] => {
     .filter(Boolean)
 }
 
-// Three 2s poll intervals (see the polling registration in pages/index.tsx).
-// Past this point the query observable is not slow, it is stuck.
-const STALLED_SESSION_QUERY_MS = 6000
+// Three visible-mode poll intervals. Past this point the query observable is not
+// slow, it is stuck. Only `loading` is gated on this, which is an initial-load
+// concern, so the slower hidden-tab interval is deliberately not used here.
+const STALLED_SESSION_QUERY_MS = 3 * SESSION_POLL_INTERVAL_MS.visible
 
 export interface UseHostedSessionHook {
   loading: boolean

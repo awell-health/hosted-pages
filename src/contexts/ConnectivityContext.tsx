@@ -8,16 +8,24 @@ import {
 } from 'react'
 import * as Sentry from '@sentry/nextjs'
 
+import type { PollingMode } from '../config/polling'
 import { LogEvent } from '../utils/logging'
+
+export type PollingTask = {
+  /**
+   * Called with the mode that applies right now. Re-invoked with a new mode when
+   * visibility changes, so consumers can pick a different interval rather than
+   * having their polling torn down.
+   */
+  start: (_mode: PollingMode) => void
+  stop: () => void
+}
 
 type Connectivity = {
   isOnline: boolean
   isVisible: boolean
   isConnected: boolean
-  registerPollingTask: (task: {
-    start: () => void
-    stop: () => void
-  }) => () => void
+  registerPollingTask: (_task: PollingTask) => () => void
 }
 
 const ConnectivityContext = createContext<Connectivity | undefined>(undefined)
@@ -27,18 +35,31 @@ export const ConnectivityProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [isOnline, setIsOnline] = useState<boolean>(true)
-  const [isVisible, setIsVisible] = useState<boolean>(true)
+  // Read the real state on the first render rather than assuming online/visible.
+  // Assuming otherwise makes the very first registration fire a fast-interval poll
+  // that is immediately torn down — a wasted request when the page is loaded
+  // offline, and a needless 2s burst when it is restored into a background tab.
+  const [isOnline, setIsOnline] = useState<boolean>(() =>
+    typeof navigator === 'undefined' ? true : navigator.onLine
+  )
+  const [isVisible, setIsVisible] = useState<boolean>(() =>
+    typeof document === 'undefined'
+      ? true
+      : document.visibilityState === 'visible'
+  )
 
   const registerPollingTask = useCallback(
-    (task: { start: () => void; stop: () => void }) => {
+    (task: PollingTask) => {
+      const pollingMode: PollingMode = isVisible ? 'visible' : 'hidden'
       Sentry.logger?.info('Polling task registered', {
         event_type: LogEvent.SESSION_POLLING_TASK_REGISTERED,
         timestamp: new Date().toISOString(),
         isOnline,
         isVisible,
+        pollingMode,
       })
-      if (isOnline && isVisible) task.start()
+      // Visibility only selects the interval; being offline is what stops polling.
+      if (isOnline) task.start(pollingMode)
       return () => {
         try {
           task.stop()
@@ -126,7 +147,7 @@ export const ConnectivityProvider = ({
   }, [isOnline])
 
   const value = useMemo<Connectivity>(() => {
-    const isConnected = isOnline && isVisible
+    const isConnected = isOnline
     return { isOnline, isVisible, isConnected, registerPollingTask }
   }, [isOnline, isVisible, registerPollingTask])
 
