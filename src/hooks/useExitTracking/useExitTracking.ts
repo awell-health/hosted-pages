@@ -5,8 +5,7 @@ import { useCurrentActivity } from '../../components/Activities/hooks'
 import { logger, LogEvent } from '../../utils/logging'
 
 /**
- * Hook to track session abandonment via beforeunload and visibilitychange events.
- * Logs to Sentry when user leaves an active session.
+ * Hook to track active sessions moving out of view or unloading.
  */
 export const useExitTracking = () => {
   const { session } = useHostedSession()
@@ -27,32 +26,51 @@ export const useExitTracking = () => {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const logSessionExit = (exitType: 'beforeunload' | 'visibilitychange') => {
+    const getActiveSessionContext = () => {
       const currentSession = sessionRef.current
       const activity = currentActivityRef.current
 
       // Only log for active sessions (not completed or expired)
       if (currentSession?.status !== HostedSessionStatus.Active) {
-        return
+        return null
       }
 
-      logger.warn('Session exit detected', LogEvent.SESSION_EXIT, {
-        sessionStatus: currentSession?.status,
-        exit_type: exitType,
+      return {
+        sessionStatus: currentSession.status,
         activity_id: activity?.id,
         activity_type: activity?.object?.type,
         user_agent: navigator.userAgent,
         url: window.location.href,
+      }
+    }
+
+    const logSessionExit = () => {
+      const context = getActiveSessionContext()
+      if (context === null) return
+
+      logger.warn('Session exit detected', LogEvent.SESSION_EXIT, {
+        exit_type: 'beforeunload',
+        ...context,
+      })
+    }
+
+    const logSessionHidden = () => {
+      const context = getActiveSessionContext()
+      if (context === null) return
+
+      logger.info('Session hidden', LogEvent.SESSION_HIDDEN, {
+        visibility_state: document.visibilityState,
+        ...context,
       })
     }
 
     const handleBeforeUnload = () => {
-      logSessionExit('beforeunload')
+      logSessionExit()
     }
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        logSessionExit('visibilitychange')
+        logSessionHidden()
       }
     }
 
