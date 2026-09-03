@@ -29,15 +29,19 @@
     ],
     "PaginationAndSortingPayload": [
       "ActivitiesPayload",
+      "BaselineInfoLogPayload",
+      "CareflowEventsPayload",
       "DataPointPayload",
       "OrchestrationFactsPayload",
       "PathwaysPayload",
       "PatientsPayload",
-      "PublishedPathwayDefinitionsPayload"
+      "PublishedPathwayDefinitionsPayload",
+      "WebhookCallsPayload"
     ],
     "Payload": [
       "ActionPayload",
       "ActivityPayload",
+      "ActivityTimerPayload",
       "ActivityTypesPayload",
       "AddActivityMetadataPayload",
       "AddIdentifierToPatientPayload",
@@ -47,15 +51,17 @@
       "BaselineInfoPayload",
       "CalculationResultsPayload",
       "CancelScheduledTracksPayload",
+      "CareflowTimersPayload",
+      "CareflowTracksPayload",
       "ChecklistPayload",
       "ClinicalNotePayload",
       "CompleteExtensionActivityPayload",
       "CompleteSessionPayload",
       "CreatePatientPayload",
-      "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",
       "EvaluateFormRulesPayload",
+      "EvaluatedRulePayload",
       "ExtensionActivityRecordPayload",
       "FileUploadGCSPayload",
       "FormActivityDataPointsPayload",
@@ -64,10 +70,12 @@
       "FormsPayload",
       "GenerateRetoolEmbedUrlPayload",
       "HostedPagesLinkPayload",
+      "HostedPagesLinksPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
       "IdentityVerificationPayload",
       "MarkMessageAsReadPayload",
+      "MergePatientsPayload",
       "MessagePayload",
       "OrchestrationFactsPromptPayload",
       "PathwayDataPointDefinitionsPayload",
@@ -78,6 +86,7 @@
       "RetryApiCallPayload",
       "RetryWebhookCallPayload",
       "ScheduleTrackPayload",
+      "ScheduledDestinationsPayload",
       "ScheduledStepsPayload",
       "ScheduledTracksPayload",
       "SearchPatientsPayload",
@@ -97,8 +106,14 @@
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
       "UpsertPatientPayload",
-      "WebhookCallPayload",
-      "WebhookCallsPayload"
+      "WebhookCallPayload"
+    ],
+    "TimerConfigInterface": [
+      "DataPointAwaitedTimerConfig",
+      "DataPointReferenceTimerConfig",
+      "DelayTimerConfig",
+      "EventReferenceTimerConfig",
+      "ExtensionResourceUpdatedTimerConfig"
     ]
   }
 };

@@ -37,15 +37,19 @@ const defaultOptions = {} as const;
     ],
     "PaginationAndSortingPayload": [
       "ActivitiesPayload",
+      "BaselineInfoLogPayload",
+      "CareflowEventsPayload",
       "DataPointPayload",
       "OrchestrationFactsPayload",
       "PathwaysPayload",
       "PatientsPayload",
-      "PublishedPathwayDefinitionsPayload"
+      "PublishedPathwayDefinitionsPayload",
+      "WebhookCallsPayload"
     ],
     "Payload": [
       "ActionPayload",
       "ActivityPayload",
+      "ActivityTimerPayload",
       "ActivityTypesPayload",
       "AddActivityMetadataPayload",
       "AddIdentifierToPatientPayload",
@@ -55,15 +59,17 @@ const defaultOptions = {} as const;
       "BaselineInfoPayload",
       "CalculationResultsPayload",
       "CancelScheduledTracksPayload",
+      "CareflowTimersPayload",
+      "CareflowTracksPayload",
       "ChecklistPayload",
       "ClinicalNotePayload",
       "CompleteExtensionActivityPayload",
       "CompleteSessionPayload",
       "CreatePatientPayload",
-      "ElementsPayload",
       "EmptyPayload",
       "EmrReportPayload",
       "EvaluateFormRulesPayload",
+      "EvaluatedRulePayload",
       "ExtensionActivityRecordPayload",
       "FileUploadGCSPayload",
       "FormActivityDataPointsPayload",
@@ -72,10 +78,12 @@ const defaultOptions = {} as const;
       "FormsPayload",
       "GenerateRetoolEmbedUrlPayload",
       "HostedPagesLinkPayload",
+      "HostedPagesLinksPayload",
       "HostedSessionActivitiesPayload",
       "HostedSessionPayload",
       "IdentityVerificationPayload",
       "MarkMessageAsReadPayload",
+      "MergePatientsPayload",
       "MessagePayload",
       "OrchestrationFactsPromptPayload",
       "PathwayDataPointDefinitionsPayload",
@@ -86,6 +94,7 @@ const defaultOptions = {} as const;
       "RetryApiCallPayload",
       "RetryWebhookCallPayload",
       "ScheduleTrackPayload",
+      "ScheduledDestinationsPayload",
       "ScheduledStepsPayload",
       "ScheduledTracksPayload",
       "SearchPatientsPayload",
@@ -105,8 +114,14 @@ const defaultOptions = {} as const;
       "UpdatePatientLanguagePayload",
       "UpdatePatientPayload",
       "UpsertPatientPayload",
-      "WebhookCallPayload",
-      "WebhookCallsPayload"
+      "WebhookCallPayload"
+    ],
+    "TimerConfigInterface": [
+      "DataPointAwaitedTimerConfig",
+      "DataPointReferenceTimerConfig",
+      "DelayTimerConfig",
+      "EventReferenceTimerConfig",
+      "ExtensionResourceUpdatedTimerConfig"
     ]
   }
 };
@@ -174,6 +189,8 @@ export type Activity = {
   container_name?: Maybe<Scalars['String']>;
   context?: Maybe<PathwayContext>;
   date: Scalars['String'];
+  /** When set, the activity is configured to expire at this time (ISO string). Only present when already persisted on the activity. */
+  expires_at?: Maybe<Scalars['String']>;
   form?: Maybe<Form>;
   /** Form display mode can either be conversational (1 question at a time) or regular (all questions at once). Only used in hosted pages for now. */
   form_display_mode?: Maybe<FormDisplayMode>;
@@ -214,6 +231,7 @@ export enum ActivityAction {
   FailedToSend = 'FAILED_TO_SEND',
   Generated = 'GENERATED',
   IsWaitingOn = 'IS_WAITING_ON',
+  Paused = 'PAUSED',
   Postponed = 'POSTPONED',
   Processed = 'PROCESSED',
   Read = 'READ',
@@ -225,6 +243,10 @@ export enum ActivityAction {
   Stopped = 'STOPPED',
   Submitted = 'SUBMITTED'
 }
+
+export type ActivityActionArrayFilter = {
+  in?: InputMaybe<Array<ActivityAction>>;
+};
 
 export enum ActivityInputType {
   Calculation = 'CALCULATION',
@@ -358,6 +380,13 @@ export enum ActivitySubjectType {
   User = 'USER'
 }
 
+export type ActivityTimerPayload = Payload & {
+  __typename?: 'ActivityTimerPayload';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  timer?: Maybe<CareflowTimer>;
+};
+
 export type ActivityTrack = {
   __typename?: 'ActivityTrack';
   id?: Maybe<Scalars['String']>;
@@ -397,6 +426,7 @@ export type AddIdentifierToPatientPayload = Payload & {
 };
 
 export type AddTrackInput = {
+  allow_any_track_definition?: InputMaybe<Scalars['Boolean']>;
   pathway_id: Scalars['String'];
   track_id: Scalars['String'];
 };
@@ -544,6 +574,15 @@ export type BaselineInfoInput = {
   value: Scalars['String'];
 };
 
+export type BaselineInfoLogPayload = PaginationAndSortingPayload & {
+  __typename?: 'BaselineInfoLogPayload';
+  code: Scalars['String'];
+  dataPoints: Array<DataPoint>;
+  pagination?: Maybe<PaginationOutput>;
+  sorting?: Maybe<SortingOutput>;
+  success: Scalars['Boolean'];
+};
+
 export type BaselineInfoPayload = Payload & {
   __typename?: 'BaselineInfoPayload';
   baselineDataPoints: Array<BaselineDataPoint>;
@@ -589,7 +628,7 @@ export type CalculationActivityOutputs = ActivityOutputs & {
 export type CalculationInput = {
   __typename?: 'CalculationInput';
   calculation_input_id: Scalars['String'];
-  data_point_value: Scalars['JSON'];
+  data_point_value?: Maybe<Scalars['JSON']>;
 };
 
 export type CalculationResultsPayload = Payload & {
@@ -610,11 +649,133 @@ export type CancelScheduledTracksPayload = Payload & {
   unscheduled_ids: Array<Scalars['String']>;
 };
 
+/** One recorded moment of a care flow's execution — `<subject>.<moment>` from the closed vocabulary (careflow/track/step/timer/decision × started/completed/stopped/fired/evaluated). Durable and append-only. */
+export type CareflowEvent = {
+  __typename?: 'CareflowEvent';
+  /** Activity INSTANCE id — the execution that produced the moment. */
+  activity_id?: Maybe<Scalars['String']>;
+  /** Care flow INSTANCE id the event belongs to. */
+  careflow_id: Scalars['String'];
+  cause?: Maybe<CareflowEventCause>;
+  /** The `<subject>.<moment>` event type from the closed vocabulary (e.g. 'track.completed'). */
+  event_type: Scalars['String'];
+  /** The event id (the store document key). */
+  id: Scalars['String'];
+  /** When the moment happened (ISO datetime) — the timeline axis. */
+  occurred_at: Scalars['String'];
+  /** Care flow DEFINITION id — context, never a query key. */
+  pathway_definition_id?: Maybe<Scalars['String']>;
+  payload?: Maybe<CareflowEventPayload>;
+  /** When the store persisted the event (append order / audit). */
+  recorded_at: Scalars['String'];
+  release_id?: Maybe<Scalars['String']>;
+  session_id?: Maybe<Scalars['String']>;
+  subject: CareflowEventSubject;
+};
+
+/** WHY/WHO the moment happened, for events with an explicit initiator — the care-flow completion provenance generalized. */
+export type CareflowEventCause = {
+  __typename?: 'CareflowEventCause';
+  /** WHO initiated the moment, when initiated_by is 'manual' (member id / service account). */
+  actor_id?: Maybe<Scalars['String']>;
+  /** Display name for the actor, when known. */
+  actor_name?: Maybe<Scalars['String']>;
+  /** The evaluated-rule snapshot that gated the trigger, when one existed. */
+  evaluated_rule_id?: Maybe<Scalars['String']>;
+  /** How the moment came about: eligibility, trigger or manual. */
+  initiated_by: Scalars['String'];
+  /** Free-text reason (manual path). */
+  reason?: Maybe<Scalars['String']>;
+  /** The trigger's DEFINITION id (stable across releases), when initiated_by is 'trigger'. */
+  trigger_definition_id?: Maybe<Scalars['String']>;
+  /** The trigger's per-release published id, when initiated_by is 'trigger'. */
+  trigger_published_id?: Maybe<Scalars['String']>;
+};
+
+/** Moment-specific facts that are part of the event itself (not chartable values — those stay data points). */
+export type CareflowEventPayload = {
+  __typename?: 'CareflowEventPayload';
+  /** Looped-track moments — the loop iteration the moment belongs to. */
+  iteration?: Maybe<Scalars['Int']>;
+  /** decision.evaluated — the evaluation outcome (matched rules / resolution), when produced. */
+  outcome?: Maybe<Scalars['JSON']>;
+};
+
+/** The node the event is a state change OF — always an author-drawn component. */
+export type CareflowEventSubject = {
+  __typename?: 'CareflowEventSubject';
+  /** The component DEFINITION id (stable across instances of a release) — the query key. */
+  definition_id: Scalars['String'];
+  /** Human-readable component name, when the writer had it in scope (display sugar, never a key). */
+  label?: Maybe<Scalars['String']>;
+  /** The navigation-graph node INSTANCE id that produced the moment, when the writer had one. */
+  node_id?: Maybe<Scalars['String']>;
+  /** The subject kind — the closed five: careflow, track, step, timer, decision. */
+  type: Scalars['String'];
+};
+
+export type CareflowEventsPayload = PaginationAndSortingPayload & {
+  __typename?: 'CareflowEventsPayload';
+  code: Scalars['String'];
+  events: Array<CareflowEvent>;
+  pagination?: Maybe<PaginationOutput>;
+  sorting?: Maybe<SortingOutput>;
+  success: Scalars['Boolean'];
+};
+
+export type CareflowTimer = {
+  __typename?: 'CareflowTimer';
+  activity_id: Scalars['String'];
+  careflow_id: Scalars['String'];
+  completion_reason?: Maybe<Scalars['String']>;
+  config: TimerConfigInterface;
+  created_at?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  job_id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  readable_explanation?: Maybe<Scalars['String']>;
+  resource_id?: Maybe<Scalars['String']>;
+  scheduled_date?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
+  type: Scalars['String'];
+  updated_at?: Maybe<Scalars['String']>;
+};
+
+export type CareflowTimersPayload = Payload & {
+  __typename?: 'CareflowTimersPayload';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  timers: Array<CareflowTimer>;
+};
+
+export type CareflowTrack = {
+  __typename?: 'CareflowTrack';
+  definition_id: Scalars['String'];
+  end_date?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  start_date: Scalars['String'];
+  started_by_user_id?: Maybe<Scalars['String']>;
+  started_by_user_name?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
+  stop_reason?: Maybe<Scalars['String']>;
+  stopped_by_user_id?: Maybe<Scalars['String']>;
+  stopped_by_user_name?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
+};
+
+export type CareflowTracksPayload = Payload & {
+  __typename?: 'CareflowTracksPayload';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  tracks: Array<CareflowTrack>;
+};
+
 export type CareflowVersion = {
   __typename?: 'CareflowVersion';
   live?: Maybe<Scalars['Boolean']>;
   release_date?: Maybe<Scalars['String']>;
   release_id?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['Float']>;
 };
 
@@ -649,6 +810,12 @@ export type ChoiceRangeConfig = {
   min?: Maybe<Scalars['Float']>;
 };
 
+export type ClearPatientDataInput = {
+  /** Stable field ids to clear, e.g. "patient_profile:mobile_phone" or "patient_identifier:<system>". Batch-capable. */
+  keys: Array<Scalars['String']>;
+  patient_id: Scalars['String'];
+};
+
 export type ClinicalNotePayload = Payload & {
   __typename?: 'ClinicalNotePayload';
   clinical_note: GeneratedClinicalNote;
@@ -677,6 +844,12 @@ export type CodeBlockExecutionMeta = {
   __typename?: 'CodeBlockExecutionMeta';
   duration_ms?: Maybe<Scalars['Float']>;
   execution_id?: Maybe<Scalars['String']>;
+};
+
+export type CompleteCareflowInput = {
+  careflow_id: Scalars['String'];
+  /** Why the care flow is being completed (recorded as provenance). */
+  reason?: InputMaybe<Scalars['String']>;
 };
 
 export type CompleteExtensionActivityInput = {
@@ -780,8 +953,21 @@ export type DataPoint = {
   date: Scalars['String'];
   id: Scalars['ID'];
   key?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
   serialized_value?: Maybe<Scalars['String']>;
+  source_node_id?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
   valueType: DataPointValueType;
+};
+
+export type DataPointAwaitedTimerConfig = TimerConfigInterface & {
+  __typename?: 'DataPointAwaitedTimerConfig';
+  data_point_definition_id: Scalars['String'];
+  data_point_key: Scalars['String'];
+  description: Scalars['String'];
+  timeout_unit: Scalars['String'];
+  timeout_value: Scalars['Int'];
+  type: Scalars['String'];
 };
 
 export type DataPointDefinition = {
@@ -828,6 +1014,39 @@ export type DataPointPossibleValue = {
   value: Scalars['String'];
 };
 
+export type DataPointProvenanceGraphqlType = {
+  __typename?: 'DataPointProvenanceGraphqlType';
+  activity_id?: Maybe<Scalars['String']>;
+  /** The user or service account responsible, when applicable. */
+  actor?: Maybe<Scalars['String']>;
+  /** The actor's resolved email address, when available. */
+  actor_email?: Maybe<Scalars['String']>;
+  /** The actor's resolved display name, when available. */
+  actor_name?: Maybe<Scalars['String']>;
+  careflow_id?: Maybe<Scalars['String']>;
+  /** When the underlying change occurred. */
+  collected_at: Scalars['String'];
+  ingestion_id?: Maybe<Scalars['String']>;
+  /** How the value was produced: form | decision | code | api_call | calculation | extension | lifecycle | import | manual | migration | derived. */
+  method: Scalars['String'];
+  step_id?: Maybe<Scalars['String']>;
+  track_id?: Maybe<Scalars['String']>;
+};
+
+export type DataPointReferenceTimerConfig = TimerConfigInterface & {
+  __typename?: 'DataPointReferenceTimerConfig';
+  data_point_definition_id: Scalars['String'];
+  data_point_key: Scalars['String'];
+  description: Scalars['String'];
+  hour?: Maybe<Scalars['String']>;
+  offset?: Maybe<Scalars['Int']>;
+  offsetDirection?: Maybe<Scalars['String']>;
+  offset_unit?: Maybe<Scalars['String']>;
+  period?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
+  usePatientTimezone?: Maybe<Scalars['Boolean']>;
+};
+
 export enum DataPointSourceType {
   Agent = 'AGENT',
   ApiCall = 'API_CALL',
@@ -854,6 +1073,7 @@ export enum DataPointValueType {
   AttachmentsArray = 'ATTACHMENTS_ARRAY',
   Boolean = 'BOOLEAN',
   Date = 'DATE',
+  Datetime = 'DATETIME',
   Json = 'JSON',
   Number = 'NUMBER',
   NumbersArray = 'NUMBERS_ARRAY',
@@ -890,6 +1110,14 @@ export type DecisionTableActivityOutputs = ActivityOutputs & {
   matched_rule_ids?: Maybe<Array<Scalars['String']>>;
   matched_rule_priorities?: Maybe<Array<Scalars['Float']>>;
   type: ActivityOutputType;
+};
+
+export type DelayTimerConfig = TimerConfigInterface & {
+  __typename?: 'DelayTimerConfig';
+  description: Scalars['String'];
+  type: Scalars['String'];
+  unit: Scalars['String'];
+  value: Scalars['Int'];
 };
 
 export type DeletePathwayInput = {
@@ -979,13 +1207,6 @@ export enum ElementType {
   Trigger = 'TRIGGER'
 }
 
-export type ElementsPayload = Payload & {
-  __typename?: 'ElementsPayload';
-  code: Scalars['String'];
-  elements: Array<Element>;
-  success: Scalars['Boolean'];
-};
-
 export type EmptyPayload = Payload & {
   __typename?: 'EmptyPayload';
   code: Scalars['String'];
@@ -1001,8 +1222,9 @@ export type EmrReport = {
 
 export type EmrReportMetadataField = {
   __typename?: 'EmrReportMetadataField';
-  id: Scalars['ID'];
-  label: Scalars['String'];
+  id?: Maybe<Scalars['ID']>;
+  label?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
   value?: Maybe<Scalars['String']>;
 };
 
@@ -1041,8 +1263,10 @@ export type EnrollmentTriggerDataPoint = {
 };
 
 export type EvaluateFormRulesInput = {
+  activity_id?: InputMaybe<Scalars['String']>;
   answers: Array<AnswerInput>;
   form_id: Scalars['String'];
+  pathway_id?: InputMaybe<Scalars['String']>;
 };
 
 export type EvaluateFormRulesPayload = Payload & {
@@ -1050,6 +1274,49 @@ export type EvaluateFormRulesPayload = Payload & {
   code: Scalars['String'];
   results: Array<QuestionRuleResult>;
   success: Scalars['Boolean'];
+};
+
+export type EvaluatedRule = {
+  __typename?: 'EvaluatedRule';
+  conditions: Array<EvaluatedRuleCondition>;
+  satisfied: Scalars['Boolean'];
+};
+
+export type EvaluatedRuleCondition = {
+  __typename?: 'EvaluatedRuleCondition';
+  id: Scalars['String'];
+  operand?: Maybe<Operand>;
+  operator?: Maybe<ConditionOperator>;
+  reference?: Maybe<EvaluatedRuleReference>;
+  satisfied: Scalars['Boolean'];
+};
+
+export type EvaluatedRulePayload = Payload & {
+  __typename?: 'EvaluatedRulePayload';
+  code: Scalars['String'];
+  evaluatedRule?: Maybe<EvaluatedRule>;
+  success: Scalars['Boolean'];
+};
+
+export type EvaluatedRuleReference = {
+  __typename?: 'EvaluatedRuleReference';
+  data_point_definition_id: Scalars['String'];
+  qualified_key?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+export type EventReferenceTimerConfig = TimerConfigInterface & {
+  __typename?: 'EventReferenceTimerConfig';
+  component_id: Scalars['String'];
+  description: Scalars['String'];
+  hour?: Maybe<Scalars['String']>;
+  moment: Scalars['String'];
+  offset?: Maybe<Scalars['Int']>;
+  offsetDirection?: Maybe<Scalars['String']>;
+  offset_unit?: Maybe<Scalars['String']>;
+  period?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
+  usePatientTimezone?: Maybe<Scalars['Boolean']>;
 };
 
 export type ExclusiveOptionConfig = {
@@ -1136,6 +1403,16 @@ export type ExtensionDataPointInput = {
   value: Scalars['String'];
 };
 
+export type ExtensionResourceUpdatedTimerConfig = TimerConfigInterface & {
+  __typename?: 'ExtensionResourceUpdatedTimerConfig';
+  action_definition_id: Scalars['String'];
+  action_key: Scalars['String'];
+  description: Scalars['String'];
+  extension_key: Scalars['String'];
+  timer_key: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type FieldSpecGraphqlType = {
   __typename?: 'FieldSpecGraphqlType';
   description: Scalars['String'];
@@ -1158,14 +1435,23 @@ export type FileUploadGcsPayload = Payload & {
   upload_url: Scalars['String'];
 };
 
-export type FilterActivitiesParams = {
-  action?: InputMaybe<StringArrayFilter>;
+export type FilterActivitiesByCareflowDefinitionFilters = {
+  action?: InputMaybe<ActivityActionArrayFilter>;
   activity_status?: InputMaybe<StringArrayFilter>;
   activity_type?: InputMaybe<StringArrayFilter>;
-  pathway_definition_id?: InputMaybe<StringArrayFilter>;
-  pathway_status?: InputMaybe<StringArrayFilter>;
-  patient_id?: InputMaybe<TextFilterEquals>;
-  reference_id?: InputMaybe<TextFilterEquals>;
+  careflow_status?: InputMaybe<StringArrayFilter>;
+  exclude_system_activities?: InputMaybe<Scalars['Boolean']>;
+  stakeholders?: InputMaybe<StringArrayFilter>;
+};
+
+export type FilterActivitiesByPatientFilters = {
+  action?: InputMaybe<ActivityActionArrayFilter>;
+  activity_status?: InputMaybe<StringArrayFilter>;
+  activity_type?: InputMaybe<StringArrayFilter>;
+  careflow_definition_id?: InputMaybe<StringArrayFilter>;
+  careflow_ids?: InputMaybe<StringArrayFilter>;
+  careflow_status?: InputMaybe<StringArrayFilter>;
+  exclude_system_activities?: InputMaybe<Scalars['Boolean']>;
   stakeholders?: InputMaybe<StringArrayFilter>;
 };
 
@@ -1177,6 +1463,18 @@ export type FilterCareflowActivitiesParams = {
   hide_system_activities?: InputMaybe<Scalars['Boolean']>;
   reference_id?: InputMaybe<Scalars['String']>;
   stakeholders?: InputMaybe<Array<Scalars['String']>>;
+  track_id?: InputMaybe<Scalars['String']>;
+};
+
+export type FilterCareflowEventsParams = {
+  /** Inclusive occurred_at bounds. */
+  date_range?: InputMaybe<DateRangeInput>;
+  /** Moment names across subjects (e.g. 'completed' matches track.completed AND step.completed …). Composes (AND) with subject_types. */
+  moments?: InputMaybe<Array<Scalars['String']>>;
+  /** Subject kinds to include — the lifecycle five (careflow, track, step, timer, decision) plus milestone (author-defined). */
+  subject_types?: InputMaybe<Array<Scalars['String']>>;
+  /** A track DEFINITION id — the track node's own events (the event carries no containing-track context). */
+  track_id?: InputMaybe<Scalars['String']>;
 };
 
 export type FilterPathwayDataPointDefinitionsParams = {
@@ -1325,6 +1623,23 @@ export type HostedPagesLinkPayload = Payload & {
   success: Scalars['Boolean'];
 };
 
+export type HostedPagesLinkWithStakeholder = {
+  __typename?: 'HostedPagesLinkWithStakeholder';
+  id: Scalars['ID'];
+  pathway_id: Scalars['String'];
+  stakeholder_definition_id: Scalars['String'];
+  stakeholder_id?: Maybe<Scalars['String']>;
+  stakeholder_label?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+};
+
+export type HostedPagesLinksPayload = Payload & {
+  __typename?: 'HostedPagesLinksPayload';
+  code: Scalars['String'];
+  hosted_pages_links: Array<HostedPagesLinkWithStakeholder>;
+  success: Scalars['Boolean'];
+};
+
 export type HostedSession = {
   __typename?: 'HostedSession';
   cancel_url?: Maybe<Scalars['String']>;
@@ -1336,6 +1651,7 @@ export type HostedSession = {
   stakeholder: HostedSessionStakeholder;
   status: HostedSessionStatus;
   success_url?: Maybe<Scalars['String']>;
+  tracking?: Maybe<SessionTracking>;
   user_context?: Maybe<HostedSessionUserContext>;
 };
 
@@ -1446,6 +1762,20 @@ export type MarkMessageAsReadPayload = Payload & {
   success: Scalars['Boolean'];
 };
 
+export type MergePatientsInput = {
+  patient_id_to_delete: Scalars['String'];
+  patient_id_to_keep: Scalars['String'];
+};
+
+export type MergePatientsPayload = Payload & {
+  __typename?: 'MergePatientsPayload';
+  code: Scalars['String'];
+  deleted_patient_id: Scalars['String'];
+  success: Scalars['Boolean'];
+  transferred_careflow_ids: Array<Scalars['String']>;
+  transferred_count: Scalars['Int'];
+};
+
 export type Message = {
   __typename?: 'Message';
   attachments?: Maybe<Array<MessageAttachment>>;
@@ -1498,6 +1828,10 @@ export type Mutation = {
   addActivityMetadata: AddActivityMetadataPayload;
   addIdentifierToPatient: AddIdentifierToPatientPayload;
   addTrack: AddTrackPayload;
+  /** Clear patient data-point values by stable id: appends a null "no value" version per profile field (restorable from history); removes the patient’s value for an identifier system. */
+  clearPatientData: Array<PatientDataPointGraphqlType>;
+  /** Complete a care flow explicitly (the outcome happened). Records manual completion provenance (who/why); a no-op when the care flow is already completed or stopped. */
+  completeCareflow: EmptyPayload;
   completeExtensionActivity: CompleteExtensionActivityPayload;
   completeSession: CompleteSessionPayload;
   createPatient: CreatePatientPayload;
@@ -1507,8 +1841,12 @@ export type Mutation = {
   expireActivity: EmptyPayload;
   expireTimer: EmptyPayload;
   markMessageAsRead: MarkMessageAsReadPayload;
+  mergePatients: MergePatientsPayload;
+  pauseCareFlow: EmptyPayload;
   /** Retrieve patient demographics from an external system */
   requestPatientDemographics: PatientDemographicsPayload;
+  /** Retry failed activities by their IDs. Limited to 1000 activities per call. */
+  retryActivities: RetryActivitiesPayload;
   retryActivity: EmptyPayload;
   retryAllApiCalls: EmptyPayload;
   retryAllFailedApiCalls: EmptyPayload;
@@ -1518,9 +1856,14 @@ export type Mutation = {
   retryApiCall: RetryApiCallPayload;
   retryPushToEmr: EmptyPayload;
   retryWebhookCall: RetryWebhookCallPayload;
-  /** @deprecated We will be deactivating this endpoint in the future. */
+  /** @deprecated We will be deactivating this endpoint in the future. This will be removed in June 1st 2026. */
   saveBaselineInfo: EmptyPayload;
   scheduleTrack: ScheduleTrackPayload;
+  /**
+   * Manually set a patient data-point value — the patient data viewer's Save/Restore.
+   * @deprecated Use updatePatientData (batch-capable).
+   */
+  setPatientDataPointValue?: Maybe<PatientDataPointGraphqlType>;
   startHostedActivitySession: StartHostedActivitySessionPayload;
   startHostedActivitySessionViaHostedPagesLink: StartHostedActivitySessionPayload;
   /** Start a hosted pathway session for a patient uniquely identified by patient_id or patient_identifier. If neither patient_id or patient_identifier is provided, a new anonymous patient will be created. */
@@ -1532,10 +1875,13 @@ export type Mutation = {
   stopTrack: StopTrackPayload;
   submitChecklist: SubmitChecklistPayload;
   submitFormResponse: SubmitFormResponsePayload;
+  unpauseCareFlow: EmptyPayload;
   unscheduleTracks: CancelScheduledTracksPayload;
   updateBaselineInfo: EmptyPayload;
   updateEmrReportStatus: UpdateEmrReportStatusPayload;
   updatePatient: UpdatePatientPayload;
+  /** Write patient-profile data-point VALUES (profile fields + identifier values) to the patient-data store. Values only. */
+  updatePatientData: Array<PatientDataPointGraphqlType>;
   /** Update which patient was created after import request for logging purposes */
   updatePatientDemographicsQuery: UpdatePatientDemographicsQueryPayload;
   updatePatientLanguage: UpdatePatientLanguagePayload;
@@ -1556,6 +1902,16 @@ export type MutationAddIdentifierToPatientArgs = {
 
 export type MutationAddTrackArgs = {
   input: AddTrackInput;
+};
+
+
+export type MutationClearPatientDataArgs = {
+  input: ClearPatientDataInput;
+};
+
+
+export type MutationCompleteCareflowArgs = {
+  input: CompleteCareflowInput;
 };
 
 
@@ -1604,8 +1960,23 @@ export type MutationMarkMessageAsReadArgs = {
 };
 
 
+export type MutationMergePatientsArgs = {
+  input: MergePatientsInput;
+};
+
+
+export type MutationPauseCareFlowArgs = {
+  input: PauseCareFlowInput;
+};
+
+
 export type MutationRequestPatientDemographicsArgs = {
   input: PatientDemographicsInput;
+};
+
+
+export type MutationRetryActivitiesArgs = {
+  input: RetryActivitiesInput;
 };
 
 
@@ -1664,6 +2035,11 @@ export type MutationScheduleTrackArgs = {
 };
 
 
+export type MutationSetPatientDataPointValueArgs = {
+  input: SetPatientDataPointValueInput;
+};
+
+
 export type MutationStartHostedActivitySessionArgs = {
   input: StartHostedActivitySessionInput;
 };
@@ -1714,6 +2090,11 @@ export type MutationSubmitFormResponseArgs = {
 };
 
 
+export type MutationUnpauseCareFlowArgs = {
+  input: UnpauseCareFlowInput;
+};
+
+
 export type MutationUnscheduleTracksArgs = {
   input: CancelScheduledTracksInput;
 };
@@ -1731,6 +2112,11 @@ export type MutationUpdateEmrReportStatusArgs = {
 
 export type MutationUpdatePatientArgs = {
   input: UpdatePatientInput;
+};
+
+
+export type MutationUpdatePatientDataArgs = {
+  input: UpdatePatientDataInput;
 };
 
 
@@ -1858,26 +2244,27 @@ export type ParameterSpecGraphqlType = {
 /** A care flow, also including any activities or swimlanes. Otherwise, it should be almost identical to the PathwaySummary, which is returned when retrieving a list of care flows. */
 export type Pathway = {
   __typename?: 'Pathway';
-  /**
-   * Deprecated. Please use latestActivities.
-   * @deprecated use latestActivities instead. Limited to most recent 1000 activities
-   */
-  activities?: Maybe<Array<Activity>>;
   complete_date?: Maybe<Scalars['SafeDate']>;
   created?: Maybe<AuditTrail>;
+  /** Data-store era of this care flow: 'patient_data' for v2 care flows (run data lives in the centralized patient-data store and the flow records CareflowEvents), null for legacy care flows. Read-only, sourced verbatim from the stored care-flow document; new values may be introduced over time. */
+  data_store_version?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  is_archived?: Maybe<Scalars['Boolean']>;
   /** Activities, sorted by date in descending order. For larger care flows, only the most recent 1000 activities are included. To see a complete list of activities, please use the `activity` query and appropriate filters. */
   latestActivities: Array<Activity>;
   pathway_definition_id: Scalars['String'];
   patient: User;
   patient_id: Scalars['String'];
   release_id: Scalars['String'];
+  /** How this care flow was started (v2 provenance, public summary). */
+  start_context?: Maybe<StartContextSummary>;
   start_date?: Maybe<Scalars['SafeDate']>;
   status: PathwayStatus;
   status_explanation?: Maybe<Scalars['String']>;
   stop_date?: Maybe<Scalars['SafeDate']>;
   title: Scalars['String'];
   tracks: Array<Track>;
+  upgrades?: Maybe<Array<PathwayUpgrade>>;
   version?: Maybe<Scalars['Float']>;
 };
 
@@ -1901,15 +2288,6 @@ export type PathwayDataPointDefinitionsPayload = Payload & {
   success: Scalars['Boolean'];
 };
 
-export type PathwayDefinitionDetails = {
-  __typename?: 'PathwayDefinitionDetails';
-  active_careflows?: Maybe<Scalars['Float']>;
-  completed_careflows?: Maybe<Scalars['Float']>;
-  stopped_careflows?: Maybe<Scalars['Float']>;
-  total_careflows?: Maybe<Scalars['Float']>;
-  total_patients?: Maybe<Scalars['Float']>;
-};
-
 export type PathwayFactsFilters = {
   date?: InputMaybe<DateFilter>;
   keyword?: InputMaybe<Scalars['String']>;
@@ -1927,6 +2305,7 @@ export enum PathwayStatus {
   Active = 'active',
   Completed = 'completed',
   MissingBaselineInfo = 'missing_baseline_info',
+  Paused = 'paused',
   Starting = 'starting',
   Stopped = 'stopped'
 }
@@ -1946,6 +2325,19 @@ export type PathwaySummary = {
   version?: Maybe<Scalars['Float']>;
 };
 
+export type PathwayUpgrade = {
+  __typename?: 'PathwayUpgrade';
+  from: PathwayUpgradeVersion;
+  to: PathwayUpgradeVersion;
+  upgrade_date: Scalars['String'];
+};
+
+export type PathwayUpgradeVersion = {
+  __typename?: 'PathwayUpgradeVersion';
+  release_id: Scalars['String'];
+  revision: Scalars['Float'];
+};
+
 export type PathwaysPayload = PaginationAndSortingPayload & {
   __typename?: 'PathwaysPayload';
   code: Scalars['String'];
@@ -1953,6 +2345,46 @@ export type PathwaysPayload = PaginationAndSortingPayload & {
   pathways: Array<PathwaySummary>;
   sorting?: Maybe<SortingOutput>;
   success: Scalars['Boolean'];
+};
+
+/** One patient data-point VALUE to write, addressed by its stable id. */
+export type PatientDataFieldInput = {
+  /** The stable data-point id to write, e.g. "patient_profile:mobile_phone" or "patient_identifier:<system>". */
+  key: Scalars['String'];
+  /** The serialized value as entered; validated against valueType on write. null CLEARS the field (appends a "no value" version; for an identifier, removes the value). */
+  value?: InputMaybe<Scalars['String']>;
+  valueType: DataPointValueType;
+};
+
+/** One curated object instance — the fields co-written by one write-event, newest first. */
+export type PatientDataInstanceGraphqlType = {
+  __typename?: 'PatientDataInstanceGraphqlType';
+  /** The instance's date — the max `date` across its records. */
+  date: Scalars['String'];
+  /** The shared write-event id; null for a one-row instance (a row written before instance stamping). */
+  instance_id?: Maybe<Scalars['String']>;
+  /** Every field co-written into this instance (newest first), each with its value + provenance. */
+  records: Array<PatientDataPointGraphqlType>;
+};
+
+/** A patient data point (latest value, or one entry in its history) with provenance. */
+export type PatientDataPointGraphqlType = {
+  __typename?: 'PatientDataPointGraphqlType';
+  activity_id?: Maybe<Scalars['String']>;
+  data_point_definition_id: Scalars['String'];
+  data_set_id: Scalars['String'];
+  /** The data source (bucket) this field belongs to. */
+  data_source_id?: Maybe<Scalars['String']>;
+  date: Scalars['String'];
+  id: Scalars['ID'];
+  key?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  /** How this value got here — powers the audit trail. Absent until the writer stamps it (see the endgame). */
+  provenance?: Maybe<DataPointProvenanceGraphqlType>;
+  serialized_value?: Maybe<Scalars['String']>;
+  source_node_id?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  valueType: DataPointValueType;
 };
 
 export type PatientDemographicsInput = {
@@ -1975,14 +2407,44 @@ export type PatientDemographicsQueryConfigurationPayload = {
   is_enabled: Scalars['Boolean'];
 };
 
+/** One patient identifier delta — `value: null` removes that system for the patient. */
+export type PatientIdentifierInput = {
+  /** The identifier system URI (must already exist for the tenant — created via CareOps settings). */
+  system: Scalars['String'];
+  /** The identifier value; null removes the patient’s value for this system. */
+  value?: InputMaybe<Scalars['String']>;
+};
+
+/** A legacy care-flow data point (latest value per definition per care flow, or one entry in its history) — read-only in the patient data viewer. */
+export type PatientLegacyCareflowDataPointGraphqlType = {
+  __typename?: 'PatientLegacyCareflowDataPointGraphqlType';
+  activity_id?: Maybe<Scalars['String']>;
+  /** The care flow (instance) this value was recorded in — legacy data is careflow-scoped. */
+  careflow_id: Scalars['String'];
+  /** The care flow's title, for display grouping. */
+  careflow_title?: Maybe<Scalars['String']>;
+  data_point_definition_id: Scalars['String'];
+  data_set_id: Scalars['String'];
+  date: Scalars['String'];
+  id: Scalars['ID'];
+  key?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  serialized_value?: Maybe<Scalars['String']>;
+  source_node_id?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  valueType: DataPointValueType;
+};
+
 export type PatientPathway = {
   __typename?: 'PatientPathway';
   active_activities?: Maybe<Scalars['Float']>;
+  archived_date?: Maybe<Scalars['String']>;
   baseline_info?: Maybe<Array<BaselineDataPoint>>;
   complete_date?: Maybe<Scalars['String']>;
   created?: Maybe<AuditTrail>;
   failed_activities?: Maybe<Scalars['Float']>;
   id: Scalars['ID'];
+  is_archived?: Maybe<Scalars['Boolean']>;
   latest_activity_date?: Maybe<Scalars['String']>;
   latest_activity_title?: Maybe<Scalars['String']>;
   latest_activity_type?: Maybe<Scalars['String']>;
@@ -2041,6 +2503,11 @@ export type PatientsPayload = PaginationAndSortingPayload & {
   success: Scalars['Boolean'];
 };
 
+export type PauseCareFlowInput = {
+  careflow_id: Scalars['String'];
+  reason?: InputMaybe<Scalars['String']>;
+};
+
 export type Payload = {
   code: Scalars['String'];
   success: Scalars['Boolean'];
@@ -2068,31 +2535,16 @@ export type PreviousAnswers = {
 
 export type PublishedPathwayDefinition = {
   __typename?: 'PublishedPathwayDefinition';
-  active_activities?: Maybe<Scalars['Float']>;
-  /** Details about the latest pathway definition */
-  all?: Maybe<PathwayDefinitionDetails>;
-  cancelled_activities?: Maybe<Scalars['Float']>;
   created?: Maybe<AuditTrail>;
-  /**
-   * Starting/baseline data point definitions for the pathway
-   * @deprecated Use data_point_definitions instead
-   */
-  dataPointDefinitions: Array<DataPointDefinition>;
   /** Starting/baseline data point definitions for the pathway */
   data_point_definitions?: Maybe<Array<DataPointDefinition>>;
-  failed_activities?: Maybe<Scalars['Float']>;
+  data_store_version?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   last_updated?: Maybe<AuditTrail>;
-  /** Details about all pathway definitions */
-  latest?: Maybe<PathwayDefinitionDetails>;
-  patients_with_pending_activities?: Maybe<Scalars['Float']>;
+  metadata?: Maybe<Scalars['JSON']>;
   release_date?: Maybe<Scalars['String']>;
   release_id?: Maybe<Scalars['String']>;
-  stakeholders_with_pending_activities_list?: Maybe<Array<Scalars['String']>>;
   title: Scalars['String'];
-  total_activities?: Maybe<Scalars['Float']>;
-  total_patients?: Maybe<Scalars['Float']>;
-  total_stakeholders?: Maybe<Scalars['Float']>;
   /** Tracks for the pathway */
   track_definitions?: Maybe<Array<Track>>;
   version?: Maybe<Scalars['Float']>;
@@ -2109,21 +2561,29 @@ export type PublishedPathwayDefinitionsPayload = PaginationAndSortingPayload & {
 
 export type Query = {
   __typename?: 'Query';
-  activities: ActivitiesPayload;
+  activitiesByCareflowDefinition: ActivitiesPayload;
+  activitiesByPatient: ActivitiesPayload;
   activity: ActivityPayload;
+  activityTimer: ActivityTimerPayload;
   adHocTracksByPathway: TracksPayload;
   adHocTracksByRelease: TracksPayload;
   agent: WorkerAgentConfigPayload;
   apiCall: ApiCallPayload;
   apiCalls: ApiCallsPayload;
   baselineInfo: BaselineInfoPayload;
+  baselineInfoLog: BaselineInfoLogPayload;
   calculationAction: ActionPayload;
   calculationResults: CalculationResultsPayload;
   careflowActivities: ActivitiesPayload;
   careflowActivityTypes: ActivityTypesPayload;
+  /** A care flow's recorded events — the engine's lifecycle moments (`<subject>.<moment>`), newest-first by default. Sorting is by occurred_at only (direction configurable). */
+  careflowEvents: CareflowEventsPayload;
+  careflowTimers: CareflowTimersPayload;
+  careflowTracks: CareflowTracksPayload;
   checklist: ChecklistPayload;
   clinicalNote: ClinicalNotePayload;
   emrReport: EmrReportPayload;
+  evaluatedRule: EvaluatedRulePayload;
   extensionActivityRecord: ExtensionActivityRecordPayload;
   filterStakeholders: StakeholdersPayload;
   form: FormPayload;
@@ -2136,30 +2596,38 @@ export type Query = {
   getPublishedCareflowVersions: CareflowVersionsPayload;
   /** Generate a signed URL for file upload to GCS */
   getSignedUrl: FileUploadGcsPayload;
-  /** @deprecated This query is deprecated. Use 'publishedPathwayDefinitions' instead for better performance. */
-  getStatusForPublishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
   hostedPagesLink: HostedPagesLinkPayload;
+  hostedPagesLinks: HostedPagesLinksPayload;
   hostedSession: HostedSessionPayload;
   hostedSessionActivities: HostedSessionActivitiesPayload;
+  latestCareFlowDataPoints: DataPointPayload;
   message: MessagePayload;
   myActivities: ActivitiesPayload;
-  /** @deprecated Use the `pathways` query instead. */
-  myPathways: PathwaysPayload;
-  myPendingActivities: ActivitiesPayload;
   pathway: PathwayPayload;
+  /** Activities of a care flow. Alias of careflowActivities — the original public name, kept for backward compatibility. */
   pathwayActivities: ActivitiesPayload;
   pathwayDataPointDefinitions: PathwayDataPointDefinitionsPayload;
   pathwayDataPoints: DataPointPayload;
-  pathwayElements: ElementsPayload;
   pathwayFacts: OrchestrationFactsPayload;
   pathwayStepActivities: ActivitiesPayload;
   pathways: PathwaysPayload;
   patient: PatientPayload;
   patientByIdentifier: PatientPayload;
+  /** A patient data source's OBJECT INSTANCES, newest first — the fields co-written by each write-event (a reading, a submission's bound fields), reassembled from the curated PatientData store via the W1 listInstancesBySource contract. Optionally scoped to one care flow instance (careflow_id) for instance-scoped sources. */
+  patientDataInstances: Array<PatientDataInstanceGraphqlType>;
+  /** Full change history (newest first) of one of a patient's data points — every value, audited. */
+  patientDataPointHistory: Array<PatientDataPointGraphqlType>;
+  /** Latest value per data point for a patient — the data viewer's list. */
+  patientDataPoints: Array<PatientDataPointGraphqlType>;
   patientDemographicsQueryConfiguration: PatientDemographicsQueryConfigurationPayload;
+  /** Full change history (newest first) of one of a patient's LEGACY care-flow data points, scoped to one care flow (legacy data is careflow-scoped). */
+  patientLegacyCareflowDataPointHistory: Array<PatientLegacyCareflowDataPointGraphqlType>;
+  /** A patient's LEGACY care-flow data: the latest value per data point definition, per care flow (legacy data is careflow-scoped by design). Read-only — v2 (studio-published) care-flow data lives in patientDataPoints instead. */
+  patientLegacyCareflowDataPoints: Array<PatientLegacyCareflowDataPointGraphqlType>;
   patientPathways: PatientPathwaysPayload;
   patients: PatientsPayload;
   publishedPathwayDefinitions: PublishedPathwayDefinitionsPayload;
+  scheduledDestinations: ScheduledDestinationsPayload;
   scheduledSteps: ScheduledStepsPayload;
   scheduledTracksForPathway: ScheduledTracksPayload;
   searchPatientsByNationalRegistryNumber: SearchPatientsPayload;
@@ -2168,6 +2636,7 @@ export type Query = {
   stakeholdersByPathwayDefinitionIds: StakeholdersPayload;
   stakeholdersByReleaseIds: StakeholdersPayload;
   tenant: TenantPayload;
+  tracksByPathway: TracksPayload;
   webhookCall: WebhookCallPayload;
   webhookCalls: WebhookCallsPayload;
   webhookCallsForPathwayDefinition: WebhookCallsPayload;
@@ -2175,15 +2644,30 @@ export type Query = {
 };
 
 
-export type QueryActivitiesArgs = {
-  filters?: InputMaybe<FilterActivitiesParams>;
+export type QueryActivitiesByCareflowDefinitionArgs = {
+  careflow_definition_id: Scalars['String'];
+  filters?: InputMaybe<FilterActivitiesByCareflowDefinitionFilters>;
   pagination?: InputMaybe<PaginationParams>;
+  sorting?: InputMaybe<SortingParams>;
+};
+
+
+export type QueryActivitiesByPatientArgs = {
+  filters?: InputMaybe<FilterActivitiesByPatientFilters>;
+  pagination?: InputMaybe<PaginationParams>;
+  patient_id: Scalars['String'];
   sorting?: InputMaybe<SortingParams>;
 };
 
 
 export type QueryActivityArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryActivityTimerArgs = {
+  activity_id: Scalars['String'];
+  careflow_id: Scalars['String'];
 };
 
 
@@ -2217,6 +2701,15 @@ export type QueryBaselineInfoArgs = {
 };
 
 
+export type QueryBaselineInfoLogArgs = {
+  data_point_definition_id?: InputMaybe<Scalars['String']>;
+  data_point_key?: InputMaybe<Scalars['String']>;
+  pagination?: InputMaybe<PaginationParams>;
+  pathway_id: Scalars['String'];
+  sorting?: InputMaybe<SortingParams>;
+};
+
+
 export type QueryCalculationActionArgs = {
   id: Scalars['String'];
 };
@@ -2232,12 +2725,33 @@ export type QueryCareflowActivitiesArgs = {
   filters?: InputMaybe<FilterCareflowActivitiesParams>;
   pagination?: InputMaybe<PaginationParams>;
   pathway_id: Scalars['String'];
+  skip_enrichment?: InputMaybe<Scalars['Boolean']>;
   sorting?: InputMaybe<SortingParams>;
 };
 
 
 export type QueryCareflowActivityTypesArgs = {
   careflow_id: Scalars['String'];
+};
+
+
+export type QueryCareflowEventsArgs = {
+  careflow_id: Scalars['String'];
+  filters?: InputMaybe<FilterCareflowEventsParams>;
+  pagination?: InputMaybe<PaginationParams>;
+  sorting?: InputMaybe<SortingParams>;
+};
+
+
+export type QueryCareflowTimersArgs = {
+  careflow_id: Scalars['String'];
+  status?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryCareflowTracksArgs = {
+  careflow_id: Scalars['String'];
+  statuses?: InputMaybe<Array<Scalars['String']>>;
 };
 
 
@@ -2253,6 +2767,12 @@ export type QueryClinicalNoteArgs = {
 
 export type QueryEmrReportArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryEvaluatedRuleArgs = {
+  id: Scalars['String'];
+  release_id: Scalars['String'];
 };
 
 
@@ -2331,8 +2851,19 @@ export type QueryHostedPagesLinkArgs = {
 };
 
 
+export type QueryHostedPagesLinksArgs = {
+  pathway_id: Scalars['String'];
+};
+
+
 export type QueryHostedSessionActivitiesArgs = {
   only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type QueryLatestCareFlowDataPointsArgs = {
+  careflow_id: Scalars['String'];
+  release_id: Scalars['String'];
 };
 
 
@@ -2379,12 +2910,6 @@ export type QueryPathwayDataPointsArgs = {
 };
 
 
-export type QueryPathwayElementsArgs = {
-  pathway_id: Scalars['String'];
-  track_id?: InputMaybe<Scalars['String']>;
-};
-
-
 export type QueryPathwayFactsArgs = {
   filters: PathwayFactsFilters;
   pagination?: InputMaybe<PaginationParams>;
@@ -2416,6 +2941,38 @@ export type QueryPatientByIdentifierArgs = {
 };
 
 
+export type QueryPatientDataInstancesArgs = {
+  before?: InputMaybe<Scalars['String']>;
+  careflow_id?: InputMaybe<Scalars['String']>;
+  data_source_id: Scalars['String'];
+  limit?: InputMaybe<Scalars['Int']>;
+  patient_id: Scalars['String'];
+};
+
+
+export type QueryPatientDataPointHistoryArgs = {
+  data_point_definition_id: Scalars['String'];
+  patient_id: Scalars['String'];
+};
+
+
+export type QueryPatientDataPointsArgs = {
+  patient_id: Scalars['String'];
+};
+
+
+export type QueryPatientLegacyCareflowDataPointHistoryArgs = {
+  careflow_id: Scalars['String'];
+  data_point_definition_id: Scalars['String'];
+  patient_id: Scalars['String'];
+};
+
+
+export type QueryPatientLegacyCareflowDataPointsArgs = {
+  patient_id: Scalars['String'];
+};
+
+
 export type QueryPatientPathwaysArgs = {
   filters?: InputMaybe<FilterPatientPathways>;
   patient_id?: InputMaybe<Scalars['String']>;
@@ -2427,6 +2984,11 @@ export type QueryPatientsArgs = {
   filters?: InputMaybe<FilterPatients>;
   pagination?: InputMaybe<PaginationParams>;
   sorting?: InputMaybe<SortingParams>;
+};
+
+
+export type QueryScheduledDestinationsArgs = {
+  pathway_id: Scalars['String'];
 };
 
 
@@ -2465,18 +3027,36 @@ export type QueryStakeholdersByReleaseIdsArgs = {
 };
 
 
+export type QueryTracksByPathwayArgs = {
+  pathway_id: Scalars['String'];
+};
+
+
 export type QueryWebhookCallArgs = {
   webhook_call_id: Scalars['String'];
 };
 
 
 export type QueryWebhookCallsArgs = {
+  filters?: InputMaybe<WebhookCallFiltersInput>;
+  pagination?: InputMaybe<PaginationParams>;
   pathway_id: Scalars['String'];
+  sorting?: InputMaybe<SortingParams>;
 };
 
 
 export type QueryWebhookCallsForPathwayDefinitionArgs = {
+  filters?: InputMaybe<WebhookCallFiltersInput>;
+  pagination?: InputMaybe<PaginationParams>;
   pathway_definition_id: Scalars['String'];
+  sorting?: InputMaybe<SortingParams>;
+};
+
+
+export type QueryWebhookCallsForTenantArgs = {
+  filters?: InputMaybe<WebhookCallFiltersInput>;
+  pagination?: InputMaybe<PaginationParams>;
+  sorting?: InputMaybe<SortingParams>;
 };
 
 export type Question = {
@@ -2487,10 +3067,14 @@ export type Question = {
   key: Scalars['String'];
   metadata?: Maybe<Scalars['String']>;
   options?: Maybe<Array<Option>>;
+  /** 0-based page index for forms v2 multi-page (REGULAR forms paginate by it). Carried from the published form bundle; absent ⇒ a single-page form. Read by the app-care + hosted-pages renderers to group questions into pages. */
+  page?: Maybe<Scalars['Int']>;
   questionConfig?: Maybe<QuestionConfig>;
   questionType?: Maybe<QuestionType>;
   rule?: Maybe<Rule>;
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  /** The HTML version of the question title. Applicable for description questions. */
+  title_html?: Maybe<Scalars['String']>;
   userQuestionType?: Maybe<UserQuestionType>;
 };
 
@@ -2543,6 +3127,24 @@ export type RangeConfig = {
   enabled?: Maybe<Scalars['Boolean']>;
   max?: Maybe<Scalars['Float']>;
   min?: Maybe<Scalars['Float']>;
+};
+
+export type RetryActivitiesInput = {
+  activity_ids: Array<Scalars['String']>;
+};
+
+export type RetryActivitiesPayload = {
+  __typename?: 'RetryActivitiesPayload';
+  code: Scalars['String'];
+  result?: Maybe<RetryActivitiesResultType>;
+  success: Scalars['Boolean'];
+};
+
+export type RetryActivitiesResultType = {
+  __typename?: 'RetryActivitiesResultType';
+  failed: Scalars['Int'];
+  skipped: Scalars['Int'];
+  succeeded: Scalars['Int'];
 };
 
 export type RetryActivityInput = {
@@ -2622,6 +3224,29 @@ export type ScheduleTrackPayload = Payload & {
   success: Scalars['Boolean'];
 };
 
+export type ScheduledDestination = {
+  __typename?: 'ScheduledDestination';
+  date: Scalars['String'];
+  node: ScheduledDestinationNode;
+};
+
+export type ScheduledDestinationNode = {
+  __typename?: 'ScheduledDestinationNode';
+  date?: Maybe<Scalars['String']>;
+  definition_id: Scalars['String'];
+  definition_type: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  track_definition_id?: Maybe<Scalars['String']>;
+};
+
+export type ScheduledDestinationsPayload = Payload & {
+  __typename?: 'ScheduledDestinationsPayload';
+  code: Scalars['String'];
+  destinations: Array<ScheduledDestination>;
+  success: Scalars['Boolean'];
+};
+
 export type ScheduledStepsPayload = Payload & {
   __typename?: 'ScheduledStepsPayload';
   code: Scalars['String'];
@@ -2666,11 +3291,23 @@ export type SessionMetadata = {
 
 export type SessionTracking = {
   __typename?: 'SessionTracking';
+  custom?: Maybe<Scalars['JSON']>;
   utm_campaign?: Maybe<Scalars['String']>;
   utm_content?: Maybe<Scalars['String']>;
   utm_medium?: Maybe<Scalars['String']>;
   utm_source?: Maybe<Scalars['String']>;
   utm_term?: Maybe<Scalars['String']>;
+};
+
+export type SetPatientDataPointValueInput = {
+  /** The stable patient-profile id, e.g. "patient_profile:phone". */
+  data_point_definition_id: Scalars['String'];
+  /** The field key/label (e.g. "phone"). */
+  key?: InputMaybe<Scalars['String']>;
+  patient_id: Scalars['String'];
+  /** The serialized value as entered; validated against valueType on write. null CLEARS the field (appends a "no value" version; for an identifier, removes the value). */
+  value?: InputMaybe<Scalars['String']>;
+  valueType: DataPointValueType;
 };
 
 export enum Sex {
@@ -2685,7 +3322,7 @@ export type SingleCalculationResult = {
   status?: Maybe<Scalars['String']>;
   subresult_id: Scalars['String'];
   unit?: Maybe<Scalars['String']>;
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
   value_type?: Maybe<DataPointValueType>;
 };
 
@@ -2750,6 +3387,14 @@ export type StakeholdersPayload = Payload & {
   code: Scalars['String'];
   stakeholders: Array<Stakeholder>;
   success: Scalars['Boolean'];
+};
+
+/** How a care flow was started (public summary). `source_type`: api | enrollment | trigger | webhook | migration | test | unknown. `started_by_kind`: human | system | integration. Granular ids/PII are intentionally not exposed. */
+export type StartContextSummary = {
+  __typename?: 'StartContextSummary';
+  source_type?: Maybe<Scalars['String']>;
+  started_at?: Maybe<Scalars['String']>;
+  started_by_kind?: Maybe<Scalars['String']>;
 };
 
 export type StartHostedActivitySessionInput = {
@@ -2870,6 +3515,7 @@ export type StopPathwayInput = {
 
 export type StopTrackInput = {
   pathway_id: Scalars['String'];
+  reason?: InputMaybe<Scalars['String']>;
   track_id: Scalars['String'];
 };
 
@@ -2928,9 +3574,6 @@ export type Subscription = {
   activityUpdated: Activity;
   apiCallCreated: ApiCall;
   apiCallUpdated: ApiCall;
-  elementCompleted: Element;
-  elementCreated: Element;
-  elementUpdated: Element;
   pathwayUpdated: Pathway;
   sessionActivityCompleted: Activity;
   sessionActivityCreated: Activity;
@@ -2973,24 +3616,6 @@ export type SubscriptionApiCallCreatedArgs = {
 
 
 export type SubscriptionApiCallUpdatedArgs = {
-  pathway_id: Scalars['String'];
-};
-
-
-export type SubscriptionElementCompletedArgs = {
-  element_type?: InputMaybe<ElementType>;
-  pathway_id: Scalars['String'];
-};
-
-
-export type SubscriptionElementCreatedArgs = {
-  element_type?: InputMaybe<ElementType>;
-  pathway_id: Scalars['String'];
-};
-
-
-export type SubscriptionElementUpdatedArgs = {
-  element_type?: InputMaybe<ElementType>;
   pathway_id: Scalars['String'];
 };
 
@@ -3069,6 +3694,7 @@ export type TimerActivityOutputs = ActivityOutputs & {
   completion_type: Scalars['String'];
   delay_config?: Maybe<TimerDelayConfig>;
   reference_data_point?: Maybe<TimerReferenceDataPoint>;
+  reference_event?: Maybe<TimerReferenceEvent>;
   resource_config?: Maybe<TimerResourceConfig>;
   scheduled_date: Scalars['String'];
   skip_reason?: Maybe<Scalars['String']>;
@@ -3084,6 +3710,11 @@ export type TimerAwaitedDataPoint = {
   name?: Maybe<Scalars['String']>;
 };
 
+export type TimerConfigInterface = {
+  description: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type TimerDelayConfig = {
   __typename?: 'TimerDelayConfig';
   amount: Scalars['Float'];
@@ -3095,6 +3726,12 @@ export type TimerReferenceDataPoint = {
   definition_id: Scalars['String'];
   name?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
+};
+
+export type TimerReferenceEvent = {
+  __typename?: 'TimerReferenceEvent';
+  component_id: Scalars['String'];
+  moment: Scalars['String'];
 };
 
 export type TimerResourceConfig = {
@@ -3114,6 +3751,7 @@ export enum TimerType {
   DataPointAwaited = 'DATA_POINT_AWAITED',
   DataPointReference = 'DATA_POINT_REFERENCE',
   Delay = 'DELAY',
+  EventReference = 'EVENT_REFERENCE',
   ExtensionResourceUpdated = 'EXTENSION_RESOURCE_UPDATED'
 }
 
@@ -3151,6 +3789,8 @@ export type TrackTriggerActivityOutputs = ActivityOutputs & {
 };
 
 export type TrackingInput = {
+  /** Custom key-value pairs for additional tracking parameters */
+  custom?: InputMaybe<Scalars['JSON']>;
   /** Identifies a specific product promotion or strategic campaign */
   utm_campaign?: InputMaybe<Scalars['String']>;
   /** Identifies what specifically was clicked to bring the user to the site */
@@ -3181,6 +3821,10 @@ export type TriggeringEvent = {
   type: Scalars['String'];
 };
 
+export type UnpauseCareFlowInput = {
+  careflow_id: Scalars['String'];
+};
+
 export type UpdateBaselineInfoInput = {
   baseline_info: Array<BaselineInfoInput>;
   pathway_id: Scalars['String'];
@@ -3197,6 +3841,14 @@ export type UpdateEmrReportStatusPayload = Payload & {
   code: Scalars['String'];
   request?: Maybe<EmrRequest>;
   success: Scalars['Boolean'];
+};
+
+export type UpdatePatientDataInput = {
+  /** Profile / identifier field VALUES to set, addressed by stable id. Batch-capable. */
+  fields?: InputMaybe<Array<PatientDataFieldInput>>;
+  /** Identifier deltas (alternative to a "patient_identifier:<system>" field entry). */
+  identifiers?: InputMaybe<Array<PatientIdentifierInput>>;
+  patient_id: Scalars['String'];
 };
 
 export type UpdatePatientDemographicsQueryInput = {
@@ -3341,6 +3993,40 @@ export type WebhookCall = {
   webhook_name: Scalars['String'];
 };
 
+export enum WebhookCallEventType {
+  ActivityCompleted = 'ACTIVITY_COMPLETED',
+  ActivityCreated = 'ACTIVITY_CREATED',
+  ActivityDeleted = 'ACTIVITY_DELETED',
+  ActivityExpired = 'ACTIVITY_EXPIRED',
+  ActivityFailed = 'ACTIVITY_FAILED',
+  ActivityUpdated = 'ACTIVITY_UPDATED',
+  ClinicalNoteCreated = 'CLINICAL_NOTE_CREATED',
+  DataPointCollected = 'DATA_POINT_COLLECTED',
+  FormSubmitted = 'FORM_SUBMITTED',
+  PathwayCompleted = 'PATHWAY_COMPLETED',
+  PathwayDeleted = 'PATHWAY_DELETED',
+  PathwayStarted = 'PATHWAY_STARTED',
+  PathwayStopped = 'PATHWAY_STOPPED',
+  PatientCreated = 'PATIENT_CREATED',
+  PatientDataCollected = 'PATIENT_DATA_COLLECTED',
+  PatientDeleted = 'PATIENT_DELETED',
+  PatientUpdated = 'PATIENT_UPDATED',
+  ReminderCreated = 'REMINDER_CREATED',
+  SessionCompleted = 'SESSION_COMPLETED',
+  SessionExpired = 'SESSION_EXPIRED',
+  SessionStarted = 'SESSION_STARTED',
+  TrackCompleted = 'TRACK_COMPLETED',
+  TrackStarted = 'TRACK_STARTED',
+  TrackStopped = 'TRACK_STOPPED'
+}
+
+export type WebhookCallFiltersInput = {
+  event_type?: InputMaybe<Array<WebhookCallEventType>>;
+  response_codes?: InputMaybe<Array<Scalars['Int']>>;
+  status?: InputMaybe<Array<Scalars['String']>>;
+  webhook_name?: InputMaybe<Scalars['String']>;
+};
+
 export type WebhookCallHeader = {
   __typename?: 'WebhookCallHeader';
   key: Scalars['String'];
@@ -3369,9 +4055,11 @@ export type WebhookCallResponse = {
   status: Scalars['Float'];
 };
 
-export type WebhookCallsPayload = Payload & {
+export type WebhookCallsPayload = PaginationAndSortingPayload & {
   __typename?: 'WebhookCallsPayload';
   code: Scalars['String'];
+  pagination?: Maybe<PaginationOutput>;
+  sorting?: Maybe<SortingOutput>;
   success: Scalars['Boolean'];
   webhook_calls: Array<WebhookCall>;
 };
@@ -3414,7 +4102,7 @@ export type CompleteExtensionActivityMutationVariables = Exact<{
 }>;
 
 
-export type CompleteExtensionActivityMutation = { __typename?: 'Mutation', completeExtensionActivity: { __typename?: 'CompleteExtensionActivityPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
+export type CompleteExtensionActivityMutation = { __typename?: 'Mutation', completeExtensionActivity: { __typename?: 'CompleteExtensionActivityPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
 
 export type CompleteSessionMutationVariables = Exact<{
   input: CompleteSessionInput;
@@ -3477,52 +4165,52 @@ export type MarkMessageAsReadMutationVariables = Exact<{
 }>;
 
 
-export type MarkMessageAsReadMutation = { __typename?: 'Mutation', markMessageAsRead: { __typename?: 'MarkMessageAsReadPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
+export type MarkMessageAsReadMutation = { __typename?: 'Mutation', markMessageAsRead: { __typename?: 'MarkMessageAsReadPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
 
-export type ActivityFragment = { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null };
+export type ActivityFragment = { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null };
 
 export type DynamicFormFragment = { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> };
 
 export type DynamicQuestionFragment = { __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null };
 
-export type FormFragment = { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> };
+export type FormFragment = { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> };
 
 export type GetHostedSessionActivitiesQueryVariables = Exact<{
   only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
-export type GetHostedSessionActivitiesQuery = { __typename?: 'Query', hostedSessionActivities: { __typename?: 'HostedSessionActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null }> } };
+export type GetHostedSessionActivitiesQuery = { __typename?: 'Query', hostedSessionActivities: { __typename?: 'HostedSessionActivitiesPayload', success: boolean, activities: Array<{ __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null }> } };
 
 export type OnSessionActivityCompletedSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnSessionActivityCompletedSubscription = { __typename?: 'Subscription', sessionActivityCompleted: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
+export type OnSessionActivityCompletedSubscription = { __typename?: 'Subscription', sessionActivityCompleted: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
 
 export type OnSessionActivityCreatedSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnSessionActivityCreatedSubscription = { __typename?: 'Subscription', sessionActivityCreated: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
+export type OnSessionActivityCreatedSubscription = { __typename?: 'Subscription', sessionActivityCreated: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
 
 export type OnSessionActivityExpiredSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnSessionActivityExpiredSubscription = { __typename?: 'Subscription', sessionActivityExpired: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
+export type OnSessionActivityExpiredSubscription = { __typename?: 'Subscription', sessionActivityExpired: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
 
 export type OnSessionActivityUpdatedSubscriptionVariables = Exact<{
   only_stakeholder_activities: Scalars['Boolean'];
 }>;
 
 
-export type OnSessionActivityUpdatedSubscription = { __typename?: 'Subscription', sessionActivityUpdated: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
+export type OnSessionActivityUpdatedSubscription = { __typename?: 'Subscription', sessionActivityUpdated: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } };
 
-export type QuestionFragment = { __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null };
+export type QuestionFragment = { __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null };
 
 export type RuleFragment = { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> };
 
@@ -3531,14 +4219,14 @@ export type SubmitChecklistMutationVariables = Exact<{
 }>;
 
 
-export type SubmitChecklistMutation = { __typename?: 'Mutation', submitChecklist: { __typename?: 'SubmitChecklistPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
+export type SubmitChecklistMutation = { __typename?: 'Mutation', submitChecklist: { __typename?: 'SubmitChecklistPayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
 
 export type SubmitFormResponseMutationVariables = Exact<{
   input: SubmitFormResponseInput;
 }>;
 
 
-export type SubmitFormResponseMutation = { __typename?: 'Mutation', submitFormResponse: { __typename?: 'SubmitFormResponsePayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
+export type SubmitFormResponseMutation = { __typename?: 'Mutation', submitFormResponse: { __typename?: 'SubmitFormResponsePayload', activity: { __typename?: 'Activity', id: string, date: string, status: ActivityStatus, form_display_mode?: FormDisplayMode | null, reference_type: ActivityReferenceType, metadata?: any | null, object: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string }, indirect_object?: { __typename?: 'ActivityObject', id: string, type: ActivityObjectType, name: string } | null, action_component?: { __typename?: 'ActionComponent', definition_id?: string | null, release_id?: string | null, title?: string | null } | null, context?: { __typename?: 'PathwayContext', track_id?: string | null } | null, inputs?: { __typename?: 'CalculationActivityInputs', type: ActivityInputType } | { __typename?: 'CodeBlockActivityInputs', type: ActivityInputType } | { __typename?: 'DecisionTableActivityInputs', type: ActivityInputType } | { __typename?: 'DynamicFormActivityInputs', type: ActivityInputType, dynamicForm?: { __typename?: 'DynamicFormGraphqlType', key: string, title: string, trademark?: string | null, questions: Array<{ __typename?: 'DynamicQuestion', id: string, key: string, title: string, dataPointValueType?: DataPointValueType | null, questionType: QuestionType, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null }> } | null } | { __typename?: 'ExtensionActivityInputs', componentKey: string, extension_fields?: any | null, extension_settings?: Array<any> | null, type: ActivityInputType } | { __typename?: 'FormActivityInputs', type: ActivityInputType, form?: { __typename?: 'Form', id: string, key: string, title: string, trademark?: string | null, definition_id: string, release_id: string, questions: Array<{ __typename?: 'Question', id: string, definition_id: string, key: string, title?: string | null, dataPointValueType?: DataPointValueType | null, questionType?: QuestionType | null, userQuestionType?: UserQuestionType | null, options?: Array<{ __typename?: 'Option', id: string, value_string: string, value: number, label: string }> | null, questionConfig?: { __typename?: 'QuestionConfig', recode_enabled?: boolean | null, mandatory: boolean, use_select?: boolean | null, slider?: { __typename?: 'SliderConfig', min: number, max: number, step_value: number, display_marks: boolean, min_label: string, max_label: string, is_value_tooltip_on: boolean, show_min_max_values: boolean } | null, phone?: { __typename?: 'PhoneConfig', default_country?: string | null, available_countries?: Array<string> | null } | null, number?: { __typename?: 'NumberConfig', range?: { __typename?: 'RangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null } | null, multiple_select?: { __typename?: 'MultipleSelectConfig', range?: { __typename?: 'ChoiceRangeConfig', min?: number | null, max?: number | null, enabled?: boolean | null } | null, exclusive_option?: { __typename?: 'ExclusiveOptionConfig', option_id?: string | null, enabled?: boolean | null } | null } | null, date?: { __typename?: 'DateConfig', allowed_dates?: AllowedDatesOptions | null, include_date_of_response?: boolean | null } | null, file_storage?: { __typename?: 'FileStorageQuestionConfig', file_storage_config_slug?: string | null, accepted_file_types?: Array<string> | null } | null, input_validation?: { __typename?: 'InputValidationConfig', pattern?: string | null, helper_text?: string | null } | null } | null, rule?: { __typename?: 'Rule', id: string, boolean_operator: BooleanOperator, definition_id?: string | null, conditions: Array<{ __typename?: 'Condition', id: string, reference?: string | null, reference_key?: string | null, operator?: ConditionOperator | null, operand?: { __typename?: 'Operand', type: ConditionOperandType, value: string } | null }> } | null }> } | null } | { __typename?: 'MessageActivityInputs', type: ActivityInputType } | null } } };
 
 export const HostedSessionFragmentDoc = gql`
     fragment HostedSession on HostedSession {
