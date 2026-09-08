@@ -25,15 +25,17 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Set deployment type
+        env:
+          DEPLOYMENT_TYPE_INPUT: ${{ github.event.inputs.deployment-type }}
         run: |
-          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+          echo "DEPLOYMENT_TYPE=$DEPLOYMENT_TYPE_INPUT" >> "$GITHUB_ENV"
         shell: bash
       - name: Merge ${{ env.DEPLOYMENT_TYPE }} into production
         run: |
           git fetch --unshallow
           git checkout production
           git pull origin production
-          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "merge ${{ env.DEPLOYMENT_TYPE }} in production"
+          git merge --no-ff "origin/$DEPLOYMENT_TYPE" -m "merge $DEPLOYMENT_TYPE in production"
           git push origin production
 
   merge-release-content-to-production-us:
@@ -48,15 +50,17 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Set deployment type
+        env:
+          DEPLOYMENT_TYPE_INPUT: ${{ github.event.inputs.deployment-type }}
         run: |
-          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+          echo "DEPLOYMENT_TYPE=$DEPLOYMENT_TYPE_INPUT" >> "$GITHUB_ENV"
         shell: bash
       - name: Merge ${{ env.DEPLOYMENT_TYPE }} into production-us
         run: |
           git fetch --unshallow
           git checkout production-us
           git pull origin production-us
-          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "merge ${{ env.DEPLOYMENT_TYPE }} in production-us"
+          git merge --no-ff "origin/$DEPLOYMENT_TYPE" -m "merge $DEPLOYMENT_TYPE in production-us"
           git push origin production-us
 
   merge-release-content-to-production-uk:
@@ -71,13 +75,15 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Set deployment type
+        env:
+          DEPLOYMENT_TYPE_INPUT: ${{ github.event.inputs.deployment-type }}
         run: |
-          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+          echo "DEPLOYMENT_TYPE=$DEPLOYMENT_TYPE_INPUT" >> "$GITHUB_ENV"
         shell: bash
       - name: Merge ${{ env.DEPLOYMENT_TYPE }} into production-uk
         run: |
           git fetch --unshallow
           git checkout production-uk
           git pull origin production-uk
-          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "merge ${{ env.DEPLOYMENT_TYPE }} in production-uk"
+          git merge --no-ff "origin/$DEPLOYMENT_TYPE" -m "merge $DEPLOYMENT_TYPE in production-uk"
           git push origin production-uk
