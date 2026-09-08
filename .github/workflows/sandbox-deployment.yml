@@ -25,13 +25,19 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Set deployment type
+        # The input reaches the shell through an environment variable rather than being
+        # templated into the script: `${{ }}` is expanded into the command text before bash
+        # runs, so a value containing shell syntax would execute. It is a `choice` input
+        # today (main/staging), which is why this is hygiene rather than a live hole.
+        env:
+          DEPLOYMENT_TYPE_INPUT: ${{ github.event.inputs.deployment-type }}
         run: |
-          echo "DEPLOYMENT_TYPE=${{ github.event.inputs.deployment-type }}" >> $GITHUB_ENV
+          echo "DEPLOYMENT_TYPE=$DEPLOYMENT_TYPE_INPUT" >> "$GITHUB_ENV"
         shell: bash
       - name: Merge staging into sandbox
         run: |
           git fetch --unshallow
           git switch sandbox
           git pull origin sandbox
-          git merge --no-ff origin/${{ env.DEPLOYMENT_TYPE }} -m "Merge ${{ env.DEPLOYMENT_TYPE }} into sandbox"
+          git merge --no-ff "origin/$DEPLOYMENT_TYPE" -m "Merge $DEPLOYMENT_TYPE into sandbox"
           git push origin sandbox
