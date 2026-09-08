@@ -8,6 +8,11 @@ import { mapActionFieldsToObject } from '../../utils'
 import { ActionFields } from './types'
 import { isEmpty } from 'lodash'
 import { RichTextViewer } from '@awell-health/ui-library'
+import { toSafeRedirectUrl } from './toSafeRedirectUrl'
+import {
+  HostedSessionError,
+  captureHostedSessionError,
+} from '../../../../utils/errors'
 
 interface RedirectProps {
   activityDetails: ExtensionActivityRecord
@@ -22,10 +27,28 @@ export const Redirect: FC<RedirectProps> = ({ activityDetails }) => {
     [fields]
   )
 
+  // Only http(s) destinations are followed; see toSafeRedirectUrl for why. The activity is still
+  // completed either way so the care flow moves on — a refused destination is reported, not fatal.
+  const safeRedirectUrl = useMemo(
+    () => toSafeRedirectUrl(redirectUrl),
+    [redirectUrl]
+  )
+
   const handleCompletion = useCallback(async () => {
     await onSubmit({ activityId: activity_id })
-    window.location.href = redirectUrl
-  }, [activity_id, onSubmit, redirectUrl])
+    if (safeRedirectUrl === null) {
+      captureHostedSessionError(
+        new HostedSessionError('Redirect action refused a non-http(s) URL', {
+          errorType: 'REDIRECT_URL_REFUSED',
+          activityId: activity_id,
+          level: 'warning',
+        })
+      )
+      return
+    }
+    // nosemgrep: AIK_js_xss_location
+    window.location.href = safeRedirectUrl
+  }, [activity_id, onSubmit, safeRedirectUrl])
 
   useEffect(() => {
     // If redirectMessage is empty, redirect immediately.
