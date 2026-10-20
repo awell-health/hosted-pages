@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import * as ReactJsxRuntime from 'react/jsx-runtime'
 
 export type ComponentId = string
 
@@ -114,6 +115,14 @@ async function createFederationInstance(): Promise<MinimalFederationInstance> {
         version:
           (ReactDOM as unknown as { version?: string }).version || '18.2.0',
         lib: () => ReactDOM,
+        strategy: 'loaded-first',
+        shareConfig: { singleton: true, requiredVersion: false },
+      },
+      // Remotes compiled with the automatic JSX transform must create elements
+      // with this page's React, or React cannot render them.
+      'react/jsx-runtime': {
+        version: (React as unknown as { version?: string }).version || '18.2.0',
+        lib: () => ReactJsxRuntime,
         strategy: 'loaded-first',
         shareConfig: { singleton: true, requiredVersion: false },
       },
