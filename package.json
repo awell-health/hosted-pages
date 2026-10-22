@@ -27,6 +27,7 @@
     "@sentry/nextjs": "^10.28.0",
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.0",
+    "@vercel/global-config": "1.5.1",
     "date-fns": "^2.29.3",
     "graphql": "^16.8.1",
     "graphql-ws": "^5.11.3",

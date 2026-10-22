@@ -1,0 +1,1 @@
+export { ServiceNoticePage } from './ServiceNoticePage'

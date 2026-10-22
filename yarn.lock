@@ -5108,6 +5108,18 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
+"@vercel/global-config-fs@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@vercel/global-config-fs/-/global-config-fs-0.1.0.tgz#0fb582d73525383003aaaa5c1df57de8cfe9ce2e"
+  integrity sha512-xxMUwf96H/qKTA4Az+uh3xlVWkwnN3z400P5gex0uUsU8pe99njopYVyKVoUTfu8gN9xbHqaigWaIBr1+lufMg==
+
+"@vercel/global-config@1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@vercel/global-config/-/global-config-1.5.1.tgz#a963e9c9f1e4f9c11e8e6a48038263d4d848af32"
+  integrity sha512-PUJaoyMGuSLdKnBgYIqeH1i6U3G+5noLvvJLqI8IPP5+P0b2Q5EcBBraFRh6ctNY/yTpb40klyLYyE3X0OPmKQ==
+  dependencies:
+    "@vercel/global-config-fs" "0.1.0"
+
 "@vitejs/plugin-react@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-react/-/plugin-react-4.1.0.tgz#e4f56f46fd737c5d386bb1f1ade86ba275fe09bd"
