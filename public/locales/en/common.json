@@ -102,6 +102,12 @@
     "description": "Complete activities in your care flow with Awell hosted pages.",
     "title": "Awell Activities"
   },
+  "service_notice": {
+    "default": {
+      "description": "Our service is currently down and we're unable to help you right now. Please come back later.",
+      "title": "Service unavailable"
+    }
+  },
   "session": {
     "all_activities_completed_subtitle": "You can close this page now.",
     "all_activities_completed_title": "You're all done!",
