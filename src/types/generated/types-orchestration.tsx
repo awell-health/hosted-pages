@@ -2857,6 +2857,7 @@ export type QueryHostedPagesLinksArgs = {
 
 
 export type QueryHostedSessionActivitiesArgs = {
+  language?: InputMaybe<Scalars['String']>;
   only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -4177,6 +4178,7 @@ export type FormFragment = { __typename?: 'Form', id: string, key: string, title
 
 export type GetHostedSessionActivitiesQueryVariables = Exact<{
   only_stakeholder_activities?: InputMaybe<Scalars['Boolean']>;
+  language?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -4910,9 +4912,10 @@ export type MarkMessageAsReadMutationHookResult = ReturnType<typeof useMarkMessa
 export type MarkMessageAsReadMutationResult = Apollo.MutationResult<MarkMessageAsReadMutation>;
 export type MarkMessageAsReadMutationOptions = Apollo.BaseMutationOptions<MarkMessageAsReadMutation, MarkMessageAsReadMutationVariables>;
 export const GetHostedSessionActivitiesDocument = gql`
-    query GetHostedSessionActivities($only_stakeholder_activities: Boolean) {
+    query GetHostedSessionActivities($only_stakeholder_activities: Boolean, $language: String) {
   hostedSessionActivities(
     only_stakeholder_activities: $only_stakeholder_activities
+    language: $language
   ) {
     success
     activities {
@@ -4935,6 +4938,7 @@ export const GetHostedSessionActivitiesDocument = gql`
  * const { data, loading, error } = useGetHostedSessionActivitiesQuery({
  *   variables: {
  *      only_stakeholder_activities: // value for 'only_stakeholder_activities'
+ *      language: // value for 'language'
  *   },
  * });
  */
