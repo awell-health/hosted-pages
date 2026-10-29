@@ -34,13 +34,30 @@ interface UsePathwayActivitiesHook {
 
 export const useSessionActivities = (): UsePathwayActivitiesHook => {
   const { session } = useHostedSession()
+  const router = useRouter()
+
+  // Shared variables for the subscriptions, which only accept
+  // `only_stakeholder_activities`.
   const variables = useMemo(
     () => ({
       only_stakeholder_activities: true,
     }),
     []
   )
-  const router = useRouter()
+
+  /**
+   * The preferred language comes from the i18n locale prefix in the URL
+   * (e.g. `/pl?sessionId=…` → `router.locale === 'pl'`), which the integrator
+   * sets to fetch the correct localized form content. We only forward it to the
+   * query when a locale is explicitly present in the URL — i.e. it differs from
+   * the default locale — so that an unprefixed URL leaves the server to apply
+   * its own default rather than being pinned to `language: 'en'`.
+   */
+  const language =
+    router.locale && router.locale !== router.defaultLocale
+      ? router.locale
+      : undefined
+
   const {
     data,
     error,
@@ -50,7 +67,10 @@ export const useSessionActivities = (): UsePathwayActivitiesHook => {
     stopPolling,
     subscribeToMore,
   } = useGetHostedSessionActivitiesQuery({
-    variables,
+    // `language` is spread in only when a locale is present so default-locale
+    // sessions send the identical variables shape as before (no cache-key churn
+    // and no explicit `language: undefined` variable).
+    variables: { ...variables, ...(language ? { language } : {}) },
     skip: session?.status !== HostedSessionStatus.Active,
   })
 
