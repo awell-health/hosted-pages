@@ -140,6 +140,36 @@ concluding which. In the reference failure it was the `Activities` one.
 An aborted request produces **none** of the error states above — no error UI, and the network-error
 gate never trips. That silence is the signature, not the absence of a problem.
 
+All of the above sits behind `middleware.ts`: when the service notice is in `block` mode, the page
+never renders at all (next section).
+
+## Service notice (outage switch)
+
+A notice the team switches on without a deploy, e.g. while orchestration is down. It lives in
+**Vercel Global Config** (formerly Edge Config): one store, connected to every hosted-pages Vercel
+project, one key per deployment named **exactly** like its `NEXT_PUBLIC_AWELL_ENVIRONMENT` (also
+the Sentry environment). A key that doesn't match is silently "off".
+
+```json
+{ "production-us": { "mode": "block", "template": "default" } }
+```
+
+- `block`: `middleware.ts` rewrites `/`, `/c/*` and `/l/*` (any locale) to `pages/unavailable.tsx`,
+  which returns 503 + `Retry-After` and makes no orchestration calls. The URL is kept, so a reload
+  after switching off resumes the session.
+- `banner` is accepted but not rendered yet. Sessions **already open** don't see `block` either —
+  only new page loads do.
+- Wording: a template from `SERVICE_NOTICE_TEMPLATES` (translated `service_notice.<template>.*`
+  strings), optionally overridden per locale by `message: { "<locale>": { title, description } }`.
+  A locale without a custom message gets the template in its own language.
+- **Fails open.** No connection string (`GLOBAL_CONFIG`/`EDGE_CONFIG`, e.g. local dev), an
+  unreadable store, or an invalid `mode` all mean off. Read failures go to `console.warn`: the
+  middleware runs in the edge runtime, where Sentry is not initialised, so look in Vercel's runtime
+  logs.
+- Testing locally: the SDK accepts an external connection string, so point `GLOBAL_CONFIG` at a stub
+  serving `GET /<id>/item/<key>` (404 + an `x-edge-config-digest` header for a missing key).
+  `NEXT_PUBLIC_AWELL_ENVIRONMENT` is inlined at build time, so set it for `next build`.
+
 ## Observability
 
 Conventions (never log during render, always `Sentry.logger?.` with optional chaining, always
