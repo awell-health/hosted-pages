@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react'
 import { Button } from '@awell-health/ui-library'
 import { useTranslation } from 'next-i18next'
 import * as Sentry from '@sentry/nextjs'
+import { useConnectivity } from '../../contexts/ConnectivityContext'
 import {
   HostedSessionError,
   captureHostedSessionError,
@@ -18,6 +19,7 @@ export const NetworkErrorPage: FC<NetworkErrorPageProps> = ({
   sessionId,
 }): JSX.Element => {
   const { t } = useTranslation()
+  const { isOnline } = useConnectivity()
   const [isRetrying, setIsRetrying] = useState(false)
 
   useEffect(() => {
@@ -28,8 +30,18 @@ export const NetworkErrorPage: FC<NetworkErrorPageProps> = ({
       page_name: 'NetworkErrorPage',
       sessionId: sessionId,
       url: window?.location?.href,
+      isOnline,
     })
-  }, [sessionId])
+  }, [sessionId, isOnline])
+
+  // An online browser that still cannot reach orchestration points at our
+  // service, not the patient's connection, so don't ask them to check it.
+  const title = isOnline
+    ? t('session.service_unavailable_title')
+    : t('session.network_error_title')
+  const description = isOnline
+    ? t('session.service_unavailable_description')
+    : t('session.network_error_description')
 
   const handleRetry = async () => {
     setIsRetrying(true)
@@ -85,13 +97,9 @@ export const NetworkErrorPage: FC<NetworkErrorPageProps> = ({
           </div>
         </div>
 
-        <div className={classes.error_text}>
-          {t('session.network_error_title')}
-        </div>
+        <div className={classes.error_text}>{title}</div>
 
-        <div className={classes.error_description}>
-          {t('session.network_error_description')}
-        </div>
+        <div className={classes.error_description}>{description}</div>
 
         <div className={classes.retry_btn}>
           <Button

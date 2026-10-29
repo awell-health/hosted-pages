@@ -1,6 +1,6 @@
 # import 'Activity'
-query GetHostedSessionActivities($only_stakeholder_activities: Boolean) {
-    hostedSessionActivities(only_stakeholder_activities: $only_stakeholder_activities) {
+query GetHostedSessionActivities($only_stakeholder_activities: Boolean, $language: String) {
+    hostedSessionActivities(only_stakeholder_activities: $only_stakeholder_activities, language: $language) {
         success
         activities {
             ...Activity
