@@ -1,41 +1,25 @@
-import { IncomingHttpHeaders } from 'http'
 import { z } from 'zod'
 
-const HeadersSchema = z.object({
-  'x-sol-api-url': z.string().nonempty('x-sol-api-url header is required'),
-})
-
 const EnvSchema = z.object({
-  SOL_AUTH_URL: z.string().nonempty('SOL_AUTH_URL env variable is missing'),
-  SOL_CLIENT_ID: z.string().nonempty('SOL_CLIENT_ID env variable is missing'),
-  SOL_CLIENT_SECRET: z
+  SOL_API_BASE_URL: z
     .string()
-    .nonempty('SOL_CLIENT_SECRET env variable is missing'),
-  SOL_RESOURCE: z.string().nonempty('SOL_RESOURCE env variable is missing'),
+    .url(
+      'SOL_API_BASE_URL env variable is missing or is not a URL (expected e.g. https://api.solmentalhealth.com)'
+    ),
 })
 
-const SettingsSchema = HeadersSchema.merge(EnvSchema)
+export type SolEnvSettings = z.infer<typeof EnvSchema>
 
-export type SolEnvSettings = z.infer<typeof SettingsSchema>
-
-type GetSolEnvSettings = ({ headers }: { headers: IncomingHttpHeaders }) => {
-  authUrl: string
-  clientId: string
-  clientSecret: string
-  resource: string
+type GetSolEnvSettings = () => {
   baseUrl: string
 }
 
-export const getSolEnvSettings: GetSolEnvSettings = ({ headers }) => {
-  const parsedHeaders = HeadersSchema.safeParse(headers)
-
-  if (!parsedHeaders.success) {
-    const errorMessages = parsedHeaders.error.errors
-      .map((e) => e.message)
-      .join(', ')
-    throw new Error(`Header validation failed: ${errorMessages}`)
-  }
-
+/**
+ * SOL's Smart Scheduling API v3 is unauthenticated; the only setting is the
+ * host. Production: https://api.solmentalhealth.com. Stage (for sandbox
+ * testing): https://api-stage.solmentalhealth.com.
+ */
+export const getSolEnvSettings: GetSolEnvSettings = () => {
   const parsedEnv = EnvSchema.safeParse(process.env)
 
   if (!parsedEnv.success) {
@@ -46,11 +30,7 @@ export const getSolEnvSettings: GetSolEnvSettings = ({ headers }) => {
   }
 
   return {
-    authUrl: parsedEnv.data.SOL_AUTH_URL,
-    clientId: parsedEnv.data.SOL_CLIENT_ID,
-    clientSecret: parsedEnv.data.SOL_CLIENT_SECRET,
-    resource: parsedEnv.data.SOL_RESOURCE,
-    baseUrl: parsedHeaders.data['x-sol-api-url'],
+    baseUrl: parsedEnv.data.SOL_API_BASE_URL.replace(/\/+$/, ''),
   }
 }
 
@@ -62,8 +42,8 @@ export enum API_METHODS {
 }
 
 export const API_ROUTES: Record<API_METHODS, string> = {
-  [API_METHODS.GET_PROVIDER]: '/api/provider/info',
-  [API_METHODS.GET_PROVIDERS]: '/api/v2/provider',
-  [API_METHODS.GET_AVAILABILITY]: '/api/event/list',
-  [API_METHODS.BOOK_EVENT]: '/api/event/book',
+  [API_METHODS.GET_PROVIDER]: '/smartscheduling/api/v3/providers',
+  [API_METHODS.GET_PROVIDERS]: '/smartscheduling/api/v3/providers',
+  [API_METHODS.GET_AVAILABILITY]: '/smartscheduling/api/v3/events',
+  [API_METHODS.BOOK_EVENT]: '/smartscheduling/api/v3/appointments',
 }

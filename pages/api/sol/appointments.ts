@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getAccessToken } from '../../../src/utils'
-import {
-  BookAppointmentInputSchema,
-  BookAppointmentResponseType,
-} from '@awell-health/sol-scheduling'
+import { BookAppointmentInputSchema } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from './utils'
-import { omit } from 'lodash'
 import { logger, LogEvent } from '../../../src/utils/logging'
+import {
+  fromV3BookingResponse,
+  toV3BookingBody,
+  type V3BookingResponse,
+} from '../../../src/services/sol/v3Adapter'
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,8 +21,7 @@ export default async function handler(
   const { input, logContext } = req.body
 
   try {
-    const settings = getSolEnvSettings({ headers: req.headers })
-    const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
+    const settings = getSolEnvSettings()
 
     const bodyValidation = BookAppointmentInputSchema.safeParse(input)
     if (bodyValidation.success) {
@@ -47,20 +46,22 @@ export default async function handler(
       })
     }
     const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.BOOK_EVENT]}`
+    const v3Body = toV3BookingBody(bodyValidation.data)
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(bodyValidation.data),
+      body: JSON.stringify(v3Body),
     })
 
+    // v3 answers 201 on success; any 2xx is treated as booked
     if (!response.ok) {
       const responseBody = await response.json()
       logger.error(`${logMessage}: failed`, LogEvent.SOL_API_REQUEST, {
         requestBody: input,
-        validatedRequestBody: bodyValidation.data,
+        validatedRequestBody: v3Body,
         responseBody,
         errorCode: response.status,
         responseText: response.statusText,
@@ -74,11 +75,12 @@ export default async function handler(
       })
     }
 
-    const jsonRes: BookAppointmentResponseType = await response.json()
+    const v3Res: V3BookingResponse = await response.json()
+    const jsonRes = fromV3BookingResponse(v3Res)
 
     logger.info(`${logMessage}: success`, LogEvent.SOL_API_REQUEST, {
       requestBody: input,
-      responseBody: jsonRes,
+      responseBody: v3Res,
       url,
       performance: new Date().valueOf() - startTime,
       context: logContext,
