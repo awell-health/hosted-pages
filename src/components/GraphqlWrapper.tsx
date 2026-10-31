@@ -6,6 +6,7 @@ import {
   createClient,
   createGraphQLRequestLifecycle,
   GraphQLRequestLifecycleContext,
+  isNetworkConnectivityError as isFetchFailure,
 } from '../services/graphql'
 import fragmentTypes from '../types/generated/fragment-types'
 import { useNetworkError } from '../contexts/NetworkErrorContext'
@@ -24,10 +25,7 @@ const GraphqlWrapperInner: FC<GraphqlWrapperProps> = ({ children }) => {
     ({ operation, networkError }) => {
       if (networkError) {
         // Check if this is a network connectivity error (fetch failed)
-        const isNetworkConnectivityError =
-          networkError.message === 'Failed to fetch' ||
-          networkError.message.includes('NetworkError') ||
-          networkError.message.includes('Network request failed')
+        const isNetworkConnectivityError = isFetchFailure(networkError)
 
         if (isNetworkConnectivityError) {
           incrementNetworkErrorCount()

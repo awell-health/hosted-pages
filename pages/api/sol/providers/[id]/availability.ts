@@ -1,9 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getAccessToken } from '../../../../../src/utils'
-import { type GetAvailabilitiesResponseType } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../../utils'
-import { omit, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import { logger, LogEvent } from '../../../../../src/utils/logging'
+import {
+  fromV3AvailabilityResponse,
+  toV3AvailabilityQuery,
+  type V3AvailabilityResponse,
+} from '../../../../../src/services/sol/v3Adapter'
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,21 +21,18 @@ export default async function handler(
   const { id, session, pathway } = req.query
 
   try {
-    const settings = getSolEnvSettings({ headers: req.headers })
-    const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
+    const settings = getSolEnvSettings()
 
-    const url = `${settings.baseUrl}${API_ROUTES[API_METHODS.GET_AVAILABILITY]}`
+    const providerId = String(id)
+    const url = `${settings.baseUrl}${
+      API_ROUTES[API_METHODS.GET_AVAILABILITY]
+    }?${toV3AvailabilityQuery([providerId])}`
 
-    const requestBody = {
-      providerId: [id],
-    }
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-      body: JSON.stringify(requestBody),
     })
 
     if (!response.ok) {
@@ -57,16 +57,16 @@ export default async function handler(
       })
     }
 
-    const jsonRes: GetAvailabilitiesResponseType = await response.json()
+    const v3Res: V3AvailabilityResponse = await response.json()
+    const jsonRes = fromV3AvailabilityResponse(v3Res)
 
-    if (isEmpty(jsonRes.data?.[id as string])) {
+    if (isEmpty(jsonRes.data?.[providerId])) {
       logger.warn(
         `${logMessage}: failed - no data returned`,
         LogEvent.SOL_API_REQUEST,
         {
           queryParams: req.query,
-          requestBody,
-          responseBody: jsonRes,
+          responseBody: v3Res,
           responseText: response.statusText,
           errorCode: response.status,
           url,
@@ -83,7 +83,7 @@ export default async function handler(
     }
     logger.info(`${logMessage}: success`, LogEvent.SOL_API_REQUEST, {
       queryParams: req.query,
-      responseBody: jsonRes,
+      responseBody: v3Res,
       url,
       performance: new Date().valueOf() - startTime,
       context: {

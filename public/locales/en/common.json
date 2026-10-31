@@ -126,6 +126,8 @@
     "redirecting_to_next_page": "Redirecting you in a moment...",
     "retry": "Retry",
     "retrying": "Retrying...",
+    "service_unavailable_description": "We can't reach our service right now. This is usually temporary. Please try again in a few minutes.",
+    "service_unavailable_title": "Service temporarily unavailable",
     "session_canceled": "Your session has been cancelled.",
     "session_completed_or_expired": "Your session has been completed or expired.",
     "session_id": "Session ID",

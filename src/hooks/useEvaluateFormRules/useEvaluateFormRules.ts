@@ -85,6 +85,7 @@ export const useEvaluateFormRules = (
       input: {
         form_id,
         answers,
+        pathway_id: session?.pathway_id,
       },
     }
     try {
