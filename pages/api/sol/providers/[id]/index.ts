@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getAccessToken } from '../../../../../src/utils'
-import { type GetProviderResponseType } from '@awell-health/sol-scheduling'
 import { getSolEnvSettings, API_ROUTES, API_METHODS } from '../../utils'
-import { omit } from 'lodash'
 import { logger, LogEvent } from '../../../../../src/utils/logging'
+import {
+  fromV3ProviderResponse,
+  type V3ProviderResponse,
+} from '../../../../../src/services/sol/v3Adapter'
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,17 +20,15 @@ export default async function handler(
   const { id, session, pathway } = req.query
 
   try {
-    const settings = getSolEnvSettings({ headers: req.headers })
-    const accessToken = await getAccessToken(omit(settings, 'baseUrl'))
+    const settings = getSolEnvSettings()
 
     const url = `${settings.baseUrl}${
       API_ROUTES[API_METHODS.GET_PROVIDER]
-    }?providerId=${id}`
+    }/${encodeURIComponent(String(id))}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
     })
 
@@ -55,10 +54,11 @@ export default async function handler(
       })
     }
 
-    const jsonRes: GetProviderResponseType = await response.json()
+    const v3Res: V3ProviderResponse = await response.json()
+    const jsonRes = fromV3ProviderResponse(v3Res)
     logger.info(`${logMessage}: success`, LogEvent.SOL_API_REQUEST, {
       queryParams: req.query,
-      responseBody: jsonRes,
+      responseBody: v3Res,
       url,
       performance: new Date().valueOf() - startTime,
       context: {
