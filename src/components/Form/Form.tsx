@@ -347,7 +347,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
       >
         {renderTraditionalForm && (
           <TraditionalForm
-            form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
+            form={form as any} // dirty hack - let's update ui-lib to accept DynamicForm
             questionLabels={labels}
             buttonLabels={button_labels}
             errorLabels={error_labels}
@@ -361,7 +361,7 @@ export const Form: FC<FormProps> = ({ activity }) => {
         )}
         {!renderTraditionalForm && (
           <ConversationalForm
-            form={form as FormType} // dirty hack - let's update ui-lib to accept DynamicForm
+            form={form as any} // dirty hack - let's update ui-lib to accept DynamicForm
             questionLabels={labels}
             buttonLabels={button_labels}
             errorLabels={error_labels}

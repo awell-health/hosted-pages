@@ -9,8 +9,8 @@ jobs:
     name: Upload strings to Localazy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: localazy/upload@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: localazy/upload@27e6b5c0fddf4551596b42226b1c24124335d24a # v1
         with:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
           write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
