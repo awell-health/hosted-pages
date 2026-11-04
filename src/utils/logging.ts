@@ -22,6 +22,8 @@ export enum LogEvent {
   SESSION_TERMINAL_STATUS_DIVERGED = 'SESSION_TERMINAL_STATUS_DIVERGED',
   /** `useGetHostedSessionQuery` stayed in a loading state past several poll intervals. */
   SESSION_QUERY_STALLED = 'SESSION_QUERY_STALLED',
+  /** The unavailable page was shown because the service notice is in block mode. */
+  SERVICE_NOTICE_SHOWN = 'SERVICE_NOTICE_SHOWN',
 
   MESSAGE_MARKING_AS_READ = 'MESSAGE_MARKING_AS_READ',
   MESSAGE_MARKED_AS_READ = 'MESSAGE_MARKED_AS_READ',
