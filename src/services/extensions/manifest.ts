@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import * as ReactJsxRuntime from 'react/jsx-runtime'
 
 export type ComponentId = string
 
@@ -8,30 +9,90 @@ export type ComponentSpec = {
   expose: string
 }
 
-export type ComponentsManifest = {
+/**
+ * One Module Federation remote per extension (manifest v2). `expose` of its
+ * components is relative to this remote, e.g. `./uploadFile`.
+ */
+export type RemoteSpec = {
+  extension: string
   remoteName: string
   remoteEntryUrl: string
   version: string
   components: ComponentSpec[]
 }
 
+/**
+ * `GET /v2/components/manifest` of the extension server.
+ *
+ * The top-level fields (v1) describe the legacy combined remote
+ * `awellExtensionComponents`. `remotes` (v2) lists one remote per extension
+ * and is absent on servers that predate it.
+ */
+export type ComponentsManifest = {
+  remoteName: string
+  remoteEntryUrl: string
+  version: string
+  components: ComponentSpec[]
+  remotes?: RemoteSpec[]
+}
+
 export type ActionComponent<Props extends object = Record<string, unknown>> = (
   props: Props
 ) => unknown
 
-type MinimalFederationInstance = {
-  loadRemote: (id: string) => Promise<unknown>
+/** Where a component lives: which remote to load and which module to get. */
+export type ResolvedComponent = {
+  remoteName: string
+  remoteEntryUrl: string
+  expose: string
 }
 
-const instanceCache = new Map<string, MinimalFederationInstance>()
+/**
+ * Resolve a component id to its remote. Prefers the per-extension remotes
+ * (v2) and falls back to the legacy combined remote (v1) when the manifest has
+ * no `remotes`, or none of them provides the component.
+ */
+export function resolveComponent(
+  manifest: ComponentsManifest,
+  componentId: ComponentId
+): ResolvedComponent | null {
+  const remotes = Array.isArray(manifest.remotes) ? manifest.remotes : []
+  for (const remote of remotes) {
+    const spec = remote.components?.find((c) => c.id === componentId)
+    if (spec) {
+      return {
+        remoteName: remote.remoteName,
+        remoteEntryUrl: remote.remoteEntryUrl,
+        expose: spec.expose,
+      }
+    }
+  }
+  const legacy = manifest.components?.find((c) => c.id === componentId)
+  if (legacy) {
+    return {
+      remoteName: manifest.remoteName,
+      remoteEntryUrl: manifest.remoteEntryUrl,
+      expose: legacy.expose,
+    }
+  }
+  return null
+}
 
-async function ensureRuntimeInitialized(
-  manifest: ComponentsManifest
-): Promise<MinimalFederationInstance> {
-  const key = `${manifest.remoteName}|${manifest.remoteEntryUrl}`
-  const cached = instanceCache.get(key)
-  if (cached) return cached
+type FederationRemote = { name: string; entry: string }
 
+type MinimalFederationInstance = {
+  loadRemote: (id: string) => Promise<unknown>
+  registerRemotes: (
+    remotes: FederationRemote[],
+    options?: { force?: boolean }
+  ) => void
+}
+
+let instancePromise: Promise<MinimalFederationInstance> | null = null
+// remoteName -> entry URL registered on the instance
+const registeredRemotes = new Map<string, string>()
+
+async function createFederationInstance(): Promise<MinimalFederationInstance> {
   // Lazy import so build won't fail if the package isn't installed yet
   const runtime: any = await import('@module-federation/runtime').catch(
     () => null
@@ -40,14 +101,9 @@ async function ensureRuntimeInitialized(
     throw new Error('Module federation runtime not available')
   }
 
-  const mfInstance = runtime.createInstance({
+  return runtime.createInstance({
     name: 'hostedPages',
-    remotes: [
-      {
-        name: manifest.remoteName,
-        entry: manifest.remoteEntryUrl,
-      },
-    ],
+    remotes: [],
     shared: {
       react: {
         version: (React as unknown as { version?: string }).version || '18.2.0',
@@ -62,27 +118,86 @@ async function ensureRuntimeInitialized(
         strategy: 'loaded-first',
         shareConfig: { singleton: true, requiredVersion: false },
       },
+      // Remotes compiled with the automatic JSX transform must create elements
+      // with this page's React, or React cannot render them.
+      'react/jsx-runtime': {
+        version: (React as unknown as { version?: string }).version || '18.2.0',
+        lib: () => ReactJsxRuntime,
+        strategy: 'loaded-first',
+        shareConfig: { singleton: true, requiredVersion: false },
+      },
     },
-  })
-  instanceCache.set(key, mfInstance as unknown as MinimalFederationInstance)
-  return mfInstance as unknown as MinimalFederationInstance
+  }) as MinimalFederationInstance
+}
+
+/**
+ * One federation instance for the page; each remote is registered the first
+ * time one of its components is needed, so every remoteEntry loads once.
+ */
+async function ensureRemoteRegistered(
+  remote: Pick<ResolvedComponent, 'remoteName' | 'remoteEntryUrl'>
+): Promise<MinimalFederationInstance> {
+  if (!instancePromise) {
+    instancePromise = createFederationInstance().catch((e) => {
+      instancePromise = null
+      throw e
+    })
+  }
+  const mf = await instancePromise
+  const registeredEntry = registeredRemotes.get(remote.remoteName)
+  if (registeredEntry !== remote.remoteEntryUrl) {
+    mf.registerRemotes(
+      [{ name: remote.remoteName, entry: remote.remoteEntryUrl }],
+      // Only replaces a remote whose entry URL changed (e.g. new manifest)
+      { force: registeredEntry !== undefined }
+    )
+    registeredRemotes.set(remote.remoteName, remote.remoteEntryUrl)
+  }
+  return mf
 }
 
 export async function loadActionComponent(
   manifest: ComponentsManifest,
   componentId: ComponentId
 ): Promise<ActionComponent> {
-  const spec = manifest.components.find((c) => c.id === componentId)
-  if (!spec) throw new Error(`Unknown component: ${componentId}`)
+  const resolved = resolveComponent(manifest, componentId)
+  if (!resolved) throw new Error(`Unknown component: ${componentId}`)
 
-  const mf = await ensureRuntimeInitialized(manifest)
-  const exposePath = spec.expose.startsWith('./')
-    ? spec.expose.slice(2)
-    : spec.expose.replace(/^\.\//, '')
-  const mod = (await mf.loadRemote(`${manifest.remoteName}/${exposePath}`)) as {
+  const mf = await ensureRemoteRegistered(resolved)
+  const exposePath = resolved.expose.replace(/^\.\//, '')
+  const mod = (await mf.loadRemote(`${resolved.remoteName}/${exposePath}`)) as {
     default: ActionComponent
+  } | null
+  if (!mod?.default) {
+    throw new Error(`Component ${componentId} has no default export`)
   }
   return mod.default as ActionComponent
+}
+
+/** Resolve every remoteEntryUrl in the manifest against the server's base URL. */
+export function absolutizeManifestUrls(
+  manifest: ComponentsManifest,
+  base: string
+): ComponentsManifest {
+  const absolute = (url: string): string => {
+    try {
+      return new URL(url, base).href
+    } catch {
+      return url
+    }
+  }
+  return {
+    ...manifest,
+    remoteEntryUrl: absolute(manifest.remoteEntryUrl),
+    ...(Array.isArray(manifest.remotes)
+      ? {
+          remotes: manifest.remotes.map((remote) => ({
+            ...remote,
+            remoteEntryUrl: absolute(remote.remoteEntryUrl),
+          })),
+        }
+      : {}),
+  }
 }
 
 function mapOrchestrationUrlToExtensionBase(orchestrationUrl?: string): string {
@@ -126,10 +241,5 @@ export async function fetchComponentsManifest(): Promise<ComponentsManifest> {
     throw new Error(`Failed to fetch components manifest: ${res.status}`)
   }
   const manifest = (await res.json()) as ComponentsManifest
-  try {
-    const absolute = new URL(manifest.remoteEntryUrl, base).href
-    return { ...manifest, remoteEntryUrl: absolute }
-  } catch {
-    return manifest
-  }
+  return absolutizeManifestUrls(manifest, base)
 }
